@@ -1,0 +1,28 @@
+#ifndef __xui_timegrad_h__
+#define __xui_timegrad_h__
+
+#include "xui_drawer.h"
+
+class xui_timegrad : public xui_drawer
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_timegrad( void );
+
+protected:
+	/*
+	//override
+	*/
+	virtual void on_mousedown	( xui_method_mouse& args );
+	virtual void on_mousemove	( xui_method_mouse& args );
+	virtual void on_renderself	( xui_method_args&  args );
+
+	/*
+	//method
+	*/
+	void		set_curframe	( s32 x );
+};
+
+#endif//__xui_timegrad_h__

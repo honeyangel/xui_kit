@@ -1,0 +1,77 @@
+#include "xui_convas.h"
+#include "xui_button.h"
+#include "xui_kindctrl.h"
+#include "xui_propview.h"
+#include "xui_propctrl_object.h"
+
+/*
+//constructor
+*/
+xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* icon )
+: xui_propedit_base(propctrl)
+{
+	xui_drawer* textctrl = new xui_drawer("", xui_rect2d<s32>(0, 0, 32, 18));
+	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour(0.0f));
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(1));
+	xui_method_ptrcall(textctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(textctrl, set_font		)(xui_family("Arial", 16, false));
+	xui_method_ptrcall(textctrl, set_icon		)(icon);
+	xui_method_ptrcall(textctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_method_ptrcall(textctrl, set_iconalign	)(IMAGE_FRONT_TEXT);
+	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(textctrl, set_iconoffset )(xui_vector<s32>(2, 0));
+	xui_method_ptrcall(textctrl, set_textoffset )((icon == NULL) ? xui_vector<s32>(18, 0) : xui_vector<s32>(2, 0));
+	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlnonfocus);
+	textctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlgetfocus);
+
+	xui_drawer* pickctrl = new xui_drawer("", xui_rect2d<s32>(0, 0, 16, 16));
+	xui_method_ptrcall(pickctrl, set_backcolor	)(xui_colour(0.0f));
+	pickctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_object>(this, &xui_propedit_object::on_pickctrlclick);
+	pickctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_pickctrlrenderself);
+
+	m_editctrl = textctrl;
+	m_pickctrl = pickctrl;
+}
+
+/*
+//method
+*/
+xui_method_explain(xui_propedit_object, get_pickctrl,			xui_drawer*	)( void ) const
+{
+	return m_pickctrl;
+}
+
+/*
+//virtual
+*/
+xui_method_explain(xui_propedit_object, reset,					void		)( void )
+{
+	xui_propedit_base::reset();
+	xui_drawer* editctrl = (xui_drawer*)m_editctrl;
+	editctrl->ini_drawer(NULL, L"");
+}
+
+/*
+//event
+*/
+xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_componet* sender, xui_method_mouse& args )
+{
+	m_propctrl->on_editvalue(this);
+}
+xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_componet* sender, xui_method_args&  args )
+{
+	xui_rect2d<s32> rt = m_pickctrl->get_renderrtabs();
+	rt.oft_x(3);
+	rt.oft_y(3);
+	rt.set_w(10);
+	rt.set_h(10);
+	g_convas->draw_round(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f), 5);
+	xui_vector<s32> p1;
+	xui_vector<s32> p2;
+	p1.x = rt.ax+rt.get_w()/2-1;
+	p1.y = rt.ay+rt.get_h()/2;
+	p2.x = p1.x+1;
+	p2.y = p1.y;
+	g_convas->draw_line(p1, p2, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+}

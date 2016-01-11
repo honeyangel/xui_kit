@@ -1,0 +1,646 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{939fd80a-ef5c-4ba5-b0ad-e93d74cd9e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{8b7cb74f-267b-4e6a-9356-de6b4f2d662b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibZIP">
+      <UniqueIdentifier>{813b7d1c-292e-47a0-b9e0-80d21c762d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibPNG">
+      <UniqueIdentifier>{9ae6cb47-aa25-4254-add3-c90f966f376b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Action">
+      <UniqueIdentifier>{8b326c0e-bb91-40d3-9540-6303e4b461d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI">
+      <UniqueIdentifier>{1df158c2-faad-4c95-9828-e1d3cb910423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\panel">
+      <UniqueIdentifier>{5903df68-74f8-4516-a16a-25a76ca579d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\window">
+      <UniqueIdentifier>{e3889e05-1394-4726-a898-137287cd3e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\desktop">
+      <UniqueIdentifier>{1e98ae1c-774d-4418-8a1d-6af0be11dce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Method">
+      <UniqueIdentifier>{ffecd80c-d5a0-41d4-85a3-b2df1ee23818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\componet">
+      <UniqueIdentifier>{2ed3bd4d-637c-4c8e-a214-6c59df419a1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\control">
+      <UniqueIdentifier>{290462b1-8ed7-43d3-8e40-75bb07b9e918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\button">
+      <UniqueIdentifier>{44f70fcb-3530-4864-8aee-7e23308afce3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\toggle">
+      <UniqueIdentifier>{b177ac2c-7e7f-4167-ac86-8d78bca0cd8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\toolbar">
+      <UniqueIdentifier>{d5e2b39d-d8a1-4fea-aedb-cd39938f942c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\linebox">
+      <UniqueIdentifier>{7fb9928c-db6b-49bf-a5f9-dcb4a8987965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\textbox">
+      <UniqueIdentifier>{e756cabd-84a6-4cd5-83e8-8d6605fca2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\widget">
+      <UniqueIdentifier>{a6f4c4dd-8816-47a0-863f-44be836651d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\scroll">
+      <UniqueIdentifier>{bedbe598-b666-4c43-ae89-b53d64777848}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\slider">
+      <UniqueIdentifier>{fe68b3f5-c524-4754-806d-835b019982ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\gridbox">
+      <UniqueIdentifier>{cee0c190-5dc1-4109-a0d5-31dbe00959ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\container">
+      <UniqueIdentifier>{a85b854f-0510-4f97-befc-0222ecf6ca9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\treeview">
+      <UniqueIdentifier>{bb0af3a5-cbb3-49eb-852c-a1a03606ddfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\listview">
+      <UniqueIdentifier>{302fe33c-1f7e-4848-bf21-43db0ac66283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\propview">
+      <UniqueIdentifier>{16f06cb6-c8f6-4e41-97e7-a8562ef66568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\timeview">
+      <UniqueIdentifier>{1cb8e84a-d7fb-406c-87ec-b8ed9eeee401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\dropbox">
+      <UniqueIdentifier>{12f87c6d-6d83-4e45-8678-9778c12897ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\drawer">
+      <UniqueIdentifier>{dbfffdc9-90ff-4070-ac7b-8b13ca65534c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\timer">
+      <UniqueIdentifier>{18b32f90-3535-4164-bd2a-83a5b6c46694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\propview\ctrl">
+      <UniqueIdentifier>{4ec58517-4e10-4a3e-b08d-5cb25955418b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\propview\edit">
+      <UniqueIdentifier>{f94bc1f1-30ba-448b-9d09-4e0ba261a74a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xui_colour.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_header.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_rect2d.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_vector.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_bitmap.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_bitmap_buffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_convas.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family_bitmap.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_bitmap_format.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\crc32.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\deflate.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\inffast.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\inffixed.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\inflate.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\inftrees.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\trees.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\zconf.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\zconf.in.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\zlib.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libzip\inc\zutil.h">
+      <Filter>LibZIP</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\inc\png.h">
+      <Filter>LibPNG</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\inc\pngconf.h">
+      <Filter>LibPNG</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family_member.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family_create.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family_create_win.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_action_ctrl.h">
+      <Filter>Action</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_action_data.h">
+      <Filter>Action</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_panel.h">
+      <Filter>LibGUI\panel</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_window.h">
+      <Filter>LibGUI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_desktop.h">
+      <Filter>LibGUI\desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_message.h">
+      <Filter>LibGUI\desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_method.h">
+      <Filter>Method</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_method_args.h">
+      <Filter>Method</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_method_slot.h">
+      <Filter>Method</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_componet.h">
+      <Filter>LibGUI\componet</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_control.h">
+      <Filter>LibGUI\control</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_border.h">
+      <Filter>LibGUI\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_button.h">
+      <Filter>LibGUI\button</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_toggle.h">
+      <Filter>LibGUI\toggle</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_linebox.h">
+      <Filter>LibGUI\linebox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_toolbar.h">
+      <Filter>LibGUI\toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_textbox.h">
+      <Filter>LibGUI\textbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_caret.h">
+      <Filter>LibGUI\textbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_separate.h">
+      <Filter>LibGUI\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_container.h">
+      <Filter>LibGUI\container</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_scroll.h">
+      <Filter>LibGUI\scroll</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_slider.h">
+      <Filter>LibGUI\slider</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_gridbox.h">
+      <Filter>LibGUI\gridbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_treeview.h">
+      <Filter>LibGUI\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_treenode.h">
+      <Filter>LibGUI\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_scrollarrow.h">
+      <Filter>LibGUI\scroll</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_scrollthumb.h">
+      <Filter>LibGUI\scroll</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_listitem.h">
+      <Filter>LibGUI\listview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_listview.h">
+      <Filter>LibGUI\listview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_treedata.h">
+      <Filter>LibGUI\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_treegrid.h">
+      <Filter>LibGUI\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_drawer.h">
+      <Filter>LibGUI\drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_dropbox.h">
+      <Filter>LibGUI\dropbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_itemtag.h">
+      <Filter>LibGUI\dropbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timegrad.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timeview.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timetool.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timedata.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timeline.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timerect.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timehead.h">
+      <Filter>LibGUI\timeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timer.h">
+      <Filter>LibGUI\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_timermgr.h">
+      <Filter>LibGUI\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propdata.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propview.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propkind.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_proproot.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_kindctrl.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_treeplus.h">
+      <Filter>LibGUI\treeview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propplus.h">
+      <Filter>LibGUI\propview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_slider.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propedit.h">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propedit_slider.h">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_expand.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_vector.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_rect2d.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propedit_stdvec.h">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_stdvec.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propedit_object.h">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_object.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl_simple.h">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="xui_convas.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="xui_bitmap_format.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_bitmap_buffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_bitmap.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\adler32.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\compress.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\crc32.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\deflate.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\gzio.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\infback.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\inffast.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\inflate.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\inftrees.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\trees.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\uncompr.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libzip\src\zutil.c">
+      <Filter>LibZIP</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\png.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngerror.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pnggccrd.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngget.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngmem.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngpread.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngread.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngrio.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngrtran.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngrutil.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngset.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngtrans.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngvcrd.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngwio.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngwrite.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngwtran.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\src\pngwutil.c">
+      <Filter>LibPNG</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_family_create_win.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_family_bitmap.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_action_ctrl.cpp">
+      <Filter>Action</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_panel.cpp">
+      <Filter>LibGUI\panel</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_window.cpp">
+      <Filter>LibGUI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_desktop.cpp">
+      <Filter>LibGUI\desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_message.cpp">
+      <Filter>LibGUI\desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_componet.cpp">
+      <Filter>LibGUI\componet</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_control.cpp">
+      <Filter>LibGUI\control</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_border.cpp">
+      <Filter>LibGUI\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_button.cpp">
+      <Filter>LibGUI\button</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_toggle.cpp">
+      <Filter>LibGUI\toggle</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_linebox.cpp">
+      <Filter>LibGUI\linebox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_toolbar.cpp">
+      <Filter>LibGUI\toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_textbox.cpp">
+      <Filter>LibGUI\textbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_caret.cpp">
+      <Filter>LibGUI\textbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_separate.cpp">
+      <Filter>LibGUI\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_container.cpp">
+      <Filter>LibGUI\container</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_scroll.cpp">
+      <Filter>LibGUI\scroll</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_slider.cpp">
+      <Filter>LibGUI\slider</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_gridbox.cpp">
+      <Filter>LibGUI\gridbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_treeview.cpp">
+      <Filter>LibGUI\treeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_treenode.cpp">
+      <Filter>LibGUI\treeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_scrollarrow.cpp">
+      <Filter>LibGUI\scroll</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_scrollthumb.cpp">
+      <Filter>LibGUI\scroll</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_listitem.cpp">
+      <Filter>LibGUI\listview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_listview.cpp">
+      <Filter>LibGUI\listview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_treedata.cpp">
+      <Filter>LibGUI\treeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_treegrid.cpp">
+      <Filter>LibGUI\treeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_drawer.cpp">
+      <Filter>LibGUI\drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_dropbox.cpp">
+      <Filter>LibGUI\dropbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_itemtag.cpp">
+      <Filter>LibGUI\dropbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timegrad.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timeview.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timetool.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timedata.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timeline.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timerect.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timehead.cpp">
+      <Filter>LibGUI\timeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timer.cpp">
+      <Filter>LibGUI\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_timermgr.cpp">
+      <Filter>LibGUI\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propdata.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propview.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propkind.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_proproot.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_kindctrl.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_treeplus.cpp">
+      <Filter>LibGUI\treeview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propplus.cpp">
+      <Filter>LibGUI\propview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_slider.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propedit.cpp">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propedit_slider.cpp">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_expand.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_vector.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_rect2d.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propedit_stdvec.cpp">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_stdvec.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propedit_object.cpp">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_object.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl_simple.cpp">
+      <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

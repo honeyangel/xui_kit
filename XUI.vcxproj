@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E5ECC7C0-780E-481E-9AD2-96694045FF51}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>XUI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>libzip/inc/;libpng/inc/;libogl/inc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="xui_propctrl_object.h" />
+    <ClInclude Include="xui_propctrl_simple.h" />
+    <ClInclude Include="xui_propctrl_stdvec.h" />
+    <ClInclude Include="xui_propctrl_expand.h" />
+    <ClInclude Include="xui_propctrl_rect2d.h" />
+    <ClInclude Include="xui_propctrl_slider.h" />
+    <ClInclude Include="xui_propctrl_vector.h" />
+    <ClInclude Include="xui_propedit_object.h" />
+    <ClInclude Include="xui_propedit_slider.h" />
+    <ClInclude Include="xui_propedit_stdvec.h" />
+    <ClInclude Include="xui_propplus.h" />
+    <ClInclude Include="xui_kindctrl.h" />
+    <ClInclude Include="xui_propedit.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_propkind.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_propctrl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_propdata.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_proproot.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_propview.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_timehead.h" />
+    <ClInclude Include="xui_timeline.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_timedata.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_timegrad.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_timer.h" />
+    <ClInclude Include="xui_timerect.h" />
+    <ClInclude Include="xui_timermgr.h" />
+    <ClInclude Include="xui_timetool.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_timeview.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_dropbox.h" />
+    <ClInclude Include="xui_itemtag.h" />
+    <ClInclude Include="xui_treegrid.h" />
+    <ClInclude Include="xui_treeplus.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_caret.h" />
+    <ClInclude Include="xui_container.h" />
+    <ClInclude Include="xui_gridbox.h" />
+    <ClInclude Include="xui_linebox.h" />
+    <ClInclude Include="libpng\inc\png.h" />
+    <ClInclude Include="libpng\inc\pngconf.h" />
+    <ClInclude Include="libzip\inc\crc32.h" />
+    <ClInclude Include="libzip\inc\deflate.h" />
+    <ClInclude Include="libzip\inc\inffast.h" />
+    <ClInclude Include="libzip\inc\inffixed.h" />
+    <ClInclude Include="libzip\inc\inflate.h" />
+    <ClInclude Include="libzip\inc\inftrees.h" />
+    <ClInclude Include="libzip\inc\trees.h" />
+    <ClInclude Include="libzip\inc\zconf.h" />
+    <ClInclude Include="libzip\inc\zconf.in.h" />
+    <ClInclude Include="libzip\inc\zlib.h" />
+    <ClInclude Include="libzip\inc\zutil.h" />
+    <ClInclude Include="xui_action_ctrl.h" />
+    <ClInclude Include="xui_action_data.h" />
+    <ClInclude Include="xui_bitmap.h" />
+    <ClInclude Include="xui_bitmap_buffer.h" />
+    <ClInclude Include="xui_bitmap_format.h" />
+    <ClInclude Include="xui_border.h" />
+    <ClInclude Include="xui_button.h" />
+    <ClInclude Include="xui_colour.h" />
+    <ClInclude Include="xui_control.h" />
+    <ClInclude Include="xui_convas.h" />
+    <ClInclude Include="xui_desktop.h" />
+    <ClInclude Include="xui_drawer.h" />
+    <ClInclude Include="xui_family.h" />
+    <ClInclude Include="xui_family_bitmap.h" />
+    <ClInclude Include="xui_family_create.h" />
+    <ClInclude Include="xui_family_create_win.h" />
+    <ClInclude Include="xui_family_member.h" />
+    <ClInclude Include="xui_listitem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_listview.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_method_slot.h" />
+    <ClInclude Include="xui_header.h" />
+    <ClInclude Include="xui_method_args.h" />
+    <ClInclude Include="xui_method.h" />
+    <ClInclude Include="xui_message.h" />
+    <ClInclude Include="xui_panel.h" />
+    <ClInclude Include="xui_rect2d.h" />
+    <ClInclude Include="xui_scroll.h" />
+    <ClInclude Include="xui_scrollthumb.h" />
+    <ClInclude Include="xui_scrollarrow.h" />
+    <ClInclude Include="xui_separate.h" />
+    <ClInclude Include="xui_slider.h" />
+    <ClInclude Include="xui_textbox.h" />
+    <ClInclude Include="xui_toggle.h" />
+    <ClInclude Include="xui_toolbar.h" />
+    <ClInclude Include="xui_treedata.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_treenode.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_treeview.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="xui_vector.h" />
+    <ClInclude Include="xui_componet.h" />
+    <ClInclude Include="xui_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libpng\src\png.c" />
+    <ClCompile Include="libpng\src\pngerror.c" />
+    <ClCompile Include="libpng\src\pnggccrd.c" />
+    <ClCompile Include="libpng\src\pngget.c" />
+    <ClCompile Include="libpng\src\pngmem.c" />
+    <ClCompile Include="libpng\src\pngpread.c" />
+    <ClCompile Include="libpng\src\pngread.c" />
+    <ClCompile Include="libpng\src\pngrio.c" />
+    <ClCompile Include="libpng\src\pngrtran.c" />
+    <ClCompile Include="libpng\src\pngrutil.c" />
+    <ClCompile Include="libpng\src\pngset.c" />
+    <ClCompile Include="libpng\src\pngtrans.c" />
+    <ClCompile Include="libpng\src\pngvcrd.c" />
+    <ClCompile Include="libpng\src\pngwio.c" />
+    <ClCompile Include="libpng\src\pngwrite.c" />
+    <ClCompile Include="libpng\src\pngwtran.c" />
+    <ClCompile Include="libpng\src\pngwutil.c" />
+    <ClCompile Include="libzip\src\adler32.c" />
+    <ClCompile Include="libzip\src\compress.c" />
+    <ClCompile Include="libzip\src\crc32.c" />
+    <ClCompile Include="libzip\src\deflate.c" />
+    <ClCompile Include="libzip\src\gzio.c" />
+    <ClCompile Include="libzip\src\infback.c" />
+    <ClCompile Include="libzip\src\inffast.c" />
+    <ClCompile Include="libzip\src\inflate.c" />
+    <ClCompile Include="libzip\src\inftrees.c" />
+    <ClCompile Include="libzip\src\trees.c" />
+    <ClCompile Include="libzip\src\uncompr.c" />
+    <ClCompile Include="libzip\src\zutil.c" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="xui_kindctrl.cpp" />
+    <ClCompile Include="xui_propctrl_object.cpp" />
+    <ClCompile Include="xui_propctrl_simple.cpp" />
+    <ClCompile Include="xui_propctrl_stdvec.cpp" />
+    <ClCompile Include="xui_propctrl_expand.cpp" />
+    <ClCompile Include="xui_propctrl_rect2d.cpp" />
+    <ClCompile Include="xui_propctrl_slider.cpp" />
+    <ClCompile Include="xui_propctrl_vector.cpp" />
+    <ClCompile Include="xui_propedit.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_propedit_object.cpp" />
+    <ClCompile Include="xui_propedit_slider.cpp" />
+    <ClCompile Include="xui_propedit_stdvec.cpp" />
+    <ClCompile Include="xui_propkind.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_propctrl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_propdata.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_propplus.cpp" />
+    <ClCompile Include="xui_proproot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_propview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_timehead.cpp" />
+    <ClCompile Include="xui_timeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_timedata.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_timegrad.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_timer.cpp" />
+    <ClCompile Include="xui_timerect.cpp" />
+    <ClCompile Include="xui_timermgr.cpp" />
+    <ClCompile Include="xui_timetool.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_timeview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_action_ctrl.cpp" />
+    <ClCompile Include="xui_bitmap.cpp" />
+    <ClCompile Include="xui_bitmap_buffer.cpp" />
+    <ClCompile Include="xui_bitmap_format.cpp" />
+    <ClCompile Include="xui_border.cpp" />
+    <ClCompile Include="xui_button.cpp" />
+    <ClCompile Include="xui_caret.cpp" />
+    <ClCompile Include="xui_container.cpp" />
+    <ClCompile Include="xui_control.cpp" />
+    <ClCompile Include="xui_convas.cpp" />
+    <ClCompile Include="xui_desktop.cpp" />
+    <ClCompile Include="xui_drawer.cpp" />
+    <ClCompile Include="xui_dropbox.cpp" />
+    <ClCompile Include="xui_itemtag.cpp" />
+    <ClCompile Include="xui_family_create_win.cpp" />
+    <ClCompile Include="xui_family_bitmap.cpp" />
+    <ClCompile Include="xui_gridbox.cpp" />
+    <ClCompile Include="xui_linebox.cpp" />
+    <ClCompile Include="xui_listitem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_listview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_message.cpp" />
+    <ClCompile Include="xui_panel.cpp" />
+    <ClCompile Include="xui_componet.cpp" />
+    <ClCompile Include="xui_scroll.cpp" />
+    <ClCompile Include="xui_scrollthumb.cpp" />
+    <ClCompile Include="xui_scrollarrow.cpp" />
+    <ClCompile Include="xui_separate.cpp" />
+    <ClCompile Include="xui_slider.cpp" />
+    <ClCompile Include="xui_textbox.cpp" />
+    <ClCompile Include="xui_toggle.cpp" />
+    <ClCompile Include="xui_toolbar.cpp" />
+    <ClCompile Include="xui_treedata.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_treegrid.cpp" />
+    <ClCompile Include="xui_treenode.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_treeplus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_treeview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_window.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

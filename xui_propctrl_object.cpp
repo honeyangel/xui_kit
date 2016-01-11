@@ -1,0 +1,259 @@
+#include "xui_convas.h"
+#include "xui_button.h"
+#include "xui_desktop.h"
+#include "xui_propview.h"
+#include "xui_propctrl_object.h"
+
+//////////////////////////////////////////////////////////////////////////
+//propctrl_object
+//////////////////////////////////////////////////////////////////////////
+/*
+//create
+*/
+xui_method_explain(xui_propctrl_object, create,					xui_propctrl*	)( xui_propdata* propdata )
+{
+	return new xui_propctrl_object(propdata);
+}
+
+/*
+//constructor
+*/
+xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
+: xui_propctrl()
+{
+	m_type	   += "propctrlobject";
+	m_backcolor = xui_colour(0.0f);
+
+	xui_propdata_object* dataobject = (xui_propdata_object*)propdata;
+	xui_prop_geticon iconfunc = dataobject->get_iconfunc();
+	xui_bitmap* icon = (iconfunc == NULL) ? NULL : iconfunc(propdata);
+
+	xui_propedit_object* editobject = new xui_propedit_object(this, icon);
+	xui_drawer*  namectrl = editobject->get_namectrl();
+	xui_control* textctrl = editobject->get_editctrl();
+	xui_drawer*  pickctrl = editobject->get_pickctrl();
+	textctrl->xm_mouseclick		+= new xui_method_member<xui_method_mouse,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlclick);
+	textctrl->xm_mousedragenter += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragenter);
+	textctrl->xm_mousedragleave += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragleave);
+	textctrl->xm_mousedragover  += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragover);
+	textctrl->xm_mousedragdrop  += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragdrop);
+	xui_method_ptrcall(namectrl, set_parent)(this);
+	xui_method_ptrcall(textctrl, set_parent)(this);
+	xui_method_ptrcall(pickctrl, set_parent)(this);
+	m_widgetvec.push_back(namectrl);
+	m_widgetvec.push_back(textctrl);
+	m_widgetvec.push_back(pickctrl);
+
+	m_propedit = editobject;
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(xui_propctrl_object)( void )
+{
+	delete m_propedit;
+}
+
+/*
+//propdata
+*/
+xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
+{
+	m_propedit->reset();
+	xui_drawer* namectrl = m_propedit->get_namectrl();
+	namectrl->set_text(m_propdata->get_name());
+
+	bool same = true;
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	void* value = dataobject->get_value();
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+		if (data->get_value() != value)
+		{
+			same = false;
+			break;
+		}
+	}
+
+	xui_drawer* textctrl = (xui_drawer*)m_propedit->get_editctrl();
+	if (same)
+	{
+		if (dataobject->get_value())
+		{
+			xui_prop_getname namefunc = dataobject->get_namefunc();
+			if (namefunc)
+				textctrl->set_text(namefunc(dataobject));
+		}
+		else
+		{
+			//TODO
+			std::string type = dataobject->get_droptype();
+			textctrl->set_text(L"Type(None)");
+		}
+	}
+	else
+	{
+		textctrl->set_text(L"Multi-Value");
+	}
+}
+xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* sender )
+{
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_prop_newpick pickfunc = dataobject->get_pickfunc();
+	if (pickfunc)
+	{
+		xui_pickwnd* wnd = pickfunc(this);
+		wnd->set_value(dataobject->get_value());
+		wnd->set_modal(true);
+		g_desktop->add_child(wnd);
+	}
+}
+
+/*
+//override
+*/
+xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args& args )
+{
+	xui_propctrl::on_perform(args);
+
+	xui_propedit_object* editobject = (xui_propedit_object*)m_propedit;
+	xui_drawer*  namectrl = m_propedit->get_namectrl();
+	xui_control* textctrl = m_propedit->get_editctrl();
+	xui_drawer*  pickctrl = m_propedit->get_pickctrl();
+	xui_rect2d<s32> rt = get_renderrt();
+	xui_vector<s32> pt;
+	xui_vector<s32> sz;
+	//namectrl
+	s32 indent = get_indent();
+	pt.x = 0;
+	pt.y = 0;
+	sz.w = rt.get_sz().w/2;
+	sz.h = rt.get_sz().h;
+	namectrl->set_renderpt(pt, false);
+	namectrl->set_rendersz(sz, false);
+	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
+	//pickctrl
+	pt.x = rt.bx - pickctrl->get_renderw();
+	pt.y = rt.get_sz().h/2 - pickctrl->get_renderh()/2;
+	pickctrl->set_renderpt(pt, false);
+	//textctrl
+	pt.x = rt.get_sz().w/2;
+	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
+	sz.w = rt.get_sz().w/2 - pickctrl->get_renderw();
+	sz.h = textctrl->get_renderh();
+	textctrl->set_renderpt(pt, false);
+	textctrl->set_rendersz(sz, false);
+}
+
+/*
+//event
+*/
+xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_componet* sender, xui_method_mouse&	  args )
+{
+	bool same = true;
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	void* value = dataobject->get_value();
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+		if (data->get_value() != value)
+		{
+			same = false;
+			break;
+		}
+	}
+
+	if (same)
+	{
+		dataobject->xm_click(sender, args);
+	}
+}
+xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+{
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	if (dataobject->get_droptype() == args.type)
+	{
+		xui_control* textctrl = m_propedit->get_editctrl();
+		textctrl->set_backcolor(xui_colour(1.0f, 0.4f, 0.5f, 0.7f));
+		for (u32 i = 0; i < m_propdatavec.size(); ++i)
+		{
+			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			data->set_value(args.data);
+		}
+
+		on_linkpropdata();
+	}
+}
+xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+{
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	if (dataobject->get_droptype() == args.type)
+	{
+		xui_control* textctrl = m_propedit->get_editctrl();
+		textctrl->set_backcolor(xui_colour(0.0f));
+		for (u32 i = 0; i < m_propdatavec.size(); ++i)
+		{
+			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			data->old_value();
+		}
+
+		on_linkpropdata();
+	}
+}
+xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+{
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	if (dataobject->get_droptype() == args.type)
+	{
+		args.allow = true;
+	}
+}
+xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+{
+	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	if (dataobject->get_droptype() == args.type)
+	{
+		xui_control* textctrl = m_propedit->get_editctrl();
+		textctrl->set_backcolor(xui_colour(0.0f));
+		for (u32 i = 0; i < m_propdatavec.size(); ++i)
+		{
+			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			data->syn_value();
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//pickwnd
+//////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(xui_pickwnd)( xui_propctrl* propctrl )
+: xui_window("", xui_rect2d<s32>(0, 0, 200, 200))
+{
+	m_propctrl = propctrl;
+}
+
+/*
+//method
+*/
+xui_method_explain(xui_pickwnd, on_accept, void)( void )
+{
+	void* value = get_value();
+	xui_propdata_vec vec = m_propctrl->get_propdata();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		xui_propdata_object* data = (xui_propdata_object*)vec[i];
+		data->set_value(value);
+	}
+
+	m_propctrl->on_linkpropdata();
+	set_visible(false);
+}
+xui_method_explain(xui_pickwnd, on_cancel, void)( void )
+{
+	set_visible(false);
+}

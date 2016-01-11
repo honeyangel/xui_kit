@@ -1,0 +1,97 @@
+#ifndef __xui_header_h__
+#define __xui_header_h__
+
+typedef unsigned char   u08;
+typedef   signed char   s08;
+typedef unsigned short  u16;
+typedef   signed short  s16;
+typedef unsigned long   u32;
+typedef   signed long   s32;
+typedef          float  f32;
+typedef          double f64;
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <string>
+#include <vector>
+#include <list>
+#include <map>
+#include <sstream>
+#include <algorithm>
+
+#include "freeglut_std.h"
+
+#define xui_pi				3.1415926535897932f
+#define xui_pixel_align(x)	( (f32)(s32)(( x ) + (( x ) > 0.0f ? 0.5f : -0.5f)) )
+#define xui_min(a, b)		((a) < (b) ? (a) : (b))
+#define xui_max(a, b)		((a) > (b) ? (a) : (b))
+#define xui_abs(a)			((a) >  0  ? (a) :-(a))
+
+#define xui_create_explain(class_name)					 class_name::class_name
+#define xui_delete_explain(class_name)					 class_name::~class_name
+#define xui_method_explain(class_name, name, type)	type class_name::name
+
+#define xui_method_ptrcall(ptr, method)					 ptr->method
+#define xui_method_refcall(ref, method)					 ref.method
+#define xui_method_inscall(ins, method)
+
+#define xui_lstptr_addloop(type, name)	for(std::list<type*>::iterator itor = name.begin(); itor != name.end(); ++itor)
+#define xui_lstptr_delloop(type, name)	for(std::list<type*>::reverse_iterator itor = name.rbegin(); itor != name.rend(); ++itor)
+#define xui_vecptr_addloop(name)		for(u32 i = 0; i < name.size(); ++i)
+#define xui_vecptr_delloop(name)		for(s32 i = name.size()-1; i >= 0; --i)
+
+class   xui_colour;
+class   xui_bitmap;
+class   xui_bitmap_buffer;
+class   xui_family;
+class   xui_family_bitmap;
+class   xui_family_member;
+class   xui_family_create;
+class   xui_convas;
+class   xui_action_ctrl;
+class   xui_action_ctrl_move;
+
+class   xui_timer;
+class   xui_componet;
+class   xui_control;
+class   xui_drawer;
+class	xui_window;
+class   xui_button;
+class   xui_toggle;
+class   xui_textbox;
+class   xui_linebox;
+class   xui_gridbox;
+class   xui_toolbar;
+class	xui_slider;
+class	xui_scroll;
+class	xui_scrollarrow;
+class	xui_scrollthumb;
+class   xui_listitem;
+class   xui_listview;
+class   xui_treedata;
+class   xui_treeplus;
+class   xui_treenode;
+class   xui_treegrid;
+class   xui_treedata;
+class   xui_treeview;
+class   xui_itemtag;
+class   xui_dropbox;
+class   xui_timedata;
+class   xui_timetool;
+class   xui_timegrad;
+class   xui_timeview;
+class   xui_timeline;
+class   xui_timehead;
+class   xui_timerect;
+class   xui_propdata;
+class   xui_propkind;
+class   xui_proproot;
+class   xui_propedit;
+class   xui_propctrl;
+class   xui_kindctrl;
+class   xui_propplus;
+class   xui_propview;
+
+#endif//__xui_header_h__
