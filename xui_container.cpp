@@ -31,6 +31,14 @@ xui_delete_explain(xui_container)( void )
 /*
 //show
 */
+xui_method_explain(xui_container, get_vscroll,		xui_scroll*		)( void ) const
+{
+	return m_vscroll;
+}
+xui_method_explain(xui_container, get_hscroll,		xui_scroll*		)( void ) const
+{
+	return m_hscroll;
+}
 xui_method_explain(xui_container, was_vscrollshow,	bool			)( void ) const
 {
 	return m_vscrollshow;

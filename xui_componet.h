@@ -43,6 +43,8 @@ enum
 
 class xui_componet
 {
+	xui_declare_root(xui_componet)
+
 public:
 	friend class xui_desktop;
 

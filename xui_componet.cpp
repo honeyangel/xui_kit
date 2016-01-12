@@ -2,6 +2,8 @@
 #include "xui_desktop.h"
 #include "xui_componet.h"
 
+xui_implement_root(xui_componet);
+
 /*
 //constructor
 */

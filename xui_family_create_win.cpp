@@ -66,7 +66,7 @@ xui_method_explain(xui_family_create_win, get_bits, void*			)( const xui_family&
 
 	//draw char
 	SolidBrush brush(Color::White);
-	info->gdig->SetTextRenderingHint(TextRenderingHintAntiAlias);
+	info->gdig->SetTextRenderingHint(TextRenderingHintAntiAliasGridFit);
 	info->gdig->Clear(Color(0));
 	info->gdig->DrawString(
 		(LPWSTR)(&wc), 
@@ -86,8 +86,8 @@ xui_method_explain(xui_family_create_win, get_bits, void*			)( const xui_family&
 		StringFormat::GenericTypographic(), 
 		&rect);
 
-	info->size.w = (s32)rect.Width ; 
-	info->size.h = (s32)rect.Height;
+	info->size.w = (s32)ceilf(rect.Width ); 
+	info->size.h = (s32)ceilf(rect.Height);
 
 	//copy buffer
 	s32 w = info->size.w;

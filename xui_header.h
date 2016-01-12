@@ -94,4 +94,123 @@ class   xui_kindctrl;
 class   xui_propplus;
 class   xui_propview;
 
+/*
+//rtti
+*/
+class xui_rtti
+{
+public:
+	/* 
+	//constructor 
+	*/
+	xui_rtti( const char* name, const xui_rtti* base )
+	{
+		m_name = name;
+		m_base = base;
+	}
+	
+	/*
+	//method
+	*/
+	const char*				get_name		( void ) const	{ return m_name; }
+	const xui_rtti*			get_base		( void ) const	{ return m_base; }
+
+protected:
+	/*
+	//member
+	*/
+	const char*				m_name;
+	const xui_rtti*			m_base;
+};
+
+/* 
+//root class macro declare
+*/
+#define xui_declare_root(class_name)													\
+	public:																				\
+																						\
+	static	const xui_rtti	RTTI;														\
+    static  const xui_rtti* RTTIPTR	( void )       { return &RTTI; }					\
+	virtual const xui_rtti* get_rtti( void ) const { return &RTTI; }					\
+																						\
+	static	bool			equal	( const xui_rtti* rtti, const class_name* object )	\
+	{																					\
+		return object == NULL ? false : object->equal(rtti);							\
+	}																					\
+	bool					equal	( const xui_rtti* rtti ) const						\
+	{																					\
+		return get_rtti() == rtti;														\
+	}																					\
+	static	bool			issub	( const xui_rtti* rtti, const class_name* object )	\
+	{																					\
+		return object == NULL ? false : object->issub(rtti);							\
+	}																					\
+	bool					issub	( const xui_rtti* rtti ) const						\
+	{																					\
+		const xui_rtti* temp = get_rtti();												\
+		while (temp)																	\
+		{																				\
+			if (temp == rtti)															\
+				return true;															\
+																						\
+			temp = temp->get_base();													\
+		}																				\
+		return false;																	\
+	}																					\
+	static	class_name*		getas	( const xui_rtti* rtti, const class_name* object )	\
+	{																					\
+		return object == NULL ? NULL : object->getas(rtti);								\
+	}																					\
+	class_name*				getas	( const xui_rtti* rtti ) const						\
+	{																					\
+		return issub(rtti) ? (class_name*)this : NULL;									\
+	}																																				
+
+
+/* 
+//RTTI class macro declare 
+*/
+#define xui_declare_rtti																\
+	public:																				\
+	static	const xui_rtti	RTTI;														\
+    static  const xui_rtti* RTTIPTR	( void )											\
+	{																					\
+		return &RTTI;																	\
+	}																					\
+																						\
+	virtual const xui_rtti*	get_rtti( void ) const										\
+	{																					\
+		return &RTTI;																	\
+	}
+
+/*
+//RTTI class macro implement
+*/
+#define xui_implement_root(class_name)				const xui_rtti class_name::RTTI(#class_name, NULL)
+#define xui_implement_rtti(class_name, base_name)	const xui_rtti class_name::RTTI(#class_name, &base_name::RTTI)
+
+/*
+//RTTI macro
+*/
+#define xui_equal_kindof(class_name, object)               class_name::equal(&class_name::RTTI, object)
+#define xui_issub_kindof(class_name, object)               class_name::issub(&class_name::RTTI, object)
+#define xui_dynamic_cast(class_name, object) ((class_name*)class_name::getas(&class_name::RTTI, object))
+
+/* 
+//Instance 
+*/
+#define xui_declare_instance(class_name)												\
+	public:																				\
+	static void			init		( void );											\
+	static void			done		( void );											\
+	static class_name*	get_instance( void )											\
+	{																					\
+		return INSTANCE;																\
+	}																					\
+																						\
+	protected:																			\
+	static class_name*	INSTANCE;
+
+#define xui_implement_instance(class_name)	class_name* class_name::INSTANCE = NULL;
+
 #endif//__xui_header_h__

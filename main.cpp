@@ -266,6 +266,7 @@ void MouseMove(int x, int y)
 
 void Resize(int w, int h)
 {
+	h -= 8;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glEnable(GL_LINE_SMOOTH);
@@ -349,6 +350,7 @@ int main(int argc, char** argv)
 	glutSpecialUpFunc(SpecialUpFunc);
 	glutIdleFunc(Idle);
 	glEnable(GL_BLEND);
+	glutReshapeWindow(800, 600);
 	//glEnable(GL_POINT_SMOOTH);
 	//glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	//glEnable(GL_LINE_SMOOTH);

@@ -1,5 +1,7 @@
 #include "xui_convas.h"
+#include "xui_scroll.h"
 #include "xui_drawer.h"
+#include "xui_desktop.h"
 #include "xui_propplus.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
@@ -260,6 +262,7 @@ xui_method_explain(xui_propctrl_stdvec, add_propctrl,			void			)( xui_propdata* 
 		xui_prop_newctrl func	 = propdata->get_func();
 		propctrl = (*func)(propdata);
 		xui_drawer* sortctrl	 = new xui_drawer("", xui_rect2d<s32>(0, 0, 16, 16));
+		sortctrl->xm_updateself += new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlupdateself);
 		sortctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlrenderself);
 		sortctrl->xm_topdraw	+= new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrltopdraw);
 		sortctrl->xm_mousedown	+= new xui_method_member<xui_method_mouse, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmousedown);
@@ -309,6 +312,33 @@ xui_method_explain(xui_propctrl_stdvec, get_propdataall,		xui_propdata_vec)( u32
 /*
 //event
 */
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_componet* sender, xui_method_args&  args )
+{
+	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	if (catchctrl == sender)
+	{
+		xui_propview* propview = get_propview();
+		xui_rect2d<s32> rt = propview->get_renderrtins() + propview->get_screenpt();
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
+
+		s32 scroll_value =  0;
+		if (pt.y < rt.ay && pt.y < rt.ay+xui_propview::LINE_HEIGHT/2)
+			scroll_value = -5;
+		if (pt.y < rt.by && pt.y > rt.by-xui_propview::LINE_HEIGHT/2)
+			scroll_value =  5;
+
+		xui_scroll* vscroll = propview->get_vscroll();
+		if (scroll_value != 0 && vscroll)
+		{
+			vscroll->set_value(vscroll->get_value()+scroll_value);
+
+			xui_method_mouse args;
+			args.mouse = MB_L;
+			args.point = pt;
+			g_desktop->os_mousemove(args);
+		}
+	}
+}
 xui_method_explain(xui_propctrl_stdvec, on_sortctrlrenderself,	void			)( xui_componet* sender, xui_method_args&  args )
 {
 	xui_rect2d<s32> rt = sender->get_renderrtabs();

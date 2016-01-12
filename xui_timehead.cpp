@@ -35,6 +35,9 @@ xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 		xui_keyframe_map allframe = timeview->get_allframe();
 		if (allframe.find(frame) != allframe.end() && inner < 5)
 		{
+			timeview->set_dragtime(frame);
+			timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
+
 			xui_keyframe_map::iterator itor = allframe.find(frame);
 			if (timeview->was_selectedall((*itor).second, (*itor).first) == false)
 			{
@@ -42,8 +45,6 @@ xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 					timeview->non_selectedline();
 
 				timeview->set_selectedline(frame, frame, true);
-				timeview->set_dragtime(frame);
-				timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
 			}
 			else
 			if (args.ctrl)

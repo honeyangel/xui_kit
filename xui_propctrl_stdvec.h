@@ -51,6 +51,7 @@ protected:
 	/*
 	//event
 	*/
+	void					on_sortctrlupdateself	( xui_componet* sender, xui_method_args&  args );
 	void					on_sortctrlrenderself	( xui_componet* sender, xui_method_args&  args );
 	void					on_sortctrltopdraw		( xui_componet* sender, xui_method_args&  args );
 	void					on_sortctrlmousedown	( xui_componet* sender, xui_method_mouse& args );

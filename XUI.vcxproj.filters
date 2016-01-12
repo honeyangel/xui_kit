@@ -360,6 +360,12 @@
     <ClInclude Include="xui_propctrl_simple.h">
       <Filter>LibGUI\propview\ctrl</Filter>
     </ClInclude>
+    <ClInclude Include="xui_system.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_config.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -641,6 +647,12 @@
     </ClCompile>
     <ClCompile Include="xui_propctrl_simple.cpp">
       <Filter>LibGUI\propview\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_system.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_config.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

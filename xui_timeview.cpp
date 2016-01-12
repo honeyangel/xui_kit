@@ -46,12 +46,6 @@ xui_create_explain(xui_timeview)( const std::string& name, const xui_rect2d<s32>
 	xui_method_ptrcall(m_timegrad, set_parent		)(this);
 	xui_method_ptrcall(m_timegrad, set_backcolor	)(xui_colour(0.0f));
 	m_widgetvec.push_back(m_timegrad);
-	m_timehead = new xui_timehead();
-	m_timehead->xm_updateself	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
-	m_timehead->xm_updateself	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
-	xui_method_ptrcall(m_timehead, set_parent		)(this);
-	xui_method_ptrcall(m_timehead, set_backcolor	)(xui_colour(0.0f));
-	m_widgetvec.push_back(m_timehead);
 	m_timerect = new xui_timerect();
 	m_timerect->xm_updateself	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timerectdraghorz);
 	xui_method_ptrcall(m_timerect, set_parent		)(this);
@@ -59,6 +53,12 @@ xui_create_explain(xui_timeview)( const std::string& name, const xui_rect2d<s32>
 	xui_method_ptrcall(m_timerect, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_timerect, set_sidecolor	)(xui_colour(1.0f, 0.0f, 0.9f, 0.9f));
 	m_widgetvec.push_back(m_timerect);
+	m_timehead = new xui_timehead();
+	m_timehead->xm_updateself	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
+	m_timehead->xm_updateself	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
+	xui_method_ptrcall(m_timehead, set_parent		)(this);
+	xui_method_ptrcall(m_timehead, set_backcolor	)(xui_colour(0.0f));
+	m_widgetvec.push_back(m_timehead);
 	m_spaceset = new xui_slider("", xui_rect2d<s32>(0, 0, 150, 10), FLOWSTYLE_H);
 	m_spaceset->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_spacesetscroll);
 	xui_method_ptrcall(m_spaceset, set_backcolor	)(xui_colour(0.0f));
@@ -673,55 +673,22 @@ xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componet
 	if (catchctrl == sender)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		if (g_desktop->get_mousecurr().x < rt.ax)
-		{
-			if (m_hscroll)
-				m_hscroll->set_value(m_hscroll->get_value()-2);
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
 
-			xui_control* ctrl = (xui_control*)sender;
-			s32 frame = (ctrl->get_scrollx()/m_keyspace) + ((ctrl->get_scrollx()%m_keyspace > 0) ? 1 : 0);
-			if (m_dragmode == TIMEDRAG_NONE)
-			{
-				set_curframe(frame);
-				if (m_timerect->was_visible())
-				{
-					xui_rect2d<s32> range = m_timerect->get_range();
-					m_timerect->set_range(
-						range.ay,
-						range.by,
-						xui_min(frame, range.ax),
-						range.bx);
-				}
-			}
-			else
-			{
-				set_droptime(frame);
-			}
-		}
-		if (g_desktop->get_mousecurr().x > rt.bx)
-		{
-			if (m_hscroll)
-				m_hscroll->set_value(m_hscroll->get_value()+2);
+		s32 scroll_value =  0;
+		if (pt.x > rt.ax && pt.x < rt.ax+10)
+			scroll_value = -2;
+		if (pt.x < rt.bx && pt.x > rt.bx-10)
+			scroll_value =  2;
 
-			xui_control* ctrl = (xui_control*)sender;
-			s32 frame = (ctrl->get_scrollx()-ctrl->get_borderrt().ax+rt.get_sz().w)/m_keyspace;
-			if (m_dragmode == TIMEDRAG_NONE)
-			{
-				set_curframe(frame);
-				if (m_timerect->was_visible())
-				{
-					xui_rect2d<s32> range = m_timerect->get_range();
-					m_timerect->set_range(
-						range.ay,
-						range.by,
-						range.ax,
-						xui_max(frame, range.bx));
-				}
-			}
-			else
-			{
-				set_droptime(frame);
-			}
+		if (m_hscroll && scroll_value != 0)
+		{
+			m_hscroll->set_value(m_hscroll->get_value()+scroll_value);
+
+			xui_method_mouse args;
+			args.mouse = MB_L;
+			args.point = pt;
+			g_desktop->os_mousemove(args);
 		}
 	}
 }
@@ -731,15 +698,22 @@ xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componet
 	if (catchctrl == sender)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		if (g_desktop->get_mousecurr().y < rt.ay)
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
+
+		s32 scroll_value =  0;
+		if (pt.y > rt.ay && pt.y < rt.ay+10)
+			scroll_value = -2;
+		if (pt.y < rt.by && pt.y > rt.by-10)
+			scroll_value =  2;
+
+		if (m_vscroll && scroll_value != 0)
 		{
-			if (m_vscroll)
-				m_vscroll->set_value(m_vscroll->get_value()-2);
-		}
-		if (g_desktop->get_mousecurr().y > rt.by)
-		{
-			if (m_vscroll)
-				m_vscroll->set_value(m_vscroll->get_value()+2);
+			m_vscroll->set_value(m_vscroll->get_value()+scroll_value);
+
+			xui_method_mouse args;
+			args.mouse = MB_L;
+			args.point = pt;
+			g_desktop->os_mousemove(args);
 		}
 	}
 }
@@ -749,25 +723,22 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componet
 	if (catchctrl == m_timerect)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		if (g_desktop->get_mousecurr().x < rt.ax)
-		{
-			if (m_hscroll)
-				m_hscroll->set_value(m_hscroll->get_value()-2);
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
 
-			xui_control* ctrl = (xui_control*)sender;
-			s32 frame = (ctrl->get_scrollx()/m_keyspace) + ((ctrl->get_scrollx()%m_keyspace > 0) ? 1 : 0);
-			set_droptime(frame);
-			m_timerect->set_rangemove(m_droptime-m_dragtime);
-		}
-		if (g_desktop->get_mousecurr().x > rt.bx)
-		{
-			if (m_hscroll)
-				m_hscroll->set_value(m_hscroll->get_value()+2);
+		s32 scroll_value =  0;
+		if (pt.x > rt.ax && pt.x < rt.ax+10)
+			scroll_value = -2;
+		if (pt.x < rt.bx && pt.x > rt.bx-10)
+			scroll_value =  2;
 
-			xui_control* ctrl = (xui_control*)sender;
-			s32 frame = (ctrl->get_scrollx()-ctrl->get_borderrt().ax+rt.get_sz().w)/m_keyspace;
-			set_droptime(frame);
-			m_timerect->set_rangemove(m_droptime-m_dragtime);
+		if (m_hscroll && scroll_value != 0)
+		{
+			m_hscroll->set_value(m_hscroll->get_value()+scroll_value);
+
+			xui_method_mouse args;
+			args.mouse = MB_L;
+			args.point = pt;
+			g_desktop->os_mousemove(args);
 		}
 	}
 }

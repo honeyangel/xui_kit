@@ -151,6 +151,9 @@ xui_method_explain(xui_timeline, on_mousedown,		void						)( xui_method_mouse& a
 		s32 inner = xui_abs(m_downrela.x - frame*timeview->get_keyspace());
 		if (m_linkdata->has_keyframe(frame) && inner < 5)
 		{
+			timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
+			timeview->set_dragtime(frame);
+
 			std::vector<s32>::iterator itor = std::find(
 				m_selframe.begin(), 
 				m_selframe.end(), 
@@ -162,8 +165,6 @@ xui_method_explain(xui_timeline, on_mousedown,		void						)( xui_method_mouse& a
 					timeview->non_selectedline();
 
 				m_selframe.push_back(frame);
-				timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
-				timeview->set_dragtime(frame);
 
 				xui_method_args other_args;
 				timeview->xm_selectedchange(timeview, other_args);

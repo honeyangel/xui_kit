@@ -19,6 +19,8 @@ public:
 	/*
 	//show
 	*/
+	xui_scroll*					get_vscroll		( void ) const;
+	xui_scroll*					get_hscroll		( void ) const;
 	bool						was_vscrollshow	( void ) const;
 	void						set_vscrollshow	( bool flag );
 	bool						was_hscrollshow	( void ) const;

@@ -643,18 +643,25 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 {
 	xui_container::on_updateself(args);
 	xui_componet* catchctrl = g_desktop->get_catchctrl();
-	if (catchctrl && catchctrl->get_parent() == this && catchctrl->get_type().find("treenode") != -1)
+	if (catchctrl == this)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		if (g_desktop->get_mousecurr().y < rt.ay)
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
+
+		s32 scroll_value =  0;
+		if (pt.y < rt.ay && pt.y < rt.ay+m_lineheight/2)
+			scroll_value = -5;
+		if (pt.y < rt.by && pt.y > rt.by-m_lineheight/2)
+			scroll_value =  5;
+
+		if (m_vscroll && scroll_value != 0)
 		{
-			if (m_vscroll)
-				m_vscroll->set_value(m_vscroll->get_value()-5);
-		}
-		if (g_desktop->get_mousecurr().y > rt.by)
-		{
-			if (m_vscroll)
-				m_vscroll->set_value(m_vscroll->get_value()+5);
+			m_vscroll->set_value(m_vscroll->get_value()+scroll_value);
+
+			xui_method_mouse args;
+			args.mouse = MB_L;
+			args.point = pt;
+			g_desktop->os_mousemove(args);
 		}
 	}
 }

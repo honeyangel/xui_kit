@@ -1,3 +1,4 @@
+#include "xui_system.h"
 #include "xui_convas.h"
 #include "xui_button.h"
 #include "xui_desktop.h"
@@ -88,9 +89,10 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		}
 		else
 		{
-			//TODO
-			std::string type = dataobject->get_droptype();
-			textctrl->set_text(L"Type(None)");
+			std::wstring text;
+			text += L"None ";
+			text += xui_system::utf8_to_unicode(dataobject->get_droptype());
+			textctrl->set_text(text);
 		}
 	}
 	else
