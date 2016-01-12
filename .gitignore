@@ -1,0 +1,10 @@
+/Debug/*.obj
+/Debug/*.tlog
+/Debug/*.ilk
+/Debug/*.log
+/Debug/*.pdb
+/Debug/*.idb
+/*.suo
+/*.sdf
+/*.opensdf
+/Debug/*.lastbuildstate
