@@ -1,7 +1,7 @@
 #ifndef __xui_control_h__
 #define __xui_control_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
 enum
 {
@@ -16,7 +16,7 @@ enum
 	FLOWSTYLE_V,
 };
 
-class xui_control : public xui_componet
+class xui_control : public xui_component
 {
 public:
 	/*
@@ -73,15 +73,15 @@ public:
 	xui_rect2d<s32>					get_clientrt		( void ) const;
 	virtual xui_vector<s32>			get_screenpt		( void ) const;
 	virtual xui_rect2d<s32>			get_cornerrt		( void ) const;
-	virtual xui_rect2d<s32>			get_cornerrt		( xui_componet* widget ) const;
+	virtual xui_rect2d<s32>			get_cornerrt		( xui_component* widget ) const;
 	//virtual xui_rect2d<s32>			get_clientrtins		( void ) const;
 	virtual xui_rect2d<s32>			get_renderrtins		( void ) const;
 
 	/*
 	//choose
 	*/
-	virtual xui_componet*			choose				( const xui_vector<s32>& pt );
-	virtual xui_componet*			choose_else			( const xui_vector<s32>& pt );
+	virtual xui_component*			choose				( const xui_vector<s32>& pt );
+	virtual xui_component*			choose_else			( const xui_vector<s32>& pt );
 
 	/*
 	//update & render
@@ -116,7 +116,7 @@ protected:
 	s32								m_corner;
 	u08								m_sidestyle;
 	xui_colour						m_sidecolor;
-	std::vector<xui_componet*>		m_widgetvec;
+	std::vector<xui_component*>		m_widgetvec;
 };
 
 #endif//__xui_control_h__

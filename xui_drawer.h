@@ -2,6 +2,7 @@
 #define __xui_drawer_h__
 
 #include "xui_family.h"
+#include "xui_family_render.h"
 #include "xui_control.h"
 
 enum
@@ -107,7 +108,7 @@ protected:
 	xui_family					m_font;
 	std::wstring				m_text;
 	xui_bitmap*					m_icon;
-	xui_colour					m_textcolor;
+	xui_family_render			m_textdraw;
 	u08							m_textalign;
 	u08							m_iconalign;
 	xui_vector<s32>				m_textoffset;

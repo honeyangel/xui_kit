@@ -6,7 +6,7 @@
 //constructor
 */
 xui_create_explain(xui_separate)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_componet(name, rect)
+: xui_component(name, rect)
 {
 	m_type   += "separate";
 }

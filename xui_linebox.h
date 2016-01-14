@@ -22,9 +22,9 @@ public:
 	/*
 	//ctrl
 	*/
-	void					add_linectrl		( xui_componet* componet );
-	void					del_linectrl		( xui_componet* componet );
-	virtual xui_rect2d<s32>	get_cornerrt		( xui_componet* componet ) const;
+	void					add_linectrl		( xui_component* componet );
+	void					del_linectrl		( xui_component* componet );
+	virtual xui_rect2d<s32>	get_cornerrt		( xui_component* componet ) const;
 
 protected:
 	/*
@@ -57,7 +57,7 @@ protected:
 //	virtual xui_rect2d<s32>	get_cornerrt( void ) const
 //	{
 //		xui_linebox* linebox = (xui_linebox*)m_parent;
-//		return linebox->get_linectrlcorner((xui_componet*)this);
+//		return linebox->get_linectrlcorner((xui_component*)this);
 //	}
 //};
 //
@@ -79,7 +79,7 @@ protected:
 //	virtual xui_rect2d<s32>	get_cornerrt( void ) const
 //	{
 //		xui_linebox* linebox = (xui_linebox*)m_parent;
-//		return linebox->get_linectrlcorner((xui_componet*)this);
+//		return linebox->get_linectrlcorner((xui_component*)this);
 //	}
 //};
 //
@@ -101,7 +101,7 @@ protected:
 //	virtual xui_rect2d<s32>	get_cornerrt( void ) const
 //	{
 //		xui_linebox* linebox = (xui_linebox*)m_parent;
-//		return linebox->get_linectrlcorner((xui_componet*)this);
+//		return linebox->get_linectrlcorner((xui_component*)this);
 //	}
 //};
 

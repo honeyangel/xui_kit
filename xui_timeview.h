@@ -33,7 +33,7 @@ public:
 	/*
 	//property
 	*/
-	void						add_toolitem			( xui_componet*       item );
+	void						add_toolitem			( xui_component*       item );
 	void						set_headtext			( const std::wstring& text );
 	void						set_gradfont			( const xui_family&   font );
 	void						set_gradtextcolor		( const xui_colour&   textcolor );
@@ -62,7 +62,7 @@ public:
 	/*
 	//rect
 	*/
-	bool						was_rectmove			( xui_componet* layer, s32 frame );
+	bool						was_rectmove			( xui_component* layer, s32 frame );
 	void						set_rectshow			( s32 startlayer, s32 finallayer, s32 startframe, s32 finalframe );
 	void						set_rectrise			( void );
 
@@ -94,7 +94,7 @@ public:
 	/*
 	//virtual
 	*/
-	virtual xui_componet*		choose_else				( const xui_vector<s32>& pt );
+	virtual xui_component*		choose_else				( const xui_vector<s32>& pt );
 	virtual void				update_else				( f32 delta );
 	virtual void				render_else				( void );
 
@@ -124,12 +124,12 @@ protected:
 	/*
 	//event
 	*/
-	void						on_timetreesetclientsz	( xui_componet* sender, xui_method_args& args );
-	void						on_timetreeinvalid		( xui_componet* sender, xui_method_args& args );
-	void						on_timeviewdraghorz		( xui_componet* sender, xui_method_args& args );
-	void						on_timeviewdragvert		( xui_componet* sender, xui_method_args& args );
-	void						on_timerectdraghorz		( xui_componet* sender, xui_method_args& args );
-	void						on_spacesetscroll		( xui_componet* sender, xui_method_args& args );
+	void						on_timetreesetclientsz	( xui_component* sender, xui_method_args& args );
+	void						on_timetreeinvalid		( xui_component* sender, xui_method_args& args );
+	void						on_timeviewdraghorz		( xui_component* sender, xui_method_args& args );
+	void						on_timeviewdragvert		( xui_component* sender, xui_method_args& args );
+	void						on_timerectdraghorz		( xui_component* sender, xui_method_args& args );
+	void						on_spacesetscroll		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member

@@ -134,7 +134,7 @@ xui_method_explain(xui_toggle, get_rendertextrt,	xui_rect2d<s32>	)( void ) const
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		rt.oft_x(rt.get_sz().w);
-		rt = g_convas->calc_rect(
+		rt = g_convas->calc_draw(
 			text, 
 			m_font, 
 			rt,

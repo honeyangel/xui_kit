@@ -1,9 +1,9 @@
 #ifndef __xui_separate_h__
 #define __xui_separate_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
-class xui_separate : public xui_componet
+class xui_separate : public xui_component
 {
 public:
 	/*

@@ -7,7 +7,7 @@ template<typename T>
 class xui_method_slot
 {
 public:
-	virtual void operator () ( xui_componet* sender, T& args ){};
+	virtual void operator () ( xui_component* sender, T& args ){};
 };
 
 template<typename T>
@@ -18,7 +18,7 @@ public:
 	//typedef
 	*/
 	typedef void (*static_func)
-		( xui_componet* sender, T& args );
+		( xui_component* sender, T& args );
 
 	/*
 	//constructor
@@ -30,7 +30,7 @@ public:
 	/*
 	//operator
 	*/
-	virtual void operator () ( xui_componet* sender, T& args )
+	virtual void operator () ( xui_component* sender, T& args )
 	{
 		(*m_func)(sender, args);
 	}
@@ -57,7 +57,7 @@ public:
 	//typedef
 	*/
 	typedef void (C::*member_func)
-		( xui_componet* sender, T& args );
+		( xui_component* sender, T& args );
 
 	/*
 	//constructor
@@ -70,7 +70,7 @@ public:
 	/*
 	//operator
 	*/
-	virtual void operator () ( xui_componet* sender, T& args )
+	virtual void operator () ( xui_component* sender, T& args )
 	{
 		(m_user->*m_func)(sender, args);
 	}

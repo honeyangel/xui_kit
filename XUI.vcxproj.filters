@@ -31,9 +31,6 @@
     <Filter Include="Method">
       <UniqueIdentifier>{ffecd80c-d5a0-41d4-85a3-b2df1ee23818}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LibGUI\componet">
-      <UniqueIdentifier>{2ed3bd4d-637c-4c8e-a214-6c59df419a1a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LibGUI\control">
       <UniqueIdentifier>{290462b1-8ed7-43d3-8e40-75bb07b9e918}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,9 @@
     </Filter>
     <Filter Include="LibGUI\propview\edit">
       <UniqueIdentifier>{f94bc1f1-30ba-448b-9d09-4e0ba261a74a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\component">
+      <UniqueIdentifier>{2ed3bd4d-637c-4c8e-a214-6c59df419a1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +200,6 @@
     </ClInclude>
     <ClInclude Include="xui_method_slot.h">
       <Filter>Method</Filter>
-    </ClInclude>
-    <ClInclude Include="xui_componet.h">
-      <Filter>LibGUI\componet</Filter>
     </ClInclude>
     <ClInclude Include="xui_control.h">
       <Filter>LibGUI\control</Filter>
@@ -366,6 +363,12 @@
     <ClInclude Include="xui_config.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="xui_family_render.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_component.h">
+      <Filter>LibGUI\component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -488,9 +491,6 @@
     </ClCompile>
     <ClCompile Include="xui_message.cpp">
       <Filter>LibGUI\desktop</Filter>
-    </ClCompile>
-    <ClCompile Include="xui_componet.cpp">
-      <Filter>LibGUI\componet</Filter>
     </ClCompile>
     <ClCompile Include="xui_control.cpp">
       <Filter>LibGUI\control</Filter>
@@ -653,6 +653,9 @@
     </ClCompile>
     <ClCompile Include="xui_config.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_component.cpp">
+      <Filter>LibGUI\component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -35,7 +35,7 @@ xui_method_explain(xui_listitem, get_maxwidth,		s32					)( void )
 	s32 width = m_border.ax + m_border.bx;
 	if (m_text.length() > 0)
 	{
-		width += g_convas->calc_size(m_text, m_font, xui_rect2d<s32>(0), true).w;
+		width += g_convas->calc_size(m_text, m_font, 0, true).w;
 		width += xui_abs(m_textoffset.x);
 	}
 	if (m_icon)

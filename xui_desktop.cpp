@@ -35,17 +35,17 @@ xui_delete_explain(xui_desktop)( void )
 /*
 //ctrl
 */
-xui_method_explain(xui_desktop, get_catchctrl,	xui_componet*			)( void )
+xui_method_explain(xui_desktop, get_catchctrl,	xui_component*			)( void )
 {
 	return m_catchctrl;
 }
 
-xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_componet* componet )
+xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* componet )
 {
 	if (m_catchctrl != componet)
 	{
-		xui_componet* last = m_catchctrl;
-		xui_componet* curr = componet;
+		xui_component* last = m_catchctrl;
+		xui_component* curr = componet;
 
 		m_catchctrl  = curr;
 
@@ -69,17 +69,17 @@ xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_componet* compone
 	}
 }
 
-xui_method_explain(xui_desktop, get_focusctrl,	xui_componet*			)( void )
+xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
 {
 	return m_focusctrl;
 }
 
-xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_componet* componet )
+xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* componet )
 {
 	if (m_focusctrl != componet)
 	{
-		xui_componet* last = m_focusctrl;
-		xui_componet* curr = componet;
+		xui_component* last = m_focusctrl;
+		xui_component* curr = componet;
 
 		m_focusctrl  = curr;
 
@@ -103,17 +103,17 @@ xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_componet* compone
 	}
 }
 
-xui_method_explain(xui_desktop, get_hoverctrl,	xui_componet*			)( void )
+xui_method_explain(xui_desktop, get_hoverctrl,	xui_component*			)( void )
 {
 	return m_hoverctrl;
 }
 
-xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_componet* componet )
+xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* componet )
 {
 	if (m_hoverctrl != componet)
 	{
-		xui_componet* last = m_hoverctrl;
-		xui_componet* curr = componet;
+		xui_component* last = m_hoverctrl;
+		xui_component* curr = componet;
 
 		m_hoverctrl  = curr;
 
@@ -156,11 +156,11 @@ xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_componet* compone
 		}
 	}
 }
-xui_method_explain(xui_desktop, get_floatctrl,	xui_componet*			)( void )
+xui_method_explain(xui_desktop, get_floatctrl,	xui_component*			)( void )
 {
 	return m_floatctrl;
 }
-xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_componet* componet )
+xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_component* componet )
 {
 	m_floatctrl = componet;
 }
@@ -225,7 +225,7 @@ xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 /*
 //message
 */
-xui_method_explain(xui_desktop, move_recycle,	void					)( xui_componet* componet )
+xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* componet )
 {
 	if (m_catchctrl)
 	{
@@ -374,7 +374,7 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 {
 	m_mousedown = args.point;
 
-	xui_componet* componet = NULL;
+	xui_component* componet = NULL;
 
 	if (m_floatctrl)
 		componet = m_floatctrl->choose(args.point);
@@ -426,7 +426,7 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	m_mouselast = m_mousecurr;
 	m_mousecurr = args.point;
 
-	xui_componet* componet = NULL;
+	xui_component* componet = NULL;
 
 	if (m_floatctrl)
 		componet = m_floatctrl->choose(args.point);
@@ -520,7 +520,7 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 {
 	xui_panel::on_addchild(args);
 
-	xui_componet* componet = (xui_componet*)(args.wparam);
+	xui_component* componet = (xui_component*)(args.wparam);
 	if (componet)
 	{
 		xui_window* window = (xui_window*)componet;
@@ -533,7 +533,7 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 {
 	xui_panel::on_delchild(args);
 
-	xui_componet* componet = (xui_componet*)(args.wparam);
+	xui_component* componet = (xui_component*)(args.wparam);
 	if (componet)
 	{
 		xui_window* window = (xui_window*)componet;

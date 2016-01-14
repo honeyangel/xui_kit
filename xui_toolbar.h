@@ -22,8 +22,8 @@ public:
 	/*
 	//item
 	*/
-	void			add_item	( xui_componet* componet );
-	void			del_item	( xui_componet* componet );
+	void			add_item	( xui_component* componet );
+	void			del_item	( xui_component* componet );
 
 protected:
 	/*

@@ -118,7 +118,7 @@ protected:
 	/*
 	//member
 	*/
-	xui_colour					m_hintgray;
+	xui_family_render			m_hintdraw;
 	std::wstring				m_hinttext;
 	bool						m_password;
 	bool						m_readonly;

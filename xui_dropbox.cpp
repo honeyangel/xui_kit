@@ -176,7 +176,7 @@ xui_method_explain(xui_dropbox, get_renderrtins,		xui_rect2d<s32>	)( void ) cons
 }
 xui_method_explain(xui_dropbox, get_rendercolor,		xui_colour		)( void ) const
 {
-	xui_componet* hoverctrl = g_desktop->get_hoverctrl();
+	xui_component* hoverctrl = g_desktop->get_hoverctrl();
 	if (m_readonly && hoverctrl)
 	{
 		if (hoverctrl == this || hoverctrl == m_droptog || m_droplst->was_visible())
@@ -245,7 +245,7 @@ xui_method_explain(xui_dropbox, on_mousedown,			void			)( xui_method_mouse& args
 xui_method_explain(xui_dropbox, on_nonfocus,			void			)( xui_method_args&  args )
 {
 	xui_textbox::on_nonfocus(args);
-	xui_componet* focusctrl = (xui_componet*)args.wparam;
+	xui_component* focusctrl = (xui_component*)args.wparam;
 	if (focusctrl == NULL || (focusctrl->was_ancestor(this) == false && focusctrl->was_ancestor(m_droplst)))
 	{
 		set_droplisthide();
@@ -271,7 +271,7 @@ xui_method_explain(xui_dropbox, on_textchanged,			void			)( xui_method_args&  ar
 /*
 //event
 */
-xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_droptog->was_check())
 	{
@@ -282,9 +282,9 @@ xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_componet* sen
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_droptogrenderself,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_dropbox, on_droptogrenderself,	void			)( xui_component* sender, xui_method_args&  args )
 {
-	xui_componet* hoverctrl = g_desktop->get_hoverctrl();
+	xui_component* hoverctrl = g_desktop->get_hoverctrl();
 
 	xui_colour color;
 	if		(m_droptog->was_check())			color = xui_colour(1.0f);
@@ -299,7 +299,7 @@ xui_method_explain(xui_dropbox, on_droptogrenderself,	void			)( xui_componet* se
 	poly[2] = xui_vector<s32>(rt.ax +  rt.get_sz().w    /2, rt.by - (rt.get_sz().h-6)/2);
 	g_convas->fill_poly(poly, 3, color * get_vertexcolor());
 }
-xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	std::vector<xui_listitem*> items = m_droplst->get_selecteditem();
 	if (items.size() > 0)
@@ -307,29 +307,29 @@ xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_componet* sen
 		set_selecteditem((xui_itemtag*)items[0]->get_data());
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallnonfocus,		void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_dropbox, on_dropallnonfocus,		void			)( xui_component* sender, xui_method_args&  args )
 {
-	xui_componet* focusctrl = (xui_componet*)args.wparam;
+	xui_component* focusctrl = (xui_component*)args.wparam;
 	if (focusctrl == NULL || (focusctrl->was_ancestor(this) == false && focusctrl->was_ancestor(m_droplst) == false))
 	{
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallkeybddown,	void			)( xui_componet* sender, xui_method_keybd& args )
+xui_method_explain(xui_dropbox, on_dropallkeybddown,	void			)( xui_component* sender, xui_method_keybd& args )
 {
 	if (args.kcode == KEY_ENTER)
 	{
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallmousedown,	void			)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_dropbox, on_dropallmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	if (args.mouse == MB_L)
 	{
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_vector<s32> sz = m_droplst->get_clientsz();
 	if (m_maxdrop < m_droplst->get_itemcount())
@@ -339,7 +339,7 @@ xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_componet* s
 
 	m_droplst->set_rendersz(sz);
 }
-xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_vector<s32> sz = m_droplst->get_rendersz();
 	xui_vector<s32> pt;

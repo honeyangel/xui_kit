@@ -41,9 +41,9 @@ enum
 	CURSOR_MOVE,
 };
 
-class xui_componet
+class xui_component
 {
-	xui_declare_root(xui_componet)
+	xui_declare_root(xui_component)
 
 public:
 	friend class xui_desktop;
@@ -51,12 +51,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_componet( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_component( const std::string& name, const xui_rect2d<s32>& rect );
 
 	/*
 	//destructor
 	*/
-	virtual ~xui_componet( void );
+	virtual ~xui_component( void );
 
 	/*
 	//type
@@ -84,10 +84,10 @@ public:
 	/* 
 	//parent 
 	*/
-	xui_componet*					get_parent			( void );
-	void							set_parent			( xui_componet* componet );
-	bool							was_parent			( xui_componet* componet ) const;	
-	bool							was_ancestor		( xui_componet* componet ) const;
+	xui_component*					get_parent			( void );
+	void							set_parent			( xui_component* componet );
+	bool							was_parent			( xui_component* componet ) const;	
+	bool							was_ancestor		( xui_component* componet ) const;
 
 	/*
 	//window
@@ -189,7 +189,7 @@ public:
 	/*
 	//choose
 	*/
-	virtual xui_componet*			choose				( const xui_vector<s32>& pt );
+	virtual xui_component*			choose				( const xui_vector<s32>& pt );
 
 	/*
 	//update & render
@@ -292,9 +292,9 @@ protected:
 	/*
 	//perform implement
 	*/
-	void							perform_alignhorz	( const xui_rect2d<s32>& rect, const std::vector<xui_componet*>& compVec );
-	void							perform_alignvert	( const xui_rect2d<s32>& rect, const std::vector<xui_componet*>& compVec );
-	void							perform_dockstyle	( const xui_rect2d<s32>& rect, const std::vector<xui_componet*>& compVec );
+	void							perform_alignhorz	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
+	void							perform_alignvert	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
+	void							perform_dockstyle	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
 
 protected:
 	/*
@@ -305,7 +305,7 @@ protected:
 	void*							m_data;
 
 	u32								m_cursor;
-	xui_componet*					m_parent;
+	xui_component*					m_parent;
 	xui_rect2d<s32>					m_render;
 	bool							m_cliped;
 	bool							m_enable;

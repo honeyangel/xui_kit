@@ -78,9 +78,9 @@ xui_method_explain(xui_container, get_renderrtins,	xui_rect2d<s32>	)( void ) con
 /*
 //virtual
 */
-xui_method_explain(xui_container, choose_else,		xui_componet*	)( const xui_vector<s32>& pt )
+xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vector<s32>& pt )
 {
-	xui_componet* componet = xui_control::choose_else(pt);
+	xui_component* componet = xui_control::choose_else(pt);
 	if (componet == NULL)
 	{
 		xui_vecptr_addloop(m_ascrollitem)
@@ -176,7 +176,7 @@ xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& arg
 /*
 //method
 */
-xui_method_explain(xui_container, on_scroll,		void			)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_container, on_scroll,		void			)( xui_component* sender, xui_method_args& args )
 {
 	if (sender == m_vscroll)
 	{
@@ -309,7 +309,7 @@ xui_method_explain(xui_container, delete_scroll,	void			)( u08 style )
 		break;
 	}
 
-	std::vector<xui_componet*>::iterator itor = std::find(
+	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
 		scroll);

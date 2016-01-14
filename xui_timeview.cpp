@@ -118,7 +118,7 @@ xui_method_explain(xui_timeview, get_timetree,				xui_treeview*				)( void )
 /*
 //property
 */
-xui_method_explain(xui_timeview, add_toolitem,				void						)( xui_componet*		item )
+xui_method_explain(xui_timeview, add_toolitem,				void						)( xui_component*		item )
 {
 	m_timetool->add_item(item);
 }
@@ -219,7 +219,7 @@ xui_method_explain(xui_timeview, set_dragtime,				void						)( s32 time )
 /*
 //rect
 */
-xui_method_explain(xui_timeview, was_rectmove,				bool						)( xui_componet* layer, s32 frame )
+xui_method_explain(xui_timeview, was_rectmove,				bool						)( xui_component* layer, s32 frame )
 {
 	if (m_timerect->was_visible() == false)
 		return false;
@@ -428,9 +428,9 @@ xui_method_explain(xui_timeview, get_renderrtins,			xui_rect2d<s32>				)( void )
 /*
 //virtual
 */
-xui_method_explain(xui_timeview, choose_else,				xui_componet*				)( const xui_vector<s32>& pt )
+xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_vector<s32>& pt )
 {
-	xui_componet* componet = xui_control::choose_else(pt);
+	xui_component* componet = xui_control::choose_else(pt);
 	if (componet == NULL)
 	{
 		std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
@@ -639,7 +639,7 @@ xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line
 /*
 //event
 */
-xui_method_explain(xui_timeview, on_timetreesetclientsz,	void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_timetreesetclientsz,	void						)( xui_component* sender, xui_method_args& args )
 {
 	xui_vector<s32> sz = m_timetree->get_clientsz();
 	xui_rect2d<s32> rt = m_timetree->get_borderrt();
@@ -647,7 +647,7 @@ xui_method_explain(xui_timeview, on_timetreesetclientsz,	void						)( xui_compon
 	sz.h += (rt.ay+rt.by+m_timetree->get_lineheight());
 	m_timetree->set_rendersz(sz);
 }
-xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_component* sender, xui_method_args& args )
 {
 	s32 width = 0;
 	for (u32 i = 0; i < m_timetree->get_columninfocount(); ++i)
@@ -667,9 +667,9 @@ xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_componet*
 		m_timetree->perform();
 	}
 }
-xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 	if (catchctrl == sender)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
@@ -692,9 +692,9 @@ xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componet
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 	if (catchctrl == sender)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
@@ -717,9 +717,9 @@ xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componet
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 	if (catchctrl == m_timerect)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
@@ -742,7 +742,7 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componet
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_spacesetscroll,		void						)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timeview, on_spacesetscroll,		void						)( xui_component* sender, xui_method_args& args )
 {
 	s32 space = m_spaceset->get_value();
 	set_keyspace(space);

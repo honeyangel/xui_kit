@@ -42,7 +42,7 @@ xui_method_explain(xui_toolbar, set_grap,	void)( s32 grap )
 /*
 //item
 */
-xui_method_explain(xui_toolbar, add_item,	void)( xui_componet* componet )
+xui_method_explain(xui_toolbar, add_item,	void)( xui_component* componet )
 {
 	if (componet->get_parent())
 		return;
@@ -51,9 +51,9 @@ xui_method_explain(xui_toolbar, add_item,	void)( xui_componet* componet )
 	m_widgetvec.push_back(componet);
 	invalid();
 }
-xui_method_explain(xui_toolbar, del_item,	void)( xui_componet* componet )
+xui_method_explain(xui_toolbar, del_item,	void)( xui_component* componet )
 {
-	std::vector<xui_componet*>::iterator itor = std::find(
+	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
 		componet);

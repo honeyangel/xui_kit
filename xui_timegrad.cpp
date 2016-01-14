@@ -12,7 +12,7 @@ xui_create_explain(xui_timegrad)( void )
 	m_type	   += "timegrad";
 	m_border	= xui_rect2d<s32>(5, 0, 0, 0);
 	m_font		= xui_family("Arial", 12, false);
-	m_textcolor = xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
+	m_textdraw.normalcolor = xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
 }
 
 /*
@@ -67,12 +67,12 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 			rt.bx = m_border.ax + i*space+50;
 			rt.ay =  2;
 			rt.by = 24;
-			rt = g_convas->calc_rect(text.str(), m_font, rt, TA_CT, true);
+			rt = g_convas->calc_draw(text.str(), m_font, rt, TA_CT, true);
 
 			if (i != timeview->get_curframe())
 			{
 				g_convas->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
-				g_convas->draw_text(text.str(), m_font, rt.get_pt()+pt, color*m_textcolor);
+				g_convas->draw_text(text.str(), m_font, rt.get_pt()+pt, m_textdraw);
 			}
 			else
 			{
@@ -82,7 +82,7 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 				poly[2] = xui_vector<s32>(p1.x+6, p1.y-6);
 				poly[3] = poly[0];
 				g_convas->draw_line(p1,  p2, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
-				g_convas->draw_text(text.str(), m_font, rt.get_pt()+pt, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
+				g_convas->draw_text(text.str(), m_font, rt.get_pt()+pt, m_textdraw/*color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f)*/);
 				g_convas->draw_path(poly, 4, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
 			}
 		}

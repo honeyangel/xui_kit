@@ -3,6 +3,19 @@
 
 #include "xui_header.h"
 
+enum
+{
+	TA_LT,
+	TA_LC,
+	TA_LB,
+	TA_CT,
+	TA_CC,
+	TA_CB,
+	TA_RT,
+	TA_RC,
+	TA_RB,
+};
+
 class xui_family
 {
 public:
@@ -12,6 +25,8 @@ public:
 	std::string face;
 	s32			size;
 	bool		bold;
+	s32			horz;
+	s32			vert;
 
 	/*
 	//constructor
@@ -21,18 +36,24 @@ public:
 		face = "Arial";
 		size = 12;
 		bold = false;
+		horz = 1;
+		vert = 0;
 	}
 	xui_family( const std::string& _face, s32 _size, bool _bold )
 	{
 		face = _face;
 		size = _size;
 		bold = _bold;
+		horz = 1;
+		vert = 0;
 	}
 	xui_family( const xui_family& other )
 	{
 		face = other.face;
 		size = other.size;
 		bold = other.bold;
+		horz = other.horz;
+		vert = other.vert;
 	}
 
 	/*
@@ -42,13 +63,17 @@ public:
 	{
 		return (face == other.face &&
 				size == other.size &&
-				bold == other.bold);
+				bold == other.bold &&
+				horz == other.horz &&
+				vert == other.vert);
 	}
 	bool operator != ( const xui_family& other ) const
 	{
 		return (face != other.face ||
 				size != other.size ||
-				bold != other.bold);
+				bold != other.bold ||
+				horz != other.horz ||
+				vert != other.vert);
 	}
 
 	/*

@@ -152,7 +152,7 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 /*
 //event
 */
-xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_componet* sender, xui_method_mouse&	  args )
+xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_component* sender, xui_method_mouse&	  args )
 {
 	bool same = true;
 	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
@@ -172,7 +172,7 @@ xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_compone
 		dataobject->xm_click(sender, args);
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
 	if (dataobject->get_droptype() == args.type)
@@ -188,7 +188,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
 	if (dataobject->get_droptype() == args.type)
@@ -204,7 +204,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
 	if (dataobject->get_droptype() == args.type)
@@ -212,7 +212,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_compo
 		args.allow = true;
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_componet* sender, xui_method_dragdrop& args )
+xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
 	if (dataobject->get_droptype() == args.type)

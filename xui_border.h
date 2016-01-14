@@ -1,7 +1,7 @@
 #ifndef __xui_border_h__
 #define __xui_border_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
 enum 
 {
@@ -11,7 +11,7 @@ enum
 	RESIZEFLAG_B,
 };
 
-class xui_border : public xui_componet
+class xui_border : public xui_component
 {
 public:
 	/*

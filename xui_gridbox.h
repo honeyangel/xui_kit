@@ -30,8 +30,8 @@ public:
 	/*
 	//grid ctrl
 	*/
-	void					set_gridctrl	( u32 row, u32 col, xui_componet* componet );
-	virtual xui_rect2d<s32>	get_cornerrt	( xui_componet* componet ) const;
+	void					set_gridctrl	( u32 row, u32 col, xui_component* componet );
+	virtual xui_rect2d<s32>	get_cornerrt	( xui_component* componet ) const;
 
 protected:
 	/*
@@ -53,7 +53,7 @@ protected:
 	u32						m_colcount;
 	s32						m_rowpixel[MAX_ROW];
 	s32						m_colpixel[MAX_COL];
-	xui_componet*			m_ptrarray[MAX_ROW][MAX_COL];
+	xui_component*			m_ptrarray[MAX_ROW][MAX_COL];
 };
 
 #endif//__xui_gridbox_h__

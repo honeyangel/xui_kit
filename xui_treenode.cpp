@@ -321,7 +321,7 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 xui_method_explain(xui_treenode, on_topdraw,		void								)( xui_method_args&		args )
 {
 	xui_control::on_topdraw(args);
-	xui_componet* hoverctrl = g_desktop->get_hoverctrl();
+	xui_component* hoverctrl = g_desktop->get_hoverctrl();
 	if (hoverctrl != this && hoverctrl)
 	{
 		if (hoverctrl->get_parent() == m_parent && hoverctrl->get_type().find("treenode") != -1)
@@ -398,7 +398,7 @@ xui_method_explain(xui_treenode, set_edittext,		void								)( u32 index )
 	xui_rect2d<s32> rt = drawer->get_renderrt()+drawer->get_renderpt();	
 	rt.oft_x(drawer->get_iconoffset().x);
 	rt.oft_y(drawer->get_iconoffset().y);
-	rt.set_w(xui_min(rt.get_sz().w, g_convas->calc_size(drawer->get_text(), drawer->get_font(), xui_rect2d<s32>(0), true).w+20));
+	rt.set_w(xui_min(rt.get_sz().w, g_convas->calc_size(drawer->get_text(), drawer->get_font(), 0, true).w+20));
 
 	xui_method_ptrcall(m_edittext, set_visible		)(true);
 	xui_method_ptrcall(m_edittext, set_renderpt		)(rt.get_pt());
@@ -486,11 +486,11 @@ xui_method_explain(xui_treenode, non_findtext,		void								)( void )
 /*
 //event
 */
-xui_method_explain(xui_treenode, on_textnonfocus,	void								)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_treenode, on_textnonfocus,	void								)( xui_component* sender, xui_method_args&  args )
 {
 	set_linktext();
 }
-xui_method_explain(xui_treenode, on_textkeybddown,	void								)( xui_componet* sender, xui_method_keybd& args )
+xui_method_explain(xui_treenode, on_textkeybddown,	void								)( xui_component* sender, xui_method_keybd& args )
 {
 	if (args.kcode == KEY_ENTER)
 	{

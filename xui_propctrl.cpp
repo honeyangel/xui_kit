@@ -42,7 +42,7 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 	on_linkpropdata();
 }
 
-xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_componet* componet )
+xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* componet )
 {
 	m_widgetvec.insert(m_widgetvec.begin(), componet);
 }
@@ -65,7 +65,7 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 {
 	s32 depth = 1;
 	xui_kindctrl* kind = get_kindctrl();
-	xui_componet* root = m_parent;
+	xui_component* root = m_parent;
 	while (root && root != kind)
 	{
 		++depth;

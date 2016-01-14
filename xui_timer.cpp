@@ -1,11 +1,11 @@
-#include "xui_componet.h"
+#include "xui_component.h"
 #include "xui_timermgr.h"
 #include "xui_timer.h"
 
 /*
 //constructor
 */
-xui_create_explain(xui_timer)( xui_componet* owner, f32 interval )
+xui_create_explain(xui_timer)( xui_component* owner, f32 interval )
 {
 	m_owner		= owner;
 	m_enable	= true;

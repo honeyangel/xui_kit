@@ -34,7 +34,7 @@ public:
 	/*
 	//virtual
 	*/
-	virtual xui_componet*		choose_else		( const xui_vector<s32>& pt );
+	virtual xui_component*		choose_else		( const xui_vector<s32>& pt );
 	virtual void				update_else		( f32 delta );
 	virtual void				render_else		( void );
 
@@ -59,7 +59,7 @@ protected:
 	*/
 	virtual void				on_vertvalue	( xui_method_args&  args );
 	virtual void				on_horzvalue	( xui_method_args&  args );
-	void						on_scroll		( xui_componet* sender, xui_method_args& args );
+	void						on_scroll		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//scroll

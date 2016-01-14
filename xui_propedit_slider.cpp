@@ -87,12 +87,12 @@ xui_method_explain(xui_propedit_slider, reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_slider, on_spinctrlgetfocus,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_slider, on_spinctrlgetfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_scrollthumb* thumb = m_spinctrl->get_thumb();
 	thumb->set_sidestyle(SIDESTYLE_S);
 }
-xui_method_explain(xui_propedit_slider, on_spinctrlnonfocus,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_slider, on_spinctrlnonfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_scrollthumb* thumb = m_spinctrl->get_thumb();
 	thumb->set_sidestyle(SIDESTYLE_N);
@@ -101,22 +101,22 @@ xui_method_explain(xui_propedit_slider, on_spinctrlnonfocus,	void				)( xui_comp
 		check_value();
 	}
 }
-xui_method_explain(xui_propedit_slider, on_namectrlmouserise,	void				)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propedit_slider, on_namectrlmouserise,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	check_value();
 }
-xui_method_explain(xui_propedit_slider, on_textctrltextchanged, void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_slider, on_textctrltextchanged, void				)( xui_component* sender, xui_method_args&  args )
 {
 	f64 interval = m_editnumb->get_interval();
 	s32 scroll_range = (s32)((m_maxvalue - m_minvalue) / interval);
 	s32 scroll_value = (s32)((get_value()- m_minvalue) / interval);
 	m_spinctrl->ini_scroll(scroll_range, scroll_value);
 }
-xui_method_explain(xui_propedit_slider, on_textctrltextenter,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_slider, on_textctrltextenter,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	check_value();
 }
-xui_method_explain(xui_propedit_slider, on_spinctrlscroll,		void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_slider, on_spinctrlscroll,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	f64 interval = m_editnumb->get_interval();
 	f64 value    = m_minvalue + (f64)m_spinctrl->get_value() * interval;

@@ -1,7 +1,7 @@
 #ifndef __xui_treedata_h__
 #define __xui_treedata_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
 class xui_treedata
 {

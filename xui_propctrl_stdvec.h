@@ -51,12 +51,12 @@ protected:
 	/*
 	//event
 	*/
-	void					on_sortctrlupdateself	( xui_componet* sender, xui_method_args&  args );
-	void					on_sortctrlrenderself	( xui_componet* sender, xui_method_args&  args );
-	void					on_sortctrltopdraw		( xui_componet* sender, xui_method_args&  args );
-	void					on_sortctrlmousedown	( xui_componet* sender, xui_method_mouse& args );
-	void					on_sortctrlmousemove	( xui_componet* sender, xui_method_mouse& args );
-	void					on_sortctrlmouserise	( xui_componet* sender, xui_method_mouse& args );
+	void					on_sortctrlupdateself	( xui_component* sender, xui_method_args&  args );
+	void					on_sortctrlrenderself	( xui_component* sender, xui_method_args&  args );
+	void					on_sortctrltopdraw		( xui_component* sender, xui_method_args&  args );
+	void					on_sortctrlmousedown	( xui_component* sender, xui_method_mouse& args );
+	void					on_sortctrlmousemove	( xui_component* sender, xui_method_mouse& args );
+	void					on_sortctrlmouserise	( xui_component* sender, xui_method_mouse& args );
 
 	/*
 	//member

@@ -8,7 +8,7 @@
 //constructor
 */
 xui_treeplus::xui_treeplus( xui_treenode* treenode )
-: xui_componet("", xui_rect2d<s32>(0))
+: xui_component("", xui_rect2d<s32>(0))
 {
 	m_type     += "treeplus";
 	m_parent	= treenode;
@@ -41,12 +41,12 @@ xui_method_explain(xui_treeplus, set_expanded,	void)( bool flag )
 */
 xui_method_explain(xui_treeplus, on_mousedown,	void)( xui_method_mouse& args )
 {
-	xui_componet::on_mousedown(args);
+	xui_component::on_mousedown(args);
 	set_expanded(!m_expanded);
 }
 xui_method_explain(xui_treeplus, on_renderself, void)( xui_method_args&  args )
 {
-	xui_componet::on_renderself(args);
+	xui_component::on_renderself(args);
 	xui_treenode* treenode = (xui_treenode*)m_parent;
 	xui_treeview* treeview = (xui_treeview*)treenode->get_parent();
 
@@ -81,8 +81,8 @@ xui_method_explain(xui_treeplus, on_renderself, void)( xui_method_args&  args )
 			poly[3] = poly[0];
 		}
 
-		g_convas->draw_path(poly, 4, color);
-		if (solid)
+		//g_convas->draw_path(poly, 4, color);
+		//if (solid)
 			g_convas->fill_poly(poly, 3, color);
 	}
 	else

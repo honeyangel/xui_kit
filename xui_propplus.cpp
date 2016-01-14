@@ -6,7 +6,7 @@
 //constructor
 */
 xui_propplus::xui_propplus( void )
-: xui_componet("", xui_rect2d<s32>(0))
+: xui_component("", xui_rect2d<s32>(0))
 {
 	m_type     += "propplus";
 	m_visible	= false;
@@ -36,12 +36,12 @@ xui_method_explain(xui_propplus, set_expanded,	void)( bool flag )
 */
 xui_method_explain(xui_propplus, on_mousedown,	void)( xui_method_mouse& args )
 {
-	xui_componet::on_mousedown(args);
+	xui_component::on_mousedown(args);
 	set_expanded(!m_expanded);
 }
 xui_method_explain(xui_propplus, on_renderself, void)( xui_method_args&  args )
 {
-	xui_componet::on_renderself(args);
+	xui_component::on_renderself(args);
 
 	bool shape = m_expanded;//true-Ö±½Ç false-Èý½Ç
 	bool solid = m_expanded;
@@ -69,6 +69,6 @@ xui_method_explain(xui_propplus, on_renderself, void)( xui_method_args&  args )
 		poly[3] = poly[0];
 	}
 
-	g_convas->draw_path(poly, 4, color);
+	//g_convas->draw_path(poly, 4, color);
 	g_convas->fill_poly(poly, 3, color);
 }

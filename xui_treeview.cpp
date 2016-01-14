@@ -458,9 +458,9 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 
 	return NULL;
 }
-xui_method_explain(xui_treeview, choose_else,			xui_componet*						)( const xui_vector<s32>& pt )
+xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui_vector<s32>& pt )
 {
-	xui_componet* componet = xui_control::choose_else(pt);
+	xui_component* componet = xui_control::choose_else(pt);
 	if (componet == NULL)
 	{
 		xui_vecptr_addloop(m_columngrid)
@@ -642,7 +642,7 @@ xui_method_explain(xui_treeview, on_horzvalue,			void								)( xui_method_args&
 xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args&  args )
 {
 	xui_container::on_updateself(args);
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 	if (catchctrl == this)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
@@ -860,7 +860,7 @@ xui_method_explain(xui_treeview, delete_node,			void								)( xui_treenode* nod
 /*
 //event
 */
-xui_method_explain(xui_treeview, on_headclick,			void								)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_treeview, on_headclick,			void								)( xui_component* sender, xui_method_mouse& args )
 {
 	xui_vecptr_addloop(m_columnhead)
 	{
@@ -879,7 +879,7 @@ xui_method_explain(xui_treeview, on_headclick,			void								)( xui_componet* se
 		}
 	}
 }
-xui_method_explain(xui_treeview, on_headrenderself,		void								)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_treeview, on_headrenderself,		void								)( xui_component* sender, xui_method_args&  args )
 {
 	if (m_columnsort != TREESORT_NONE && sender == m_columnhead[m_sortcolumn])
 	{

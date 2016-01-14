@@ -365,12 +365,12 @@ xui_method_explain(xui_timeline, on_renderself,		void						)( xui_method_args&  
 		{
 			xui_rect2d<s32> temp(0, 0, 12, 12);
 			temp.set_pt(p1);
-			g_convas->draw_arc(temp, linecolor, -180.0f, 90.0f, 1.0f);
+			g_convas->draw_arc(temp, linecolor, -180, 90, 1);
 			p1.x += 6;
 			p2.x -= 6;
 			g_convas->draw_line(p1, p2, linecolor);
 			temp.set_pt(xui_vector<s32>(p2.x-6, p2.y-12));
-			g_convas->draw_arc(temp, linecolor,    0.0f, 90.0f, 1.0f);
+			g_convas->draw_arc(temp, linecolor,    0, 90, 1);
 		}
 		else
 		{

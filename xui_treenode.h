@@ -77,8 +77,8 @@ protected:
 	/*
 	//event
 	*/
-	void								on_textnonfocus		( xui_componet* sender, xui_method_args&  args );
-	void								on_textkeybddown	( xui_componet* sender, xui_method_keybd& args );
+	void								on_textnonfocus		( xui_component* sender, xui_method_args&  args );
+	void								on_textkeybddown	( xui_component* sender, xui_method_keybd& args );
 
 	/*
 	//member

@@ -21,7 +21,7 @@ xui_create_explain(xui_treegrid)( u32 index, xui_treeview* treeview )
 */
 xui_method_explain(xui_treegrid, on_mousemove,	void)( xui_method_mouse& args )
 {
-	xui_componet::on_mousemove(args);
+	xui_component::on_mousemove(args);
 	if (g_desktop->get_catchctrl() == this)
 	{
 		s32 delta = g_desktop->get_mousecurr().x - g_desktop->get_mouselast().x;

@@ -46,9 +46,9 @@ public:
 	/*
 	//event
 	*/
-	void					on_editctrlnonfocus		( xui_componet* sender, xui_method_args& args );
-	void					on_editctrlgetfocus		( xui_componet* sender, xui_method_args& args );
-	void					on_namectrltextchanged	( xui_componet* sender, xui_method_args& args );
+	void					on_editctrlnonfocus		( xui_component* sender, xui_method_args& args );
+	void					on_editctrlgetfocus		( xui_component* sender, xui_method_args& args );
+	void					on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*
@@ -80,7 +80,7 @@ public:
 	/*
 	//event
 	*/
-	void					on_boolctrlclick		( xui_componet* sender, xui_method_args&  args );
+	void					on_boolctrlclick		( xui_component* sender, xui_method_args&  args );
 };
 
 class xui_propedit_enum : public xui_propedit_base
@@ -105,7 +105,7 @@ public:
 	/*
 	//event
 	*/
-	void					on_enumctrlselection	( xui_componet* sender, xui_method_args&  args );
+	void					on_enumctrlselection	( xui_component* sender, xui_method_args&  args );
 };
 
 class xui_propedit_number : public xui_propedit_base
@@ -131,8 +131,8 @@ public:
 	/*
 	//event
 	*/
-	void					on_textctrltextchanged	( xui_componet* sender, xui_method_args&  args );
-	void					on_namectrlmousemove	( xui_componet* sender, xui_method_mouse& args );
+	void					on_textctrltextchanged	( xui_component* sender, xui_method_args&  args );
+	void					on_namectrlmousemove	( xui_component* sender, xui_method_mouse& args );
 
 protected:
 	/*
@@ -163,7 +163,7 @@ public:
 	/*
 	//event
 	*/
-	void					on_textctrltextchanged	( xui_componet* sender, xui_method_args&  args );
+	void					on_textctrltextchanged	( xui_component* sender, xui_method_args&  args );
 };
 
 #endif//__xui_propedit_h__

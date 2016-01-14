@@ -6,7 +6,7 @@
 //constructor
 */
 xui_create_explain(xui_control)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_componet(name, rect)
+: xui_component(name, rect)
 {
 	m_type	   += "control";
 	m_client	= rect;
@@ -164,13 +164,13 @@ xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( void ) con
 		std::string type = m_parent->get_type();
 		if (type.find("linebox") != -1 ||
 			type.find("gridbox") != -1)
-			return ((xui_control*)m_parent)->get_cornerrt((xui_componet*)this);
+			return ((xui_control*)m_parent)->get_cornerrt((xui_component*)this);
 	}
 
 	return xui_rect2d<s32>(m_corner);
 }
 
-xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( xui_componet* widget ) const
+xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( xui_component* widget ) const
 {
 	return xui_rect2d<s32>(0);
 }
@@ -206,22 +206,22 @@ xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>					)( void ) c
 /*
 //hit
 */
-xui_method_explain(xui_control, choose,				xui_componet*					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_control, choose,				xui_component*					)( const xui_vector<s32>& pt )
 {
 	if (m_enable && m_visible)
 	{
-		xui_componet* componet = choose_else(pt);
+		xui_component* componet = choose_else(pt);
 		if (componet == NULL)
-			componet  = xui_componet::choose(pt);
+			componet  = xui_component::choose(pt);
 
 		return componet;
 	}
 
 	return NULL;
 }
-xui_method_explain(xui_control, choose_else,		xui_componet*					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_control, choose_else,		xui_component*					)( const xui_vector<s32>& pt )
 {
-	xui_componet* componet = NULL;
+	xui_component* componet = NULL;
 	xui_vecptr_addloop(m_widgetvec)
 	{
 		if (componet = m_widgetvec[i]->choose(pt))
@@ -236,7 +236,7 @@ xui_method_explain(xui_control, choose_else,		xui_componet*					)( const xui_vec
 */
 xui_method_explain(xui_control, update,				void							)( f32 delta )
 {
-	xui_componet::update(delta);
+	xui_component::update(delta);
 	update_else(delta);
 }
 xui_method_explain(xui_control, update_else,		void							)( f32 delta )
@@ -249,7 +249,7 @@ xui_method_explain(xui_control, update_else,		void							)( f32 delta )
 }
 xui_method_explain(xui_control, render,				void							)( void )
 {
-	xui_componet::render();
+	xui_component::render();
 	render_else();
 }
 xui_method_explain(xui_control, render_else,		void							)( void )

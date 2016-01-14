@@ -53,7 +53,7 @@ xui_method_explain(xui_propedit_stdvec, reset,					void	)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_stdvec, on_textctrltextenter,	void	)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_propedit_stdvec, on_textctrltextenter,	void	)( xui_component* sender, xui_method_args& args )
 {
 	xui_textbox* textctrl = (xui_textbox*)m_editctrl;
 	std::wstringstream tmp(textctrl->get_text());

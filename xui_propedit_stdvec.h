@@ -25,7 +25,7 @@ public:
 	/*
 	//event
 	*/
-	void					on_textctrltextenter	( xui_componet* sender, xui_method_args&  args );
+	void					on_textctrltextenter	( xui_component* sender, xui_method_args&  args );
 };
 
 #endif//__xui_propedit_stdvec_h__

@@ -105,7 +105,7 @@ xui_create_explain(xui_timetool)( void )
 /*
 //method
 */
-xui_method_explain(xui_timetool, on_buttonclick,		void)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_buttonclick,		void)( xui_component* sender, xui_method_args& args )
 {
 	xui_timeview* timeview = (xui_timeview*)m_parent;
 	xui_keyframe_map allframe = timeview->get_allframe();
@@ -148,7 +148,7 @@ xui_method_explain(xui_timetool, on_buttonclick,		void)( xui_componet* sender, x
 		timeview->set_curframe((*itor).first);
 	}
 }
-xui_method_explain(xui_timetool, on_toggleclick,		void)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_toggleclick,		void)( xui_component* sender, xui_method_args& args )
 {
 	if (sender == m_play)
 	{
@@ -167,9 +167,9 @@ xui_method_explain(xui_timetool, on_toggleclick,		void)( xui_componet* sender, x
 
 	}
 }
-xui_method_explain(xui_timetool, on_buttonrenderself,	void)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_buttonrenderself,	void)( xui_component* sender, xui_method_args& args )
 {
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 
 	xui_colour      color = sender->get_vertexcolor() * ((catchctrl == sender) ? xui_colour(1.0f, 0.2f, 0.2f, 0.2f) : xui_colour(1.0f));
 	xui_rect2d<s32> rt    = sender->get_renderrtabs();
@@ -260,7 +260,7 @@ xui_method_explain(xui_timetool, on_buttonrenderself,	void)( xui_componet* sende
 		g_convas->fill_rectangle(rt, color);
 	}
 }
-xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_component* sender, xui_method_args& args )
 {
 	xui_colour      color = sender->get_vertexcolor() * (((xui_toggle*)sender)->was_check() ? xui_colour(1.0f, 0.2f, 0.2f, 0.2f) : xui_colour(1.0f));
 	xui_rect2d<s32> rt    = sender->get_renderrtabs();
@@ -314,11 +314,11 @@ xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_componet* sende
 		rt.oft_y(2);
 		rt.set_w(rt.get_sz().w-4);
 		rt.set_h(rt.get_sz().h-4);
-		g_convas->draw_arc(rt,							color, -120.0f, 270.0f, 1.0f);
-		g_convas->draw_arc(rt+xui_vector<s32>(-1,  0),	color, -120.0f, 270.0f, 1.0f);
-		g_convas->draw_arc(rt+xui_vector<s32>( 1,  0),	color, -120.0f, 270.0f, 1.0f);
-		g_convas->draw_arc(rt+xui_vector<s32>( 0, -1),	color, -120.0f, 270.0f, 1.0f);
-		g_convas->draw_arc(rt+xui_vector<s32>( 0,  1),	color, -120.0f, 270.0f, 1.0f);
+		g_convas->draw_arc(rt,							color, -120, 270, 1);
+		g_convas->draw_arc(rt+xui_vector<s32>(-1,  0),	color, -120, 270, 1);
+		g_convas->draw_arc(rt+xui_vector<s32>( 1,  0),	color, -120, 270, 1);
+		g_convas->draw_arc(rt+xui_vector<s32>( 0, -1),	color, -120, 270, 1);
+		g_convas->draw_arc(rt+xui_vector<s32>( 0,  1),	color, -120, 270, 1);
 
 		xui_vector<s32> poly[3];
 		poly[0] = xui_vector<s32>(rt.ax-3,	rt.ay+rt.get_sz().h/2-2);
@@ -327,7 +327,7 @@ xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_componet* sende
 		g_convas->fill_poly(poly, 3, color);
 	}
 }
-xui_method_explain(xui_timetool, on_timertick,			void)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_timertick,			void)( xui_component* sender, xui_method_args& args )
 {
 	xui_timeview* timeview = (xui_timeview*)m_parent;
 	s32 frame = timeview->get_curframe();

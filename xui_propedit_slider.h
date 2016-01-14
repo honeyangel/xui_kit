@@ -36,12 +36,12 @@ public:
 	/*
 	//event
 	*/
-	void					on_spinctrlgetfocus		( xui_componet* sender, xui_method_args& args );
-	void					on_spinctrlnonfocus		( xui_componet* sender, xui_method_args& args );
-	void					on_namectrlmouserise	( xui_componet* sender, xui_method_mouse& args );
-	void					on_textctrltextchanged	( xui_componet* sender, xui_method_args& args );
-	void					on_textctrltextenter	( xui_componet* sender, xui_method_args& args );
-	void					on_spinctrlscroll		( xui_componet* sender, xui_method_args& args );
+	void					on_spinctrlgetfocus		( xui_component* sender, xui_method_args& args );
+	void					on_spinctrlnonfocus		( xui_component* sender, xui_method_args& args );
+	void					on_namectrlmouserise	( xui_component* sender, xui_method_mouse& args );
+	void					on_textctrltextchanged	( xui_component* sender, xui_method_args& args );
+	void					on_textctrltextenter	( xui_component* sender, xui_method_args& args );
+	void					on_spinctrlscroll		( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*

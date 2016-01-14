@@ -54,7 +54,7 @@ class   xui_action_ctrl;
 class   xui_action_ctrl_move;
 
 class   xui_timer;
-class   xui_componet;
+class   xui_component;
 class   xui_control;
 class   xui_drawer;
 class	xui_window;
@@ -112,8 +112,8 @@ public:
 	/*
 	//method
 	*/
-	const char*				get_name		( void ) const	{ return m_name; }
-	const xui_rtti*			get_base		( void ) const	{ return m_base; }
+	const char*				get_name( void ) const	{ return m_name; }
+	const xui_rtti*			get_base( void ) const	{ return m_base; }
 
 protected:
 	/*
@@ -201,16 +201,25 @@ protected:
 */
 #define xui_declare_instance(class_name)												\
 	public:																				\
-	static void			init		( void );											\
-	static void			done		( void );											\
-	static class_name*	get_instance( void )											\
+	static	void			init	( void );											\
+	static	void			done	( void );											\
+	static	class_name*		get_ins	( void )											\
 	{																					\
 		return INSTANCE;																\
 	}																					\
 																						\
 	protected:																			\
-	static class_name*	INSTANCE;
+	static	class_name*		INSTANCE;
 
-#define xui_implement_instance(class_name)	class_name* class_name::INSTANCE = NULL;
+#define xui_implement_instance_member(class_name)	class_name* class_name::INSTANCE = NULL
+#define xui_implement_instance_method(class_name)										\
+	void	class_name::init		( void )											\
+	{																					\
+		INSTANCE = new class_name;														\
+	}																					\
+	void	class_name::done		( void )											\
+	{																					\
+		delete INSTANCE;																\
+	}
 
 #endif//__xui_header_h__

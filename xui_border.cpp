@@ -7,7 +7,7 @@
 //constructor
 */
 xui_create_explain(xui_border)( const std::string& name, const xui_rect2d<s32>& rect, u08 flag, xui_control* parent )
-: xui_componet(name, rect)
+: xui_component(name, rect)
 {
 	m_type	+= "border";
 	m_flag	 = flag;

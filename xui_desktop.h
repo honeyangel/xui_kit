@@ -20,14 +20,14 @@ public:
 	/*
 	//ctrl
 	*/
-	xui_componet*				get_catchctrl	( void );
-	void						set_catchctrl	( xui_componet* componet );
-	xui_componet*				get_focusctrl	( void );
-	void						set_focusctrl	( xui_componet* componet );
-	xui_componet*				get_hoverctrl	( void );
-	void						set_hoverctrl	( xui_componet* componet );
-	xui_componet*				get_floatctrl	( void );
-	void						set_floatctrl	( xui_componet* componet );
+	xui_component*				get_catchctrl	( void );
+	void						set_catchctrl	( xui_component* componet );
+	xui_component*				get_focusctrl	( void );
+	void						set_focusctrl	( xui_component* componet );
+	xui_component*				get_hoverctrl	( void );
+	void						set_hoverctrl	( xui_component* componet );
+	xui_component*				get_floatctrl	( void );
+	void						set_floatctrl	( xui_component* componet );
 
 	/*
 	//mouse
@@ -52,7 +52,7 @@ public:
 	/*
 	//message
 	*/
-	void						move_recycle	( xui_componet* componet );
+	void						move_recycle	( xui_component* componet );
 	void						send_message	( const xui_message& message );
 	void						post_message	( const xui_message& message );
 
@@ -91,10 +91,10 @@ protected:
 	/*
 	//member
 	*/
-	xui_componet*				m_catchctrl;
-	xui_componet*				m_focusctrl;
-	xui_componet*				m_hoverctrl;
-	xui_componet*				m_floatctrl;
+	xui_component*				m_catchctrl;
+	xui_component*				m_focusctrl;
+	xui_component*				m_hoverctrl;
+	xui_component*				m_floatctrl;
 	u08							m_allowdrag;
 	void*						m_catchdata;
 	std::string					m_catchtype;
@@ -107,7 +107,7 @@ protected:
 	std::vector<xui_window*>	m_modalpool;
 
 	std::vector<xui_message>	m_messagevec;
-	std::vector<xui_componet*>	m_recyclebin;
+	std::vector<xui_component*>	m_recyclebin;
 };
 
 extern xui_desktop* g_desktop;

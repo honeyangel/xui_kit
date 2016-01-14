@@ -230,14 +230,14 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 /*
 //event
 */
-xui_method_explain(xui_kindctrl, on_namectrltextchanged,	void			)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_kindctrl, on_namectrltextchanged,	void			)( xui_component* sender, xui_method_args& args )
 {
 	for (u32 i = 0; i < m_propkindvec.size(); ++i)
 	{
 		m_propkindvec[i]->xm_namechanged(sender, args);
 	}
 }
-xui_method_explain(xui_kindctrl, on_flagctrlclick,			void			)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_kindctrl, on_flagctrlclick,			void			)( xui_component* sender, xui_method_args& args )
 {
 	for (u32 i = 0; i < m_propkindvec.size(); ++i)
 	{

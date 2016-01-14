@@ -155,7 +155,7 @@ public:
 	/*
 	//member
 	*/
-	xui_componet*	drag;
+	xui_component*	drag;
 	void*			data;
 	std::string		type;
 	u08				allow;

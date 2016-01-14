@@ -25,8 +25,8 @@ protected:
 	/*
 	//event
 	*/
-	void			on_pickctrlclick		( xui_componet* sender, xui_method_mouse& args );
-	void			on_pickctrlrenderself	( xui_componet* sender, xui_method_args&  args );
+	void			on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
+	void			on_pickctrlrenderself	( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//member

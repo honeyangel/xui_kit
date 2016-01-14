@@ -1,7 +1,7 @@
 #ifndef __xui_propdata_h__
 #define __xui_propdata_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
 typedef xui_propctrl*	(*xui_prop_newctrl)( xui_propdata* propdata );
 typedef void			(*xui_prop_additem)( void* vec );

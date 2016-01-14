@@ -258,7 +258,7 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 /*
 //event
 */
-xui_method_explain(xui_propctrl_vector_button,	on_zeroctrlclick,	void			)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_propctrl_vector_button,	on_zeroctrlclick,	void			)( xui_component* sender, xui_method_args& args )
 {
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{

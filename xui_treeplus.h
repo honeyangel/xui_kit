@@ -1,9 +1,9 @@
 #ifndef __xui_treeplus_h__
 #define __xui_treeplus_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
-class xui_treeplus : public xui_componet
+class xui_treeplus : public xui_component
 {
 public:
 	/*

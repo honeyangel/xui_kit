@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="xui_config.h" />
+    <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_propctrl_object.h" />
     <ClInclude Include="xui_propctrl_simple.h" />
     <ClInclude Include="xui_propctrl_stdvec.h" />
@@ -200,7 +201,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="xui_vector.h" />
-    <ClInclude Include="xui_componet.h" />
+    <ClInclude Include="xui_component.h" />
     <ClInclude Include="xui_window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -311,7 +312,7 @@
     </ClCompile>
     <ClCompile Include="xui_message.cpp" />
     <ClCompile Include="xui_panel.cpp" />
-    <ClCompile Include="xui_componet.cpp" />
+    <ClCompile Include="xui_component.cpp" />
     <ClCompile Include="xui_scroll.cpp" />
     <ClCompile Include="xui_scrollthumb.cpp" />
     <ClCompile Include="xui_scrollarrow.cpp" />

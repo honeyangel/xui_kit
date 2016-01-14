@@ -1,9 +1,9 @@
 #ifndef __xui_propplus_h__
 #define __xui_propplus_h__
 
-#include "xui_componet.h"
+#include "xui_component.h"
 
-class xui_propplus : public xui_componet
+class xui_propplus : public xui_component
 {
 public:
 	/*

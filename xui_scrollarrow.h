@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_scrollarrow( const std::string& name, const xui_rect2d<s32>& rect, u08 style, s32 direction, xui_componet* parent );
+	xui_scrollarrow( const std::string& name, const xui_rect2d<s32>& rect, u08 style, s32 direction, xui_component* parent );
 
 	/*
 	//method

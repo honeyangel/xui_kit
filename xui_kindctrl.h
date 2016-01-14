@@ -43,8 +43,8 @@ protected:
 	/*
 	//event
 	*/
-	void					on_namectrltextchanged	( xui_componet* sender, xui_method_args& args );
-	void					on_flagctrlclick		( xui_componet* sender, xui_method_args& args );
+	void					on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
+	void					on_flagctrlclick		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//method

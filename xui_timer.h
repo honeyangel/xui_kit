@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timer( xui_componet* owner, f32 interval );
+	xui_timer( xui_component* owner, f32 interval );
 
 	/*
 	//destructor
@@ -39,7 +39,7 @@ protected:
 	/*
 	//member
 	*/
-	xui_componet*						m_owner;
+	xui_component*						m_owner;
 	bool								m_enable;
 	f32									m_interval;
 	f32									m_time;

@@ -22,7 +22,7 @@ xui_create_explain(xui_slider)( const std::string& name, const xui_rect2d<s32>& 
 		}
 		else
 		{
-			std::vector<xui_componet*>::iterator itor = std::find(
+			std::vector<xui_component*>::iterator itor = std::find(
 				m_widgetvec.begin(),
 				m_widgetvec.end(),
 				m_arrow[i]);

@@ -56,7 +56,7 @@ enum
 class xui_message
 {
 public:
-	xui_componet*	sender;
+	xui_component*	sender;
 	u32				msgidx;
 	u32				wparam;
 	u32				lparam;
@@ -65,7 +65,7 @@ public:
 	//constructor
 	*/
 	xui_message( void );
-	xui_message( xui_componet* other_sender, u32 other_msgidx, u32 other_wparam, u32 other_lparam );
+	xui_message( xui_component* other_sender, u32 other_msgidx, u32 other_wparam, u32 other_lparam );
 	xui_message( const xui_message& other );
 
 	/*

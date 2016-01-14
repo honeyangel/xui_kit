@@ -10,7 +10,6 @@ xui_create_explain(xui_textbox)( const std::string& name, const xui_rect2d<s32>&
 {
 	m_type			+= "textbox";
 	m_cursor		 = CURSOR_TEXT;
-	m_hintgray		 = xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
 	m_password		 = false;
 	m_readonly		 = false;
 	m_numbonly		 = false;
@@ -54,11 +53,11 @@ xui_method_explain(xui_textbox, set_hinttext,		void				)( const std::wstring& te
 
 xui_method_explain(xui_textbox, get_hintgray,		const xui_colour&	)( void ) const
 {
-	return m_hintgray;
+	return m_hintdraw.normalcolor;
 }
 xui_method_explain(xui_textbox, set_hintgray,		void				)( const xui_colour& colour )
 {
-	m_hintgray = colour;
+	m_hintdraw.normalcolor = colour;
 }
 
 /*
@@ -338,7 +337,7 @@ xui_method_explain(xui_textbox, on_renderself,		void				)( xui_method_args&  arg
 	if (m_text.empty() && m_hinttext.length() > 0)
 	{
 		xui_colour color = get_vertexcolor();
-		xui_rect2d<s32> rt = g_convas->calc_rect(
+		xui_rect2d<s32> rt = g_convas->calc_draw(
 			m_hinttext, 
 			m_font, 
 			get_renderrtins(), 
@@ -349,7 +348,7 @@ xui_method_explain(xui_textbox, on_renderself,		void				)( xui_method_args&  arg
 			m_hinttext, 
 			m_font, 
 			rt + m_textoffset + get_screenpt(), 
-			m_hintgray*color);
+			m_hintdraw);
 	}
 }
 
@@ -556,7 +555,7 @@ xui_method_explain(xui_textbox, get_textwidth,		u32					)( const std::wstring& t
 	if (m_password)
 		std::fill(temp.begin(), temp.end(), L'*');
 
-	return g_convas->calc_size(temp, m_font, xui_rect2d<s32>(0), true).w;
+	return g_convas->calc_size(temp, m_font, 0, true).w;
 }
 xui_method_explain(xui_textbox, get_charindex,		u32					)( const std::wstring& text, s32 x ) const
 {

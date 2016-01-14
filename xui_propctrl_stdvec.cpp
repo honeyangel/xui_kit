@@ -287,7 +287,7 @@ xui_method_explain(xui_propctrl_stdvec, del_propctrl,			void			)( void )
 {
 	xui_propctrl* propctrl = m_propctrlvec.back();
 	propctrl->set_parent(NULL);
-	std::vector<xui_componet*>::iterator itor = std::find(m_widgetvec.begin(), m_widgetvec.end(), propctrl);
+	std::vector<xui_component*>::iterator itor = std::find(m_widgetvec.begin(), m_widgetvec.end(), propctrl);
 	if (itor != m_widgetvec.end())
 		m_widgetvec.erase(itor);
 
@@ -312,9 +312,9 @@ xui_method_explain(xui_propctrl_stdvec, get_propdataall,		xui_propdata_vec)( u32
 /*
 //event
 */
-xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_component* sender, xui_method_args&  args )
 {
-	xui_componet* catchctrl = g_desktop->get_catchctrl();
+	xui_component* catchctrl = g_desktop->get_catchctrl();
 	if (catchctrl == sender)
 	{
 		xui_propview* propview = get_propview();
@@ -339,7 +339,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_com
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec, on_sortctrlrenderself,	void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlrenderself,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_rect2d<s32> rt = sender->get_renderrtabs();
 	rt.oft_x(rt.get_w()/4);
@@ -351,7 +351,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlrenderself,	void			)( xui_com
 	rt.oft_y(3);
 	g_convas->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay), xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 }
-xui_method_explain(xui_propctrl_stdvec, on_sortctrltopdraw,		void			)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrltopdraw,		void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_propctrl::on_topdraw(args);
 	if (m_dropelem != -1 && m_dropelem != m_dragelem)
@@ -384,7 +384,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrltopdraw,		void			)( xui_compo
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousedown,	void			)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 	{
@@ -395,7 +395,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousedown,	void			)( xui_comp
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousemove,	void			)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	m_dropelem = -1;
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
@@ -411,7 +411,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlmousemove,	void			)( xui_comp
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec, on_sortctrlmouserise,	void			)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec, on_sortctrlmouserise,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_dropelem != -1 && m_dropelem != m_dragelem)
 	{

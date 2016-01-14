@@ -15,11 +15,11 @@ protected:
 	/*
 	//method
 	*/
-	void			on_buttonclick		( xui_componet* sender, xui_method_args& args );
-	void			on_toggleclick		( xui_componet* sender, xui_method_args& args );
-	void			on_buttonrenderself	( xui_componet* sender, xui_method_args& args );
-	void			on_togglerenderself	( xui_componet* sender, xui_method_args& args );
-	void			on_timertick		( xui_componet* sender, xui_method_args& args );
+	void			on_buttonclick		( xui_component* sender, xui_method_args& args );
+	void			on_toggleclick		( xui_component* sender, xui_method_args& args );
+	void			on_buttonrenderself	( xui_component* sender, xui_method_args& args );
+	void			on_togglerenderself	( xui_component* sender, xui_method_args& args );
+	void			on_timertick		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member

@@ -70,14 +70,14 @@ protected:
 	/*
 	//event
 	*/
-	void						on_droptogmousedown		( xui_componet* sender, xui_method_mouse& args );
-	void						on_droptogrenderself	( xui_componet* sender, xui_method_args&  args );
-	void						on_droplstselection		( xui_componet* sender, xui_method_args&  args );
-	void						on_dropallnonfocus		( xui_componet* sender, xui_method_args&  args );
-	void						on_dropallkeybddown		( xui_componet* sender, xui_method_keybd& args );
-	void						on_dropallmousedown		( xui_componet* sender, xui_method_mouse& args );
-	void						on_droplstsetclientsz	( xui_componet* sender, xui_method_args& args );
-	void						on_droplstsetrendersz	( xui_componet* sender, xui_method_args& args );
+	void						on_droptogmousedown		( xui_component* sender, xui_method_mouse& args );
+	void						on_droptogrenderself	( xui_component* sender, xui_method_args&  args );
+	void						on_droplstselection		( xui_component* sender, xui_method_args&  args );
+	void						on_dropallnonfocus		( xui_component* sender, xui_method_args&  args );
+	void						on_dropallkeybddown		( xui_component* sender, xui_method_keybd& args );
+	void						on_dropallmousedown		( xui_component* sender, xui_method_mouse& args );
+	void						on_droplstsetclientsz	( xui_component* sender, xui_method_args& args );
+	void						on_droplstsetrendersz	( xui_component* sender, xui_method_args& args );
 
 	/*
 	//method

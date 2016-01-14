@@ -11,7 +11,6 @@ xui_create_explain(xui_drawer)( const std::string& name, const xui_rect2d<s32>& 
 	m_type	   += "drawer";
 	m_font		= xui_family("Arial", 30, false);
 	m_icon		= NULL;
-	m_textcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
 	m_textalign = TA_LC;
 	m_iconalign = IMAGE_FRONT_TEXT;
 	m_textoffset= xui_vector<s32>(0, 0);
@@ -86,12 +85,12 @@ xui_method_explain(xui_drawer, set_icon,			void					)( xui_bitmap* icon )
 
 xui_method_explain(xui_drawer, get_textcolor,		const xui_colour&		)( void ) const
 {
-	return m_textcolor;
+	return m_textdraw.normalcolor;
 }
 
 xui_method_explain(xui_drawer, set_textcolor,		void					)( const xui_colour& color )
 {
-	m_textcolor = color;
+	m_textdraw.normalcolor = color;
 }
 
 xui_method_explain(xui_drawer, get_textalign,		u08						)( void ) const
@@ -165,7 +164,7 @@ xui_method_explain(xui_drawer, on_renderself,		void					)( xui_method_args& args
 			text, 
 			m_font, 
 			get_rendertextrt() + get_screenpt(), 
-			m_textcolor*color);
+			m_textdraw);
 	}
 
 	// draw icon
@@ -254,7 +253,7 @@ xui_method_explain(xui_drawer, get_rendertextrt,	xui_rect2d<s32>			)( void ) con
 
 	if (text.length() > 0)
 	{
-		rt = g_convas->calc_rect(
+		rt = g_convas->calc_draw(
 			text, 
 			m_font, 
 			rt, 

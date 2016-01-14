@@ -60,20 +60,20 @@ xui_method_explain(xui_propedit_base,	reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_base,	on_editctrlnonfocus,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_base,	on_editctrlnonfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	m_namectrl->set_textcolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	m_editctrl->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 }
-xui_method_explain(xui_propedit_base,	on_editctrlgetfocus,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_base,	on_editctrlgetfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	m_propctrl->on_linkpropdata();
 	m_namectrl->set_textcolor(xui_colour(1.0f, 0.2f, 0.3f, 0.9f));
 	m_editctrl->set_sidecolor(xui_colour(1.0f, 0.2f, 0.3f, 0.9f));
 }
-xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_component* sender, xui_method_args&  args )
 {
-	xui_vector<s32> size = g_convas->calc_size(m_namectrl->get_text(), m_namectrl->get_font(), xui_rect2d<s32>(0), true);
+	xui_vector<s32> size = g_convas->calc_size(m_namectrl->get_text(), m_namectrl->get_font(), 0, true);
 	size.w += m_namectrl->get_borderrt().ax + m_namectrl->get_borderrt().bx;
 	size.h  = m_namectrl->get_renderh();
 	m_namectrl->set_rendersz(size, false);
@@ -122,7 +122,7 @@ xui_method_explain(xui_propedit_bool, reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_bool, on_boolctrlclick,			void				)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_propedit_bool, on_boolctrlclick,			void				)( xui_component* sender, xui_method_args& args )
 {
 	m_propctrl->on_editvalue(this);
 }
@@ -183,7 +183,7 @@ xui_method_explain(xui_propedit_enum, reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_enum, on_enumctrlselection,		void				)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_propedit_enum, on_enumctrlselection,		void				)( xui_component* sender, xui_method_args& args )
 {
 	m_propctrl->on_editvalue(this);
 }
@@ -253,11 +253,11 @@ xui_method_explain(xui_propedit_number, reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_number, on_textctrltextchanged, void				)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_number, on_textctrltextchanged, void				)( xui_component* sender, xui_method_args&  args )
 {
 	m_propctrl->on_editvalue(this);
 }
-xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (g_desktop->get_catchctrl() == sender)
 	{
@@ -322,7 +322,7 @@ xui_method_explain(xui_propedit_string, reset,					void				)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_string, on_textctrltextchanged, void				)( xui_componet* sender, xui_method_args& args )
+xui_method_explain(xui_propedit_string, on_textctrltextchanged, void				)( xui_component* sender, xui_method_args& args )
 {
 	m_propctrl->on_editvalue(this);
 }

@@ -221,9 +221,9 @@ xui_method_explain(xui_panel, realign,			void								)( void )
 /*
 //virtual
 */
-xui_method_explain(xui_panel, choose_else,		xui_componet*						)( const xui_vector<s32>& pt )
+xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vector<s32>& pt )
 {
-	xui_componet* componet = xui_container::choose_else(pt);
+	xui_component* componet = xui_container::choose_else(pt);
 	if (componet == NULL)
 	{
 		xui_vecptr_addloop(m_childctrl)
@@ -275,7 +275,7 @@ xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args 
 	xui_container::on_perform(args);
 	if (m_childctrl.size() > 0)
 	{
-		std::vector<xui_componet*> tempVec;
+		std::vector<xui_component*> tempVec;
 		xui_vecptr_addloop(m_childctrl)
 		{
 			tempVec.push_back(m_childctrl[i]);

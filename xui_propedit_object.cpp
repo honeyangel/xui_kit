@@ -55,11 +55,11 @@ xui_method_explain(xui_propedit_object, reset,					void		)( void )
 /*
 //event
 */
-xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_componet* sender, xui_method_mouse& args )
+xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_component* sender, xui_method_mouse& args )
 {
 	m_propctrl->on_editvalue(this);
 }
-xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_componet* sender, xui_method_args&  args )
+xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_component* sender, xui_method_args&  args )
 {
 	xui_rect2d<s32> rt = m_pickctrl->get_renderrtabs();
 	rt.oft_x(3);

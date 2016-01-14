@@ -70,7 +70,7 @@ protected:
 	/*
 	//event
 	*/
-	void					on_zeroctrlclick( xui_componet* sender, xui_method_args& args );
+	void					on_zeroctrlclick( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member

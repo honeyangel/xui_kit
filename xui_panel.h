@@ -45,7 +45,7 @@ public:
 	/*
 	//virtual
 	*/
-	virtual xui_componet*				choose_else			( const xui_vector<s32>& pt );
+	virtual xui_component*				choose_else			( const xui_vector<s32>& pt );
 	virtual void						update_else			( f32 delta );
 	virtual void						render_else			( void );
 

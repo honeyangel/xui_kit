@@ -37,11 +37,11 @@ protected:
 	/*
 	//event
 	*/
-	void					on_textctrlclick		( xui_componet* sender, xui_method_mouse&	 args );
-	void					on_textctrldragenter	( xui_componet* sender, xui_method_dragdrop& args );
-	void					on_textctrldragleave	( xui_componet* sender, xui_method_dragdrop& args );
-	void					on_textctrldragover		( xui_componet* sender, xui_method_dragdrop& args );
-	void					on_textctrldragdrop		( xui_componet* sender, xui_method_dragdrop& args );
+	void					on_textctrlclick		( xui_component* sender, xui_method_mouse&	 args );
+	void					on_textctrldragenter	( xui_component* sender, xui_method_dragdrop& args );
+	void					on_textctrldragleave	( xui_component* sender, xui_method_dragdrop& args );
+	void					on_textctrldragover		( xui_component* sender, xui_method_dragdrop& args );
+	void					on_textctrldragdrop		( xui_component* sender, xui_method_dragdrop& args );
 
 	/*
 	//member

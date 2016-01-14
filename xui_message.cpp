@@ -10,7 +10,7 @@ xui_create_explain(xui_message)( void )
 , lparam(0)
 {}
 
-xui_create_explain(xui_message)( xui_componet* other_sender, u32 other_msgidx, u32 other_wparam, u32 other_lparam )
+xui_create_explain(xui_message)( xui_component* other_sender, u32 other_msgidx, u32 other_wparam, u32 other_lparam )
 : sender(other_sender)
 , msgidx(other_msgidx)
 , wparam(other_wparam)

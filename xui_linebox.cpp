@@ -30,7 +30,7 @@ xui_method_explain(xui_linebox, set_flow,			void			)( u08 flow )
 /*
 //line ctrl
 */
-xui_method_explain(xui_linebox, add_linectrl,		void			)( xui_componet* componet )
+xui_method_explain(xui_linebox, add_linectrl,		void			)( xui_component* componet )
 {
 	if (componet->get_parent())
 		return;
@@ -40,9 +40,9 @@ xui_method_explain(xui_linebox, add_linectrl,		void			)( xui_componet* componet 
 	invalid();
 }
 
-xui_method_explain(xui_linebox, del_linectrl,		void			)( xui_componet* componet )
+xui_method_explain(xui_linebox, del_linectrl,		void			)( xui_component* componet )
 {
-	std::vector<xui_componet*>::iterator itor = std::find(
+	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
 		componet);
@@ -56,7 +56,7 @@ xui_method_explain(xui_linebox, del_linectrl,		void			)( xui_componet* componet 
 	invalid();
 }
 
-xui_method_explain(xui_linebox, get_cornerrt, xui_rect2d<s32>	)( xui_componet* componet ) const
+xui_method_explain(xui_linebox, get_cornerrt, xui_rect2d<s32>	)( xui_component* componet ) const
 {
 	xui_rect2d<s32> corner(0);
 	if (m_widgetvec.size())

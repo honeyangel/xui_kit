@@ -31,7 +31,7 @@ public:
 		m_slot_vec.push_back(slot);
 	}
 
-	void operator () ( xui_componet* sender, T&  args )
+	void operator () ( xui_component* sender, T&  args )
 	{
 		for (u32 i = 0; i < m_slot_vec.size(); ++i)
 			(*m_slot_vec[i])(sender, args);

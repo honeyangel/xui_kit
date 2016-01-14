@@ -207,7 +207,7 @@ public:
 	//render
 	*/
 	virtual xui_treenode*				choose_node			( const xui_vector<s32>& pt );
-	virtual xui_componet*				choose_else			( const xui_vector<s32>& pt );
+	virtual xui_component*				choose_else			( const xui_vector<s32>& pt );
 	virtual void						update_else			( f32 delta );
 	virtual void						render_else			( void );
 
@@ -241,8 +241,8 @@ protected:
 	/*
 	//event
 	*/
-	void								on_headclick		( xui_componet* sender, xui_method_mouse& args );
-	void								on_headrenderself	( xui_componet* sender, xui_method_args&  args );
+	void								on_headclick		( xui_component* sender, xui_method_mouse& args );
+	void								on_headrenderself	( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//member

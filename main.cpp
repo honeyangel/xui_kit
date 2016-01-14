@@ -83,7 +83,7 @@ public:
 
 	}
 
-	void on_buttonclick(xui_componet* sender, xui_method_args& args)
+	void on_buttonclick(xui_component* sender, xui_method_args& args)
 	{
 		on_accept();
 	}
@@ -104,7 +104,7 @@ static xui_propdata* stdvec_newprop(void* ptr, xui_propkind* kind)
 	return new xui_propdata_object_impl<xui_treenode>(kind, L"", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, (xui_treenode**)ptr);
 }
 
-static void treeview_dragitem(xui_componet* sender, xui_method_dragdrop& args )
+static void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_treeview* treeview = (xui_treeview*)sender;
 	std::vector<xui_treenode*> selectednode = treeview->get_selectednode();
@@ -291,7 +291,8 @@ void Resize(int w, int h)
 	m[15] =  1.0f;
 	glLoadMatrixf(m);
 
-	glViewport(0, 0, w, h);
+	g_convas->set_viewport(xui_rect2d<s32>(0, 0, w, h));
+	g_convas->set_cliprect(xui_rect2d<s32>(0));
 }
 
 void Render()
@@ -299,23 +300,28 @@ void Render()
 	g_timermgr->update(0.016f);
 	g_desktop->update(0.016f);
 
-	glDisable(GL_SCISSOR_TEST);
-	glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
+	//glDisable(GL_SCISSOR_TEST);
+	//glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//g_convas.fill_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 6);
+	//g_convas->set_cliprect(xui_rect2d<s32>(50, 50, 200, 200));
+	g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
+	g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
 	//g_convas.draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
 
 	xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
 	//g_convas.draw_image(image, xui_vector<s32>(30, 30), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 
+	xui_family_render textdraw;
+	textdraw.renderstyle = TEXTDRAW_STROKE;
+
 	std::wstringstream text;
 	text << rect2d_value.get_h();
-	g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-	g_convas->draw_text(bool_value ? L"True" : L"False", xui_family("Arial", 30, false), xui_vector<s32>(0, 30), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-	g_convas->draw_text(enum_map[(s32)enum_value], xui_family("Arial", 30, false), xui_vector<s32>(0, 60), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-	g_convas->draw_text(string_value, xui_family("Arial", 30, false), xui_vector<s32>(0, 90), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-	g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 120), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
+	//g_convas->draw_text(bool_value ? L"True" : L"False", xui_family("Arial", 30, false), xui_vector<s32>(0, 30), textdraw);
+	//g_convas->draw_text(enum_map[(s32)enum_value], xui_family("Arial", 30, false), xui_vector<s32>(0, 60), textdraw);
+	//g_convas->draw_text(string_value, xui_family("Arial", 30, false), xui_vector<s32>(0, 90), textdraw);
+	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 120), textdraw);
 
 	xui_vector<s32> pt(0, 150);
 	g_desktop->render();
@@ -352,16 +358,16 @@ int main(int argc, char** argv)
 	glEnable(GL_BLEND);
 	glutReshapeWindow(800, 600);
 	//glEnable(GL_POINT_SMOOTH);
-	//glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	//glEnable(GL_LINE_SMOOTH);
-	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	//glEnable(GL_POLYGON_SMOOTH);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	g_family_create = new xui_family_create_win();
 	g_timermgr = new xui_timermgr();
 	g_desktop = new xui_desktop("", xui_rect2d<s32>(0, 0, 800, 600));
-	g_convas = new xui_convas;
+	xui_convas::init();
 	xui_window* window = new xui_window("", xui_rect2d<s32>(50, 50, 700, 600));
 	//window->set_corner(5);
 	window->set_sidestyle(SIDESTYLE_S);

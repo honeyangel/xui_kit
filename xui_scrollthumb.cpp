@@ -5,7 +5,7 @@
 /*
 //constructor
 */
-xui_create_explain(xui_scrollthumb)( const std::string& name, const xui_rect2d<s32>& rect, u08 style, xui_componet* parent )
+xui_create_explain(xui_scrollthumb)( const std::string& name, const xui_rect2d<s32>& rect, u08 style, xui_component* parent )
 : xui_button(name, rect)
 {
 	m_style	 = style;
