@@ -1,5 +1,5 @@
-#ifndef __xui_componet_h__
-#define __xui_componet_h__
+#ifndef __xui_component_h__
+#define __xui_component_h__
 
 #include "xui_rect2d.h"
 #include "xui_colour.h"
@@ -37,8 +37,12 @@ enum
 	CURSOR_NS,
 	CURSOR_WE,
 	CURSOR_TEXT,
-	CURSOR_STOP,
+	CURSOR_SIZE,
 	CURSOR_MOVE,
+	CURSOR_HAND,
+	CURSOR_DRAG,
+	CURSOR_DRAGBAN,
+	CURSOR_DRAGADD,
 };
 
 class xui_component
@@ -52,6 +56,7 @@ public:
 	//constructor
 	*/
 	xui_component( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_component( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor
@@ -59,9 +64,9 @@ public:
 	virtual ~xui_component( void );
 
 	/*
-	//type
+	//ini
 	*/
-	const std::string&				get_type			( void ) const;
+	void							ini_component		( const xui_rect2d<s32>& rect );
 
 	/*
 	//name
@@ -94,12 +99,6 @@ public:
 	*/
 	xui_window*						get_window			( void );
 
-	/*
-	//cliped
-	*/
-	bool							was_cliped			( void ) const;
-	void							set_cliped			( bool flag );
-
 	/* 
 	//enable
 	*/
@@ -111,18 +110,6 @@ public:
 	*/
 	bool							was_visible			( void ) const;
 	void							set_visible			( bool flag );
-
-	/*
-	//inherit
-	*/
-	bool							was_inherit			( void ) const;
-	void							set_inherit			( bool flag );
-
-	/*
-	//raycast
-	*/
-	bool							was_raycast			( void ) const;
-	void							set_raycast			( bool flag );
 
 	/*
 	//focus
@@ -162,21 +149,20 @@ public:
 	xui_vector<s32>					get_renderpt		( void ) const;
 	void							set_renderx			( s32 x );
 	void							set_rendery			( s32 y );
-	void							set_renderpt		( const xui_vector<s32>& pt, bool notify_parent = true );
+	void							set_renderpt		( const xui_vector<s32>& pt );
 
 	s32								get_renderw			( void ) const;
 	s32								get_renderh			( void ) const;
 	xui_vector<s32>					get_rendersz		( void ) const;
 	void							set_renderw			( s32 w );
 	void							set_renderh			( s32 h );
-	void							set_rendersz		( const xui_vector<s32>& sz, bool notify_parent = true );
+	void							set_rendersz		( const xui_vector<s32>& sz );
 
 	/*
 	//virtual
 	*/
 	virtual xui_vector<s32>			get_renderpt		( const xui_vector<s32>& pt ) const;
 	virtual xui_vector<s32>			get_screenpt		( void ) const;
-	virtual xui_rect2d<s32>			get_clipedrt		( void ) const;
 	virtual xui_colour				get_vertexcolor		( void ) const;
 	virtual xui_colour				get_rendercolor		( void ) const;
 
@@ -188,12 +174,10 @@ public:
 
 	/*
 	//choose
+	//update
+	//render
 	*/
 	virtual xui_component*			choose				( const xui_vector<s32>& pt );
-
-	/*
-	//update & render
-	*/
 	virtual void 					update				( f32 delta );
 	virtual void 					render				( void );
 
@@ -203,6 +187,18 @@ public:
 	void							invalid				( void );
 	void							refresh				( void );
 	void							perform				( void );
+
+	/*
+	//perform set render method
+	*/
+	void							on_perform_x		( s32 x );
+	void							on_perform_y		( s32 y );
+	void							on_perform_pt		( s32 x, s32 y );
+	void							on_perform_pt		( const xui_vector<s32>& pt );
+	void							on_perform_w		( s32 w );
+	void							on_perform_h		( s32 h );
+	void							on_perform_sz		( s32 w, s32 h );
+	void							on_perform_sz		( const xui_vector<s32>& sz );
 
 	/*
 	//method
@@ -283,7 +279,6 @@ protected:
 
 	virtual void					on_renderback		( xui_method_args&		args );
 	virtual void					on_renderself		( xui_method_args&		args );
-
 	virtual void					on_updateself		( xui_method_args&		args );
 	virtual void					on_topdraw			( xui_method_args&		args );
 	virtual void					on_invalid			( xui_method_args&		args );
@@ -292,27 +287,23 @@ protected:
 	/*
 	//perform implement
 	*/
-	void							perform_alignhorz	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
-	void							perform_alignvert	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
-	void							perform_dockstyle	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec );
+	void							perform_alignhorz	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec );
+	void							perform_alignvert	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec );
+	void							perform_dockstyle	( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec );
 
 protected:
 	/*
 	//member
 	*/
-	std::string						m_type;
 	std::string						m_name;
 	void*							m_data;
 
 	u32								m_cursor;
 	xui_component*					m_parent;
 	xui_rect2d<s32>					m_render;
-	bool							m_cliped;
 	bool							m_enable;
 	bool							m_visible;
 	bool							m_invalid;
-	bool							m_inherit;
-	bool							m_raycast;
 
 	u08								m_alignhorz;
 	u08								m_alignvert;
@@ -324,4 +315,4 @@ protected:
 	bool							m_drawcolor;
 };
 
-#endif//__xui_componet_h__
+#endif//__xui_component_h__

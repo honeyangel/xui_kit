@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
+#include "xui_window.h"
 #include "xui_component.h"
 
 xui_implement_root(xui_component);
@@ -9,18 +10,14 @@ xui_implement_root(xui_component);
 */
 xui_create_explain(xui_component)( const std::string& name, const xui_rect2d<s32>& rect )
 {
-	m_type		= "component";
 	m_name		= name;
 	m_data		= NULL;
 	m_cursor	= CURSOR_DEFAULT;
 	m_parent	= NULL;
 	m_render	= rect;
-	m_cliped	= true;
 	m_enable	= true;
 	m_visible	= true;
-	m_inherit	= false;
 	m_invalid	= false;
-	m_raycast	= true;
 
 	m_alignhorz = 0;
 	m_alignvert = 0;
@@ -30,6 +27,24 @@ xui_create_explain(xui_component)( const std::string& name, const xui_rect2d<s32
 	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
 	m_drawcolor = true;
 }
+xui_create_explain(xui_component)( const xui_vector<s32>& size, xui_component* parent )
+{
+	m_data		= NULL;
+	m_cursor	= CURSOR_DEFAULT;
+	m_parent	= parent;
+	m_render	= xui_rect2d<s32>(xui_vector<s32>(0), size);
+	m_enable	= true;
+	m_visible	= true;
+	m_invalid	= false;
+
+	m_alignhorz = 0;
+	m_alignvert = 0;
+	m_dockstyle = 0;
+	m_backalpha = 1.0f;
+	m_backcolor = xui_colour(0.0f, 0.0f, 0.0f, 0.0f);
+	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
+	m_drawcolor = false;
+}
 
 /*
 //destructor
@@ -38,11 +53,11 @@ xui_delete_explain(xui_component)( void )
 {}
 
 /*
-//type
+//ini
 */
-xui_method_explain(xui_component, get_type,				const std::string&		)( void ) const
+xui_method_explain(xui_component, ini_component,		void					)( const xui_rect2d<s32>& rect )
 {
-	return m_type;
+	m_render = rect;
 }
 
 /*
@@ -118,8 +133,9 @@ xui_method_explain(xui_component, get_window,			xui_window*				)( void )
 	xui_component* parent = this;
 	while (parent)
 	{
-		if (parent->get_type().find("window") != -1)
-			return (xui_window*)parent;
+		xui_window* window = xui_dynamic_cast(xui_window, parent);
+		if (window)
+			return window;
 
 		parent = parent->get_parent();
 	}
@@ -148,18 +164,6 @@ xui_method_explain(xui_component, set_enable,			void					)( bool flag )
 }
 
 /*
-//cliped
-*/
-xui_method_explain(xui_component, was_cliped,			bool					)( void ) const
-{
-	return m_cliped;
-}
-xui_method_explain(xui_component, set_cliped,			void					)( bool flag )
-{
-	m_cliped = flag;
-}
-
-/*
 //visible
 */
 xui_method_explain(xui_component, was_visible,			bool					)( void ) const
@@ -178,34 +182,9 @@ xui_method_explain(xui_component, set_visible,			void					)( bool flag )
 		else			{ on_hide(args); xm_hide(this, args); } 
 
 		//刷新父控件
-		//if (m_parent)
-		//	m_parent->refresh();
+		if (m_parent && xui_issub_kindof(xui_panel, m_parent))
+			m_parent->refresh();
 	}
-}
-
-/*
-//inherit
-*/
-xui_method_explain(xui_component, was_inherit,			bool					)( void ) const
-{
-	return m_inherit;
-}
-
-xui_method_explain(xui_component, set_inherit,			void					)( bool flag )
-{
-	m_inherit = flag;
-}
-
-/*
-//raycast
-*/
-xui_method_explain(xui_component, was_raycast,			bool					)( void ) const
-{
-	return m_raycast;
-}
-xui_method_explain(xui_component, set_raycast,			void					)( bool flag )
-{
-	m_raycast = flag;
 }
 
 /*
@@ -288,7 +267,7 @@ xui_method_explain(xui_component, set_alignhorz,			void					)( u08 alignhorz )
 	{
 		m_alignhorz  = alignhorz;
 
-		if (m_parent)
+		if (m_parent && xui_issub_kindof(xui_panel, m_parent))
 			m_parent->perform();
 	}
 }
@@ -304,7 +283,7 @@ xui_method_explain(xui_component, set_alignvert,			void					)( u08 alignvert )
 	{
 		m_alignvert  = alignvert;
 
-		if (m_parent)
+		if (m_parent && xui_issub_kindof(xui_panel, m_parent))
 			m_parent->perform();
 	}
 }
@@ -320,7 +299,7 @@ xui_method_explain(xui_component, set_dockstyle,			void					)( u08 dockstyle )
 	{
 		m_dockstyle  = dockstyle;
 
-		if (m_parent)
+		if (m_parent && xui_issub_kindof(xui_panel, m_parent))
 			m_parent->perform();
 	}
 }
@@ -353,7 +332,7 @@ xui_method_explain(xui_component, set_rendery,			void					)( s32 y )
 	set_renderpt(xui_vector<s32>(m_render.ax, y));
 }
 
-xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s32>& pt, bool notify_parent )
+xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s32>& pt )
 {
 	if (m_render.was_pt(pt) == false)
 	{
@@ -363,7 +342,7 @@ xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s
 		on_setrenderpt(      args); 
 		xm_setrenderpt(this, args);
 
-		if (m_parent && notify_parent)
+		if (m_parent)
 			m_parent->invalid();
 	}
 }
@@ -393,7 +372,7 @@ xui_method_explain(xui_component, set_renderh,			void					)( s32 h )
 	set_rendersz(xui_vector<s32>(m_render.get_sz().w, h));
 }
 
-xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s32>& sz, bool notify_parent )
+xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s32>& sz )
 {
 	if (m_render.was_sz(sz) == false)
 	{
@@ -403,7 +382,7 @@ xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s
 		on_setrendersz(      args); 
 		xm_setrendersz(this, args);
 
-		if (m_parent && notify_parent)
+		if (m_parent)
 			m_parent->invalid();
 	}
 }
@@ -421,12 +400,12 @@ xui_method_explain(xui_component, get_screenpt,			xui_vector<s32>			)( void ) co
 		: pt + m_parent->get_screenpt();
 }
 
-xui_method_explain(xui_component, get_clipedrt,			xui_rect2d<s32>			)( void ) const
-{
-	if		(m_parent == NULL || m_cliped == false)	return get_renderrtabs();
-	else if (m_inherit)								return m_parent->get_clipedrt();
-	else											return m_parent->get_clipedrt().get_inter(m_parent->get_renderrtabs());
-}
+//xui_method_explain(xui_component, get_clipedrt,			xui_rect2d<s32>			)( void ) const
+//{
+//	if		(m_parent == NULL || m_cliped == false)	return get_renderrtabs();
+//	else if (m_inherit)								return m_parent->get_clipedrt();
+//	else											return m_parent->get_clipedrt().get_inter(m_parent->get_renderrtabs());
+//}
 
 xui_method_explain(xui_component, get_vertexcolor,		xui_colour				)( void ) const
 {
@@ -465,10 +444,9 @@ xui_method_explain(xui_component, get_renderrtabs,		xui_rect2d<s32>			)( void ) 
 xui_method_explain(xui_component, choose,				xui_component*			)( const xui_vector<s32>& pt )
 {
 	//判定区域
-	if (m_enable && m_visible && m_raycast)
+	if (m_enable && m_visible)
 	{
-		xui_rect2d<s32> rt = get_clipedrt().get_inter(get_renderrtabs());
-		if (rt.was_inside(pt))
+		if (m_render.was_inside(pt))
 			return this;
 	}
 
@@ -514,12 +492,60 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 
 xui_method_explain(xui_component, render,				void					)( void )
 {
-	//paint->set_clip_rect(get_clipedrt());
-
 	xui_method_args     args; 
 	on_renderback(      args);
 	on_renderself(      args);
 	xm_renderself(this, args);
+}
+
+/*
+//perform set render method
+*/
+xui_method_explain(xui_component, on_perform_x,			void					)( s32 x )
+{
+	on_perform_pt(x, m_render.ay);
+}
+xui_method_explain(xui_component, on_perform_y,			void					)( s32 y )
+{
+	on_perform_pt(m_render.ax, y);
+}
+xui_method_explain(xui_component, on_perform_pt,		void					)( s32 x, s32 y )
+{
+	on_perform_pt(xui_vector<s32>(x, y));
+}
+xui_method_explain(xui_component, on_perform_pt,		void					)( const xui_vector<s32>& pt )
+{
+	if (m_render.get_pt() != pt)
+	{
+		m_render.set_pt(pt);
+
+		xui_method_args      args; 
+		on_setrenderpt(      args); 
+		xm_setrenderpt(this, args);
+	}
+}
+xui_method_explain(xui_component, on_perform_w,			void					)( s32 w )
+{
+	on_perform_sz(w, m_render.get_h());
+}
+xui_method_explain(xui_component, on_perform_h,			void					)( s32 h )
+{
+	on_perform_sz(m_render.get_w(), h);
+}
+xui_method_explain(xui_component, on_perform_sz,		void					)( s32 w, s32 h )
+{
+	on_perform_sz(xui_vector<s32>(w, h));
+}
+xui_method_explain(xui_component, on_perform_sz,		void					)( const xui_vector<s32>& sz )
+{
+	if (m_render.get_sz() != sz)
+	{
+		m_render.set_sz(sz);
+
+		xui_method_args      args; 
+		on_setrendersz(      args); 
+		xm_setrendersz(this, args);
+	}
 }
 
 /*
@@ -536,7 +562,7 @@ xui_method_explain(xui_component, on_setrendersz,		void					)( xui_method_args&	
 xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			args )
 {
 	xui_component* root = m_parent;
-	while (root && root->get_type().find("panel") == -1)
+	while (root && xui_issub_kindof(xui_panel, root) == false)
 	{
 		root->xm_getfocus(this, args);
 		root = root->get_parent();
@@ -545,7 +571,7 @@ xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			
 xui_method_explain(xui_component, on_nonfocus,			void					)( xui_method_args&			args )
 {
 	xui_component* root = m_parent;
-	while (root && root->get_type().find("panel") == -1)
+	while (root && xui_issub_kindof(xui_panel, root) == false)
 	{
 		root->xm_nonfocus(this, args);
 		root = root->get_parent();
@@ -593,7 +619,9 @@ xui_method_explain(xui_component, on_mousedown,			void					)( xui_method_mouse&	
 }
 xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&		args )
 {
-	if (g_desktop->get_hoverctrl() == this)
+	if (g_desktop->get_catchctrl() == this &&
+		g_desktop->get_hoverctrl() == this &&
+		args.mouse == MB_L)
 	{
 		on_mouseclick(      args);
 		xm_mouseclick(this, args);
@@ -671,66 +699,66 @@ xui_method_explain(xui_component, on_perform,			void					)( xui_method_args&			a
 /*
 //perform implement
 */
-xui_method_explain(xui_component, perform_alignhorz,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec )
+xui_method_explain(xui_component, perform_alignhorz,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
-	for (u32 i = 0; i < compVec.size(); ++i)
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		xui_component* comp = compVec[i];
+		xui_component* comp = vec[i];
 		if (comp->get_alignhorz() == 0)
 			continue;
 
 		//计算横坐标
-		xui_vector<s32> pt = comp->get_renderpt();
+		s32 x = 0;
 		switch (comp->get_alignhorz())
 		{
 		case ALIGNHORZ_L:
-			pt.x = rect.ax;			
+			x = rect.ax;			
 			break;
 		case ALIGNHORZ_R:	
-			pt.x = rect.ax + (rect.get_sz().w - comp->get_renderw());			
+			x = rect.ax + (rect.get_w() - comp->get_renderw());			
 			break;
 		case ALIGNHORZ_C:	
-			pt.x = rect.ax + (rect.get_sz().w - comp->get_renderw()) / 2;	
+			x = rect.ax + (rect.get_w() - comp->get_renderw()) / 2;	
 			break;
 		}
 
-		comp->set_renderpt(pt, false);
+		comp->on_perform_x(x);
 	}
 }
 
-xui_method_explain(xui_component, perform_alignvert,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec )
+xui_method_explain(xui_component, perform_alignvert,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
-	for (u32 i = 0; i < compVec.size(); ++i)
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		xui_component* comp = compVec[i];
+		xui_component* comp = vec[i];
 		if (comp->get_alignvert() == 0)
 			continue;
 
 		//计算纵坐标
-		xui_vector<s32> pt = comp->get_renderpt();
+		s32 y = 0;
 		switch (comp->get_alignvert())
 		{
 		case ALIGNVERT_T:	
-			pt.y = rect.ay;											
+			y = rect.ay;											
 			break;							
 		case ALIGNVERT_B:	
-			pt.y = rect.ay + (rect.get_sz().h - comp->get_renderh());			
+			y = rect.ay + (rect.get_h() - comp->get_renderh());			
 			break;
 		case ALIGNVERT_C:	
-			pt.y = rect.ay + (rect.get_sz().h - comp->get_renderh()) / 2;	
+			y = rect.ay + (rect.get_h() - comp->get_renderh()) / 2;	
 			break;
 		}
 
-		comp->set_renderpt(pt, false);
+		comp->on_perform_y(y);
 	}
 }
 
-xui_method_explain(xui_component, perform_dockstyle,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& compVec )
+xui_method_explain(xui_component, perform_dockstyle,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
-	xui_rect2d<s32> temp = rect;
-	for (u32 i = 0; i < compVec.size(); ++i)
+	xui_rect2d<s32> rest = rect;
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		xui_component* comp = compVec[i];
+		xui_component* comp = vec[i];
 		if (comp->was_visible()   == false ||
 			comp->get_dockstyle() == DOCKSTYLE_N)
 			continue;
@@ -740,39 +768,39 @@ xui_method_explain(xui_component, perform_dockstyle,		void					)( const xui_rect
 		switch (comp->get_dockstyle())
 		{
 		case DOCKSTYLE_L:
-			pt.x	= temp.ax;
-			pt.y	= temp.ay;
-			sz.h	= temp.get_sz().h;
-			temp.ax = temp.ax + comp->get_renderw();
+			pt.x	= rest.ax;
+			pt.y	= rest.ay;
+			sz.h	= rest.get_h();
+			rest.ax = rest.ax + comp->get_renderw();
 			break;
 		case DOCKSTYLE_T:
-			pt.x	= temp.ax;
-			pt.y	= temp.ay;
-			sz.w	= temp.get_sz().w;
-			temp.ay = temp.ay + comp->get_renderh();
+			pt.x	= rest.ax;
+			pt.y	= rest.ay;
+			sz.w	= rest.get_w();
+			rest.ay = rest.ay + comp->get_renderh();
 			break;
 		case DOCKSTYLE_R:
-			pt.x	= temp.bx - comp->get_renderw();
-			pt.y	= temp.ay;
-			sz.h	= temp.get_sz().h;
-			temp.bx = pt.x;
+			pt.x	= rest.bx - comp->get_renderw();
+			pt.y	= rest.ay;
+			sz.h	= rest.get_h();
+			rest.bx = pt.x;
 			break;
 		case DOCKSTYLE_B:
-			pt.x	= temp.ax;
-			pt.y	= temp.by - comp->get_renderh();
-			sz.w	= temp.get_sz().w;
-			temp.by = pt.y;
+			pt.x	= rest.ax;
+			pt.y	= rest.by - comp->get_renderh();
+			sz.w	= rest.get_w();
+			rest.by = pt.y;
 			break;
 		case DOCKSTYLE_F:
-			pt.x	= temp.ax;
-			pt.y	= temp.ay;
-			sz.w	= temp.get_sz().w;
-			sz.h	= temp.get_sz().h;
+			pt.x	= rest.ax;
+			pt.y	= rest.ay;
+			sz.w	= rest.get_w();
+			sz.h	= rest.get_h();
 			break;
 		}
 
-		comp->set_renderpt(pt, false);
-		comp->set_rendersz(sz, false);
+		comp->on_perform_pt(pt);
+		comp->on_perform_sz(sz);
 
 		if (comp->get_dockstyle() == DOCKSTYLE_F)
 			break;
