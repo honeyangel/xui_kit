@@ -222,9 +222,6 @@
     <ClInclude Include="xui_textbox.h">
       <Filter>LibGUI\textbox</Filter>
     </ClInclude>
-    <ClInclude Include="xui_caret.h">
-      <Filter>LibGUI\textbox</Filter>
-    </ClInclude>
     <ClInclude Include="xui_separate.h">
       <Filter>LibGUI\widget</Filter>
     </ClInclude>
@@ -368,6 +365,9 @@
     </ClInclude>
     <ClInclude Include="xui_component.h">
       <Filter>LibGUI\component</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_caretdrawer.h">
+      <Filter>LibGUI\textbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -513,9 +513,6 @@
     <ClCompile Include="xui_textbox.cpp">
       <Filter>LibGUI\textbox</Filter>
     </ClCompile>
-    <ClCompile Include="xui_caret.cpp">
-      <Filter>LibGUI\textbox</Filter>
-    </ClCompile>
     <ClCompile Include="xui_separate.cpp">
       <Filter>LibGUI\widget</Filter>
     </ClCompile>
@@ -656,6 +653,9 @@
     </ClCompile>
     <ClCompile Include="xui_component.cpp">
       <Filter>LibGUI\component</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_caretdrawer.cpp">
+      <Filter>LibGUI\textbox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

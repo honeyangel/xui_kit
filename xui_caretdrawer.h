@@ -1,15 +1,15 @@
-#ifndef __xui_caret_h__
-#define __xui_caret_h__
+#ifndef __xui_caretdrawer_h__
+#define __xui_caretdrawer_h__
 
 #include "xui_rect2d.h"
 
-class xui_caret
+class xui_caretdrawer
 {
 public:
 	/*
 	//constructor
 	*/
-	xui_caret( void );
+	xui_caretdrawer( void );
 
 	/*
 	//rectangle
@@ -33,4 +33,4 @@ protected:
 	f32						m_carettime;
 };
 
-#endif//__xui_caret_h__
+#endif//__xui_caretdrawer_h__

@@ -1,10 +1,10 @@
 #include "xui_convas.h"
-#include "xui_caret.h"
+#include "xui_caretdrawer.h"
 
 /*
 //constructor
 */
-xui_create_explain(xui_caret)( void )
+xui_create_explain(xui_caretdrawer)( void )
 {
 	m_caretrect = xui_rect2d<s32>(0);
 	m_caretshow = false;
@@ -14,11 +14,11 @@ xui_create_explain(xui_caret)( void )
 /*
 //rectangle
 */
-xui_method_explain(xui_caret, get_caretrect,	const xui_rect2d<s32>&	)( void ) const
+xui_method_explain(xui_caretdrawer, get_caretrect,	const xui_rect2d<s32>&	)( void ) const
 {
 	return m_caretrect;
 }
-xui_method_explain(xui_caret, set_caretrect,	void					)( const xui_rect2d<s32>& rect )
+xui_method_explain(xui_caretdrawer, set_caretrect,	void					)( const xui_rect2d<s32>& rect )
 {
 	if (m_caretrect != rect)
 	{
@@ -30,7 +30,7 @@ xui_method_explain(xui_caret, set_caretrect,	void					)( const xui_rect2d<s32>& 
 /*
 //method
 */
-xui_method_explain(xui_caret, update,			void					)( f32 delta )
+xui_method_explain(xui_caretdrawer, update,			void					)( f32 delta )
 {
 	m_carettime += delta;
 
@@ -40,14 +40,14 @@ xui_method_explain(xui_caret, update,			void					)( f32 delta )
 		m_carettime = 0.0f;
 	}
 }
-xui_method_explain(xui_caret, render,			void					)( void )
+xui_method_explain(xui_caretdrawer, render,			void					)( void )
 {
 	if (m_caretshow)
 	{
 		g_convas->fill_rectangle(m_caretrect, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 	}
 }
-xui_method_explain(xui_caret, reset,			void					)( void )
+xui_method_explain(xui_caretdrawer, reset,			void					)( void )
 {
 	m_caretshow = true;
 	m_carettime = 0.0f;

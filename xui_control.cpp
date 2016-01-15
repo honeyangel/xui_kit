@@ -1,6 +1,10 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
+#include "xui_linebox.h"
+#include "xui_gridbox.h"
 #include "xui_control.h"
+
+xui_implement_rtti(xui_control, xui_component);
 
 /*
 //constructor
@@ -8,13 +12,22 @@
 xui_create_explain(xui_control)( const std::string& name, const xui_rect2d<s32>& rect )
 : xui_component(name, rect)
 {
-	m_type	   += "control";
 	m_client	= rect;
 	m_border	= xui_rect2d<s32>(0);
 	m_scroll	= xui_vector<s32>(0);
 	m_corner	= 0;
 	m_sidestyle = 0;
 	m_sidecolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
+}
+xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
+: xui_component(size, parent)
+{
+	m_client	= m_render;
+	m_border	= xui_rect2d<s32>(2);
+	m_scroll	= xui_vector<s32>(0);
+	m_corner	= 0;
+	m_sidestyle = 0;
+	m_sidecolor = xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
 }
 
 /*
@@ -161,10 +174,9 @@ xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( void ) con
 {
 	if (m_parent)
 	{
-		std::string type = m_parent->get_type();
-		if (type.find("linebox") != -1 ||
-			type.find("gridbox") != -1)
-			return ((xui_control*)m_parent)->get_cornerrt((xui_component*)this);
+		if (xui_issub_kindof(xui_linebox, m_parent) ||
+			xui_issub_kindof(xui_gridbox, m_parent))
+			return xui_dynamic_cast(xui_control, m_parent)->get_cornerrt((xui_component*)this);
 	}
 
 	return xui_rect2d<s32>(m_corner);
@@ -182,17 +194,6 @@ xui_method_explain(xui_control, get_clientrt,		xui_rect2d<s32>					)( void ) con
 {
 	return xui_rect2d<s32>(xui_vector<s32>(0, 0), m_client.get_sz());
 }
-
-//xui_method_explain(xui_control, get_clientrtins,	xui_rect2d<s32>					)( void ) const
-//{
-//	xui_rect2d<s32> rect = get_clientrt();
-//	rect.ax += m_border.ax;
-//	rect.ay += m_border.ay;
-//	rect.bx -= m_border.bx;
-//	rect.by -= m_border.by;
-//	return rect;
-//}
-
 xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>					)( void ) const
 {
 	xui_rect2d<s32> rect = get_renderrt();
@@ -222,10 +223,14 @@ xui_method_explain(xui_control, choose,				xui_component*					)( const xui_vecto
 xui_method_explain(xui_control, choose_else,		xui_component*					)( const xui_vector<s32>& pt )
 {
 	xui_component* componet = NULL;
-	xui_vecptr_addloop(m_widgetvec)
+	if (m_render.was_inside(pt))
 	{
-		if (componet = m_widgetvec[i]->choose(pt))
-			return componet;
+		xui_vector<s32> relative = pt - m_render.get_pt();
+		xui_vecptr_addloop(m_widgetvec)
+		{
+			if (componet = m_widgetvec[i]->choose(relative))
+				return componet;
+		}
 	}
 
 	return NULL;
@@ -254,6 +259,7 @@ xui_method_explain(xui_control, render,				void							)( void )
 }
 xui_method_explain(xui_control, render_else,		void							)( void )
 {
+	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
 	xui_vecptr_addloop(m_widgetvec)
 	{
 		if (m_widgetvec[i]->was_visible())
@@ -282,13 +288,13 @@ xui_method_explain(xui_control, on_renderback,		void							)( xui_method_args& a
 
 	if (m_drawcolor)
 	{
-		xui_colour fillColor = get_rendercolor() * color;
-		g_convas->fill_round(renderrt, fillColor, cornerrt);
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
 	}
 	if (m_sidestyle)
 	{
-		xui_colour sideColor = m_sidecolor * color;
-		g_convas->draw_round(renderrt, sideColor, cornerrt);
+		xui_colour side_color = m_sidecolor * color;
+		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
 
 		if (m_sidestyle == SIDESTYLE_D)
 		{
@@ -298,14 +304,18 @@ xui_method_explain(xui_control, on_renderback,		void							)( xui_method_args& a
 				renderrt.bx-1, 
 				renderrt.by-1);
 
-			sideColor.r = 1.0f - sideColor.r;
-			sideColor.g = 1.0f - sideColor.g;
-			sideColor.b = 1.0f - sideColor.b;
-			g_convas->draw_round(temp, sideColor, cornerrt);
+			side_color.r = 1.0f - side_color.r;
+			side_color.g = 1.0f - side_color.g;
+			side_color.b = 1.0f - side_color.b;
+			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
 		}
 	}
 }
 
+xui_method_explain(xui_control, on_renderself,		void							)( xui_method_args& args )
+{
+	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+}
 xui_method_explain(xui_control, on_perform,			void							)( xui_method_args& args )
 {
 	if (m_widgetvec.size() > 0)

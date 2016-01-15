@@ -18,11 +18,14 @@ enum
 
 class xui_control : public xui_component
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
 	xui_control( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_control( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor
@@ -74,7 +77,6 @@ public:
 	virtual xui_vector<s32>			get_screenpt		( void ) const;
 	virtual xui_rect2d<s32>			get_cornerrt		( void ) const;
 	virtual xui_rect2d<s32>			get_cornerrt		( xui_component* widget ) const;
-	//virtual xui_rect2d<s32>			get_clientrtins		( void ) const;
 	virtual xui_rect2d<s32>			get_renderrtins		( void ) const;
 
 	/*
@@ -104,6 +106,7 @@ protected:
 	virtual void					on_setclientsz		( xui_method_args& args );
 	virtual void					on_setborderrt		( xui_method_args& args );
 	virtual void					on_renderback		( xui_method_args& args );
+	virtual void					on_renderself		( xui_method_args& args );
 	virtual void					on_perform			( xui_method_args& args );
 
 protected:

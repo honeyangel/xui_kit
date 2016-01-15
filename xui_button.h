@@ -5,11 +5,13 @@
 
 class xui_button : public xui_drawer
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_button( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_button( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//color
@@ -35,7 +37,6 @@ protected:
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
 	virtual xui_vector<s32>		get_rendericonpt( void ) const;
-	virtual xui_rect2d<s32>		get_rendertextrt( void ) const;
 
 	/*
 	//member

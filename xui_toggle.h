@@ -12,28 +12,24 @@ enum
 
 class xui_toggle : public xui_button
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_toggle( const std::string& name, const xui_rect2d<s32>& rect, u08 style = TOGGLE_BUTTON );
+	xui_toggle( const xui_vector<s32>& size, xui_component* parent, u08 drawstyle = TOGGLE_CIRCLE );
 
 	/*
 	//init
 	*/
-	void						ini_toggle		( bool flag );
+	void						ini_toggle		( bool push );
 
 	/*
 	//check
 	*/
-	bool						was_check		( void ) const;
-	void						set_check		( bool flag );
-
-	/*
-	//style
-	*/
-	u08							get_style		( void ) const;
-	void						set_style		( u08 style );
+	bool						was_push		( void ) const;
+	void						set_push		( bool push );
 
 	/*
 	//method
@@ -51,15 +47,13 @@ protected:
 	//virtual
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
-	virtual xui_bitmap*			get_rendericon	( void ) const;
 	virtual xui_vector<s32>		get_rendericonpt( void ) const;
-	virtual xui_rect2d<s32>		get_rendertextrt( void ) const;
 
 	/*
 	//member
 	*/
-	bool						m_check;
-	u08							m_style;
+	bool						m_push;
+	u08							m_drawstyle;
 };
 
 #endif//__xui_toggle_h__

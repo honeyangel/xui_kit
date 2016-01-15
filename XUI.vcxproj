@@ -136,7 +136,7 @@
     <ClInclude Include="xui_treeplus.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="xui_caret.h" />
+    <ClInclude Include="xui_caretdrawer.h" />
     <ClInclude Include="xui_container.h" />
     <ClInclude Include="xui_gridbox.h" />
     <ClInclude Include="xui_linebox.h" />
@@ -292,7 +292,7 @@
     <ClCompile Include="xui_bitmap_format.cpp" />
     <ClCompile Include="xui_border.cpp" />
     <ClCompile Include="xui_button.cpp" />
-    <ClCompile Include="xui_caret.cpp" />
+    <ClCompile Include="xui_caretdrawer.cpp" />
     <ClCompile Include="xui_container.cpp" />
     <ClCompile Include="xui_control.cpp" />
     <ClCompile Include="xui_convas.cpp" />

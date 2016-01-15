@@ -13,11 +13,13 @@ enum
 
 class xui_border : public xui_component
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_border( const std::string& name, const xui_rect2d<s32>& rect, u08 flag, xui_control* parent );
+	xui_border( const xui_vector<s32>& size, xui_component* parent, u08 flag );
 
 	/*
 	//flag
