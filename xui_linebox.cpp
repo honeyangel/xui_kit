@@ -1,24 +1,24 @@
 #include "xui_linebox.h"
 
+xui_implement_rtti(xui_linebox, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_linebox)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_control(name, rect)
+xui_create_explain(xui_linebox)( const xui_vector<s32>& size, xui_component* parent )
+: xui_control(size, parent)
 {
-	m_type += "linebox";
-	m_flow  = FLOWSTYLE_H;
+	m_flow = FLOWSTYLE_H;
 }
 
 /*
 //flow
 */
-xui_method_explain(xui_linebox, get_flow,			u08				)( void ) const
+xui_method_explain(xui_linebox, get_flow,		u08				)( void ) const
 {
 	return m_flow;
 }
-
-xui_method_explain(xui_linebox, set_flow,			void			)( u08 flow )
+xui_method_explain(xui_linebox, set_flow,		void			)( u08 flow )
 {
 	if (m_flow != flow)
 	{
@@ -30,7 +30,7 @@ xui_method_explain(xui_linebox, set_flow,			void			)( u08 flow )
 /*
 //line ctrl
 */
-xui_method_explain(xui_linebox, add_linectrl,		void			)( xui_component* componet )
+xui_method_explain(xui_linebox, add_linectrl,	void			)( xui_component* componet )
 {
 	if (componet->get_parent())
 		return;
@@ -39,8 +39,7 @@ xui_method_explain(xui_linebox, add_linectrl,		void			)( xui_component* componet
 	m_widgetvec.push_back(componet);
 	invalid();
 }
-
-xui_method_explain(xui_linebox, del_linectrl,		void			)( xui_component* componet )
+xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_component* componet )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -55,8 +54,7 @@ xui_method_explain(xui_linebox, del_linectrl,		void			)( xui_component* componet
 	m_widgetvec.erase(itor);
 	invalid();
 }
-
-xui_method_explain(xui_linebox, get_cornerrt, xui_rect2d<s32>	)( xui_component* componet ) const
+xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* componet ) const
 {
 	xui_rect2d<s32> corner(0);
 	if (m_widgetvec.size())
@@ -98,7 +96,7 @@ xui_method_explain(xui_linebox, get_cornerrt, xui_rect2d<s32>	)( xui_component* 
 /*
 //callback
 */
-xui_method_explain(xui_linebox, on_invalid,			void			)( xui_method_args& args )
+xui_method_explain(xui_linebox, on_invalid,		void			)( xui_method_args& args )
 {
 	if (m_widgetvec.size() > 0)
 	{
@@ -131,23 +129,23 @@ xui_method_explain(xui_linebox, on_invalid,			void			)( xui_method_args& args )
 		}
 	}
 }
-
-xui_method_explain(xui_linebox, on_perform,			void			)( xui_method_args& args )
+xui_method_explain(xui_linebox, on_perform,		void			)( xui_method_args& args )
 {
 	xui_vector<s32> pt(0);
 	xui_vecptr_addloop(m_widgetvec)
 	{
-		m_widgetvec[i]->set_renderpt(pt);
+		xui_component* comp = m_widgetvec[i];
+		comp->on_perform_pt(pt);
 
 		switch (m_flow)
 		{
 		case FLOWSTYLE_H:
-			m_widgetvec[i]->set_rendersz(xui_vector<s32>(m_widgetvec[i]->get_renderw(), get_renderh()), false);
-			pt.x += m_widgetvec[i]->get_renderw();
+			comp->on_perform_h(get_renderh());
+			pt.x += comp->get_renderw();
 			break;
 		case FLOWSTYLE_V:
-			m_widgetvec[i]->set_rendersz(xui_vector<s32>(get_renderw(), m_widgetvec[i]->get_renderh()), false);
-			pt.y += m_widgetvec[i]->get_renderh();
+			comp->on_perform_w(get_renderw());
+			pt.y += comp->get_renderh();
 			break;
 		}
 	}

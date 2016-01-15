@@ -1,24 +1,26 @@
+#include "xui_bitmap.h"
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_textbox.h"
 
+xui_implement_rtti(xui_textbox, xui_drawer);
+
 /*
 //constructor
 */
-xui_create_explain(xui_textbox)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_drawer(name, rect)
+xui_create_explain(xui_textbox)( const xui_vector<s32>& size, xui_component* parent )
+: xui_drawer(size, parent)
 {
-	m_type			+= "textbox";
 	m_cursor		 = CURSOR_TEXT;
 	m_password		 = false;
 	m_readonly		 = false;
 	m_numbonly		 = false;
+	m_caretdrawer	 = new xui_caretdrawer;
 	m_selectstart	 = 0;
 	m_selectfinal	 = 0;
 	m_caretcurrindex = 0;
 	m_caretdragindex = 0;
 	m_firstshowindex = 0;
-	m_caret			 = new xui_caret;
 }
 
 /*
@@ -26,66 +28,65 @@ xui_create_explain(xui_textbox)( const std::string& name, const xui_rect2d<s32>&
 */
 xui_delete_explain(xui_textbox)( void )
 {
-	delete m_caret;
+	delete m_caretdrawer;
 }
 
 /*
 //init
 */
-xui_method_explain(xui_textbox, ini_textbox,		void				)( const std::wstring& text )
+xui_method_explain(xui_textbox, ini_textbox,		void					)( const std::wstring& text )
 {
 	m_text = text;
-	non_selecttext();
+	non_selecttext( );
 	set_caretindex(0);
 }
 
 /*
 //hint text
 */
-xui_method_explain(xui_textbox, get_hinttext,		const std::wstring&	)( void ) const
+xui_method_explain(xui_textbox, get_hinttext,		const std::wstring&		)( void ) const
 {
 	return m_hinttext;
 }
-xui_method_explain(xui_textbox, set_hinttext,		void				)( const std::wstring& text )
+xui_method_explain(xui_textbox, set_hinttext,		void					)( const std::wstring& hint )
 {
-	m_hinttext = text;
+	m_hinttext = hint;
 }
-
-xui_method_explain(xui_textbox, get_hintgray,		const xui_colour&	)( void ) const
+xui_method_explain(xui_textbox, get_hintdraw,		const xui_family_render&)( void ) const
 {
-	return m_hintdraw.normalcolor;
+	return m_hintdraw;
 }
-xui_method_explain(xui_textbox, set_hintgray,		void				)( const xui_colour& colour )
+xui_method_explain(xui_textbox, set_hintdraw,		void					)( const xui_family_render& hintdraw )
 {
-	m_hintdraw.normalcolor = colour;
+	m_hintdraw = hintdraw;
 }
 
 /*
 //property
 */
-xui_method_explain(xui_textbox, was_password,		bool				)( void ) const
+xui_method_explain(xui_textbox, was_password,		bool					)( void ) const
 {
 	return m_password;
 }
-xui_method_explain(xui_textbox, set_password,		void				)( bool flag )
+xui_method_explain(xui_textbox, set_password,		void					)( bool flag )
 {
 	m_password = flag;
 }
 
-xui_method_explain(xui_textbox, was_numbonly,		bool				)( void ) const
+xui_method_explain(xui_textbox, was_numbonly,		bool					)( void ) const
 {
 	return m_numbonly;
 }
-xui_method_explain(xui_textbox, set_numbonly,		void				)( bool flag )
+xui_method_explain(xui_textbox, set_numbonly,		void					)( bool flag )
 {
 	m_numbonly = flag;
 }
 
-xui_method_explain(xui_textbox, was_readonly,		bool				)( void ) const
+xui_method_explain(xui_textbox, was_readonly,		bool					)( void ) const
 {
 	return m_readonly;
 }
-xui_method_explain(xui_textbox, set_readonly,		void				)( bool flag )
+xui_method_explain(xui_textbox, set_readonly,		void					)( bool flag )
 {
 	m_readonly = flag;
 	if (m_readonly) m_cursor = CURSOR_DEFAULT;
@@ -95,11 +96,11 @@ xui_method_explain(xui_textbox, set_readonly,		void				)( bool flag )
 /*
 //caret
 */
-xui_method_explain(xui_textbox, get_caretindex,		u32					)( void ) const
+xui_method_explain(xui_textbox, get_caretindex,		u32						)( void ) const
 {
 	return m_caretcurrindex;
 }
-xui_method_explain(xui_textbox, set_caretindex,		void				)( u32 index, bool force )
+xui_method_explain(xui_textbox, set_caretindex,		void					)( u32 index, bool force )
 {
 	if (index > m_text.length())
 		index = m_text.length();
@@ -111,7 +112,7 @@ xui_method_explain(xui_textbox, set_caretindex,		void				)( u32 index, bool forc
 		set_caretrect();
 	}
 }
-xui_method_explain(xui_textbox, hit_caretindex,		u32					)( const xui_vector<s32>& relative ) const
+xui_method_explain(xui_textbox, hit_caretindex,		u32						)( const xui_vector<s32>& relative ) const
 {
 	if (m_text.empty())
 		return 0;
@@ -128,7 +129,7 @@ xui_method_explain(xui_textbox, hit_caretindex,		u32					)( const xui_vector<s32
 
 	return m_firstshowindex + index;
 }
-xui_method_explain(xui_textbox, set_caretvisible,	void				)( void )
+xui_method_explain(xui_textbox, set_caretvisible,	void					)( void )
 {
 	//光标在可见字符前
 	if (m_caretcurrindex < m_firstshowindex)
@@ -142,19 +143,19 @@ xui_method_explain(xui_textbox, set_caretvisible,	void				)( void )
 /*
 //select
 */
-xui_method_explain(xui_textbox, get_selectstart,	u32					)( void ) const
+xui_method_explain(xui_textbox, get_selectstart,	u32						)( void ) const
 {
 	return (m_selectstart == m_selectfinal) ? m_caretcurrindex : m_selectstart;
 }
-xui_method_explain(xui_textbox, get_selectfinal,	u32					)( void ) const
+xui_method_explain(xui_textbox, get_selectfinal,	u32						)( void ) const
 {
 	return (m_selectstart == m_selectfinal) ? m_caretcurrindex : m_selectfinal;
 }
-xui_method_explain(xui_textbox, get_selectcount,	u32					)( void ) const
+xui_method_explain(xui_textbox, get_selectcount,	u32						)( void ) const
 {
 	return get_selectfinal() - get_selectstart();
 }
-xui_method_explain(xui_textbox, set_selecttext,		void				)( u32 start, u32 final )
+xui_method_explain(xui_textbox, set_selecttext,		void					)( u32 start, u32 final )
 {
 	//确保索引不超范围
 	if (start > m_text.length())
@@ -170,15 +171,15 @@ xui_method_explain(xui_textbox, set_selecttext,		void				)( u32 start, u32 final
 /*
 //update&render
 */
-xui_method_explain(xui_textbox, update,				void				)( f32 delta )
+xui_method_explain(xui_textbox, update,				void					)( f32 delta )
 {
 	xui_drawer::update(delta);
-
+	//catch
 	if (has_catch())
 	{
-		xui_vector<s32> mouse = g_desktop->get_mousecurr();
-		xui_rect2d<s32> rt    = get_renderrtabs();
-		if (mouse.x < rt.ax)
+		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_rect2d<s32> rt = get_renderrtabs();
+		if (pt.x < rt.ax)
 		{
 			if (m_caretcurrindex > 0)
 			{
@@ -186,7 +187,7 @@ xui_method_explain(xui_textbox, update,				void				)( f32 delta )
 				set_selecttext(m_caretdragindex, m_caretcurrindex);
 			}
 		}
-		if (mouse.x > rt.bx)
+		if (pt.x > rt.bx)
 		{
 			if (m_caretcurrindex < m_text.length())
 			{
@@ -199,24 +200,24 @@ xui_method_explain(xui_textbox, update,				void				)( f32 delta )
 	//caret
 	if (has_focus())
 	{
-		m_caret->update(delta);
+		m_caretdrawer->update(delta);
 	}
 }
-xui_method_explain(xui_textbox, render,				void				)( void )
+xui_method_explain(xui_textbox, render,				void					)( void )
 {
 	xui_drawer::render();
 
 	//caret
 	if (has_focus() && m_readonly == false)
 	{
-		m_caret->render();
+		m_caretdrawer->render();
 	}
 }
 
 /*
 //callback
 */
-xui_method_explain(xui_textbox, on_keybddown,		void				)( xui_method_keybd& args )
+xui_method_explain(xui_textbox, on_keybddown,		void					)( xui_method_keybd& args )
 {
 	xui_drawer::on_keybddown(args);
 
@@ -242,7 +243,7 @@ xui_method_explain(xui_textbox, on_keybddown,		void				)( xui_method_keybd& args
 	case KEY_V:		do_paste	();				break;
 	}
 }
-xui_method_explain(xui_textbox, on_keybdchar,		void				)( xui_method_keybd& args )
+xui_method_explain(xui_textbox, on_keybdchar,		void					)( xui_method_keybd& args )
 {
 	xui_drawer::on_keybdchar(args);
 
@@ -265,9 +266,9 @@ xui_method_explain(xui_textbox, on_keybdchar,		void				)( xui_method_keybd& args
 
 	//回调
 	xui_method_args other_args;
-	on_textchanged( other_args);
+	on_textchanged (other_args);
 }
-xui_method_explain(xui_textbox, on_mousedown,		void				)( xui_method_mouse& args )
+xui_method_explain(xui_textbox, on_mousedown,		void					)( xui_method_mouse& args )
 {
 	xui_drawer::on_mousedown(args);
 
@@ -282,10 +283,10 @@ xui_method_explain(xui_textbox, on_mousedown,		void				)( xui_method_mouse& args
 		set_caretindex(m_caretdragindex, true);
 
 		//重置
-		m_caret->reset();
+		m_caretdrawer->reset();
 	}
 }
-xui_method_explain(xui_textbox, on_mousemove,		void				)( xui_method_mouse& args )
+xui_method_explain(xui_textbox, on_mousemove,		void					)( xui_method_mouse& args )
 {
 	xui_drawer::on_mousemove(args);
 
@@ -296,7 +297,7 @@ xui_method_explain(xui_textbox, on_mousemove,		void				)( xui_method_mouse& args
 		set_selecttext(m_caretcurrindex, m_caretdragindex);
 	}
 }
-xui_method_explain(xui_textbox, on_textchanged,		void				)( xui_method_args&  args )
+xui_method_explain(xui_textbox, on_textchanged,		void					)( xui_method_args&  args )
 {
 	//取消选中
 	non_selecttext();
@@ -307,16 +308,30 @@ xui_method_explain(xui_textbox, on_textchanged,		void				)( xui_method_args&  ar
 	//事件
 	xui_drawer::on_textchanged(args);
 }
-xui_method_explain(xui_textbox, on_renderback,		void				)( xui_method_args&  args )
+xui_method_explain(xui_textbox, on_setrenderpt,		void					)( xui_method_args&  args )
 {
-	xui_drawer::on_renderback(args);
+	xui_drawer::on_setrenderpt(args);
+	set_caretrect();
+}
+xui_method_explain(xui_textbox, on_setrendersz,		void					)( xui_method_args&  args )
+{
+	xui_drawer::on_setrendersz(args);
+	set_caretrect();
+}
+xui_method_explain(xui_textbox, on_setborderrt,		void					)( xui_method_args&  args )
+{
+	xui_drawer::on_setborderrt(args);
+	set_caretrect();
+}
+xui_method_explain(xui_textbox, on_renderself,		void					)( xui_method_args&  args )
+{
+	xui_colour color = get_vertexcolor();
 
 	//绘制选中背景
 	if (get_selectcount())
 	{						
 		u32 start = xui_max(get_selectstart(), m_firstshowindex);
 		u32 final = xui_min(get_selectfinal(), m_firstshowindex + get_showcount());			
-
 		if (final > start)
 		{
 			u32 x = get_textwidth(m_text.substr(m_firstshowindex, start-m_firstshowindex));
@@ -325,37 +340,30 @@ xui_method_explain(xui_textbox, on_renderback,		void				)( xui_method_args&  arg
 			xui_rect2d<s32> rt = get_rendertextrt() + get_screenpt();
 			rt.oft_x(x);
 			rt.set_w(w);
-			g_convas->fill_rectangle(rt, xui_colour(0.3f, 0.0f, 0.0f, 1.0f));
+			xui_convas::get_ins()->fill_rectangle(rt, color*xui_colour(0.3f, 0.0f, 0.0f, 1.0f));
 		}
 	}
-}
-xui_method_explain(xui_textbox, on_renderself,		void				)( xui_method_args&  args )
-{
+
 	xui_drawer::on_renderself(args);
 
 	//绘制提示
 	if (m_text.empty() && m_hinttext.length() > 0)
 	{
-		xui_colour color = get_vertexcolor();
-		xui_rect2d<s32> rt = g_convas->calc_draw(
-			m_hinttext, 
-			m_font, 
-			get_renderrtins(), 
-			m_textalign, 
-			false);
-
+		xui_family_render textdraw = m_hintdraw;
+		textdraw.normalcolor *= color;
+		textdraw.strokecolor *= color;
 		g_convas->draw_text(
 			m_hinttext, 
-			m_font, 
-			rt + m_textoffset + get_screenpt(), 
-			m_hintdraw);
+			m_textfont, 
+			get_rendertextrt() + get_screenpt(), 
+			textdraw);
 	}
 }
 
 /*
 //virtual
 */
-xui_method_explain(xui_textbox, get_rendertext,		std::wstring		)( void ) const
+xui_method_explain(xui_textbox, get_rendertext,		std::wstring			)( void ) const
 {
 	std::wstring temp = m_text.substr(m_firstshowindex, get_showcount());
 	if (m_password)
@@ -363,11 +371,54 @@ xui_method_explain(xui_textbox, get_rendertext,		std::wstring		)( void ) const
 
 	return temp;
 }
+xui_method_explain(xui_textbox, get_rendericonpt,	xui_vector<s32>			)( void ) const
+{
+	xui_bitmap*     icon = get_rendericon ();
+	xui_rect2d<s32> rt   = get_renderrtins();
+	xui_vector<s32> pt   = rt.get_pt();
+	if (icon)
+	{
+		pt.x = rt.ax;
+		pt.y = rt.ay + (rt.get_h() - icon->get_size().h) / 2;
+	}
+
+	return pt + m_iconoffset;
+}
+xui_method_explain(xui_textbox, get_rendertextrt,	xui_rect2d<s32>			)( void ) const
+{
+	xui_bitmap*     icon = get_rendericon  ();
+	std::wstring    text = get_rendertext  ();
+	xui_rect2d<s32> rt   = get_renderrtins ();
+	xui_vector<s32> pt   = get_rendericonpt();
+	if (icon)
+	{
+		rt.ax = pt.x + icon->get_size().w;
+	}
+	else
+	{
+		rt.ax = pt.x;
+		rt.ay = pt.y;
+	}
+
+	if (text.length() == 0)
+		text = m_hinttext;
+	if (text.length() >  0)
+	{
+		rt = xui_convas::get_ins()->calc_draw(
+			text, 
+			m_textfont, 
+			rt, 
+			m_textalign, 
+			true);
+	}
+
+	return rt + m_textoffset;
+}
 
 /*
 //keyboard
 */
-xui_method_explain(xui_textbox, do_larrow,			void				)( bool shift )
+xui_method_explain(xui_textbox, do_larrow,			void					)( bool shift )
 {
 	if (m_caretcurrindex > 0)
 		set_caretindex(m_caretcurrindex-1);
@@ -376,7 +427,7 @@ xui_method_explain(xui_textbox, do_larrow,			void				)( bool shift )
 	if (shift)	set_selecttext(m_caretdragindex, m_caretcurrindex);
 	else		non_selecttext();
 }
-xui_method_explain(xui_textbox, do_rarrow,			void				)( bool shift )
+xui_method_explain(xui_textbox, do_rarrow,			void					)( bool shift )
 {
 	if (m_caretcurrindex < m_text.length())
 		set_caretindex(m_caretcurrindex+1);
@@ -385,7 +436,7 @@ xui_method_explain(xui_textbox, do_rarrow,			void				)( bool shift )
 	if (shift)	set_selecttext(m_caretdragindex, m_caretcurrindex);
 	else		non_selecttext();
 }
-xui_method_explain(xui_textbox, do_home,			void				)( bool shift )
+xui_method_explain(xui_textbox, do_home,			void					)( bool shift )
 {
 	if (m_caretcurrindex > 0)
 		set_caretindex(0);
@@ -394,7 +445,7 @@ xui_method_explain(xui_textbox, do_home,			void				)( bool shift )
 	if (shift)	set_selecttext(m_caretdragindex, m_caretcurrindex);
 	else		non_selecttext();
 }
-xui_method_explain(xui_textbox, do_end,				void				)( bool shift )
+xui_method_explain(xui_textbox, do_end,				void					)( bool shift )
 {
 	if (m_caretcurrindex < m_text.length())
 		set_caretindex(m_text.length());
@@ -403,12 +454,12 @@ xui_method_explain(xui_textbox, do_end,				void				)( bool shift )
 	if (shift)	set_selecttext(m_caretdragindex, m_caretcurrindex);
 	else		non_selecttext();
 }
-xui_method_explain(xui_textbox, do_enter,			void				)( void )
+xui_method_explain(xui_textbox, do_enter,			void					)( void )
 {
 	xui_method_args    args;
 	xm_textenter(this, args);
 }
-xui_method_explain(xui_textbox, do_back,			void				)( void )
+xui_method_explain(xui_textbox, do_back,			void					)( void )
 {
 	if (was_readonly())
 		return;
@@ -438,7 +489,7 @@ xui_method_explain(xui_textbox, do_back,			void				)( void )
 		}
 	}
 }
-xui_method_explain(xui_textbox, do_delete,			void				)( void )
+xui_method_explain(xui_textbox, do_delete,			void					)( void )
 {
 	if (was_readonly())
 		return;
@@ -456,11 +507,11 @@ xui_method_explain(xui_textbox, do_delete,			void				)( void )
 		}
 	}
 }
-xui_method_explain(xui_textbox, do_select,			void				)( void )
+xui_method_explain(xui_textbox, do_select,			void					)( void )
 {
 	set_selecttext(0, m_text.length());
 }
-xui_method_explain(xui_textbox, do_copy,			void				)( void )
+xui_method_explain(xui_textbox, do_copy,			void					)( void )
 {
 	if (m_password)
 		return;
@@ -468,7 +519,7 @@ xui_method_explain(xui_textbox, do_copy,			void				)( void )
 	std::wstring temp = get_selecttext();
 	g_desktop->set_pastetext(temp);
 }
-xui_method_explain(xui_textbox, do_cut,				void				)( void )
+xui_method_explain(xui_textbox, do_cut,				void					)( void )
 {
 	if (m_readonly || m_password)
 		return;
@@ -476,7 +527,7 @@ xui_method_explain(xui_textbox, do_cut,				void				)( void )
 	do_copy();
 	del_selecttext();
 }
-xui_method_explain(xui_textbox, do_paste,			void				)( void )
+xui_method_explain(xui_textbox, do_paste,			void					)( void )
 {
 	if (m_readonly)
 		return;
@@ -494,7 +545,7 @@ xui_method_explain(xui_textbox, do_paste,			void				)( void )
 /*
 //selection
 */
-xui_method_explain(xui_textbox, del_selecttext,		void				)( void )
+xui_method_explain(xui_textbox, del_selecttext,		void					)( void )
 {
 	if (get_selectcount())
 	{
@@ -504,12 +555,12 @@ xui_method_explain(xui_textbox, del_selecttext,		void				)( void )
 		on_textchanged( args);
 	}
 }
-xui_method_explain(xui_textbox, non_selecttext,		void				)( void )
+xui_method_explain(xui_textbox, non_selecttext,		void					)( void )
 {
 	if (get_selectcount())
 		set_selecttext(0, 0);
 }
-xui_method_explain(xui_textbox, get_selecttext,		std::wstring		)( void ) const
+xui_method_explain(xui_textbox, get_selecttext,		std::wstring			)( void ) const
 {
 	if (get_selectcount())
 		return m_text.substr(get_selectstart(), get_selectcount());
@@ -520,7 +571,7 @@ xui_method_explain(xui_textbox, get_selecttext,		std::wstring		)( void ) const
 /*
 //method
 */
-xui_method_explain(xui_textbox, set_caretrect,		void				)( void )
+xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 {
 	xui_rect2d<s32> rt = get_rendertextrt() + get_screenpt();
 	if (get_rendertext().length() > 0)
@@ -529,14 +580,12 @@ xui_method_explain(xui_textbox, set_caretrect,		void				)( void )
 	}
 	else
 	{
-		rt.oft_y(rt.get_sz().h/2 - m_font.size/2);
-		rt.set_h(m_font.size);
 		switch (m_textalign)
 		{
 		case TA_CT:
 		case TA_CC:
 		case TA_CB:
-			rt.ax += rt.get_sz().w/2-1;
+			rt.ax += rt.get_w()/2-1;
 			break;
 		case TA_RT:
 		case TA_RC:
@@ -547,29 +596,34 @@ xui_method_explain(xui_textbox, set_caretrect,		void				)( void )
 	}
 
 	rt.set_w(2);
-	m_caret->set_caretrect(rt);
+	m_caretdrawer->set_caretrect(rt);
 }
-xui_method_explain(xui_textbox, get_textwidth,		u32					)( const std::wstring& text ) const
+xui_method_explain(xui_textbox, get_textwidth,		u32						)( const std::wstring& text ) const
 {
 	std::wstring temp = text;
 	if (m_password)
 		std::fill(temp.begin(), temp.end(), L'*');
 
-	return g_convas->calc_size(temp, m_font, 0, true).w;
+	return xui_convas::get_ins()->calc_size(temp, m_textfont, 0, true).w;
 }
-xui_method_explain(xui_textbox, get_charindex,		u32					)( const std::wstring& text, s32 x ) const
+xui_method_explain(xui_textbox, get_charindex,		u32						)( const std::wstring& text, s32 x ) const
 {
 	std::wstring temp = text;
 	if (m_password)
 		std::fill(temp.begin(), temp.end(), L'*');
 
-	return g_convas->calc_char(temp, m_font, x);
+	return xui_convas::get_ins()->calc_char(temp, m_textfont, x);
 }
-xui_method_explain(xui_textbox, get_showcount,		u32					)( void ) const
+xui_method_explain(xui_textbox, get_showcount,		u32						)( void ) const
 {
 	std::wstring temp = m_text.substr(m_firstshowindex, m_text.length()-m_firstshowindex);
 	if (m_password)
 		std::fill(temp.begin(), temp.end(), L'*');
 
-	return g_convas->calc_text(temp, m_font, get_renderrtins().get_sz().w).length();
+	s32 maxwidth = get_renderrtins().get_w();
+	maxwidth -= (m_icon == NULL) ? 0 : m_icon->get_size().w;
+	maxwidth -= m_iconoffset.x;
+	maxwidth -= m_textoffset.x;
+
+	return xui_convas::get_ins()->calc_text(temp, m_textfont, maxwidth).length();
 }

@@ -55,7 +55,6 @@ public:
 	/*
 	//constructor
 	*/
-	xui_component( const std::string& name, const xui_rect2d<s32>& rect );
 	xui_component( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
@@ -66,7 +65,7 @@ public:
 	/*
 	//ini
 	*/
-	void							ini_component		( const xui_rect2d<s32>& rect );
+	void							ini_component		( bool enable, bool visible );
 
 	/*
 	//name
@@ -128,8 +127,6 @@ public:
 	void							set_backcolor		( const xui_colour& color );
     const xui_colour&			    get_maskcolor       ( void ) const;
     void                            set_maskcolor       ( const xui_colour& color );
-	bool							was_drawcolor		( void ) const;
-	void							set_drawcolor		( bool flag );
 
 	/* 
 	//layout 
@@ -312,7 +309,6 @@ protected:
 	f32								m_backalpha;
 	xui_colour						m_backcolor;
     xui_colour						m_maskcolor;
-	bool							m_drawcolor;
 };
 
 #endif//__xui_component_h__

@@ -1,14 +1,15 @@
 #include "xui_toolbar.h"
 
+xui_implement_rtti(xui_toolbar, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_toolbar)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_control(name, rect)
+xui_create_explain(xui_toolbar)( const xui_vector<s32>& size, xui_component* parent )
+: xui_control(size, parent)
 {
-	m_type += "toolbar";
-	m_flow  = FLOWSTYLE_H;
-	m_grap  = 2;
+	m_flow = FLOWSTYLE_H;
+	m_grap = 2;
 }
 
 /*
@@ -108,17 +109,18 @@ xui_method_explain(xui_toolbar, on_perform, void)( xui_method_args& args )
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vecptr_addloop(m_widgetvec)
 	{
-		m_widgetvec[i]->set_renderpt(pt);
+		xui_component* comp = m_widgetvec[i];
+		comp->on_perform_pt(pt);
 
 		switch (m_flow)
 		{
 		case FLOWSTYLE_H:
-			m_widgetvec[i]->set_rendersz(xui_vector<s32>(m_widgetvec[i]->get_renderw(), rt.get_sz().h), false);
-			pt.x += m_widgetvec[i]->get_renderw()+m_grap;
+			comp->on_perform_h(rt.get_h());
+			pt.x += comp->get_renderw()+m_grap;
 			break;
 		case FLOWSTYLE_V:
-			m_widgetvec[i]->set_rendersz(xui_vector<s32>(rt.get_sz().w, m_widgetvec[i]->get_renderh()), false);
-			pt.y += m_widgetvec[i]->get_renderh()+m_grap;
+			comp->on_perform_w(rt.get_w());
+			pt.y += comp->get_renderh()+m_grap;
 			break;
 		}
 	}

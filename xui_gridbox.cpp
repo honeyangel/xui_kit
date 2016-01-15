@@ -1,14 +1,15 @@
 #include "xui_gridbox.h"
 
+xui_implement_rtti(xui_gridbox, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_gridbox)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_control(name, rect)
+xui_create_explain(xui_gridbox)( xui_component* parent )
+: xui_control(xui_vector<s32>(0), parent)
 {
-	m_type	   += "gridbox";
-	m_rowcount  = 1;
-	m_colcount  = 1;
+	m_rowcount = 1;
+	m_colcount = 1;
 	memset(m_rowpixel, 50, sizeof(m_rowpixel));
 	memset(m_colpixel, 50, sizeof(m_colpixel));
 	memset(m_ptrarray,  0, sizeof(m_ptrarray));
@@ -167,8 +168,8 @@ xui_method_explain(xui_gridbox, on_perform,		void			)( xui_method_args& args )
 			sz.h   = m_rowpixel[row];
 			if (m_ptrarray[row][col])
 			{
-				m_ptrarray[row][col]->set_renderpt(pt, false);
-				m_ptrarray[row][col]->set_rendersz(sz, false);
+				m_ptrarray[row][col]->on_perform_pt(pt);
+				m_ptrarray[row][col]->on_perform_sz(sz);
 			}
 
 			pt.x  += m_colpixel[col];

@@ -7,15 +7,6 @@ xui_implement_rtti(xui_drawer, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_drawer)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_control(name, rect)
-{
-	m_icon			= NULL;
-	m_textalign		= TA_LC;
-	m_iconalign		= IMAGE_FRONT_TEXT;
-	m_textoffset	= xui_vector<s32>(0, 0);
-	m_iconoffset	= xui_vector<s32>(0, 0);
-}
 xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* parent )
 : xui_control(size, parent)
 {
@@ -28,7 +19,7 @@ xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* pare
 }
 
 /*
-//method
+//ini
 */
 xui_method_explain(xui_drawer, ini_drawer,			void					)( xui_bitmap* icon )
 {
@@ -46,6 +37,9 @@ xui_method_explain(xui_drawer, ini_drawer,			void					)( xui_bitmap* icon, const
 	m_text		= text;
 }
 
+/*
+//method
+*/
 xui_method_explain(xui_drawer, get_icon,			xui_bitmap*				)( void )
 {
 	return m_icon;
@@ -196,7 +190,7 @@ xui_method_explain(xui_drawer, get_rendertext,		std::wstring			)( void ) const
 }
 xui_method_explain(xui_drawer, get_rendericonpt,	xui_vector<s32>			)( void ) const
 {
-	xui_bitmap*     icon = get_rendericon();
+	xui_bitmap*     icon = get_rendericon ();
 	xui_rect2d<s32> rt   = get_renderrtins();
 	xui_vector<s32> pt   = rt.get_pt();
 	if (icon)

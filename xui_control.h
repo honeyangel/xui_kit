@@ -24,7 +24,6 @@ public:
 	/*
 	//constructor
 	*/
-	xui_control( const std::string& name, const xui_rect2d<s32>& rect );
 	xui_control( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
@@ -63,8 +62,10 @@ public:
 	void							set_corner			( s32 corner );
 
 	/*
-	//side
+	//backcolor
 	*/
+	bool							was_drawcolor		( void ) const;
+	void							set_drawcolor		( bool flag );
 	u08								get_sidestyle		( void ) const;
 	void							set_sidestyle		( u08 sidestyle );
 	const xui_colour&				get_sidecolor		( void ) const;
@@ -117,6 +118,7 @@ protected:
 	xui_rect2d<s32>					m_border;
 	xui_vector<s32>					m_scroll;
 	s32								m_corner;
+	bool							m_drawcolor;
 	u08								m_sidestyle;
 	xui_colour						m_sidecolor;
 	std::vector<xui_component*>		m_widgetvec;

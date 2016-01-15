@@ -11,7 +11,6 @@ public:
 	/*
 	//constructor
 	*/
-	xui_separate( const std::string& name, const xui_rect2d<s32>& rect );
 	xui_separate( const xui_vector<s32>& size, xui_component* parent );
 
 protected:

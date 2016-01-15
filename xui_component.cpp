@@ -8,25 +8,6 @@ xui_implement_root(xui_component);
 /*
 //constructor
 */
-xui_create_explain(xui_component)( const std::string& name, const xui_rect2d<s32>& rect )
-{
-	m_name		= name;
-	m_data		= NULL;
-	m_cursor	= CURSOR_DEFAULT;
-	m_parent	= NULL;
-	m_render	= rect;
-	m_enable	= true;
-	m_visible	= true;
-	m_invalid	= false;
-
-	m_alignhorz = 0;
-	m_alignvert = 0;
-	m_dockstyle = 0;
-	m_backalpha = 1.0f;
-	m_backcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
-	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
-	m_drawcolor = true;
-}
 xui_create_explain(xui_component)( const xui_vector<s32>& size, xui_component* parent )
 {
 	m_data		= NULL;
@@ -43,7 +24,6 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size, xui_component* p
 	m_backalpha = 1.0f;
 	m_backcolor = xui_colour(0.0f, 0.0f, 0.0f, 0.0f);
 	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
-	m_drawcolor = false;
 }
 
 /*
@@ -55,9 +35,10 @@ xui_delete_explain(xui_component)( void )
 /*
 //ini
 */
-xui_method_explain(xui_component, ini_component,		void					)( const xui_rect2d<s32>& rect )
+xui_method_explain(xui_component, ini_component,		void					)( bool enable, bool visible )
 {
-	m_render = rect;
+	m_enable	= enable;
+	m_visible	= visible;
 }
 
 /*
@@ -67,7 +48,6 @@ xui_method_explain(xui_component, get_name,				const std::string&		)( void ) con
 {
 	return m_name;
 }
-
 xui_method_explain(xui_component, set_name,				void					)( const std::string& name )
 {
 	m_name = name;
@@ -80,7 +60,6 @@ xui_method_explain(xui_component, get_data,				void*					)( void )
 {
 	return m_data;
 }
-
 xui_method_explain(xui_component, set_data,				void					)( void* data )
 {
 	m_data = data;
@@ -93,7 +72,6 @@ xui_method_explain(xui_component, get_cursor,			u32						)( void ) const
 {
 	return m_cursor;
 }
-
 xui_method_explain(xui_component, set_cursor,			void					)( u32 cursor )
 {
 	m_cursor = cursor;
@@ -106,17 +84,14 @@ xui_method_explain(xui_component, get_parent,			xui_component*			)( void )
 {
 	return m_parent;
 }
-
 xui_method_explain(xui_component, set_parent,			void					)( xui_component* componet )
 {
 	m_parent = componet;
 }
-
 xui_method_explain(xui_component, was_parent,			bool					)( xui_component* componet ) const
 {
 	return (m_parent && m_parent == componet);
 }
-
 xui_method_explain(xui_component, was_ancestor,			bool					)( xui_component* componet ) const
 {
 	if (m_parent == NULL)
@@ -150,7 +125,6 @@ xui_method_explain(xui_component, was_enable,			bool					)( void ) const
 {
 	return m_enable;
 }
-
 xui_method_explain(xui_component, set_enable,			void					)( bool flag )
 {
 	if (m_enable != flag)
@@ -170,7 +144,6 @@ xui_method_explain(xui_component, was_visible,			bool					)( void ) const
 {
 	return m_visible;
 }
-
 xui_method_explain(xui_component, set_visible,			void					)( bool flag )
 {
 	if (m_visible != flag)
@@ -190,22 +163,19 @@ xui_method_explain(xui_component, set_visible,			void					)( bool flag )
 /*
 //focus
 */
-xui_method_explain(xui_component, has_focus,				bool					)( void ) const
+xui_method_explain(xui_component, has_focus,			bool					)( void ) const
 {
 	return g_desktop->get_focusctrl() == this;
 }
-
-xui_method_explain(xui_component, req_focus,				void					)( void )
+xui_method_explain(xui_component, req_focus,			void					)( void )
 {
 	g_desktop->post_message(xui_message(this, XM_GETFOCUS, 0, 0));
 }
-
-xui_method_explain(xui_component, has_catch,				bool					)( void ) const
+xui_method_explain(xui_component, has_catch,			bool					)( void ) const
 {
 	return g_desktop->get_catchctrl() == this;
 }
-
-xui_method_explain(xui_component, req_catch,				void					)( void )
+xui_method_explain(xui_component, req_catch,			void					)( void )
 {
 	g_desktop->post_message(xui_message(this, XM_GETCATCH, 0, 0));
 }
@@ -213,55 +183,39 @@ xui_method_explain(xui_component, req_catch,				void					)( void )
 /*
 //background
 */
-xui_method_explain(xui_component, get_backalpha,			f32						)( void ) const
+xui_method_explain(xui_component, get_backalpha,		f32						)( void ) const
 {
 	return m_backalpha;
 }
-
-xui_method_explain(xui_component, set_backalpha,			void					)( f32 alpha )
+xui_method_explain(xui_component, set_backalpha,		void					)( f32 alpha )
 {
 	m_backalpha = alpha;
 }
-
-xui_method_explain(xui_component, get_backcolor,			const xui_colour&		)( void ) const
+xui_method_explain(xui_component, get_backcolor,		const xui_colour&		)( void ) const
 {
 	return m_backcolor;
 }
-
-xui_method_explain(xui_component, set_backcolor,			void					)( const xui_colour& color )
+xui_method_explain(xui_component, set_backcolor,		void					)( const xui_colour& color )
 {
 	m_backcolor = color;
 }
-
-xui_method_explain(xui_component, get_maskcolor,			const xui_colour&		)( void ) const
+xui_method_explain(xui_component, get_maskcolor,		const xui_colour&		)( void ) const
 {
 	return m_maskcolor;
 }
-
-xui_method_explain(xui_component, set_maskcolor,			void					)( const xui_colour& color )
+xui_method_explain(xui_component, set_maskcolor,		void					)( const xui_colour& color )
 {
 	m_maskcolor = color;
-}
-
-xui_method_explain(xui_component, was_drawcolor,			bool					)( void ) const
-{
-	return m_drawcolor;
-}
-
-xui_method_explain(xui_component, set_drawcolor,			void					)( bool flag )
-{
-	m_drawcolor = flag;
 }
 
 /*
 //layout
 */
-xui_method_explain(xui_component, get_alignhorz,			u08						)( void ) const
+xui_method_explain(xui_component, get_alignhorz,		u08						)( void ) const
 {
 	return m_alignhorz;
 }
-
-xui_method_explain(xui_component, set_alignhorz,			void					)( u08 alignhorz )
+xui_method_explain(xui_component, set_alignhorz,		void					)( u08 alignhorz )
 {
 	if (m_alignhorz != alignhorz)
 	{
@@ -271,13 +225,11 @@ xui_method_explain(xui_component, set_alignhorz,			void					)( u08 alignhorz )
 			m_parent->perform();
 	}
 }
-
-xui_method_explain(xui_component, get_alignvert,			u08						)( void ) const
+xui_method_explain(xui_component, get_alignvert,		u08						)( void ) const
 {
 	return m_alignvert;
 }
-
-xui_method_explain(xui_component, set_alignvert,			void					)( u08 alignvert )
+xui_method_explain(xui_component, set_alignvert,		void					)( u08 alignvert )
 {
 	if (m_alignvert != alignvert)
 	{
@@ -287,13 +239,11 @@ xui_method_explain(xui_component, set_alignvert,			void					)( u08 alignvert )
 			m_parent->perform();
 	}
 }
-
-xui_method_explain(xui_component, get_dockstyle,			u08						)( void ) const
+xui_method_explain(xui_component, get_dockstyle,		u08						)( void ) const
 {
 	return m_dockstyle;
 }
-
-xui_method_explain(xui_component, set_dockstyle,			void					)( u08 dockstyle )
+xui_method_explain(xui_component, set_dockstyle,		void					)( u08 dockstyle )
 {
 	if (m_dockstyle != dockstyle)
 	{
@@ -311,27 +261,22 @@ xui_method_explain(xui_component, get_renderx,			s32						)( void ) const
 {
 	return m_render.ax;
 }
-
 xui_method_explain(xui_component, get_rendery,			s32						)( void ) const
 {
 	return m_render.ay;
 }
-
 xui_method_explain(xui_component, get_renderpt,			xui_vector<s32>			)( void ) const
 {
 	return m_render.get_pt();
 }
-
 xui_method_explain(xui_component, set_renderx,			void					)( s32 x )
 {
 	set_renderpt(xui_vector<s32>(x, m_render.ay));
 }
-
 xui_method_explain(xui_component, set_rendery,			void					)( s32 y )
 {
 	set_renderpt(xui_vector<s32>(m_render.ax, y));
 }
-
 xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s32>& pt )
 {
 	if (m_render.was_pt(pt) == false)
@@ -346,32 +291,26 @@ xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s
 			m_parent->invalid();
 	}
 }
-
 xui_method_explain(xui_component, get_renderw,			s32						)( void ) const
 {
 	return m_render.get_sz().w;
 }
-
 xui_method_explain(xui_component, get_renderh,			s32						)( void ) const
 {
 	return m_render.get_sz().h;
 }
-
 xui_method_explain(xui_component, get_rendersz,			xui_vector<s32>			)( void ) const
 {
 	return m_render.get_sz();
 }
-
 xui_method_explain(xui_component, set_renderw,			void					)( s32 w )
 {
 	set_rendersz(xui_vector<s32>(w, m_render.get_sz().h));
 }
-
 xui_method_explain(xui_component, set_renderh,			void					)( s32 h )
 {
 	set_rendersz(xui_vector<s32>(m_render.get_sz().w, h));
 }
-
 xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s32>& sz )
 {
 	if (m_render.was_sz(sz) == false)
@@ -386,12 +325,10 @@ xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s
 			m_parent->invalid();
 	}
 }
-
 xui_method_explain(xui_component, get_renderpt,			xui_vector<s32>			)( const xui_vector<s32>& pt ) const
 {
 	return pt - get_screenpt();
 }
-
 xui_method_explain(xui_component, get_screenpt,			xui_vector<s32>			)( void ) const
 {
 	xui_vector<s32> pt = m_render.get_pt();
@@ -400,13 +337,9 @@ xui_method_explain(xui_component, get_screenpt,			xui_vector<s32>			)( void ) co
 		: pt + m_parent->get_screenpt();
 }
 
-//xui_method_explain(xui_component, get_clipedrt,			xui_rect2d<s32>			)( void ) const
-//{
-//	if		(m_parent == NULL || m_cliped == false)	return get_renderrtabs();
-//	else if (m_inherit)								return m_parent->get_clipedrt();
-//	else											return m_parent->get_clipedrt().get_inter(m_parent->get_renderrtabs());
-//}
-
+/*
+//color
+*/
 xui_method_explain(xui_component, get_vertexcolor,		xui_colour				)( void ) const
 {
 	xui_colour color(
@@ -419,7 +352,6 @@ xui_method_explain(xui_component, get_vertexcolor,		xui_colour				)( void ) cons
 		? color
 		: color * m_parent->get_vertexcolor();
 }
-
 xui_method_explain(xui_component, get_rendercolor,		xui_colour				)( void ) const
 {
 	return m_backcolor;
@@ -432,7 +364,6 @@ xui_method_explain(xui_component, get_renderrt,			xui_rect2d<s32>			)( void ) co
 {
 	return xui_rect2d<s32>(xui_vector<s32>(0, 0), get_rendersz());
 }
-
 xui_method_explain(xui_component, get_renderrtabs,		xui_rect2d<s32>			)( void ) const
 {
 	return get_renderrt() + get_screenpt();
@@ -460,7 +391,6 @@ xui_method_explain(xui_component, invalid,				void					)( void )
 {
 	m_invalid = true;
 }
-
 xui_method_explain(xui_component, refresh,				void					)( void )
 {
 	m_invalid = false;
@@ -469,7 +399,6 @@ xui_method_explain(xui_component, refresh,				void					)( void )
 	on_invalid(      args); 
 	xm_invalid(this, args);
 }
-
 xui_method_explain(xui_component, perform,				void					)( void )
 {
 	xui_method_args  args;
@@ -489,13 +418,15 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 	on_updateself(      args);
 	xm_updateself(this, args);
 }
-
 xui_method_explain(xui_component, render,				void					)( void )
 {
 	xui_method_args     args; 
 	on_renderback(      args);
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
 	on_renderself(      args);
 	xm_renderself(this, args);
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
@@ -631,19 +562,19 @@ xui_method_explain(xui_component, on_mousemove,			void					)( xui_method_mouse&	
 {
 
 }
-xui_method_explain(xui_component, on_mouseenter,			void					)( xui_method_mouse&		args )
+xui_method_explain(xui_component, on_mouseenter,		void					)( xui_method_mouse&		args )
 {
 
 }
-xui_method_explain(xui_component, on_mouseleave,			void					)( xui_method_mouse&		args )
+xui_method_explain(xui_component, on_mouseleave,		void					)( xui_method_mouse&		args )
 {
 
 }
-xui_method_explain(xui_component, on_mouseclick,			void					)( xui_method_mouse&		args )
+xui_method_explain(xui_component, on_mouseclick,		void					)( xui_method_mouse&		args )
 {
 
 }
-xui_method_explain(xui_component, on_mousewheel,			void					)( xui_method_mouse&		args )
+xui_method_explain(xui_component, on_mousewheel,		void					)( xui_method_mouse&		args )
 {
 
 }
@@ -659,11 +590,11 @@ xui_method_explain(xui_component, on_mousedragover,		void					)( xui_method_drag
 {
 
 }
-xui_method_explain(xui_component, on_mousedragenter,		void					)( xui_method_dragdrop&		args )
+xui_method_explain(xui_component, on_mousedragenter,	void					)( xui_method_dragdrop&		args )
 {
 
 }
-xui_method_explain(xui_component, on_mousedragleave,		void					)( xui_method_dragdrop&		args )
+xui_method_explain(xui_component, on_mousedragleave,	void					)( xui_method_dragdrop&		args )
 {
 
 }
@@ -671,15 +602,15 @@ xui_method_explain(xui_component, on_mousedragdrop,		void					)( xui_method_drag
 {
 
 }
-xui_method_explain(xui_component, on_renderback,			void					)( xui_method_args&			args )
+xui_method_explain(xui_component, on_renderback,		void					)( xui_method_args&			args )
 {
 
 }
-xui_method_explain(xui_component, on_renderself,			void					)( xui_method_args&			args )
+xui_method_explain(xui_component, on_renderself,		void					)( xui_method_args&			args )
 {
 
 }
-xui_method_explain(xui_component, on_updateself,			void					)( xui_method_args&			args )
+xui_method_explain(xui_component, on_updateself,		void					)( xui_method_args&			args )
 {
 
 }
@@ -699,7 +630,7 @@ xui_method_explain(xui_component, on_perform,			void					)( xui_method_args&			a
 /*
 //perform implement
 */
-xui_method_explain(xui_component, perform_alignhorz,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+xui_method_explain(xui_component, perform_alignhorz,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
@@ -708,25 +639,17 @@ xui_method_explain(xui_component, perform_alignhorz,		void					)( const xui_rect
 			continue;
 
 		//计算横坐标
-		s32 x = 0;
+		s32 x = rect.ax;
 		switch (comp->get_alignhorz())
 		{
-		case ALIGNHORZ_L:
-			x = rect.ax;			
-			break;
-		case ALIGNHORZ_R:	
-			x = rect.ax + (rect.get_w() - comp->get_renderw());			
-			break;
-		case ALIGNHORZ_C:	
-			x = rect.ax + (rect.get_w() - comp->get_renderw()) / 2;	
-			break;
+		case ALIGNHORZ_R:	x = rect.ax + (rect.get_w() - comp->get_renderw());			break;
+		case ALIGNHORZ_C:	x = rect.ax + (rect.get_w() - comp->get_renderw()) / 2;		break;
 		}
 
 		comp->on_perform_x(x);
 	}
 }
-
-xui_method_explain(xui_component, perform_alignvert,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+xui_method_explain(xui_component, perform_alignvert,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
@@ -735,25 +658,17 @@ xui_method_explain(xui_component, perform_alignvert,		void					)( const xui_rect
 			continue;
 
 		//计算纵坐标
-		s32 y = 0;
+		s32 y = rect.ay;
 		switch (comp->get_alignvert())
 		{
-		case ALIGNVERT_T:	
-			y = rect.ay;											
-			break;							
-		case ALIGNVERT_B:	
-			y = rect.ay + (rect.get_h() - comp->get_renderh());			
-			break;
-		case ALIGNVERT_C:	
-			y = rect.ay + (rect.get_h() - comp->get_renderh()) / 2;	
-			break;
+		case ALIGNVERT_B:	y = rect.ay + (rect.get_h() - comp->get_renderh());			break;
+		case ALIGNVERT_C:	y = rect.ay + (rect.get_h() - comp->get_renderh()) / 2;		break;
 		}
 
 		comp->on_perform_y(y);
 	}
 }
-
-xui_method_explain(xui_component, perform_dockstyle,		void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+xui_method_explain(xui_component, perform_dockstyle,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	xui_rect2d<s32> rest = rect;
 	for (u32 i = 0; i < vec.size(); ++i)

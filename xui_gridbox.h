@@ -5,11 +5,13 @@
 
 class xui_gridbox : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_gridbox( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_gridbox( xui_component* parent );
 
 	/*
 	//count

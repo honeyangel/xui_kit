@@ -19,12 +19,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_border( const xui_vector<s32>& size, xui_component* parent, u08 flag );
+	xui_border( const xui_vector<s32>& size, xui_component* parent, u08 resize );
 
 	/*
 	//flag
 	*/
-	u08				get_flag		( void ) const;
+	u08				get_resize		( void ) const;
 
 protected:
 	/*
@@ -37,8 +37,8 @@ protected:
 	/*
 	//member
 	*/
-	u08				m_flag;
-	xui_vector<s32>	m_down;
+	u08				m_resize;
+	xui_vector<s32>	m_downpt;
 };
 
 #endif//__xui_border_h__

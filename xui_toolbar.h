@@ -5,11 +5,13 @@
 
 class xui_toolbar : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_toolbar( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_toolbar( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//property

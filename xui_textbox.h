@@ -2,15 +2,17 @@
 #define __xui_textbox_h__
 
 #include "xui_drawer.h"
-#include "xui_caret.h"
+#include "xui_caretdrawer.h"
 
 class xui_textbox : public xui_drawer
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_textbox( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_textbox( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor
@@ -26,9 +28,9 @@ public:
 	//hint text
 	*/
 	const std::wstring&			get_hinttext	( void ) const;
-	void						set_hinttext	( const std::wstring& text );
-	const xui_colour&			get_hintgray	( void ) const;
-	void						set_hintgray	( const xui_colour& colour );
+	void						set_hinttext	( const std::wstring& hint );
+	const xui_family_render&	get_hintdraw	( void ) const;
+	void						set_hintdraw	( const xui_family_render& hintdraw );
 
 	/*
 	//property
@@ -75,14 +77,18 @@ protected:
 	virtual void				on_keybdchar	( xui_method_keybd& args );
 	virtual void				on_mousedown	( xui_method_mouse& args );
 	virtual void				on_mousemove	( xui_method_mouse& args );
-	virtual void				on_renderback	( xui_method_args&  args );
 	virtual void				on_renderself	( xui_method_args&  args );
 	virtual void				on_textchanged	( xui_method_args&  args );
+	virtual void				on_setrenderpt	( xui_method_args&  args );
+	virtual void				on_setrendersz	( xui_method_args&  args );
+	virtual void				on_setborderrt	( xui_method_args&  args );
 
 	/*
 	//virtual
 	*/
 	virtual std::wstring		get_rendertext	( void ) const;
+	virtual xui_vector<s32>		get_rendericonpt( void ) const;
+	virtual xui_rect2d<s32>		get_rendertextrt( void ) const;
 
 	/*
 	//keyboard
@@ -125,11 +131,11 @@ protected:
 	bool						m_numbonly;
 	u32							m_selectstart;
 	u32							m_selectfinal;
+	xui_caretdrawer*			m_caretdrawer;
 	u32							m_caretcurrindex;
 	u32							m_caretshowindex;
 	u32							m_firstshowindex;
 	u32							m_caretdragindex;
-	xui_caret*					m_caret;
 };
 
 #endif//__xui_textbox_h__

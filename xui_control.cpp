@@ -9,16 +9,6 @@ xui_implement_rtti(xui_control, xui_component);
 /*
 //constructor
 */
-xui_create_explain(xui_control)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_component(name, rect)
-{
-	m_client	= rect;
-	m_border	= xui_rect2d<s32>(0);
-	m_scroll	= xui_vector<s32>(0);
-	m_corner	= 0;
-	m_sidestyle = 0;
-	m_sidecolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
-}
 xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
 : xui_component(size, parent)
 {
@@ -26,6 +16,7 @@ xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* par
 	m_border	= xui_rect2d<s32>(2);
 	m_scroll	= xui_vector<s32>(0);
 	m_corner	= 0;
+	m_drawcolor = false;
 	m_sidestyle = 0;
 	m_sidecolor = xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
 }
@@ -42,22 +33,19 @@ xui_delete_explain(xui_control)( void )
 /*
 //client
 */
-xui_method_explain(xui_control, get_clientw,		s32								)( void ) const
+xui_method_explain(xui_control, get_clientw,		s32						)( void ) const
 {
 	return m_client.get_sz().w;
 }
-
-xui_method_explain(xui_control, get_clienth,		s32								)( void ) const
+xui_method_explain(xui_control, get_clienth,		s32						)( void ) const
 {
 	return m_client.get_sz().h;
 }
-
-xui_method_explain(xui_control, get_clientsz,		xui_vector<s32>					)( void ) const
+xui_method_explain(xui_control, get_clientsz,		xui_vector<s32>			)( void ) const
 {
 	return m_client.get_sz();
 }
-
-xui_method_explain(xui_control, set_clientsz,		void							)( const xui_vector<s32>& sz )
+xui_method_explain(xui_control, set_clientsz,		void					)( const xui_vector<s32>& sz )
 {
 	if (m_client.was_sz(sz) == false)
 	{
@@ -72,11 +60,10 @@ xui_method_explain(xui_control, set_clientsz,		void							)( const xui_vector<s3
 /*
 //border
 */
-xui_method_explain(xui_control, get_borderrt,		const xui_rect2d<s32>&			)( void ) const
+xui_method_explain(xui_control, get_borderrt,		const xui_rect2d<s32>&	)( void ) const
 {
 	return m_border;
 }
-
 xui_method_explain(xui_control, set_borderrt,		void							)( const xui_rect2d<s32>& rt )
 {
 	if (m_border != rt)
@@ -92,32 +79,27 @@ xui_method_explain(xui_control, set_borderrt,		void							)( const xui_rect2d<s3
 /*
 //scroll
 */
-xui_method_explain(xui_control, get_scrollx,		s32								)( void ) const
+xui_method_explain(xui_control, get_scrollx,		s32						)( void ) const
 {
 	return m_scroll.x;
 }
-
-xui_method_explain(xui_control, get_scrolly,		s32								)( void ) const
+xui_method_explain(xui_control, get_scrolly,		s32						)( void ) const
 {
 	return m_scroll.y;
 }
-
-xui_method_explain(xui_control, set_scrollx,		void							)( s32 x )
+xui_method_explain(xui_control, set_scrollx,		void					)( s32 x )
 {
 	m_scroll.x = x;
 }
-
-xui_method_explain(xui_control, set_scrolly,		void							)( s32 y )
+xui_method_explain(xui_control, set_scrolly,		void					)( s32 y )
 {
 	m_scroll.y = y;
 }
-
-xui_method_explain(xui_control, get_scrollpt,		const xui_vector<s32>&			)( void ) const
+xui_method_explain(xui_control, get_scrollpt,		const xui_vector<s32>&	)( void ) const
 {
 	return m_scroll;
 }
-
-xui_method_explain(xui_control, set_scrollpt,		void							)( const xui_vector<s32>& pt )
+xui_method_explain(xui_control, set_scrollpt,		void					)( const xui_vector<s32>& pt )
 {
 	m_scroll = pt;
 }
@@ -125,12 +107,11 @@ xui_method_explain(xui_control, set_scrollpt,		void							)( const xui_vector<s3
 /*
 //corner
 */
-xui_method_explain(xui_control, get_corner,			s32								)( void ) const
+xui_method_explain(xui_control, get_corner,			s32						)( void ) const
 {
 	return m_corner;
 }
-
-xui_method_explain(xui_control, set_corner,			void							)( s32 corner )
+xui_method_explain(xui_control, set_corner,			void					)( s32 corner )
 {
 	m_corner = corner;
 }
@@ -138,23 +119,28 @@ xui_method_explain(xui_control, set_corner,			void							)( s32 corner )
 /*
 //side
 */
-xui_method_explain(xui_control, get_sidestyle,		u08								)( void ) const
+xui_method_explain(xui_control, was_drawcolor,		bool					)( void ) const
+{
+	return m_drawcolor;
+}
+xui_method_explain(xui_control, set_drawcolor,		void					)( bool flag )
+{
+	m_drawcolor = flag;
+}
+xui_method_explain(xui_control, get_sidestyle,		u08						)( void ) const
 {
 	return m_sidestyle;
 }
-
-xui_method_explain(xui_control, set_sidestyle,		void							)( u08 sidestyle )
+xui_method_explain(xui_control, set_sidestyle,		void					)( u08 sidestyle )
 {
 	m_sidestyle = sidestyle;
 
 }
-
-xui_method_explain(xui_control, get_sidecolor,		const xui_colour&				)( void ) const
+xui_method_explain(xui_control, get_sidecolor,		const xui_colour&		)( void ) const
 {
 	return m_sidecolor;
 }
-
-xui_method_explain(xui_control, set_sidecolor,		void							)( const xui_colour& color )
+xui_method_explain(xui_control, set_sidecolor,		void					)( const xui_colour& color )
 {
 	m_sidecolor = color;
 }
@@ -162,15 +148,14 @@ xui_method_explain(xui_control, set_sidecolor,		void							)( const xui_colour& 
 /*
 //virtual
 */
-xui_method_explain(xui_control,	get_screenpt,		xui_vector<s32>					)( void ) const
+xui_method_explain(xui_control,	get_screenpt,		xui_vector<s32>			)( void ) const
 {
 	xui_vector<s32> pt = m_render.get_pt() - m_scroll;
 	return (m_parent == NULL) 
 		? pt 
 		: pt + m_parent->get_screenpt();
 }
-
-xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( void ) const
+xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>			)( void ) const
 {
 	if (m_parent)
 	{
@@ -181,8 +166,7 @@ xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( void ) con
 
 	return xui_rect2d<s32>(m_corner);
 }
-
-xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( xui_component* widget ) const
+xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>			)( xui_component* widget ) const
 {
 	return xui_rect2d<s32>(0);
 }
@@ -190,11 +174,11 @@ xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>					)( xui_compon
 /*
 //rectangle
 */
-xui_method_explain(xui_control, get_clientrt,		xui_rect2d<s32>					)( void ) const
+xui_method_explain(xui_control, get_clientrt,		xui_rect2d<s32>			)( void ) const
 {
 	return xui_rect2d<s32>(xui_vector<s32>(0, 0), m_client.get_sz());
 }
-xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>					)( void ) const
+xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>			)( void ) const
 {
 	xui_rect2d<s32> rect = get_renderrt();
 	rect.ax += m_border.ax;
@@ -205,9 +189,9 @@ xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>					)( void ) c
 }
 
 /*
-//hit
+//choose
 */
-xui_method_explain(xui_control, choose,				xui_component*					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_control, choose,				xui_component*			)( const xui_vector<s32>& pt )
 {
 	if (m_enable && m_visible)
 	{
@@ -220,7 +204,7 @@ xui_method_explain(xui_control, choose,				xui_component*					)( const xui_vecto
 
 	return NULL;
 }
-xui_method_explain(xui_control, choose_else,		xui_component*					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_control, choose_else,		xui_component*			)( const xui_vector<s32>& pt )
 {
 	xui_component* componet = NULL;
 	if (m_render.was_inside(pt))
@@ -239,12 +223,12 @@ xui_method_explain(xui_control, choose_else,		xui_component*					)( const xui_ve
 /*
 //update&render
 */
-xui_method_explain(xui_control, update,				void							)( f32 delta )
+xui_method_explain(xui_control, update,				void					)( f32 delta )
 {
 	xui_component::update(delta);
 	update_else(delta);
 }
-xui_method_explain(xui_control, update_else,		void							)( f32 delta )
+xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 {
 	xui_vecptr_addloop(m_widgetvec)
 	{
@@ -252,35 +236,35 @@ xui_method_explain(xui_control, update_else,		void							)( f32 delta )
 			m_widgetvec[i]->update(delta);
 	}
 }
-xui_method_explain(xui_control, render,				void							)( void )
+xui_method_explain(xui_control, render,				void					)( void )
 {
 	xui_component::render();
 	render_else();
 }
-xui_method_explain(xui_control, render_else,		void							)( void )
+xui_method_explain(xui_control, render_else,		void					)( void )
 {
-	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(m_render);
 	xui_vecptr_addloop(m_widgetvec)
 	{
 		if (m_widgetvec[i]->was_visible())
 			m_widgetvec[i]->render();
 	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
 //callback
 */
-xui_method_explain(xui_control, on_setclientsz,		void							)( xui_method_args& args )
+xui_method_explain(xui_control, on_setclientsz,		void					)( xui_method_args& args )
 {
 	perform();
 }
-
-xui_method_explain(xui_control, on_setborderrt,		void							)( xui_method_args& args )
+xui_method_explain(xui_control, on_setborderrt,		void					)( xui_method_args& args )
 {
 	perform();
 }
-
-xui_method_explain(xui_control, on_renderback,		void							)( xui_method_args& args )
+xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& args )
 {
 	xui_rect2d<s32> cornerrt = get_cornerrt();
 	xui_rect2d<s32> renderrt = get_renderrtabs();
@@ -311,12 +295,11 @@ xui_method_explain(xui_control, on_renderback,		void							)( xui_method_args& a
 		}
 	}
 }
-
-xui_method_explain(xui_control, on_renderself,		void							)( xui_method_args& args )
+xui_method_explain(xui_control, on_renderself,		void					)( xui_method_args& args )
 {
-	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+
 }
-xui_method_explain(xui_control, on_perform,			void							)( xui_method_args& args )
+xui_method_explain(xui_control, on_perform,			void					)( xui_method_args& args )
 {
 	if (m_widgetvec.size() > 0)
 	{
