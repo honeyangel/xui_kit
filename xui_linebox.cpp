@@ -30,36 +30,36 @@ xui_method_explain(xui_linebox, set_flow,		void			)( u08 flow )
 /*
 //line ctrl
 */
-xui_method_explain(xui_linebox, add_linectrl,	void			)( xui_component* componet )
+xui_method_explain(xui_linebox, add_linectrl,	void			)( xui_component* component )
 {
-	if (componet->get_parent())
+	if (component->get_parent())
 		return;
 
-	componet->set_parent(this);
-	m_widgetvec.push_back(componet);
+	component->set_parent(this);
+	m_widgetvec.push_back(component);
 	invalid();
 }
-xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_component* componet )
+xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_component* component )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
-		componet);
+		component);
 
 	if (itor == m_widgetvec.end())
 		return;
 
-	componet->set_parent(NULL);
-	delete componet;
+	component->set_parent(NULL);
+	delete component;
 	m_widgetvec.erase(itor);
 	invalid();
 }
-xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* componet ) const
+xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* component ) const
 {
 	xui_rect2d<s32> corner(0);
 	if (m_widgetvec.size())
 	{
-		if (m_widgetvec.front() == componet)
+		if (m_widgetvec.front() == component)
 		{
 			switch (m_flow)
 			{
@@ -74,7 +74,7 @@ xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* 
 			}
 		}
 
-		if (m_widgetvec.back () == componet)
+		if (m_widgetvec.back () == component)
 		{
 			switch (m_flow)
 			{

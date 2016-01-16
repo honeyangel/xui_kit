@@ -5,11 +5,13 @@
 
 class xui_scrollthumb : public xui_button
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_scrollthumb( const std::string& name, const xui_rect2d<s32>& rect, u08 style, xui_component* parent );
+	xui_scrollthumb( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle );
 
 protected:
 	/*
@@ -21,7 +23,7 @@ protected:
 	/*
 	//member
 	*/
-	u08				m_style;
+	u08				m_flowstyle;
 };
 
 #endif//__xui_scrollthumb_h__

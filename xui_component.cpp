@@ -40,6 +40,12 @@ xui_method_explain(xui_component, ini_component,		void					)( bool enable, bool 
 	m_enable	= enable;
 	m_visible	= visible;
 }
+xui_method_explain(xui_component, ini_component,		void					)( u08 alignhorz, u08 alignvert, u08 dockstyle )
+{
+	m_alignhorz = alignhorz;
+	m_alignvert = alignvert;
+	m_dockstyle = dockstyle;
+}
 
 /*
 //name
@@ -84,20 +90,20 @@ xui_method_explain(xui_component, get_parent,			xui_component*			)( void )
 {
 	return m_parent;
 }
-xui_method_explain(xui_component, set_parent,			void					)( xui_component* componet )
+xui_method_explain(xui_component, set_parent,			void					)( xui_component* component )
 {
-	m_parent = componet;
+	m_parent = component;
 }
-xui_method_explain(xui_component, was_parent,			bool					)( xui_component* componet ) const
+xui_method_explain(xui_component, was_parent,			bool					)( xui_component* component ) const
 {
-	return (m_parent && m_parent == componet);
+	return (m_parent && m_parent == component);
 }
-xui_method_explain(xui_component, was_ancestor,			bool					)( xui_component* componet ) const
+xui_method_explain(xui_component, was_ancestor,			bool					)( xui_component* component ) const
 {
 	if (m_parent == NULL)
 		return false;
 
-	return (m_parent == componet) || m_parent->was_ancestor(componet);
+	return (m_parent == component) || m_parent->was_ancestor(component);
 }
 
 /*
@@ -178,6 +184,10 @@ xui_method_explain(xui_component, has_catch,			bool					)( void ) const
 xui_method_explain(xui_component, req_catch,			void					)( void )
 {
 	g_desktop->post_message(xui_message(this, XM_GETCATCH, 0, 0));
+}
+xui_method_explain(xui_component, was_hover,			bool					)( void ) const
+{
+	return g_desktop->get_hoverctrl() == this;
 }
 
 /*

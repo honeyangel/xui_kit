@@ -21,13 +21,13 @@ public:
 	//ctrl
 	*/
 	xui_component*				get_catchctrl	( void );
-	void						set_catchctrl	( xui_component* componet );
+	void						set_catchctrl	( xui_component* component );
 	xui_component*				get_focusctrl	( void );
-	void						set_focusctrl	( xui_component* componet );
+	void						set_focusctrl	( xui_component* component );
 	xui_component*				get_hoverctrl	( void );
-	void						set_hoverctrl	( xui_component* componet );
+	void						set_hoverctrl	( xui_component* component );
 	xui_component*				get_floatctrl	( void );
-	void						set_floatctrl	( xui_component* componet );
+	void						set_floatctrl	( xui_component* component );
 
 	/*
 	//mouse
@@ -52,7 +52,7 @@ public:
 	/*
 	//message
 	*/
-	void						move_recycle	( xui_component* componet );
+	void						move_recycle	( xui_component* component );
 	void						send_message	( const xui_message& message );
 	void						post_message	( const xui_message& message );
 

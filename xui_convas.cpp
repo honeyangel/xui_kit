@@ -499,7 +499,7 @@ xui_method_explain(xui_convas, draw_path,			void					)( xui_vector<s32>*			pt,
 		return;
 
 	glEnable(GL_LINE_SMOOTH);
-	glBegin(GL_LINE_STRIP);
+	glBegin(GL_LINE_LOOP);
 	glColor4fv(color.value);
 
 	for (u32 i = 0; i < count; ++i)
@@ -523,6 +523,74 @@ xui_method_explain(xui_convas, fill_poly,			void					)( xui_vector<s32>*			pt,
 		glVertex2f((f32)pt[i].x, (f32)pt[i].y);
 
 	glEnd();
+}
+
+/*
+//triangle
+*/
+xui_method_explain(xui_convas, draw_triangle,		void					)( const xui_vector<s32>&	center, 
+																			   s32						half, 
+																			   u08						direction,
+																			   const xui_colour&		color )
+{
+	xui_vector<s32> pt[3];
+	switch (direction)
+	{
+	case TRIANGLE_UP:
+		pt[0] = xui_vector<s32>(center.x-half*2, center.y+half);
+		pt[1] = xui_vector<s32>(center.x+half*2, center.y+half);
+		pt[2] = xui_vector<s32>(center.x,        center.y-half);
+		break;
+	case TRIANGLE_DOWN:
+		pt[0] = xui_vector<s32>(center.x-half*2, center.y-half);
+		pt[1] = xui_vector<s32>(center.x+half*2, center.y-half);
+		pt[2] = xui_vector<s32>(center.x,        center.y+half);
+		break;
+	case TRIANGLE_LEFT:
+		pt[0] = xui_vector<s32>(center.x-half,   center.y-half*2);
+		pt[1] = xui_vector<s32>(center.x-half,   center.y+half*2);
+		pt[2] = xui_vector<s32>(center.x+half,   center.y);
+		break;
+	case TRIANGLE_RIGHT:
+		pt[0] = xui_vector<s32>(center.x+half,   center.y-half*2);
+		pt[1] = xui_vector<s32>(center.x+half,   center.y+half*2);
+		pt[2] = xui_vector<s32>(center.x-half,   center.y);
+		break;
+	}
+
+	draw_path(pt, 3, color);
+}
+xui_method_explain(xui_convas, fill_triangle,		void					)( const xui_vector<s32>&	center, 
+																			   s32						half, 
+																			   u08						direction,
+																			   const xui_colour&		color )
+{
+	xui_vector<s32> pt[3];
+	switch (direction)
+	{
+	case TRIANGLE_UP:
+		pt[0] = xui_vector<s32>(center.x-half*2, center.y+half);
+		pt[1] = xui_vector<s32>(center.x+half*2, center.y+half);
+		pt[2] = xui_vector<s32>(center.x,        center.y-half);
+		break;
+	case TRIANGLE_DOWN:
+		pt[0] = xui_vector<s32>(center.x-half*2, center.y-half);
+		pt[1] = xui_vector<s32>(center.x+half*2, center.y-half);
+		pt[2] = xui_vector<s32>(center.x,        center.y+half);
+		break;
+	case TRIANGLE_LEFT:
+		pt[0] = xui_vector<s32>(center.x-half,   center.y-half*2);
+		pt[1] = xui_vector<s32>(center.x-half,   center.y+half*2);
+		pt[2] = xui_vector<s32>(center.x+half,   center.y);
+		break;
+	case TRIANGLE_RIGHT:
+		pt[0] = xui_vector<s32>(center.x+half,   center.y-half*2);
+		pt[1] = xui_vector<s32>(center.x+half,   center.y+half*2);
+		pt[2] = xui_vector<s32>(center.x-half,   center.y);
+		break;
+	}
+
+	fill_poly(pt, 3, color);
 }
 
 /*
@@ -809,6 +877,24 @@ xui_method_explain(xui_convas, fill_arc,			void					)( const xui_rect2d<s32>&	rt
 	}
 
 	glEnd();
+}
+
+xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	center, 
+																			   s32						half, 
+																			   const xui_colour&		color )
+{
+	xui_vector<s32> p1;
+	xui_vector<s32> p2;
+	p1 = xui_vector<s32>(center.x-half, center.y  );
+	p2 = xui_vector<s32>(center.x,		center.y+half);
+	draw_line(p1,						  p2,						  color);
+	draw_line(p1+xui_vector<s32>(-1,  1), p2+xui_vector<s32>(-1,  1), color);
+	draw_line(p1+xui_vector<s32>( 1, -1), p2+xui_vector<s32>( 1, -1), color);
+	p1 = xui_vector<s32>(center.x,		center.y+half);
+	p2 = xui_vector<s32>(center.x+half, center.y-half);
+	draw_line(p1,						  p2,						  color);
+	draw_line(p1+xui_vector<s32>(-1, -1), p2+xui_vector<s32>(-1, -1), color);
+	draw_line(p1+xui_vector<s32>( 1,  1), p2+xui_vector<s32>( 1,  1), color);
 }
 
 xui_method_explain(xui_convas, get_family_bitmap,	xui_family_bitmap*		)( const xui_family&		family )

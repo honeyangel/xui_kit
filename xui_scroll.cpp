@@ -2,13 +2,14 @@
 #include "xui_scrollthumb.h"
 #include "xui_scroll.h"
 
+xui_implement_rtti(xui_scroll, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_scroll)( const std::string& name, const xui_rect2d<s32>& rect, u08 style )
-: xui_control(name, rect)
+xui_create_explain(xui_scroll)( const xui_vector<s32>& size, xui_component* parent, u08 style )
+: xui_control(size, parent)
 {
-	m_type		   += "scroll";
 	m_smallchange   = 1;
 	m_largechange	= 100;
 	m_thumbresize	= true;
@@ -16,25 +17,28 @@ xui_create_explain(xui_scroll)( const std::string& name, const xui_rect2d<s32>& 
 	m_range			= 0;
 	m_value			= 0;
 
-	m_thumb	= new xui_scrollthumb("", xui_rect2d<s32>(0, 0, 20, 20), style, this);
-	m_thumb->set_corner(5);
+	//thumb
+	m_thumb	= new xui_scrollthumb(xui_vector<s32>(16), this, style);
 	m_widgetvec.push_back(m_thumb);
 
-	xui_rect2d<s32> borderrt;
-	switch (m_style)
+	//arrow
+	m_arrow[ARROW_INC] = new xui_scrollarrow(xui_vector<s32>(16), this, style, -1, ARROWDRAW_TRIANGLE);
+	m_arrow[ARROW_DEC] = new xui_scrollarrow(xui_vector<s32>(16), this, style,  1, ARROWDRAW_TRIANGLE);
+	m_widgetvec.push_back(m_arrow[ARROW_DEC]);
+	m_widgetvec.push_back(m_arrow[ARROW_INC]);
+	switch(m_style)
 	{
-	case FLOWSTYLE_H: borderrt = xui_rect2d<s32>(4, 0, 4, 0); break;
-	case FLOWSTYLE_V: borderrt = xui_rect2d<s32>(0, 2, 0, 2); break;
+	case FLOWSTYLE_V:
+		m_arrow[ARROW_DEC]->ini_component(0, 0, DOCKSTYLE_T);
+		m_arrow[ARROW_INC]->ini_component(0, 0, DOCKSTYLE_B);
+		break;
+	case FLOWSTYLE_H:
+		m_arrow[ARROW_DEC]->ini_component(0, 0, DOCKSTYLE_L);
+		m_arrow[ARROW_INC]->ini_component(0, 0, DOCKSTYLE_R);
+		break;
 	}
-	for (u08 i = 0; i < 2; ++i)
-	{
-		m_arrow[i] = new xui_scrollarrow("", xui_rect2d<s32>(0, 0, 16, 16), style, (i == 0) ? -1 : 1, this);
-		m_arrow[i]->set_borderrt(borderrt);
 
-		m_widgetvec.push_back(m_arrow[i]);
-	}
-
-	perform();
+	refresh();
 }
 
 /*
@@ -52,13 +56,9 @@ xui_method_explain(xui_scroll, ini_scroll,		void			)( s32 range, s32 value )
 /*
 //arrow&thumb
 */
-xui_method_explain(xui_scroll, get_startarrow,	xui_scrollarrow*)( void ) const
+xui_method_explain(xui_scroll, get_arrow,		xui_scrollarrow*)( u08 arrow ) const
 {
-	return m_arrow[0];
-}
-xui_method_explain(xui_scroll, get_finalarrow,	xui_scrollarrow*)( void ) const
-{
-	return m_arrow[1];
+	return m_arrow[arrow];
 }
 xui_method_explain(xui_scroll, get_thumb,		xui_scrollthumb*)( void ) const
 {
@@ -153,12 +153,12 @@ xui_method_explain(xui_scroll, get_hallowrt,	xui_rect2d<s32>	)( void ) const
 	switch (m_style)
 	{
 	case FLOWSTYLE_H:
-		rt.ax += (m_arrow[0] != NULL) ? m_arrow[0]->get_renderw() : 0;
-		rt.bx -= (m_arrow[1] != NULL) ? m_arrow[1]->get_renderw() : 0;
+		rt.ax += (m_arrow[ARROW_DEC]->was_visible()) ? m_arrow[ARROW_DEC]->get_renderw() : 0;
+		rt.bx -= (m_arrow[ARROW_INC]->was_visible()) ? m_arrow[ARROW_INC]->get_renderw() : 0;
 		break;
 	case FLOWSTYLE_V:
-		rt.ay += (m_arrow[0] != NULL) ? m_arrow[0]->get_renderh() : 0;
-		rt.by -= (m_arrow[1] != NULL) ? m_arrow[1]->get_renderh() : 0;
+		rt.ay += (m_arrow[ARROW_DEC]->was_visible()) ? m_arrow[ARROW_DEC]->get_renderh() : 0;
+		rt.by -= (m_arrow[ARROW_INC]->was_visible()) ? m_arrow[ARROW_INC]->get_renderh() : 0;
 		break;
 	}
 
@@ -178,74 +178,23 @@ xui_method_explain(xui_scroll, on_free,			void			)( xui_method_args&  args )
 	xui_control::on_free(args);
 	m_thumb->set_visible(true);
 }
-xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args& args )
+xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args&  args )
 {
 	xui_control::on_perform(args);
 
-	xui_rect2d<s32> rt = get_renderrtins();
-	xui_vector<s32> pt;
-	xui_vector<s32> sz;
-
-	//arrow
-	if (m_arrow[0])
-	{
-		pt = m_arrow[0]->get_renderpt();
-		sz = m_arrow[0]->get_rendersz();
-		switch (m_style)
-		{
-		case FLOWSTYLE_H:
-			pt.x = rt.ax;
-			pt.y = rt.ay;
-			sz.h = rt.get_sz().h;
-			break;
-		case FLOWSTYLE_V:
-			pt.x = rt.ax;
-			pt.y = rt.ay;
-			sz.w = rt.get_sz().w;
-			break;
-		}
-		m_arrow[0]->set_renderpt(pt, false);
-		m_arrow[0]->set_rendersz(sz, false);
-	}
-
-	if (m_arrow[1])
-	{
-		pt = m_arrow[1]->get_renderpt();
-		sz = m_arrow[1]->get_rendersz();
-		switch (m_style)
-		{
-		case FLOWSTYLE_H:
-			pt.x = rt.bx - sz.w;
-			pt.y = rt.ay;
-			sz.h = rt.get_sz().h;
-			break;
-		case FLOWSTYLE_V:
-			pt.x = rt.ax;
-			pt.y = rt.by - sz.h;
-			sz.w = rt.get_sz().w;
-			break;
-		}
-		m_arrow[1]->set_renderpt(pt, false);
-		m_arrow[1]->set_rendersz(sz, false);
-	}
-
 	//thumb
-	rt = get_hallowrt();
-	pt = m_thumb->get_renderpt();
-	sz = m_thumb->get_rendersz();
+	xui_rect2d<s32> rt = get_hallowrt();
 	switch (m_style)
 	{
-	case FLOWSTYLE_H:
-		pt.y = rt.ay;
-		sz.h = rt.get_sz().h;
-		break;
 	case FLOWSTYLE_V:
-		pt.x = rt.ax;
-		sz.w = rt.get_sz().w;
+		m_thumb->on_perform_x(rt.ax);
+		m_thumb->on_perform_w(rt.get_w());
+		break;
+	case FLOWSTYLE_H:
+		m_thumb->on_perform_y(rt.ay);
+		m_thumb->on_perform_h(rt.get_h());
 		break;
 	}
-	m_thumb->set_renderpt(pt, false);
-	m_thumb->set_rendersz(sz, false);
 
 	//更新位置
 	resize_thumb();
@@ -254,23 +203,25 @@ xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args& args )
 xui_method_explain(xui_scroll, on_mousedown,	void			)( xui_method_mouse& args )
 {
 	xui_control::on_mousedown(args);
-
-	//点击其它位置
-	xui_rect2d<s32> rt = m_thumb->get_renderrtabs();
-	switch (m_style)
+	if (args.mouse == MB_L)
 	{
-	case FLOWSTYLE_H:
-		if (args.point.x < rt.ax)
-			set_value(m_value-m_largechange);
-		if (args.point.x > rt.bx)
-			set_value(m_value+m_largechange);
-		break;
-	case FLOWSTYLE_V:
-		if (args.point.y < rt.ay)
-			set_value(m_value-m_largechange);
-		if (args.point.y > rt.by)
-			set_value(m_value+m_largechange);
-		break;
+		//点击其它位置
+		xui_rect2d<s32> rt = m_thumb->get_renderrtabs();
+		switch (m_style)
+		{
+		case FLOWSTYLE_H:
+			if (args.point.x < rt.ax)
+				set_value(m_value-m_largechange);
+			if (args.point.x > rt.bx)
+				set_value(m_value+m_largechange);
+			break;
+		case FLOWSTYLE_V:
+			if (args.point.y < rt.ay)
+				set_value(m_value-m_largechange);
+			if (args.point.y > rt.by)
+				set_value(m_value+m_largechange);
+			break;
+		}
 	}
 }
 
@@ -286,14 +237,14 @@ xui_method_explain(xui_scroll, resize_thumb,	void			)( void )
 		{
 		case FLOWSTYLE_H:
 			{
-				s32 w = rt.get_sz().w - m_range;
-				m_thumb->set_rendersz(xui_vector<s32>(xui_max(w, 20), m_thumb->get_renderh()), false);
+				s32 w = rt.get_w() - m_range;
+				m_thumb->on_perform_w(xui_max(w, 10));
 			}
 			break;
 		case FLOWSTYLE_V:
 			{
-				s32 h = rt.get_sz().h - m_range;
-				m_thumb->set_rendersz(xui_vector<s32>(m_thumb->get_renderw(), xui_max(h, 20)), false);
+				s32 h = rt.get_h() - m_range;
+				m_thumb->on_perform_h(xui_max(h, 10));
 			}
 			break;
 		}
@@ -306,18 +257,21 @@ xui_method_explain(xui_scroll, update_thumb,	void			)( void )
 
 	//更新位置
 	xui_rect2d<s32> rt = get_hallowrt();
-	xui_vector<s32> pt = m_thumb->get_renderpt();
 	switch (m_style)
 	{
 	case FLOWSTYLE_H:
-		pt.x = rt.ax + (s32)((rt.get_sz().w - m_thumb->get_renderw()) * ratio);
+		{
+			s32 x = rt.ax + (s32)((rt.get_w() - m_thumb->get_renderw()) * ratio);
+			m_thumb->on_perform_x(x);
+		}
 		break;
 	case FLOWSTYLE_V:
-		pt.y = rt.ay + (s32)((rt.get_sz().h - m_thumb->get_renderh()) * ratio);
+		{
+			s32 y = rt.ay + (s32)((rt.get_h() - m_thumb->get_renderh()) * ratio);
+			m_thumb->on_perform_y(y);
+		}
 		break;
 	}
-
-	m_thumb->set_renderpt(pt, false);
 }
 xui_method_explain(xui_scroll, update_value,	void			)( void )
 {
@@ -328,10 +282,10 @@ xui_method_explain(xui_scroll, update_value,	void			)( void )
 	switch (m_style)
 	{
 	case FLOWSTYLE_H:
-		ratio = (f32)(m_thumb->get_renderx() - rt.ax) / (f32)(rt.get_sz().w - m_thumb->get_renderw());
+		ratio = (f32)(m_thumb->get_renderx() - rt.ax) / (f32)(rt.get_w() - m_thumb->get_renderw());
 		break;
 	case FLOWSTYLE_V:
-		ratio = (f32)(m_thumb->get_rendery() - rt.ay) / (f32)(rt.get_sz().h - m_thumb->get_renderh());
+		ratio = (f32)(m_thumb->get_rendery() - rt.ay) / (f32)(rt.get_h() - m_thumb->get_renderh());
 		break;
 	}
 

@@ -66,6 +66,7 @@ public:
 	//ini
 	*/
 	void							ini_component		( bool enable, bool visible );
+	void							ini_component		( u08 alignhorz, u08 alignvert, u08 dockstyle );
 
 	/*
 	//name
@@ -89,9 +90,9 @@ public:
 	//parent 
 	*/
 	xui_component*					get_parent			( void );
-	void							set_parent			( xui_component* componet );
-	bool							was_parent			( xui_component* componet ) const;	
-	bool							was_ancestor		( xui_component* componet ) const;
+	void							set_parent			( xui_component* component );
+	bool							was_parent			( xui_component* component ) const;	
+	bool							was_ancestor		( xui_component* component ) const;
 
 	/*
 	//window
@@ -117,6 +118,7 @@ public:
 	void							req_focus			( void );
 	bool							has_catch			( void ) const;
 	void							req_catch			( void );
+	bool							was_hover			( void ) const;
 
 	/*
 	//background

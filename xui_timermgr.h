@@ -5,6 +5,8 @@
 
 class xui_timermgr
 {
+	xui_declare_instance(xui_timermgr)
+
 public:
 	/*
 	//constructor
@@ -12,15 +14,20 @@ public:
 	xui_timermgr( void );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_timermgr( void );
+
+	/*
 	//method
 	*/
-	void					add_timer	( xui_timer* timer );
+	xui_timer*				add_timer	( xui_component* owner, f32 interval, void* data );
 	void					del_timer	( xui_timer* timer );
 
 	/*
 	//update
 	*/
-	void					update		( f32 delta );
+	virtual void			update		( f32 delta );
 
 protected:
 	/*
@@ -28,7 +35,5 @@ protected:
 	*/
 	std::list<xui_timer*>	m_timerlst;
 };
-
-extern xui_timermgr* g_timermgr;
 
 #endif//__xui_timermgr_h__

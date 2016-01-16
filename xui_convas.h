@@ -6,6 +6,14 @@
 #include "xui_family.h"
 #include "xui_family_render.h"
 
+enum
+{
+	TRIANGLE_UP,
+	TRIANGLE_DOWN,
+	TRIANGLE_LEFT,
+	TRIANGLE_RIGHT
+};
+
 class xui_convas
 {
 	xui_declare_instance(xui_convas)
@@ -98,6 +106,19 @@ public:
 												  const xui_colour&			color );
 
 	/*
+	//triangle
+	*/
+	void					draw_triangle		( const xui_vector<s32>&	center,
+												  s32						half,
+												  u08						direction,
+												  const xui_colour&			color );
+
+	void					fill_triangle		( const xui_vector<s32>&	center, 
+												  s32						half,
+												  u08						direction,
+												  const xui_colour&			color );
+
+	/*
 	//rectangle
 	*/
 	void					draw_rectangle		( const xui_rect2d<s32>&	rt,
@@ -152,6 +173,13 @@ public:
 												  s32						start,
 												  s32						sweep,
 												  s32						precision );
+
+	/*
+	//flag
+	*/
+	void					draw_tick			( const xui_vector<s32>&	center,
+												  s32						half,
+												  const xui_colour&			color );
 
 protected:
 	/*

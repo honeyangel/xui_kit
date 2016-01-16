@@ -32,8 +32,8 @@ public:
 	/*
 	//grid ctrl
 	*/
-	void					set_gridctrl	( u32 row, u32 col, xui_component* componet );
-	virtual xui_rect2d<s32>	get_cornerrt	( xui_component* componet ) const;
+	void					set_gridctrl	( u32 row, u32 col, xui_component* component );
+	virtual xui_rect2d<s32>	get_cornerrt	( xui_component* component ) const;
 
 protected:
 	/*

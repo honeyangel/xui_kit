@@ -22,9 +22,9 @@ public:
 	/*
 	//ctrl
 	*/
-	void					add_linectrl		( xui_component* componet );
-	void					del_linectrl		( xui_component* componet );
-	virtual xui_rect2d<s32>	get_cornerrt		( xui_component* componet ) const;
+	void					add_linectrl		( xui_component* component );
+	void					del_linectrl		( xui_component* component );
+	virtual xui_rect2d<s32>	get_cornerrt		( xui_component* component ) const;
 
 protected:
 	/*

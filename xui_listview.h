@@ -2,15 +2,18 @@
 #define __xui_listview_h__
 
 #include "xui_family.h"
+#include "xui_family_render.h"
 #include "xui_container.h"
 
 class xui_listview : public xui_container
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_listview( const std::string& name, const xui_rect2d<s32>& rect, s32 lineheight, const xui_rect2d<s32>& itemborder, const xui_vector<s32>& iconoffset, const xui_vector<s32>& textoffset, xui_bitmap* flagbitmap = NULL );
+	xui_listview( const xui_vector<s32>& size, xui_component* parent, bool drawtick );
 
 	/*
 	//multi select
@@ -19,24 +22,28 @@ public:
 	void						set_allowmulti			( bool flag );
 
 	/*
-	//line height
-	*/
-	s32							get_lineheight			( void ) const;
-	void						set_lineheight			( s32 height );
-
-	/*
 	//method
 	*/
-	const xui_family&			get_font				( void ) const;
-	void						set_font				( const xui_family& font );
-	const xui_colour&			get_movecolor			( void ) const;
-	void						set_movecolor			( const xui_colour& color );
-	const xui_colour&			get_flagcolor			( void ) const;
-	void						set_flagcolor			( const xui_colour& color );
-	const xui_colour&			get_textcolor			( void ) const;
-	void						set_textcolor			( const xui_colour& color );
+	const xui_family&			get_textfont			( void ) const;
+	void						set_textfont			( const xui_family& textfont );
+	const xui_family_render&	get_textdraw			( void ) const;
+	void						set_textdraw			( const xui_family_render& textdraw );
 	u08							get_textalign			( void ) const;
-	void						set_textalign			( u08 align );
+	void						set_textalign			( u08 textalign );
+	u08							get_iconalign			( void ) const;
+	void						set_iconalign			( u08 iconalign );
+	const xui_colour&			get_movecolor			( void ) const;
+	void						set_movecolor			( const xui_colour& movecolor );
+	const xui_colour&			get_tickcolor			( void ) const;
+	void						set_tickcolor			( const xui_colour& tickcolor );
+	const xui_rect2d<s32>&		get_itemborder			( void ) const;
+	void						set_itemborder			( const xui_rect2d<s32>& itemborder );
+	const xui_vector<s32>&		get_iconoffset			( void ) const;
+	void						set_iconoffset			( const xui_vector<s32>& iconoffset );
+	const xui_vector<s32>&		get_textoffset			( void ) const;
+	void						set_textoffset			( const xui_vector<s32>& textoffset );
+	s32							get_lineheight			( void ) const;
+	void						set_lineheight			( s32 height );
 
 	/*
 	//selected
@@ -74,18 +81,18 @@ protected:
 	/*
 	//member
 	*/
-	xui_bitmap*					m_flagbitmap;
-	s32							m_lineheight;
-	bool						m_allowmulti;
+	bool						m_drawtick;
+	xui_family					m_textfont;
+	xui_family_render			m_textdraw;
+	u08							m_textalign;
+	u08							m_iconalign;
+	xui_colour					m_movecolor;
+	xui_colour					m_tickcolor;
 	xui_rect2d<s32>				m_itemborder;
 	xui_vector<s32>				m_iconoffset;
 	xui_vector<s32>				m_textoffset;
-
-	xui_family					m_font;
-	u08							m_textalign;
-	xui_colour					m_textcolor;
-	xui_colour					m_movecolor;
-	xui_colour					m_flagcolor;
+	s32							m_lineheight;
+	bool						m_allowmulti;
 };
 
 #endif//__xui_listview_h__

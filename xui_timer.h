@@ -5,30 +5,24 @@
 
 class xui_timer
 {
+	friend class xui_timermgr;
+
 public:
 	/*
-	//constructor
-	*/
-	xui_timer( xui_component* owner, f32 interval );
-
-	/*
-	//destructor
-	*/
-	virtual ~xui_timer( void );
-
-	/*
-	//method
+	//property
 	*/
 	bool								was_enable	( void ) const;
 	void								set_enable	( bool flag );
 	f32									get_interval( void ) const;
 	void								set_interval( f32 interval );
+	void*								get_data	( void ) const;
+	void								set_data	( void* data );
 
 	/*
-	//virtual
+	//method
 	*/
-	virtual void						update		( f32 delta );
-	virtual void						reset		( void );
+	void								update		( f32 delta );
+	void								reset		( void );
 	
 	/*
 	//method
@@ -37,11 +31,17 @@ public:
 
 protected:
 	/*
+	//constructor
+	*/
+	xui_timer( xui_component* owner, f32 interval, void* data );
+
+	/*
 	//member
 	*/
 	xui_component*						m_owner;
 	bool								m_enable;
 	f32									m_interval;
+	void*								m_data;
 	f32									m_time;
 };
 

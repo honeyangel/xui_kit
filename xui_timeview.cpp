@@ -430,19 +430,19 @@ xui_method_explain(xui_timeview, get_renderrtins,			xui_rect2d<s32>				)( void )
 */
 xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_vector<s32>& pt )
 {
-	xui_component* componet = xui_control::choose_else(pt);
-	if (componet == NULL)
+	xui_component* component = xui_control::choose_else(pt);
+	if (component == NULL)
 	{
 		std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 		xui_vecptr_addloop(nodes)
 		{
 			xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
-			if (componet = timeline->choose(pt))
-				return componet;
+			if (component = timeline->choose(pt))
+				return component;
 		}
 	}
 
-	return componet;
+	return component;
 }
 xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 {

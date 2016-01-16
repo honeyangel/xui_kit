@@ -1,13 +1,15 @@
+#include "xui_convas.h"
 #include "xui_scroll.h"
 #include "xui_container.h"
+
+xui_implement_rtti(xui_container, xui_control);
 
 /*
 //constructor
 */
-xui_create_explain(xui_container)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_control(name, rect)
+xui_create_explain(xui_container)( const xui_vector<s32>& size, xui_component* parent )
+: xui_control(size, parent)
 {
-	m_type		   += "container";
 	m_vscroll		= NULL;
 	m_hscroll		= NULL;
 	m_vscrollshow	= false;
@@ -80,17 +82,19 @@ xui_method_explain(xui_container, get_renderrtins,	xui_rect2d<s32>	)( void ) con
 */
 xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vector<s32>& pt )
 {
-	xui_component* componet = xui_control::choose_else(pt);
-	if (componet == NULL)
+	xui_component* component = xui_control::choose_else(pt);
+	xui_rect2d<s32> rt = get_renderrtins();
+	if (component == NULL && rt.was_inside(pt))
 	{
+		xui_vector<s32> relative = pt - m_render.get_pt();
 		xui_vecptr_addloop(m_ascrollitem)
 		{
-			if (componet = m_ascrollitem[i]->choose(pt))
-				return componet;
+			if (component = m_ascrollitem[i]->choose(relative))
+				return component;
 		}
 	}
 
-	return componet;
+	return component;
 }
 xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 {
@@ -103,11 +107,15 @@ xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 }
 xui_method_explain(xui_container, render_else,		void			)( void )
 {
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
 	xui_vecptr_addloop(m_ascrollitem)
 	{
 		if (m_ascrollitem[i]->was_visible())
 			m_ascrollitem[i]->render();
 	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
+
 	xui_control::render_else();
 }
 
@@ -117,29 +125,21 @@ xui_method_explain(xui_container, render_else,		void			)( void )
 xui_method_explain(xui_container, on_perform,		void			)( xui_method_args&  args )
 {
 	xui_control::on_perform(args);
-
 	xui_rect2d<s32> rt = get_renderrtins();
-	xui_vector<s32> pt;
-	xui_vector<s32> sz;
+
 	//vscroll
 	if (m_vscroll)
 	{
-		pt.x = rt.bx;
-		pt.y = rt.ay;
-		sz.h = rt.get_sz().h;
-		sz.w = m_vscroll->get_renderw();
-		m_vscroll->set_renderpt(pt, false);
-		m_vscroll->set_rendersz(sz, false);
+		m_vscroll->on_perform_x(rt.bx);
+		m_vscroll->on_perform_y(rt.ay);
+		m_vscroll->on_perform_h(rt.get_h());
 	}
 	//hscroll
 	if (m_hscroll)
 	{
-		pt.x = rt.ax;
-		pt.y = rt.by;
-		sz.w = rt.get_sz().w;
-		sz.h = m_hscroll->get_renderh();
-		m_hscroll->set_renderpt(pt, false);
-		m_hscroll->set_rendersz(sz, false);
+		m_hscroll->on_perform_x(rt.ax);
+		m_hscroll->on_perform_y(rt.by);
+		m_hscroll->on_perform_w(rt.get_w());
 	}
 }
 xui_method_explain(xui_container, on_setrendersz,	void			)( xui_method_args&  args )
@@ -214,12 +214,12 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 
 	bool needvscroll = false;
 	bool needhscroll = false;
-	if (clientrt.get_sz().h > renderrt.get_sz().h) needvscroll = true;
-	if (clientrt.get_sz().w > renderrt.get_sz().w) needhscroll = true;
+	if (clientrt.get_h() > renderrt.get_h()) needvscroll = true;
+	if (clientrt.get_w() > renderrt.get_w()) needhscroll = true;
 	if (needvscroll) renderrt.bx -= 20;
 	if (needhscroll) renderrt.by -= 20;
 
-	if (clientrt.get_sz().h > renderrt.get_sz().h)
+	if (clientrt.get_h() > renderrt.get_h())
 	{
 		if (m_vscrollauto)
 			create_scroll(FLOWSTYLE_V);
@@ -238,7 +238,7 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 			m_vscroll->set_enable(false);
 	}
 
-	if (clientrt.get_sz().w > renderrt.get_sz().w)
+	if (clientrt.get_w() > renderrt.get_w())
 	{
 		if (m_hscrollauto)
 			create_scroll(FLOWSTYLE_H);
@@ -257,13 +257,12 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 			m_hscroll->set_enable(false);
 	}
 
-
 	//更新滚动条位置大小和范围
 	renderrt = get_renderrtins();
 	if (m_vscroll)
-		m_vscroll->set_range(clientrt.get_sz().h - renderrt.get_sz().h);
+		m_vscroll->set_range(clientrt.get_h() - renderrt.get_h());
 	if (m_hscroll)
-		m_hscroll->set_range(clientrt.get_sz().w - renderrt.get_sz().w);
+		m_hscroll->set_range(clientrt.get_w() - renderrt.get_w());
 }
 xui_method_explain(xui_container, create_scroll,	void			)( u08 style )
 {
@@ -272,20 +271,15 @@ xui_method_explain(xui_container, create_scroll,	void			)( u08 style )
 	if (style == FLOWSTYLE_V && m_vscroll)
 		return;
 
-	xui_scroll* scroll = new xui_scroll("", xui_rect2d<s32>(0, 0, 20, 20), style);
+	xui_scroll* scroll = new xui_scroll(xui_vector<s32>(20), this, style);
+	scroll->xm_scroll += new xui_method_member<xui_method_args, xui_container>(this, &xui_container::on_scroll);
+	m_widgetvec.push_back(scroll);
+
 	switch (style)
 	{
-	case FLOWSTYLE_H:
-		m_hscroll = scroll;
-		break;
-	case FLOWSTYLE_V:
-		m_vscroll = scroll;
-		break;
+	case FLOWSTYLE_H: m_hscroll = scroll; break;
+	case FLOWSTYLE_V: m_vscroll = scroll; break;
 	}
-
-	scroll->xm_scroll += new xui_method_member<xui_method_args, xui_container>(this, &xui_container::on_scroll);
-	scroll->set_parent(this);
-	m_widgetvec.push_back(scroll);
 
 	invalid();
 }
@@ -299,14 +293,8 @@ xui_method_explain(xui_container, delete_scroll,	void			)( u08 style )
 	xui_scroll* scroll = NULL;
 	switch (style)
 	{
-	case FLOWSTYLE_H:
-		   scroll = m_hscroll;
-		m_hscroll = NULL;
-		break;
-	case FLOWSTYLE_V:
-		   scroll = m_vscroll;
-		m_vscroll = NULL;
-		break;
+	case FLOWSTYLE_H: scroll = m_hscroll; m_hscroll = NULL;	break;
+	case FLOWSTYLE_V: scroll = m_vscroll; m_vscroll = NULL;	break;
 	}
 
 	std::vector<xui_component*>::iterator itor = std::find(

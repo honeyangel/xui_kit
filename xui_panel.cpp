@@ -1,22 +1,23 @@
 #include "xui_desktop.h"
+#include "xui_convas.h"
 #include "xui_border.h"
 #include "xui_scroll.h"
 #include "xui_panel.h"
 
+xui_implement_rtti(xui_panel, xui_container);
+
 /*
 //constructor
 */
-xui_create_explain(xui_panel)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_container(name, rect)
+xui_create_explain(xui_panel)( const xui_vector<s32>& size, xui_component* parent )
+: xui_container(size, parent)
 {
-	m_type = "panel";
+	m_resizevec.push_back(new xui_border(xui_vector<s32>(5), this, RESIZEFLAG_L));
+	m_resizevec.push_back(new xui_border(xui_vector<s32>(5), this, RESIZEFLAG_R));
+	m_resizevec.push_back(new xui_border(xui_vector<s32>(5), this, RESIZEFLAG_T));
+	m_resizevec.push_back(new xui_border(xui_vector<s32>(5), this, RESIZEFLAG_B));
 
-	xui_rect2d<s32> rt(0, 0, 5, 5);
-	m_widgetvec.push_back(new xui_border("", rt, RESIZEFLAG_L, this));
-	m_widgetvec.push_back(new xui_border("", rt, RESIZEFLAG_R, this));
-	m_widgetvec.push_back(new xui_border("", rt, RESIZEFLAG_T, this));
-	m_widgetvec.push_back(new xui_border("", rt, RESIZEFLAG_B, this));
-	perform();
+	refresh();
 }
 
 /*
@@ -24,6 +25,9 @@ xui_create_explain(xui_panel)( const std::string& name, const xui_rect2d<s32>& r
 */
 xui_delete_explain(xui_panel)( void )
 {
+	for (u32 i = 0; i < m_resizevec.size(); ++i)
+		delete m_resizevec[i];
+
 	del_children();
 }
 
@@ -34,12 +38,10 @@ xui_method_explain(xui_panel, get_children,		const std::vector<xui_control*>&	)(
 {
 	return m_childctrl;
 }
-
 xui_method_explain(xui_panel, get_childcount,	u32									)( void ) const
 {
 	return m_childctrl.size();
 }
-
 xui_method_explain(xui_panel, get_childindex,	u32									)( xui_control* child ) const
 {
 	xui_vecptr_addloop(m_childctrl)
@@ -50,7 +52,6 @@ xui_method_explain(xui_panel, get_childindex,	u32									)( xui_control* child 
 
 	return -1;
 }
-
 xui_method_explain(xui_panel, set_childindex,	void								)( xui_control* child, u32 index )
 {
 	std::vector<xui_control*>::iterator itor = std::find(
@@ -64,7 +65,6 @@ xui_method_explain(xui_panel, set_childindex,	void								)( xui_control* child,
 		m_childctrl.insert(m_childctrl.begin()+index, child);
 	}
 }
-
 xui_method_explain(xui_panel, was_child,		bool								)( xui_control* child ) const
 {
 	xui_vecptr_addloop(m_childctrl)
@@ -75,12 +75,10 @@ xui_method_explain(xui_panel, was_child,		bool								)( xui_control* child ) co
 
 	return false;
 }
-
 xui_method_explain(xui_panel, get_child,		xui_control*						)( u32 index ) const
 {
 	return m_childctrl[index];
 }
-
 xui_method_explain(xui_panel, get_child,		xui_control*						)( const std::string& name ) const
 {
 	xui_vecptr_addloop(m_childctrl)
@@ -91,7 +89,6 @@ xui_method_explain(xui_panel, get_child,		xui_control*						)( const std::string
 
 	return NULL;
 }
-
 xui_method_explain(xui_panel, was_descendant,	bool								)( xui_control* child ) const
 {
 	xui_vecptr_addloop(m_childctrl)
@@ -99,17 +96,13 @@ xui_method_explain(xui_panel, was_descendant,	bool								)( xui_control* child 
 		if (m_childctrl[i] == child)
 			return true;
 
-		if (m_childctrl[i]->get_type().find("panel") != -1)
-		{
-			xui_panel* panel = (xui_panel*)m_childctrl[i];
-			if (panel->was_descendant(child))
-				return true;
-		}
+		xui_panel* panel = xui_dynamic_cast(xui_panel, m_childctrl[i]);
+		if (panel && panel->was_descendant(child))
+			return true;
 	}
 
 	return false;
 }
-
 xui_method_explain(xui_panel, get_descendant,	xui_control*						)( const std::string& name ) const
 {
 	xui_vecptr_addloop(m_childctrl)
@@ -117,10 +110,9 @@ xui_method_explain(xui_panel, get_descendant,	xui_control*						)( const std::st
 		if (m_childctrl[i]->get_name() == name)
 			return m_childctrl[i];
 
-		if (m_childctrl[i]->get_type().find("panel") != -1)
+		xui_panel* panel = xui_dynamic_cast(xui_panel, m_childctrl[i]);
+		if (panel)
 		{
-			xui_panel* panel = (xui_panel*)m_childctrl[i];
-
 			xui_control* child = NULL;
 			if (child = panel->get_descendant(name))
 				return child;
@@ -129,7 +121,6 @@ xui_method_explain(xui_panel, get_descendant,	xui_control*						)( const std::st
 
 	return NULL;
 }
-
 xui_method_explain(xui_panel, add_child,		void								)( xui_control* child )
 {
 	if (child == NULL || was_child(child) || child->get_parent())
@@ -151,7 +142,6 @@ xui_method_explain(xui_panel, add_child,		void								)( xui_control* child )
 	on_addchild(	  args);
 	xm_addchild(this, args);
 }
-
 xui_method_explain(xui_panel, del_child,		void								)( xui_control* child, bool destroy )
 {
 	if (child == NULL)
@@ -179,7 +169,6 @@ xui_method_explain(xui_panel, del_child,		void								)( xui_control* child, boo
 	if (destroy)
 		g_desktop->move_recycle(this);
 }
-
 xui_method_explain(xui_panel, del_children,		void								)( void )
 {
 	std::vector<xui_control*> temp = m_childctrl;
@@ -188,7 +177,7 @@ xui_method_explain(xui_panel, del_children,		void								)( void )
 }
 
 /*
-//mov
+//move
 */
 xui_method_explain(xui_panel, movfore,			void								)( xui_control* child )
 {
@@ -196,23 +185,19 @@ xui_method_explain(xui_panel, movfore,			void								)( xui_control* child )
 	if (index < get_childcount()-1)
 		set_childindex(child, index+1);
 }
-
 xui_method_explain(xui_panel, movback,			void								)( xui_control* child )
 {
 	u32 index = get_childindex(child);
 	if (index > 0)
 		set_childindex(child, index-1);
 }
-
 xui_method_explain(xui_panel, realign,			void								)( void )
 {
 	xui_vecptr_addloop(m_childctrl)
 	{
-		if (m_childctrl[i]->get_type().find("panel") != -1)
-		{
-			xui_panel* panel = (xui_panel*)m_childctrl[i];
+		xui_panel* panel = xui_dynamic_cast(xui_panel, m_childctrl[i]);
+		if (panel)
 			panel->realign();
-		}
 	}
 
 	refresh();
@@ -223,19 +208,25 @@ xui_method_explain(xui_panel, realign,			void								)( void )
 */
 xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vector<s32>& pt )
 {
-	xui_component* componet = xui_container::choose_else(pt);
-	if (componet == NULL)
+	xui_component* component = xui_container::choose_else(pt);
+	xui_rect2d<s32> rt = get_renderrtins();
+	if (component == NULL && rt.was_inside(pt))
 	{
+		xui_vector<s32> relative = pt - m_render.get_pt();
+		xui_vecptr_addloop(m_resizevec)
+		{
+			if (component = m_resizevec[i]->choose(relative))
+				return component;
+		}
 		xui_vecptr_addloop(m_childctrl)
 		{
-			if (componet = m_childctrl[i]->choose(pt))
-				return componet;
+			if (component = m_childctrl[i]->choose(relative))
+				return component;
 		}
 	}
 
-	return componet;
+	return component;
 }
-
 xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 {
 	xui_container::update_else(delta);
@@ -245,14 +236,16 @@ xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 			m_childctrl[i]->update(delta);
 	}
 }
-
 xui_method_explain(xui_panel, render_else,		void								)( void )
 {
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
 	xui_vecptr_addloop(m_childctrl)
 	{
 		if (m_childctrl[i]->was_visible())
 			m_childctrl[i]->render();
 	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	xui_container::render_else();
 }
@@ -264,33 +257,38 @@ xui_method_explain(xui_panel, on_addchild,		void								)( xui_method_args& args
 {
 	invalid();
 }
-
 xui_method_explain(xui_panel, on_delchild,		void								)( xui_method_args& args )
 {
 	invalid();
 }
-
 xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args )
 {
 	xui_container::on_perform(args);
 	if (m_childctrl.size() > 0)
 	{
-		std::vector<xui_component*> tempVec;
+		std::vector<xui_component*> vec;
 		xui_vecptr_addloop(m_childctrl)
 		{
-			tempVec.push_back(m_childctrl[i]);
+			vec.push_back(m_childctrl[i]);
 		}
 
 		xui_rect2d<s32> rt = get_clientrt();
-		rt.oft_x(m_border.ax);
-		rt.oft_y(m_border.ay);
+		rt.ax += m_border.ax;
+		rt.bx -= m_border.bx;
+		rt.ay += m_border.ay;
+		rt.by -= m_border.by;
 
-		perform_alignhorz(rt, tempVec);
-		perform_alignvert(rt, tempVec);
-		perform_dockstyle(rt, tempVec);
+		perform_alignhorz(rt, vec);
+		perform_alignvert(rt, vec);
+		perform_dockstyle(rt, vec);
+	}
+
+	if (m_resizevec.size() > 0)
+	{
+		xui_rect2d<s32> rt = get_renderrt();
+		perform_dockstyle(rt, m_resizevec);
 	}
 }
-
 xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args )
 {
 	xui_vector<s32> sz(0);
@@ -301,8 +299,8 @@ xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args 
 	}
 
 	xui_rect2d<s32> rt = get_renderrtins();
-	sz.w = xui_max(sz.w, rt.get_sz().w);
-	sz.h = xui_max(sz.h, rt.get_sz().h);
+	sz.w = xui_max(sz.w, rt.get_w());
+	sz.h = xui_max(sz.h, rt.get_h());
 
 	if (get_clientsz() != sz)
 	{
@@ -313,7 +311,6 @@ xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args 
 		perform();
 	}
 }
-
 xui_method_explain(xui_panel, on_vertvalue,		void								)( xui_method_args& args )
 {
 	xui_container::on_vertvalue(args);
@@ -322,7 +319,6 @@ xui_method_explain(xui_panel, on_vertvalue,		void								)( xui_method_args& arg
 		m_childctrl[i]->set_scrolly(m_vscroll->get_value());
 	}
 }
-
 xui_method_explain(xui_panel, on_horzvalue,		void								)( xui_method_args& args )
 {
 	xui_container::on_horzvalue(args);

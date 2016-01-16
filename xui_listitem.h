@@ -6,12 +6,13 @@
 class xui_listitem : public xui_drawer
 {
 	friend class xui_listview;
+	xui_declare_rtti
 
 public:
 	/*
 	//constructor
 	*/
-	xui_listitem( const std::string& name, const xui_rect2d<s32>& rect, xui_bitmap* flagbitmap );
+	xui_listitem( xui_component* parent, const xui_rect2d<s32>& border, bool drawtick );
 
 	/*
 	//method
@@ -29,6 +30,7 @@ protected:
 	/*
 	//callback
 	*/
+	virtual void			on_setborderrt	( xui_method_args&  args );
 	virtual void			on_textchanged	( xui_method_args&  args );
 	virtual void			on_fontchanged	( xui_method_args&  args );
 	virtual void			on_iconchanged	( xui_method_args&  args );
@@ -45,7 +47,7 @@ protected:
 	//member
 	*/
 	bool					m_selected;
-	xui_bitmap*				m_flagbitmap;
+	bool					m_drawtick;
 };
 
 #endif//__xui_listitem_h__

@@ -43,27 +43,27 @@ xui_method_explain(xui_toolbar, set_grap,	void)( s32 grap )
 /*
 //item
 */
-xui_method_explain(xui_toolbar, add_item,	void)( xui_component* componet )
+xui_method_explain(xui_toolbar, add_item,	void)( xui_component* component )
 {
-	if (componet->get_parent())
+	if (component->get_parent())
 		return;
 
-	componet->set_parent(this);
-	m_widgetvec.push_back(componet);
+	component->set_parent(this);
+	m_widgetvec.push_back(component);
 	invalid();
 }
-xui_method_explain(xui_toolbar, del_item,	void)( xui_component* componet )
+xui_method_explain(xui_toolbar, del_item,	void)( xui_component* component )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
-		componet);
+		component);
 
 	if (itor == m_widgetvec.end())
 		return;
 
-	componet->set_parent(NULL);
-	delete componet;
+	component->set_parent(NULL);
+	delete component;
 	m_widgetvec.erase(itor);
 	invalid();
 }

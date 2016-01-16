@@ -74,7 +74,7 @@ xui_method_explain(xui_gridbox, set_colpixel,	void			)( u32 col, s32 pixel )
 /*
 //grid ctrl
 */
-xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_component* componet )
+xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_component* component )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -87,22 +87,22 @@ xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_co
 		delete (*itor);
 	}
 
-	m_ptrarray[row][col] = componet;
-	if (componet)
+	m_ptrarray[row][col] = component;
+	if (component)
 	{
-		componet->set_parent(this);
-		m_widgetvec.push_back(componet);
+		component->set_parent(this);
+		m_widgetvec.push_back(component);
 		perform();
 	}
 }
-xui_method_explain(xui_gridbox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* componet ) const
+xui_method_explain(xui_gridbox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* component ) const
 {
 	xui_rect2d<s32> corner(0);
 	for (u32 row = 0; row < m_rowcount; ++row)
 	{
 		for (u32 col = 0; col < m_colcount; ++col)
 		{
-			if (m_ptrarray[row][col] == componet)
+			if (m_ptrarray[row][col] == component)
 			{
 				if (row == 0 && 
 					col == 0)

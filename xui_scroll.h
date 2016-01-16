@@ -3,15 +3,23 @@
 
 #include "xui_control.h"
 
+enum
+{
+	ARROW_DEC,
+	ARROW_INC,
+	ARROW_MAX,
+};
+
 class xui_scroll : public xui_control
 {
 	friend class xui_scrollthumb;
+	xui_declare_rtti
 
 public:
 	/*
 	//constructor
 	*/
-	xui_scroll( const std::string& name, const xui_rect2d<s32>& rect, u08 style );
+	xui_scroll( const xui_vector<s32>& size, xui_component* parent, u08 style );
 
 	/*
 	//init
@@ -21,8 +29,7 @@ public:
 	/*
 	//arrow&thumb
 	*/
-	xui_scrollarrow*			get_startarrow	( void ) const;
-	xui_scrollarrow*			get_finalarrow	( void ) const;
+	xui_scrollarrow*			get_arrow		( u08 arrow ) const;
 	xui_scrollthumb*			get_thumb		( void ) const;
 
 	/*
@@ -83,7 +90,7 @@ protected:
 	s32							m_value;
 	s32							m_range;
 	xui_scrollthumb*			m_thumb;
-	xui_scrollarrow*			m_arrow[2];
+	xui_scrollarrow*			m_arrow[ARROW_MAX];
 };
 
 #endif//__xui_scroll_h__

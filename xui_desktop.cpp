@@ -40,12 +40,12 @@ xui_method_explain(xui_desktop, get_catchctrl,	xui_component*			)( void )
 	return m_catchctrl;
 }
 
-xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* componet )
+xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* component )
 {
-	if (m_catchctrl != componet)
+	if (m_catchctrl != component)
 	{
 		xui_component* last = m_catchctrl;
-		xui_component* curr = componet;
+		xui_component* curr = component;
 
 		m_catchctrl  = curr;
 
@@ -74,12 +74,12 @@ xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
 	return m_focusctrl;
 }
 
-xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* componet )
+xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* component )
 {
-	if (m_focusctrl != componet)
+	if (m_focusctrl != component)
 	{
 		xui_component* last = m_focusctrl;
-		xui_component* curr = componet;
+		xui_component* curr = component;
 
 		m_focusctrl  = curr;
 
@@ -108,12 +108,12 @@ xui_method_explain(xui_desktop, get_hoverctrl,	xui_component*			)( void )
 	return m_hoverctrl;
 }
 
-xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* componet )
+xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* component )
 {
-	if (m_hoverctrl != componet)
+	if (m_hoverctrl != component)
 	{
 		xui_component* last = m_hoverctrl;
-		xui_component* curr = componet;
+		xui_component* curr = component;
 
 		m_hoverctrl  = curr;
 
@@ -160,9 +160,9 @@ xui_method_explain(xui_desktop, get_floatctrl,	xui_component*			)( void )
 {
 	return m_floatctrl;
 }
-xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_component* componet )
+xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_component* component )
 {
-	m_floatctrl = componet;
+	m_floatctrl = component;
 }
 
 /*
@@ -225,36 +225,36 @@ xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 /*
 //message
 */
-xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* componet )
+xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* component )
 {
 	if (m_catchctrl)
 	{
-		if (m_catchctrl == componet || m_catchctrl->was_ancestor(componet))
+		if (m_catchctrl == component || m_catchctrl->was_ancestor(component))
 			set_catchctrl(NULL);
 	}
 	if (m_focusctrl)
 	{
-		if (m_focusctrl == componet || m_focusctrl->was_ancestor(componet))
+		if (m_focusctrl == component || m_focusctrl->was_ancestor(component))
 			set_focusctrl(NULL);
 	}
 	if (m_hoverctrl)
 	{
-		if (m_hoverctrl == componet || m_hoverctrl->was_ancestor(componet))
+		if (m_hoverctrl == component || m_hoverctrl->was_ancestor(component))
 			m_hoverctrl = NULL;
 	}
 	if (m_floatctrl)
 	{
-		if (m_floatctrl == componet || m_floatctrl->was_ancestor(componet))
+		if (m_floatctrl == component || m_floatctrl->was_ancestor(component))
 			m_floatctrl = NULL;
 	}
 
 	for (u32 i = 0; i < m_recyclebin.size(); ++i)
 	{
-		if (componet == m_recyclebin[i])
+		if (component == m_recyclebin[i])
 			return;
 	}
 
-	m_recyclebin.push_back(componet);
+	m_recyclebin.push_back(component);
 }
 
 xui_method_explain(xui_desktop, send_message,	void					)( const xui_message& message )
@@ -374,20 +374,20 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 {
 	m_mousedown = args.point;
 
-	xui_component* componet = NULL;
+	xui_component* component = NULL;
 
 	if (m_floatctrl)
-		componet = m_floatctrl->choose(args.point);
+		component = m_floatctrl->choose(args.point);
 
-	if (componet == NULL)
+	if (component == NULL)
 	{
 		if (get_modaltop())
-			componet = get_modaltop()->choose(args.point);
+			component = get_modaltop()->choose(args.point);
 		else
-			componet = choose(args.point);
+			component = choose(args.point);
 	}
 
-	set_catchctrl(componet);
+	set_catchctrl(component);
 
 	if (m_catchctrl)
 	{
@@ -426,20 +426,20 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	m_mouselast = m_mousecurr;
 	m_mousecurr = args.point;
 
-	xui_component* componet = NULL;
+	xui_component* component = NULL;
 
 	if (m_floatctrl)
-		componet = m_floatctrl->choose(args.point);
+		component = m_floatctrl->choose(args.point);
 
-	if (componet == NULL)
+	if (component == NULL)
 	{
 		if (get_modaltop())
-			componet = get_modaltop()->choose(args.point);
+			component = get_modaltop()->choose(args.point);
 		else
-			componet = choose(args.point);
+			component = choose(args.point);
 	}
 
-	set_hoverctrl(componet);
+	set_hoverctrl(component);
 
 	if (m_catchctrl)
 	{
@@ -520,10 +520,10 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 {
 	xui_panel::on_addchild(args);
 
-	xui_component* componet = (xui_component*)(args.wparam);
-	if (componet)
+	xui_component* component = (xui_component*)(args.wparam);
+	if (component)
 	{
-		xui_window* window = (xui_window*)componet;
+		xui_window* window = (xui_window*)component;
 		if (window->was_visible() && window->was_modal())
 			add_modalwnd(window);
 	}
@@ -533,10 +533,10 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 {
 	xui_panel::on_delchild(args);
 
-	xui_component* componet = (xui_component*)(args.wparam);
-	if (componet)
+	xui_component* component = (xui_component*)(args.wparam);
+	if (component)
 	{
-		xui_window* window = (xui_window*)componet;
+		xui_window* window = (xui_window*)component;
 		if (window->was_visible() && window->was_modal())
 			del_modalwnd(window);
 	}

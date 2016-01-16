@@ -2,29 +2,30 @@
 #include "xui_scroll.h"
 #include "xui_scrollarrow.h"
 
+xui_implement_rtti(xui_scrollarrow, xui_button);
+
 /*
 //constructor
 */
-xui_create_explain(xui_scrollarrow)( const std::string& name, const xui_rect2d<s32>& rect, u08 style, s32 direction, xui_component* parent )
-: xui_button(name, rect)
+xui_create_explain(xui_scrollarrow)( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle, s32 direction, u08 arrowdraw )
+: xui_button(size, parent)
 {
-	m_style		= style;
+	m_flowstyle	= flowstyle;
+	m_arrowdraw = arrowdraw;
 	m_direction = direction;
 	m_deltahold = 0.0f;
-	m_arrowdraw = true;
-	m_parent	= parent;
 }
 
 /*
 //method
 */
-xui_method_explain(xui_scrollarrow, was_arrowdraw,	bool)( void ) const
+xui_method_explain(xui_scrollarrow, get_arrowdraw,	u08	)( void ) const
 {
 	return m_arrowdraw;
 }
-xui_method_explain(xui_scrollarrow, set_arrowdraw,	void)( bool flag )
+xui_method_explain(xui_scrollarrow, set_arrowdraw,	void)( u08 arrowdraw )
 {
-	m_arrowdraw = flag;
+	m_arrowdraw = arrowdraw;
 }
 
 /*
@@ -39,7 +40,7 @@ xui_method_explain(xui_scrollarrow, update,			void)( f32 delta )
 		m_deltahold += delta;
 		if (m_deltahold > 0.5f)
 		{
-			xui_scroll* scroll = (xui_scroll*)m_parent;
+			xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
 			scroll->set_value(scroll->get_value()+m_direction*scroll->get_smallchange());
 		}
 	}
@@ -56,57 +57,45 @@ xui_method_explain(xui_scrollarrow, on_mousedown,	void)( xui_method_mouse& args 
 		m_deltahold = 0.0f;
 	}
 }
-
 xui_method_explain(xui_scrollarrow, on_mouseclick,	void)( xui_method_mouse& args )
 {
 	xui_button::on_mouseclick(args);
-	xui_scroll* scroll = (xui_scroll*)m_parent;
+	xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
 	scroll->set_value(scroll->get_value()+m_direction*scroll->get_smallchange());
 }
-
-xui_method_explain(xui_scrollarrow, on_renderback,	void)( xui_method_args& args )
+xui_method_explain(xui_scrollarrow, on_renderself,	void)( xui_method_args&  args )
 {
-	//xui_button::on_renderback(args);
-	if (m_arrowdraw == false)
-		return;
+	xui_button::on_renderself(args);
 
-	xui_vector<s32> pt[3];
-	xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-	switch (m_style)
+	xui_rect2d<s32> rt		= get_renderrtins() + get_screenpt();
+	xui_colour		color   = get_rendercolor() * get_vertexcolor();
+	xui_vector<s32> center	= xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+	if (m_arrowdraw == ARROWDRAW_PLUSANDMINUS)
 	{
-	case FLOWSTYLE_H:
-		{
-			if (m_direction < 0)
-			{
-				pt[0] = xui_vector<s32>(rt.ax, rt.ay+rt.get_sz().h/2);
-				pt[1] = xui_vector<s32>(rt.bx, rt.ay);
-				pt[2] = xui_vector<s32>(rt.bx, rt.by);
-			}
-			else
-			{
-				pt[0] = xui_vector<s32>(rt.bx,  rt.ay+rt.get_sz().h/2);
-				pt[1] = xui_vector<s32>(rt.ax,  rt.ay);
-				pt[2] = xui_vector<s32>(rt.ax,  rt.by);
-			}
-		}
-		break;
-	case FLOWSTYLE_V:
-		{
-			if (m_direction < 0)
-			{
-				pt[0] = xui_vector<s32>(rt.ax+rt.get_sz().w/2,	rt.ay);
-				pt[1] = xui_vector<s32>(rt.ax,					rt.by);
-				pt[2] = xui_vector<s32>(rt.bx,					rt.by);
-			}
-			else
-			{
-				pt[0] = xui_vector<s32>(rt.ax+rt.get_sz().w/2,	rt.by);
-				pt[1] = xui_vector<s32>(rt.ax,					rt.ay);
-				pt[2] = xui_vector<s32>(rt.bx,					rt.ay);
-			}
-		}
-		break;
-	}
+		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
+			center.x-6,
+			center.y-1,
+			center.x+6,
+			center.y+1), color);
 
-	g_convas->fill_poly(pt, 3, get_vertexcolor()*get_rendercolor());
+		if (m_direction > 0)
+			xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
+				center.x-1,
+				center.y-6,
+				center.x+1,
+				center.y+6), color);
+	}
+	else
+	{
+		if (m_flowstyle == FLOWSTYLE_V)
+		{
+			if (m_direction < 0) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_UP,    color);
+			if (m_direction > 0) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN,  color);
+		}
+		else
+		{
+			if (m_direction < 0) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_LEFT,  color);
+			if (m_direction > 0) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
+		}
+	}
 }

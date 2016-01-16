@@ -5,32 +5,23 @@
 /*
 //constructor
 */
-xui_create_explain(xui_timer)( xui_component* owner, f32 interval )
+xui_create_explain(xui_timer)( xui_component* owner, f32 interval, void* data )
 {
 	m_owner		= owner;
 	m_enable	= true;
 	m_interval	= interval;
-	m_time		= 0;
-
-	g_timermgr->add_timer(this);
+	m_data		= data;
+	m_time		= 0.0f;
 }
 
 /*
-//destructor
+//property
 */
-xui_delete_explain(xui_timer)( void )
-{
-	g_timermgr->del_timer(this);
-}
-
-/*
-//method
-*/
-xui_method_explain(xui_timer, was_enable,	bool)( void ) const
+xui_method_explain(xui_timer, was_enable,	bool	)( void ) const
 {
 	return m_enable;
 }
-xui_method_explain(xui_timer, set_enable,	void)( bool flag )
+xui_method_explain(xui_timer, set_enable,	void	)( bool flag )
 {
 	if (m_enable != flag)
 	{
@@ -38,19 +29,27 @@ xui_method_explain(xui_timer, set_enable,	void)( bool flag )
 		reset();
 	}
 }
-xui_method_explain(xui_timer, get_interval,	f32	)( void ) const
+xui_method_explain(xui_timer, get_interval,	f32		)( void ) const
 {
 	return m_interval;
 }
-xui_method_explain(xui_timer, set_interval,	void)( f32 interval )
+xui_method_explain(xui_timer, set_interval,	void	)( f32 interval )
 {
 	m_interval = interval;
 }
+xui_method_explain(xui_timer, get_data,		void*	)( void ) const
+{
+	return m_data;
+}
+xui_method_explain(xui_timer, set_data,		void	)( void* data )
+{
+	m_data = data;
+}
 
 /*
-//virtual
+//method
 */
-xui_method_explain(xui_timer, update,		void)( f32 delta )
+xui_method_explain(xui_timer, update,		void	)( f32 delta )
 {
 	if (m_enable)
 	{
@@ -64,7 +63,7 @@ xui_method_explain(xui_timer, update,		void)( f32 delta )
 		}
 	}
 }
-xui_method_explain(xui_timer, reset,		void)( void )
+xui_method_explain(xui_timer, reset,		void	)( void )
 {
 	m_time = 0.0f;
 }

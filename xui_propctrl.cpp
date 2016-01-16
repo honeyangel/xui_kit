@@ -42,9 +42,9 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 	on_linkpropdata();
 }
 
-xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* componet )
+xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* component )
 {
-	m_widgetvec.insert(m_widgetvec.begin(), componet);
+	m_widgetvec.insert(m_widgetvec.begin(), component);
 }
 xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )
 {

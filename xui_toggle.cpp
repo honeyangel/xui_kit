@@ -53,36 +53,21 @@ xui_method_explain(xui_toggle, on_mousedown,		void			)( xui_method_mouse& args )
 }
 xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args )
 {
+	xui_colour      color  = get_vertexcolor();
+	xui_rect2d<s32> rt     = get_renderrtabs();
+	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+
 	switch (m_drawstyle)
 	{
 	case TOGGLE_CIRCLE:
 		{
-			xui_colour      color  = get_vertexcolor();
-			xui_rect2d<s32> rt     = get_renderrtabs();
-			xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 			xui_convas::get_ins()->fill_circle(center, 4, color*get_rendercolor(),	0, 360);
 			xui_convas::get_ins()->draw_circle(center, 4, color*m_sidecolor,		0, 360);
 		}
 		break;
 	case TOGGLE_NORMAL:
 		{
-			xui_colour      color  = get_vertexcolor();
-			xui_rect2d<s32> rt     = get_renderrtabs();
-			xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
-
-			xui_colour final_color = color*get_rendercolor();
-			xui_vector<s32> p1;
-			xui_vector<s32> p2;
-			p1 = xui_vector<s32>(center.x-6, center.y  );
-			p2 = xui_vector<s32>(center.x,   center.y+6);
-			xui_convas::get_ins()->draw_line(p1,						 p2,						 final_color);
-			xui_convas::get_ins()->draw_line(p1+xui_vector<s32>(-1,  1), p2+xui_vector<s32>(-1,  1), final_color);
-			xui_convas::get_ins()->draw_line(p1+xui_vector<s32>( 1, -1), p2+xui_vector<s32>( 1, -1), final_color);
-			p1 = xui_vector<s32>(center.x,   center.y+6);
-			p2 = xui_vector<s32>(center.x+6, center.y-6);
-			xui_convas::get_ins()->draw_line(p1,						 p2,						 final_color);
-			xui_convas::get_ins()->draw_line(p1+xui_vector<s32>(-1, -1), p2+xui_vector<s32>(-1, -1), final_color);
-			xui_convas::get_ins()->draw_line(p1+xui_vector<s32>( 1,  1), p2+xui_vector<s32>( 1,  1), final_color);
+			xui_convas::get_ins()->draw_tick  (center, 6, color*get_rendercolor());
 		}
 		break;
 	case TOGGLE_BUTTON:

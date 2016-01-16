@@ -460,34 +460,34 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 }
 xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui_vector<s32>& pt )
 {
-	xui_component* componet = xui_control::choose_else(pt);
-	if (componet == NULL)
+	xui_component* component = xui_control::choose_else(pt);
+	if (component == NULL)
 	{
 		xui_vecptr_addloop(m_columngrid)
 		{
-			if (componet = m_columngrid[i]->choose(pt))
-				return componet;
+			if (component = m_columngrid[i]->choose(pt))
+				return component;
 		}
 	}
-	if (componet == NULL)
+	if (component == NULL)
 	{
 		xui_vecptr_addloop(m_columnhead)
 		{
-			if (componet = m_columnhead[i]->choose(pt))
-				return componet;
+			if (component = m_columnhead[i]->choose(pt))
+				return component;
 		}
 	}
-	if (componet == NULL)
+	if (component == NULL)
 	{
 		std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
 		xui_vecptr_addloop(alltreenodes)
 		{
-			if (componet = alltreenodes[i]->choose(pt))
-				return componet;
+			if (component = alltreenodes[i]->choose(pt))
+				return component;
 		}
 	}
 
-	return componet;
+	return component;
 }
 xui_method_explain(xui_treeview, update_else,			void								)( f32 delta )
 {

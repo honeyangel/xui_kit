@@ -5,11 +5,13 @@
 
 class xui_panel : public xui_container
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_panel( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_panel( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor
@@ -71,6 +73,7 @@ protected:
 	//member
 	*/
 	std::vector<xui_control*>			m_childctrl;
+	std::vector<xui_component*>			m_resizevec;
 };
 
 #endif//__xui_panel_h__

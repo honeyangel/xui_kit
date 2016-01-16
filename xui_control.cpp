@@ -195,25 +195,25 @@ xui_method_explain(xui_control, choose,				xui_component*			)( const xui_vector<
 {
 	if (m_enable && m_visible)
 	{
-		xui_component* componet = choose_else(pt);
-		if (componet == NULL)
-			componet  = xui_component::choose(pt);
+		xui_component* component = choose_else(pt);
+		if (component == NULL)
+			component  = xui_component::choose(pt);
 
-		return componet;
+		return component;
 	}
 
 	return NULL;
 }
 xui_method_explain(xui_control, choose_else,		xui_component*			)( const xui_vector<s32>& pt )
 {
-	xui_component* componet = NULL;
+	xui_component* component = NULL;
 	if (m_render.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt();
 		xui_vecptr_addloop(m_widgetvec)
 		{
-			if (componet = m_widgetvec[i]->choose(relative))
-				return componet;
+			if (component = m_widgetvec[i]->choose(relative))
+				return component;
 		}
 	}
 
@@ -244,7 +244,7 @@ xui_method_explain(xui_control, render,				void					)( void )
 xui_method_explain(xui_control, render_else,		void					)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(m_render);
+	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
 	xui_vecptr_addloop(m_widgetvec)
 	{
 		if (m_widgetvec[i]->was_visible())
@@ -303,7 +303,7 @@ xui_method_explain(xui_control, on_perform,			void					)( xui_method_args& args 
 {
 	if (m_widgetvec.size() > 0)
 	{
-		xui_rect2d<s32> rt = get_renderrt();
+		xui_rect2d<s32> rt = get_renderrtins();
 		perform_alignhorz(rt, m_widgetvec);
 		perform_alignvert(rt, m_widgetvec);
 		perform_dockstyle(rt, m_widgetvec);

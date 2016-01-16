@@ -3,19 +3,28 @@
 
 #include "xui_button.h"
 
+enum 
+{
+	ARROWDRAW_NONE,
+	ARROWDRAW_TRIANGLE,
+	ARROWDRAW_PLUSANDMINUS,
+};
+
 class xui_scrollarrow : public xui_button
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_scrollarrow( const std::string& name, const xui_rect2d<s32>& rect, u08 style, s32 direction, xui_component* parent );
+	xui_scrollarrow( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle, s32 direction, u08 arrowdraw );
 
 	/*
 	//method
 	*/
-	bool			was_arrowdraw	( void ) const;
-	void			set_arrowdraw	( bool flag );
+	u08				get_arrowdraw	( void ) const;
+	void			set_arrowdraw	( u08 arrowdraw );
 
 	/*
 	//virtual
@@ -28,15 +37,15 @@ protected:
 	*/
 	virtual void	on_mousedown	( xui_method_mouse& args );
 	virtual void	on_mouseclick	( xui_method_mouse& args );
-	virtual void	on_renderback	( xui_method_args&  args );
+	virtual void	on_renderself	( xui_method_args&  args );
 
 	/*
 	//member
 	*/
-	u08				m_style;
+	u08				m_flowstyle;
+	u08				m_arrowdraw;
 	s32				m_direction;
 	f32				m_deltahold;
-	bool			m_arrowdraw;
 };
 
 #endif//__xui_scrollarrow_h__

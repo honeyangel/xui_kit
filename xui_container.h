@@ -5,11 +5,13 @@
 
 class xui_container : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_container( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_container( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor

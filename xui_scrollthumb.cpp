@@ -2,14 +2,15 @@
 #include "xui_scroll.h"
 #include "xui_scrollthumb.h"
 
+xui_implement_rtti(xui_scrollthumb, xui_button);
+
 /*
 //constructor
 */
-xui_create_explain(xui_scrollthumb)( const std::string& name, const xui_rect2d<s32>& rect, u08 style, xui_component* parent )
-: xui_button(name, rect)
+xui_create_explain(xui_scrollthumb)( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle )
+: xui_button(size, parent)
 {
-	m_style	 = style;
-	m_parent = parent;
+	m_flowstyle	= flowstyle;
 }
 
 /*
@@ -20,9 +21,9 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 	xui_button::on_mousemove(args);
 	if (has_catch())
 	{
-		xui_scroll* scroll = (xui_scroll*)m_parent;
+		xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
 		xui_rect2d<s32> rt = scroll->get_hallowrt();
-		switch (m_style)
+		switch (m_flowstyle)
 		{
 		case FLOWSTYLE_H:
 			{
@@ -33,7 +34,7 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 				if (x > rt.bx-get_renderw())
 					x = rt.bx-get_renderw();
 
-				set_renderpt(xui_vector<s32>(x, get_rendery()), false);
+				on_perform_x(x);
 			}
 			break;
 		case FLOWSTYLE_V:
@@ -45,7 +46,7 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 				if (y > rt.by-get_renderh())
 					y = rt.by-get_renderh();
 
-				set_renderpt(xui_vector<s32>(get_renderx(), y), false);
+				on_perform_y(y);
 			}
 			break;
 		}
@@ -53,10 +54,12 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 		scroll->update_value();
 	}
 }
-
 xui_method_explain(xui_scrollthumb, on_mouserise,	void )( xui_method_mouse& args )
 {
 	xui_button::on_mouserise(args);
-	xui_scroll* scroll = (xui_scroll*)m_parent;
-	scroll->update_thumb();
+	if (args.mouse == MB_L)
+	{
+		xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
+		scroll->update_thumb();
+	}
 }
