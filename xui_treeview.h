@@ -72,46 +72,46 @@ public:
 	s32							size;
 	std::wstring				name;
 	xui_bitmap*					icon;
-	xui_family					font;
 	u08							sort;
 	s32							minsize;
 	s32							maxsize;
 	bool						editable;
 	xui_rect2d<s32>				borderrt;
+	xui_family					textfont;
+	xui_family_render			textdraw;
 	u08							textalign;
-	xui_colour					textcolor;
 	u08							iconalign;
 
 	/*
 	//constructor
 	*/
 	xui_treecolumn( 
-		u08						_type, 
-		s32						_size, 
-		const std::wstring&		_name, 
-		xui_bitmap*				_icon		= NULL, 
-		const xui_family&		_font		= xui_family("Consolas", 14, false),
-		u08						_sort		= 1,
-		s32						_minsize	= 20,
-		s32						_maxsize	= 128,
-		bool					_editable	= true,
-		const xui_rect2d<s32>&	_borderrt	= xui_rect2d<s32>(2),
-		u08						_textalign	= TA_LC,
-		const xui_colour&		_textcolor	= xui_colour(1.0f, 1.0f, 1.0f, 1.0f),
-		u08						_iconalign	= IMAGE_C )
+		u08						 _type, 
+		s32						 _size, 
+		const std::wstring&		 _name, 
+		xui_bitmap*				 _icon		= NULL, 
+		u08						 _sort		= 1,
+		s32						 _minsize	= 20,
+		s32						 _maxsize	= 128,
+		bool					 _editable	= true,
+		const xui_rect2d<s32>&	 _borderrt	= xui_rect2d<s32>(2),
+		const xui_family&		 _textfont	= xui_family("Consolas", 14, false),
+		const xui_family_render& _textdraw	= xui_family_render(),
+		u08						 _textalign	= TA_LC,
+		u08						 _iconalign	= IMAGE_C )
 	{
 		type		= _type;
 		size		= _size;
 		name		= _name;
 		icon		= _icon;
-		font		= _font;
 		sort		= _sort;
 		minsize		= _minsize;
 		maxsize		= _maxsize;
 		editable	= _editable;
 		borderrt	= _borderrt;
+		textfont	= _textfont;
+		textdraw	= _textdraw;
 		textalign	= _textalign;
-		textcolor	= _textcolor;
 		iconalign	= _iconalign;
 	}
 };
@@ -119,12 +119,13 @@ public:
 class xui_treeview : public xui_container
 {
 	friend class xui_treenode;
+	xui_declare_rtti
 
 public:
 	/*
 	//constructor
 	*/
-	xui_treeview( const std::string& name, const xui_rect2d<s32>& rect, const std::vector<xui_treecolumn>& columninfo );
+	xui_treeview( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
 
 	/*
 	//destructor
@@ -147,10 +148,6 @@ public:
 	void								set_allowmulti		( bool flag );
 	bool								was_acceptdrag		( void ) const;
 	void								set_acceptdrag		( bool flag );
-	bool								was_rendergrid		( void ) const;
-	void								set_rendergrid		( bool flag );
-	bool								was_lighttrace		( void ) const;
-	void								set_lighttrace		( bool flag );
 
 	/*
 	//column
@@ -170,12 +167,6 @@ public:
 	*/
 	const std::wstring&					get_searchtext		( void ) const;
 	void								set_searchtext		( const std::wstring& text );
-
-	/*
-	//plus render
-	*/
-	u08									get_plusrender		( void ) const;
-	void								set_plusrender		( u08 mode );
 
 	/*
 	//selected node
@@ -257,7 +248,7 @@ protected:
 	std::vector<xui_treenode*>			m_upmostnode;
 	std::vector<xui_treenode*>			m_upmostback;
 	std::vector<xui_treecolumn>			m_columninfo;
-	std::vector<xui_control*>			m_columngrid;
+	std::vector<xui_treegrid*>			m_columngrid;
 	std::vector<xui_drawer*>			m_columnhead;
 	u08									m_columnsort;
 	u32									m_sortcolumn;

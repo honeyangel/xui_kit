@@ -5,11 +5,13 @@
 
 class xui_treegrid : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_treegrid( u32 index, xui_treeview* treeview );
+	xui_treegrid( xui_component* parent, u32 index );
 
 protected:
 	/*

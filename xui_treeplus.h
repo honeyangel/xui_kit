@@ -5,11 +5,13 @@
 
 class xui_treeplus : public xui_component
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_treeplus( xui_treenode* treenode );
+	xui_treeplus( xui_component* parent );
 
 	/*
 	//method

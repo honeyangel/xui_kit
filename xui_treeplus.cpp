@@ -1,17 +1,17 @@
-#include "xui_desktop.h"
 #include "xui_convas.h"
+#include "xui_desktop.h"
 #include "xui_treenode.h"
 #include "xui_treeview.h"
 #include "xui_treeplus.h"
 
+xui_implement_rtti(xui_treeplus, xui_component);
+
 /*
 //constructor
 */
-xui_treeplus::xui_treeplus( xui_treenode* treenode )
-: xui_component("", xui_rect2d<s32>(0))
+xui_create_explain(xui_treeplus)( xui_component* parent )
+: xui_component(xui_vector<s32>(0), parent)
 {
-	m_type     += "treeplus";
-	m_parent	= treenode;
 	m_visible	= false;
 	m_expanded	= false;
 }
@@ -29,8 +29,8 @@ xui_method_explain(xui_treeplus, set_expanded,	void)( bool flag )
 	{
 		m_expanded  = flag;
 
-		xui_treenode* treenode = (xui_treenode*)m_parent;
-		xui_treeview* treeview = (xui_treeview*)treenode->get_parent();
+		xui_treenode* treenode = xui_dynamic_cast(xui_treenode, m_parent);
+		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, treenode->get_parent());
 		if (treeview)
 			treeview->invalid();
 	}
@@ -42,7 +42,8 @@ xui_method_explain(xui_treeplus, set_expanded,	void)( bool flag )
 xui_method_explain(xui_treeplus, on_mousedown,	void)( xui_method_mouse& args )
 {
 	xui_component::on_mousedown(args);
-	set_expanded(!m_expanded);
+	if (args.mouse == MB_L)
+		set_expanded(!m_expanded);
 }
 xui_method_explain(xui_treeplus, on_renderself, void)( xui_method_args&  args )
 {
@@ -81,9 +82,7 @@ xui_method_explain(xui_treeplus, on_renderself, void)( xui_method_args&  args )
 			poly[3] = poly[0];
 		}
 
-		//g_convas->draw_path(poly, 4, color);
-		//if (solid)
-			g_convas->fill_poly(poly, 3, color);
+		g_convas->fill_poly(poly, 3, color);
 	}
 	else
 	{

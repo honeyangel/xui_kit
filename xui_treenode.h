@@ -6,12 +6,13 @@
 class xui_treenode : public xui_control
 {
 	friend class xui_treeview;
+	xui_declare_rtti
 
 public:
 	/*
 	//constructor
 	*/
-	xui_treenode( const std::string& name, const xui_rect2d<s32>& rect, xui_treeview* treeview, xui_treedata* linkdata );
+	xui_treenode( xui_component* parent, xui_treedata* linkdata );
 
 	/*
 	//static compare
@@ -53,6 +54,7 @@ public:
 	//override
 	*/
 	virtual xui_colour					get_rendercolor		( void ) const;
+	virtual xui_component*				choose				( const xui_vector<s32>& pt );
 
 protected:
 	/*

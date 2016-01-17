@@ -32,9 +32,13 @@ xui_method_explain(xui_treedata, get_text,		std::wstring	)( u32 index )
 {
 	return m_text;
 }
-xui_method_explain(xui_treedata, get_textcolor, xui_colour		)( u32 index )
+xui_method_explain(xui_treedata, get_textfont,	xui_family		)( u32 index )
 {
-	return xui_colour(1.0f);
+	return xui_family();
+}
+xui_method_explain(xui_treedata, get_textdraw, xui_family_render)( u32 index )
+{
+	return xui_family_render();
 }
 xui_method_explain(xui_treedata, get_flag,		bool			)( u32 index )
 {

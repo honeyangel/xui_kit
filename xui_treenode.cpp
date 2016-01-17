@@ -6,52 +6,46 @@
 #include "xui_treeview.h"
 #include "xui_treenode.h"
 
+xui_implement_rtti(xui_treenode, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_treenode)( const std::string& name, const xui_rect2d<s32>& rect, xui_treeview* treeview, xui_treedata* linkdata )
-: xui_control(name, rect)
+xui_create_explain(xui_treenode)( xui_component* parent, xui_treedata* linkdata )
+: xui_control(xui_vector<s32>(0), parent)
 {
-	m_type     += "treenode";
-	m_parent    = treeview;
-	m_raycast	= false;
 	m_selected	= false;
 	m_rootnode	= NULL;
 	m_holdtime  = -1;
 	m_linkdata	= linkdata;
 	m_linkdata->set_node(this);
 
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, parent);
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
 		xui_drawer* drawer = (columninfo.type == TREECOLUMN_BOOL) 
-			? new xui_toggle("", xui_rect2d<s32>(0), TOGGLE_CIRCLE) 
-			: new xui_drawer("", xui_rect2d<s32>(0));
+			? new xui_toggle(xui_vector<s32>(0), this, TOGGLE_CIRCLE) 
+			: new xui_drawer(xui_vector<s32>(0), this);
 
-		xui_method_ptrcall(drawer, set_parent	)(this);
-		xui_method_ptrcall(drawer, set_backcolor)(xui_colour(0.0f));
-		xui_method_ptrcall(drawer, set_raycast	)(columninfo.type == TREECOLUMN_BOOL ? true : false);
 		xui_method_ptrcall(drawer, set_borderrt	)(columninfo.borderrt);
-		xui_method_ptrcall(drawer, set_font		)(columninfo.font);
-		xui_method_ptrcall(drawer, set_textcolor)(columninfo.textcolor);
+		xui_method_ptrcall(drawer, set_textfont	)(columninfo.textfont);
+		xui_method_ptrcall(drawer, set_textdraw	)(columninfo.textdraw);
 		xui_method_ptrcall(drawer, set_iconalign)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT : columninfo.iconalign);
 		xui_method_ptrcall(drawer, set_textalign)(columninfo.type == TREECOLUMN_MAIN ? TA_LC            : columninfo.textalign);
 		m_widgetvec.push_back(drawer);
 	}
 
-	m_treeplus = new xui_treeplus(this);
-	m_widgetvec.push_back(m_treeplus);
-
-	m_edittext = new xui_textbox("", xui_rect2d<s32>(0));
-	xui_method_ptrcall(m_edittext, set_visible	)(false);
-	xui_method_ptrcall(m_edittext, set_parent	)(this);
-	xui_method_ptrcall(m_edittext, set_backcolor)(xui_colour(1.0f));
+	m_edittext = new xui_textbox(xui_vector<s32>(0), this);
+	xui_method_ptrcall(m_edittext, ini_component)(true, false);
 	xui_method_ptrcall(m_edittext, set_sidestyle)(SIDESTYLE_S);
 	xui_method_ptrcall(m_edittext, set_sidecolor)(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	xui_method_ptrcall(m_edittext, set_textcolor)(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 	m_edittext->xm_nonfocus  += new xui_method_member<xui_method_args,  xui_treenode>(this, &xui_treenode::on_textnonfocus);
 	m_edittext->xm_keybddown += new xui_method_member<xui_method_keybd, xui_treenode>(this, &xui_treenode::on_textkeybddown);
 	m_widgetvec.push_back(m_edittext);
+
+	m_treeplus = new xui_treeplus(this);
+	m_widgetvec.push_back(m_treeplus);
 
 	use_linkdata();
 }
@@ -61,7 +55,7 @@ xui_create_explain(xui_treenode)( const std::string& name, const xui_rect2d<s32>
 */
 xui_method_explain(xui_treenode, compare,			bool								)( xui_treenode* node1, xui_treenode* node2 )
 {
-	xui_treeview* treeview = (xui_treeview*)node1->get_parent();
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, node1->get_parent());
 	u32 index = treeview->get_sortcolumn();
 	std::wstring text1 = (node1->get_linkdata() == NULL) ? L"" : node1->get_linkdata()->get_text(index);
 	std::wstring text2 = (node2->get_linkdata() == NULL) ? L"" : node2->get_linkdata()->get_text(index);
@@ -134,7 +128,7 @@ xui_method_explain(xui_treenode, get_rootnode,		xui_treenode*						)( void )
 }
 xui_method_explain(xui_treenode, get_leafnodetotal, void								)( std::vector<xui_treenode*>& nodes, bool total )
 {
-	xui_treeview* treeview = (xui_treeview*)m_parent;
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	nodes.push_back(this);
 	if (m_treeplus->was_expanded() || total || treeview->get_searchtext().length() > 0)
 	{
@@ -158,10 +152,11 @@ xui_method_explain(xui_treenode, get_leafnode,		xui_treenode*						)( u32 index 
 }
 xui_method_explain(xui_treenode, add_leafnode,		xui_treenode*						)( u32 index, xui_treedata* data )
 {
-	xui_treeview* treeview = (xui_treeview*)m_parent;
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	xui_treenode* node = treeview->create_node(data);
 	node->m_rootnode = this;
 	m_leafnode.insert(m_leafnode.begin()+index, node);
+
 	m_treeplus->set_visible(true);
 	return node;
 }
@@ -175,11 +170,11 @@ xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* nod
 	if (itor != m_leafnode.end())
 	{
 		m_leafnode.erase(itor);
-		m_treeplus->set_visible(m_leafnode.size() > 0);
-
-		xui_treeview* treeview = (xui_treeview*)m_parent;
+		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 		treeview->delete_node(node);
 	}
+
+	m_treeplus->set_visible(m_leafnode.size() > 0);
 }
 
 /*
@@ -191,21 +186,22 @@ xui_method_explain(xui_treenode, get_linkdata,		xui_treedata*						)( void )
 }
 xui_method_explain(xui_treenode, use_linkdata,		void								)( void )
 {
-	xui_treeview* treeview = (xui_treeview*)m_parent;
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
 		if (columninfo.type == TREECOLUMN_BOOL)
 		{
-			xui_toggle* toggle = (xui_toggle*)m_widgetvec[i];
-			xui_method_ptrcall(toggle, set_check	)(m_linkdata->get_flag(i));
+			xui_toggle* toggle = xui_dynamic_cast(xui_toggle, m_widgetvec[i]);
+			xui_method_ptrcall(toggle, set_push		)(m_linkdata->get_flag(i));
 		}
 		else
 		{
-			xui_drawer* drawer = (xui_drawer*)m_widgetvec[i];
+			xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[i]);
 			xui_method_ptrcall(drawer, set_text		)(m_linkdata->get_text(i));
 			xui_method_ptrcall(drawer, set_icon		)(m_linkdata->get_icon(i));
-			xui_method_ptrcall(drawer, set_textcolor)(m_linkdata->get_textcolor(i));
+			xui_method_ptrcall(drawer, set_textfont	)(m_linkdata->get_textfont(i));
+			xui_method_ptrcall(drawer, set_textdraw )(m_linkdata->get_textdraw(i));
 		}
 	}
 }
@@ -223,13 +219,31 @@ xui_method_explain(xui_treenode, ini_holdtime,		void								)( void )
 */
 xui_method_explain(xui_treenode, get_rendercolor,	xui_colour							)( void ) const
 {
-	xui_treeview* treeview = (xui_treeview*)m_parent;
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	if (treeview->was_lighttrace() && m_selected)
 	{
 		return xui_colour(0.5f, 0.0f, 0.0f, 0.7f);
 	}
 
-	return xui_colour(0.0f);
+	return m_backcolor;
+}
+xui_method_explain(xui_treenode, choose,			xui_component*						)( const xui_vector<s32>& pt )
+{
+	if (m_enable && m_visible && m_render.was_inside(pt))
+	{
+		xui_vector<s32> relative = pt - m_render.get_pt();
+		xui_vecptr_addloop(m_widgetvec)
+		{
+			if (xui_equal_kindof(xui_drawer, m_widgetvec[i]))
+				continue;
+
+			xui_component* component = NULL;
+			if (component = m_widgetvec[i]->choose(relative))
+				return component;
+		}
+	}
+
+	return NULL;
 }
 
 /*
@@ -244,7 +258,7 @@ xui_method_explain(xui_treenode, on_keybddown,		void								)( xui_method_keybd&
 	}
 	if (args.kcode == KEY_F2)
 	{
-		xui_treeview* treeview = (xui_treeview*)m_parent;
+		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 		for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 		{
 			if (treeview->get_columninfo(i).type == TREECOLUMN_MAIN &&
@@ -258,7 +272,7 @@ xui_method_explain(xui_treenode, on_keybddown,		void								)( xui_method_keybd&
 	if (args.kcode == KEY_UARROW ||
 		args.kcode == KEY_DARROW)
 	{
-		xui_treeview* treeview = (xui_treeview*)m_parent;
+		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 		std::vector<u32> selectedindex;
 		std::vector<xui_treenode*> nodes = treeview->get_entirenode(false);
 		for (u32 i = 0; i < nodes.size(); ++i)
@@ -291,28 +305,28 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 {
 	xui_control::on_perform(args);
 
-	xui_treeview* treeview = (xui_treeview*)m_parent;
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	xui_vector<s32> pt(0);
 	xui_vector<s32> sz(0, treeview->get_lineheight());
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
 		sz.w  = columninfo.size;
-		m_widgetvec[i]->set_renderpt(pt, false);
-		m_widgetvec[i]->set_rendersz(sz, false);
+		m_widgetvec[i]->on_perform_pt(pt);
+		m_widgetvec[i]->on_perform_sz(sz);
 		pt.x += columninfo.size;
 
 		if (columninfo.type == TREECOLUMN_MAIN)
 		{
-			xui_drawer* drawer = (xui_drawer*)m_widgetvec[i];
+			xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[i]);
 
 			s32 indent = get_currnodedepth()*treeview->get_nodeindent();
 			s32 offset = (treeview->get_lineheight() - 12) / 2;
 			xui_vector<s32> pluspt = drawer->get_renderpt() + xui_vector<s32>(offset, offset);
 			xui_vector<s32> plussz(12, 12);
 			pluspt.x += indent;
-			m_treeplus->set_renderpt(pluspt, false);
-			m_treeplus->set_rendersz(plussz, false);
+			m_treeplus->on_perform_pt(pluspt);
+			m_treeplus->on_perform_sz(plussz);
 
 			drawer->set_iconoffset(xui_vector<s32>(offset+indent+plussz.w, 0));
 		}
@@ -324,9 +338,9 @@ xui_method_explain(xui_treenode, on_topdraw,		void								)( xui_method_args&		a
 	xui_component* hoverctrl = g_desktop->get_hoverctrl();
 	if (hoverctrl != this && hoverctrl)
 	{
-		if (hoverctrl->get_parent() == m_parent && hoverctrl->get_type().find("treenode") != -1)
+		if (hoverctrl->get_parent() == m_parent && xui_issub_kindof(xui_treenode, hoverctrl))
 		{
-			xui_treeview* treeview = (xui_treeview*)m_parent;
+			xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 			xui_vector<s32> pt = g_desktop->get_mousecurr() - hoverctrl->get_screenpt();
 			xui_rect2d<s32> rt = hoverctrl->get_renderrtabs().get_inter(treeview->get_renderrtins()+treeview->get_screenpt());
 			xui_vector<s32> p1;
@@ -342,16 +356,16 @@ xui_method_explain(xui_treenode, on_topdraw,		void								)( xui_method_args&		a
 				p2 = xui_vector<s32>(rt.bx, rt.by-2);
 			}
 
-			g_convas->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+2), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+2), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 			xui_vector<s32> path[3];
 			path[0] = xui_vector<s32>(p1.x,   p1.y-4);
 			path[1] = xui_vector<s32>(p1.x+5, p1.y  );
 			path[2] = xui_vector<s32>(p1.x,   p1.y+6);
-			g_convas->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 			path[0] = xui_vector<s32>(p2.x,   p1.y-4);
 			path[1] = xui_vector<s32>(p2.x-5, p1.y  );
 			path[2] = xui_vector<s32>(p2.x,   p1.y+6);
-			g_convas->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 		}
 	}
 }
@@ -371,7 +385,7 @@ xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&
 			s32 x = down.x - get_screenpt().x;
 			s32 w = 0;
 
-			xui_treeview* treeview = (xui_treeview*)m_parent;
+			xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 			for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 			{
 				if (x >= w && x < w + treeview->get_columninfo(i).size && treeview->get_columninfo(i).editable)
@@ -392,20 +406,20 @@ xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&
 */
 xui_method_explain(xui_treenode, set_edittext,		void								)( u32 index )
 {
-	xui_drawer* drawer = (xui_drawer*)(m_widgetvec[index]);
-	xui_method_ptrcall(drawer,     set_visible		)(false);
+	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[index]);
+	drawer->set_visible(false);
 
-	xui_rect2d<s32> rt = drawer->get_renderrt()+drawer->get_renderpt();	
-	rt.oft_x(drawer->get_iconoffset().x);
-	rt.oft_y(drawer->get_iconoffset().y);
-	rt.set_w(xui_min(rt.get_sz().w, g_convas->calc_size(drawer->get_text(), drawer->get_font(), 0, true).w+20));
+	xui_rect2d<s32> rt = drawer->get_renderrt()+drawer->get_renderpt();
+	rt.ax += drawer->get_iconoffset().x;
+	rt.ax += drawer->get_textoffset().x;
 
 	xui_method_ptrcall(m_edittext, set_visible		)(true);
 	xui_method_ptrcall(m_edittext, set_renderpt		)(rt.get_pt());
 	xui_method_ptrcall(m_edittext, set_rendersz		)(rt.get_sz());
 	xui_method_ptrcall(m_edittext, set_borderrt		)(drawer->get_borderrt());
 	xui_method_ptrcall(m_edittext, set_text			)(drawer->get_text());
-	xui_method_ptrcall(m_edittext, set_font			)(drawer->get_font());
+	xui_method_ptrcall(m_edittext, set_textfont		)(drawer->get_textfont());
+	xui_method_ptrcall(m_edittext, set_textdraw		)(drawer->get_textdraw());
 	xui_method_ptrcall(m_edittext, set_textalign	)(drawer->get_textalign());
 	xui_method_ptrcall(m_edittext, set_caretindex	)(0, true);
 	xui_method_ptrcall(m_edittext, set_selecttext	)(0, drawer->get_text().length());
@@ -415,12 +429,7 @@ xui_method_explain(xui_treenode, set_edittext,		void								)( u32 index )
 xui_method_explain(xui_treenode, set_linktext,		void								)( void )
 {
 	u32 index = (u32)m_edittext->get_data();
-	xui_method_ptrcall(m_edittext, set_visible	)(false);
-
-	xui_drawer* drawer = (xui_drawer*)m_widgetvec[index];
-	xui_method_ptrcall(drawer,     set_visible	)(true);
-	xui_method_ptrcall(drawer,     set_text		)(m_edittext->get_text());
-
+	m_edittext->set_visible(false);
 	m_linkdata->set_text(index, m_edittext->get_text());
 	use_linkdata();
 }
