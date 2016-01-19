@@ -5,11 +5,13 @@
 
 class xui_timerect : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_timerect( void );
+	xui_timerect( xui_component* parent );
 
 	/*
 	//method

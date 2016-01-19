@@ -5,19 +5,13 @@
 
 class xui_timehead : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_timehead( void );
-
-	/*
-	//selected frame
-	*/
-	//bool						was_selafter		( s32 frame ) const;
-	//bool						has_selframe		( void ) const;
-	//const std::vector<s32>&		get_selframe		( void ) const;
-	//void						set_selframe		( const std::vector<s32>& selframe );
+	xui_timehead( xui_component* parent );
 
 protected:
 	/*

@@ -209,19 +209,22 @@ xui_method_explain(xui_panel, realign,			void								)( void )
 xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_container::choose_else(pt);
-	xui_rect2d<s32> rt = get_renderrtins();
-	if (component == NULL && rt.was_inside(pt))
+	if (component == NULL)
 	{
-		xui_vector<s32> relative = pt - m_render.get_pt();
-		xui_vecptr_addloop(m_resizevec)
+		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
+		if (rt.was_inside(pt))
 		{
-			if (component = m_resizevec[i]->choose(relative))
-				return component;
-		}
-		xui_vecptr_addloop(m_childctrl)
-		{
-			if (component = m_childctrl[i]->choose(relative))
-				return component;
+			xui_vector<s32> relative = pt - m_render.get_pt();
+			xui_vecptr_addloop(m_resizevec)
+			{
+				if (component = m_resizevec[i]->choose(relative))
+					return component;
+			}
+			xui_vecptr_addloop(m_childctrl)
+			{
+				if (component = m_childctrl[i]->choose(relative))
+					return component;
+			}
 		}
 	}
 

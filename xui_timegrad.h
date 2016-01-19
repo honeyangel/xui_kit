@@ -5,11 +5,13 @@
 
 class xui_timegrad : public xui_drawer
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_timegrad( void );
+	xui_timegrad( xui_component* parent );
 
 protected:
 	/*

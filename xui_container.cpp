@@ -83,7 +83,7 @@ xui_method_explain(xui_container, get_renderrtins,	xui_rect2d<s32>	)( void ) con
 xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_control::choose_else(pt);
-	xui_rect2d<s32> rt = get_renderrtins();
+	xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 	if (component == NULL && rt.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt();

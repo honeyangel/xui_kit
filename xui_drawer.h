@@ -66,6 +66,8 @@ public:
 	/*
 	//text align
 	*/
+	const xui_colour&			get_textcolor	( void ) const;
+	void						set_textcolor	( const xui_colour& color );
 	u08							get_textalign	( void ) const;
 	void						set_textalign	( u08 align );
 	const xui_vector<s32>&		get_textoffset	( void ) const;

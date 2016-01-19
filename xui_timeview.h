@@ -15,12 +15,13 @@ typedef std::map<s32, std::vector<xui_timeline*>> xui_keyframe_map;
 class xui_timeview : public xui_container
 {
 	friend class xui_timeline;
+	xui_declare_rtti
 
 public:
 	/*
 	//constructor
 	*/
-	xui_timeview( const std::string& name, const xui_rect2d<s32>& rect, s32 treesize, s32 lineheight, u32 lineflag = 0, xui_bitmap** flagicon = NULL );
+	xui_timeview( const xui_vector<s32>& size, xui_component* parent, s32 treesize, s32 lineheight, u32 lineflag = 0 );
 
 	/*
 	//control
@@ -33,10 +34,10 @@ public:
 	/*
 	//property
 	*/
-	void						add_toolitem			( xui_component*       item );
-	void						set_headtext			( const std::wstring& text );
-	void						set_gradfont			( const xui_family&   font );
-	void						set_gradtextcolor		( const xui_colour&   textcolor );
+	void						add_toolitem			( xui_component*			item );
+	void						set_headtext			( const std::wstring&		text );
+	void						set_gradfont			( const xui_family&			font );
+	void						set_graddraw			( const xui_family_render&  draw );
 
 	/*
 	//method
@@ -129,7 +130,7 @@ protected:
 	void						on_timeviewdraghorz		( xui_component* sender, xui_method_args& args );
 	void						on_timeviewdragvert		( xui_component* sender, xui_method_args& args );
 	void						on_timerectdraghorz		( xui_component* sender, xui_method_args& args );
-	void						on_spacesetscroll		( xui_component* sender, xui_method_args& args );
+	void						on_kssliderscroll		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
@@ -139,7 +140,7 @@ protected:
 	xui_timegrad*				m_timegrad;
 	xui_timehead*				m_timehead;
 	xui_timerect*				m_timerect;
-	xui_slider*					m_spaceset;
+	xui_slider*					m_ksslider;
 	u08							m_dragmode;
 	s32							m_dragtime;
 	s32							m_droptime;

@@ -90,6 +90,14 @@ xui_method_explain(xui_drawer, set_textdraw,		void					)( const xui_family_rende
 {
 	m_textdraw = textdraw;
 }
+xui_method_explain(xui_drawer, get_textcolor,		const xui_colour&		)( void ) const
+{
+	return m_textdraw.normalcolor;
+}
+xui_method_explain(xui_drawer, set_textcolor,		void					)( const xui_colour& color )
+{
+	set_textdraw(xui_family_render(color));
+}
 xui_method_explain(xui_drawer, get_textalign,		u08						)( void ) const
 {
 	return m_textalign;

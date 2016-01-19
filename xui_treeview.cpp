@@ -10,14 +10,14 @@ xui_implement_rtti(xui_treeview, xui_container);
 /*
 //constructor
 */
-xui_create_explain(xui_treeview)( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, u08 plusrender, bool rendergrid, bool lighttrace )
+xui_create_explain(xui_treeview)( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, u08 plusrender, bool rendergrid, bool lighttrace )
 : xui_container(size, parent)
 {
 	m_columninfo = columninfo;
 	m_plusrender = plusrender;
 	m_rendergrid = rendergrid;
 	m_lighttrace = lighttrace;
-	m_lineheight = 20;
+	m_lineheight = lineheight;
 	m_nodeindent = 10;
 	m_allowmulti = false;
 	m_acceptdrag = true;
@@ -99,6 +99,14 @@ xui_method_explain(xui_treeview, set_nodeindent,		void								)( s32 indent )
 /*
 //property
 */
+xui_method_explain(xui_treeview, was_lighttrace,		bool								)( void ) const
+{
+	return m_lighttrace;
+}
+xui_method_explain(xui_treeview, get_plusrender,		u08									)( void ) const
+{
+	return m_plusrender;
+}
 xui_method_explain(xui_treeview, was_allowmulti,		bool								)( void ) const
 {
 	return m_allowmulti;
@@ -437,18 +445,9 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_control::choose_else(pt);
+	xui_vector<s32> relative = pt - m_render.get_pt();
 	if (m_render.was_inside(pt))
 	{
-		xui_vector<s32> relative = pt - m_render.get_pt();
-		if (component == NULL)
-		{
-			std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-			xui_vecptr_addloop(alltreenodes)
-			{
-				if (component = alltreenodes[i]->choose(relative))
-					return component;
-			}
-		}
 		if (component == NULL)
 		{
 			xui_vecptr_addloop(m_columngrid)
@@ -462,6 +461,19 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 			xui_vecptr_addloop(m_columnhead)
 			{
 				if (component = m_columnhead[i]->choose(relative))
+					return component;
+			}
+		}
+	}
+	xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
+	if (rt.was_inside(pt))
+	{
+		if (component == NULL)
+		{
+			std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
+			xui_vecptr_addloop(alltreenodes)
+			{
+				if (component = alltreenodes[i]->choose(relative))
 					return component;
 			}
 		}
@@ -495,7 +507,6 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	{
 		alltreenodes[i]->render();
 	}
-
 	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
 	xui_vecptr_addloop(m_columnhead)
 	{

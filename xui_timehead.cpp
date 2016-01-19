@@ -5,15 +5,15 @@
 #include "xui_timedata.h"
 #include "xui_timehead.h"
 
+xui_implement_rtti(xui_timehead, xui_control);
+
 /*
 //constructor
 */
-xui_create_explain(xui_timehead)( void )
-: xui_control("", xui_rect2d<s32>(0))
+xui_create_explain(xui_timehead)( xui_component* parent )
+: xui_control(xui_vector<s32>(0), parent)
 {
-	m_type     += "timehead";
 	m_border	= xui_rect2d<s32>(5, 2, 0, 2);
-	m_backcolor = xui_colour(0.0f);
 	m_downrela  = xui_vector<s32>(0);
 	m_currrela  = xui_vector<s32>(0);
 }
@@ -24,9 +24,10 @@ xui_create_explain(xui_timehead)( void )
 xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 {
 	xui_control::on_mousedown(args);
-	xui_timeview* timeview = (xui_timeview*)m_parent;
 	if (args.mouse == MB_L)
 	{
+		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+
 		m_downrela    = args.point - get_screenpt();
 		m_downrela.x -= m_border.ax;
 
@@ -62,12 +63,10 @@ xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 xui_method_explain(xui_timehead, on_mousemove,		void	)( xui_method_mouse& args )
 {
 	xui_control::on_mousemove(args);
-	if (g_desktop->get_catchctrl() == this)
+	if (has_catch())
 	{
-		xui_timeview* timeview = (xui_timeview*)m_parent;
-		xui_vector<s32> pt = get_screenpt();
-
-		m_currrela    = args.point - pt;
+		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+		m_currrela    = args.point - get_screenpt();
 		m_currrela.x -= m_border.ax;
 
 		s32 downframe = hit_frame(m_downrela.x);
@@ -96,9 +95,10 @@ xui_method_explain(xui_timehead, on_mousemove,		void	)( xui_method_mouse& args )
 xui_method_explain(xui_timehead, on_mouserise,		void	)( xui_method_mouse& args )
 {
 	xui_control::on_mouserise(args);
-	xui_timeview* timeview = (xui_timeview*)m_parent;
 	if (args.mouse == MB_L)
 	{
+		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+
 		m_currrela    = args.point - get_screenpt();
 		m_currrela.x -= m_border.ax;
 
@@ -168,7 +168,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 	};
 	std::vector<keyframe_drawdata> drawdata;
 
-	xui_timeview* timeview = (xui_timeview*)m_parent;
+	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	xui_keyframe_map allframe = timeview->get_allframe();
 	s32 allfirst = timeview->get_selectedallfirst();
 	for (xui_keyframe_map::iterator itor = allframe.begin(); itor != allframe.end(); ++itor)
@@ -213,7 +213,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 	xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 
 	s32 hoverframe = -1;
-	if (g_desktop->get_hoverctrl() == this)
+	if (was_hover())
 	{
 		xui_vector<s32> pt = g_desktop->get_mousecurr() - get_screenpt();
 		pt.x -= m_border.ax;
@@ -231,8 +231,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 		xui_rect2d<s32> temp = rt;
 		temp.oft_x(timeview->get_keyspace()*frame - 2);
 		temp.set_w(4);
-
-		g_convas->fill_rectangle(temp, color*drawdata[i].keycolor);
+		xui_convas::get_ins()->fill_rectangle(temp, color*drawdata[i].keycolor);
 
 		xui_colour sidecolor(1.0f, 0.0f, 0.0f, 0.0f);
 		if (drawdata[i].selected)
@@ -244,8 +243,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 		{
 			sidecolor = xui_colour(1.0f, 0.0f, 1.0f, 1.0f);
 		}
-
-		g_convas->draw_rectangle(temp, color*sidecolor);
+		xui_convas::get_ins()->draw_rectangle(temp, color*sidecolor);
 	}
 }
 
@@ -254,7 +252,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 */
 xui_method_explain(xui_timehead, hit_frame,			s32		)( s32 x )
 {
-	xui_timeview* timeview = (xui_timeview*)m_parent;
+	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	s32 space = timeview->get_keyspace();
 	s32 frame = x / space;
 	if (x % space > space/2)

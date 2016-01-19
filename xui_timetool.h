@@ -5,11 +5,18 @@
 
 class xui_timetool : public xui_toolbar
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_timetool( void );
+	xui_timetool( xui_component* parent );
+
+	/*
+	//destructor
+	*/
+	virtual ~xui_timetool( void );
 
 protected:
 	/*

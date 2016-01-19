@@ -5,11 +5,13 @@
 
 class xui_timeline : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_timeline( xui_timeview* timeview, xui_timedata* linkdata );
+	xui_timeline( xui_component* parent, xui_timedata* linkdata );
 
 	/*
 	//method

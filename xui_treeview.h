@@ -125,7 +125,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treeview( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
+	xui_treeview( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
 
 	/*
 	//destructor
@@ -144,6 +144,8 @@ public:
 	/*
 	//property
 	*/
+	bool								was_lighttrace		( void ) const;
+	u08									get_plusrender		( void ) const;
 	bool								was_allowmulti		( void ) const;
 	void								set_allowmulti		( bool flag );
 	bool								was_acceptdrag		( void ) const;
