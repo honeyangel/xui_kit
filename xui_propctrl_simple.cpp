@@ -1,7 +1,10 @@
 #include "xui_convas.h"
 #include "xui_drawer.h"
+#include "xui_toggle.h"
 #include "xui_propview.h"
 #include "xui_propctrl_simple.h"
+
+xui_implement_rtti(xui_propctrl_simple, xui_propctrl);
 
 /*
 //create
@@ -17,15 +20,9 @@ xui_method_explain(xui_propctrl_simple, create, xui_propctrl*)( xui_propdata* pr
 xui_create_explain(xui_propctrl_simple)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_type	   += "propctrlsimple";
-	m_backcolor = xui_colour(0.0f);
-
 	//name
-	m_namectrl = new xui_drawer("", xui_rect2d<s32>(0, 0,128, 20));
-	xui_method_ptrcall(m_namectrl, set_parent	)(this);
-	xui_method_ptrcall(m_namectrl, set_backcolor)(xui_colour(0.0f));
-	xui_method_ptrcall(m_namectrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(m_namectrl, set_font		)(xui_family("Arial", 16, false));
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
+	xui_method_ptrcall(m_namectrl, set_textfont	)(xui_family("Arial", 16, false));
 	xui_method_ptrcall(m_namectrl, set_textcolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
@@ -123,14 +120,8 @@ xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args
 	s32 indent = get_indent();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	//name
-	pt.x = 0;
-	pt.y = 0;
-	sz.w = rt.get_sz().w/2;
-	sz.h = height;
-	m_namectrl->set_renderpt(pt, false);
-	m_namectrl->set_rendersz(sz, false);
+	m_namectrl->on_perform_w(rt.get_w()/2);
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 
 	s32 max_width = 0;
@@ -152,18 +143,14 @@ xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args
 
 		xui_drawer*  namectrl = edit->get_namectrl();
 		xui_control* editctrl = edit->get_editctrl();
-		pt.x = rt.get_sz().w/2;
+		pt.x = rt.get_w()/2;
 		pt.y = i*height;
-		sz.w = max_width;
-		sz.h = namectrl->get_renderh();
-		namectrl->set_renderpt(pt, false);
-		namectrl->set_rendersz(sz, false);
-		pt.x = rt.get_sz().w/2 + max_width;
+		namectrl->on_perform_pt(pt);
+		namectrl->on_perform_w (max_width);
+		pt.x = rt.get_w()/2 + max_width;
 		pt.y = i*height + height/2 - editctrl->get_renderh()/2;
-		sz.w = editctrl->get_type().find("toggle") != -1 ? editctrl->get_renderw() : (rt.get_sz().w/2 - max_width);
-		sz.h = editctrl->get_renderh();
-		editctrl->set_renderpt(pt, false);
-		editctrl->set_rendersz(sz, false);
+		editctrl->on_perform_pt(pt);
+		editctrl->on_perform_w (xui_issub_kindof(xui_toggle, editctrl) ? editctrl->get_renderw() : (rt.get_w()/2 - max_width));
 	}
 }
 

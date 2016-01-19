@@ -5,6 +5,8 @@
 
 class xui_propctrl_simple : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create

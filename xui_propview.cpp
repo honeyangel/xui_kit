@@ -4,6 +4,8 @@
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
 
+xui_implement_rtti(xui_propview, xui_container);
+
 /*
 //static
 */
@@ -13,11 +15,10 @@ const s32 xui_propview::LINE_HEIGHT = 20;
 /*
 //constructor
 */
-xui_create_explain(xui_propview)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_container(name, rect)
+xui_create_explain(xui_propview)( const xui_vector<s32>& size, xui_component* parent )
+: xui_container(size, parent)
 {
-	m_type		+= "propview";
-	m_proproot	 = NULL;
+	m_proproot = NULL;
 }
 
 /*
@@ -144,21 +145,18 @@ xui_method_explain(xui_propview, on_perform,		void					)( xui_method_args& args 
 	xui_container::on_perform(args);
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	pt.x = m_border.ax;
 	pt.y = m_border.ay;
-	sz.w = rt.get_sz().w;
 
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
-		xui_kindctrl* kindctrl = (xui_kindctrl*)m_ascrollitem[i];
+		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
 		if (kindctrl->was_visible() == false)
 			continue;
 
-		sz.h  = kindctrl->get_renderh();
-		kindctrl->set_renderpt(pt, false);
-		kindctrl->set_rendersz(sz, false);
-		pt.y += sz.h;
+		kindctrl->on_perform_pt(pt);
+		kindctrl->on_perform_w (rt.get_w());
+		pt.y += kindctrl->get_renderh();
 	}
 }
 xui_method_explain(xui_propview, on_renderself,		void					)( xui_method_args& args )
@@ -168,14 +166,14 @@ xui_method_explain(xui_propview, on_renderself,		void					)( xui_method_args& ar
 	xui_colour      color = get_vertexcolor() * xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
-		xui_kindctrl* kindctrl = (xui_kindctrl*)m_ascrollitem[i];
+		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
 		if (kindctrl->was_visible() == false)
 			continue;
 
 		s32 y = rt.ay + kindctrl->get_rendery() + kindctrl->get_renderh();
 		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	y);
 		xui_vector<s32> p2 = xui_vector<s32>(rt.bx, y);
-		g_convas->draw_line(p1, p2, color);
+		xui_convas::get_ins()->draw_line(p1, p2, color);
 	}
 }
 

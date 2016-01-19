@@ -8,6 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 //propctrl_object
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_object, xui_propctrl);
 /*
 //create
 */
@@ -22,10 +23,7 @@ xui_method_explain(xui_propctrl_object, create,					xui_propctrl*	)( xui_propdat
 xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_type	   += "propctrlobject";
-	m_backcolor = xui_colour(0.0f);
-
-	xui_propdata_object* dataobject = (xui_propdata_object*)propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
 	xui_prop_geticon iconfunc = dataobject->get_iconfunc();
 	xui_bitmap* icon = (iconfunc == NULL) ? NULL : iconfunc(propdata);
 
@@ -66,11 +64,11 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 	namectrl->set_text(m_propdata->get_name());
 
 	bool same = true;
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	void* value = dataobject->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -78,7 +76,7 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		}
 	}
 
-	xui_drawer* textctrl = (xui_drawer*)m_propedit->get_editctrl();
+	xui_drawer* textctrl = xui_dynamic_cast(xui_drawer, m_propedit->get_editctrl());
 	if (same)
 	{
 		if (dataobject->get_value())
@@ -102,7 +100,7 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 }
 xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* sender )
 {
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	xui_prop_newpick pickfunc = dataobject->get_pickfunc();
 	if (pickfunc)
 	{
@@ -126,27 +124,19 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 	xui_drawer*  pickctrl = m_propedit->get_pickctrl();
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
-	//namectrl
-	s32 indent = get_indent();
-	pt.x = 0;
-	pt.y = 0;
-	sz.w = rt.get_sz().w/2;
-	sz.h = rt.get_sz().h;
-	namectrl->set_renderpt(pt, false);
-	namectrl->set_rendersz(sz, false);
-	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 	//pickctrl
 	pt.x = rt.bx - pickctrl->get_renderw();
-	pt.y = rt.get_sz().h/2 - pickctrl->get_renderh()/2;
-	pickctrl->set_renderpt(pt, false);
+	pt.y = rt.get_h()/2 - pickctrl->get_renderh()/2;
+	pickctrl->on_perform_pt(pt);
 	//textctrl
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2 - pickctrl->get_renderw();
-	sz.h = textctrl->get_renderh();
-	textctrl->set_renderpt(pt, false);
-	textctrl->set_rendersz(sz, false);
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
+	textctrl->on_perform_pt(pt);
+	textctrl->on_perform_w (rt.get_w()/2 - pickctrl->get_renderw());
+	//namectrl
+	s32 indent = get_indent();
+	namectrl->on_perform_w (rt.get_w()/2);
+	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
 /*
@@ -155,11 +145,11 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_component* sender, xui_method_mouse&	  args )
 {
 	bool same = true;
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	void* value = dataobject->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -174,14 +164,14 @@ xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_compone
 }
 xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour(1.0f, 0.4f, 0.5f, 0.7f));
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
 			data->set_value(args.data);
 		}
 
@@ -190,14 +180,14 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 }
 xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour(0.0f));
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
 			data->old_value();
 		}
 
@@ -206,7 +196,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_comp
 }
 xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->get_droptype() == args.type)
 	{
 		args.allow = true;
@@ -214,14 +204,14 @@ xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_compo
 }
 xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
-	xui_propdata_object* dataobject = (xui_propdata_object*)m_propdata;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour(0.0f));
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_object* data = (xui_propdata_object*)m_propdatavec[i];
+			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
 			data->syn_value();
 		}
 	}
@@ -230,11 +220,12 @@ xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_compo
 //////////////////////////////////////////////////////////////////////////
 //pickwnd
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_pickwnd, xui_window);
 /*
 //constructor
 */
 xui_create_explain(xui_pickwnd)( xui_propctrl* propctrl )
-: xui_window("", xui_rect2d<s32>(0, 0, 200, 200))
+: xui_window(xui_vector<s32>(320, 240))
 {
 	m_propctrl = propctrl;
 }
@@ -248,7 +239,7 @@ xui_method_explain(xui_pickwnd, on_accept, void)( xui_component* sender, xui_met
 	xui_propdata_vec vec = m_propctrl->get_propdata();
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		xui_propdata_object* data = (xui_propdata_object*)vec[i];
+		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(vec[i]);
 		data->set_value(value);
 	}
 

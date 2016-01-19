@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_window( const xui_vector<s32>& size, xui_component* parent );
+	xui_window( const xui_vector<s32>& size );
 
 	/*
 	//modal

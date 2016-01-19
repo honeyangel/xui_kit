@@ -8,6 +8,8 @@
 typedef std::vector<xui_proproot*>	xui_proproot_vec;
 class xui_propview : public xui_container
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//static
@@ -18,7 +20,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propview( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_propview( const xui_vector<s32>& size, xui_component* parent );
 
 	/*
 	//destructor

@@ -6,6 +6,8 @@
 
 class xui_propctrl_object : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create
@@ -53,6 +55,8 @@ protected:
 
 class xui_pickwnd : public xui_window
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
