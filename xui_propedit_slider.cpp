@@ -14,7 +14,7 @@ xui_create_explain(xui_propedit_slider)( xui_propctrl* propctrl, f64 interval, f
 	m_maxvalue = maxvalue;
 	m_editnumb = new xui_propedit_number(propctrl, interval);
 	xui_drawer*  namectrl = m_editnumb->get_namectrl();
-	xui_textbox* textctrl = (xui_textbox*)m_editnumb->get_editctrl();
+	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editnumb->get_editctrl());
 	namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlnonfocus);
 	namectrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlgetfocus);
 	namectrl->xm_mouserise		+= new xui_method_member<xui_method_mouse, xui_propedit_slider>(this, &xui_propedit_slider::on_namectrlmouserise);
@@ -23,8 +23,7 @@ xui_create_explain(xui_propedit_slider)( xui_propctrl* propctrl, f64 interval, f
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextchanged);
 	textctrl->xm_textenter		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextenter);
 
-	m_spinctrl = new xui_slider("", xui_rect2d<s32>(0, 0, 32, 20), FLOWSTYLE_H);
-	xui_method_ptrcall(m_spinctrl, set_backcolor)(xui_colour(0.0f));
+	m_spinctrl = new xui_slider(xui_vector<s32>(32, 20), NULL, FLOWSTYLE_H, ARROWDRAW_NONE);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlnonfocus);
 	m_spinctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlgetfocus);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlnonfocus);
@@ -77,11 +76,9 @@ xui_method_explain(xui_propedit_slider, reset,					void				)( void )
 {
 	m_editnumb->reset();
 
+	m_spinctrl->ini_scroll(m_spinctrl->get_range(), 0);
 	xui_scrollthumb* thumb = m_spinctrl->get_thumb();
 	thumb->set_sidestyle(SIDESTYLE_N);
-	s32 scroll_range = m_spinctrl->get_range();
-	s32 scroll_value = 0;
-	m_spinctrl->ini_scroll(scroll_range, scroll_value);
 }
 
 /*

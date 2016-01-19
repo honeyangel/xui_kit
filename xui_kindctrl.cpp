@@ -5,6 +5,8 @@
 #include "xui_propview.h"
 #include "xui_kindctrl.h"
 
+xui_implement_rtti(xui_kindctrl, xui_control);
+
 /*
 //create
 */
@@ -17,43 +19,34 @@ xui_method_explain(xui_kindctrl, create,					xui_kindctrl*	)( xui_propkind* prop
 //constructor
 */
 xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
-: xui_control("", xui_rect2d<s32>(0, 0, 100, 20))
+: xui_control(xui_vector<s32>(256, 20), NULL)
 {
-	m_type	   += "kindctrl";
 	m_border	= xui_rect2d<s32>(0, 6, 0, 6);
-	m_backcolor = xui_colour(0.0f);
 	m_propkind	= NULL;
 
 	//icon
-	m_iconctrl = new xui_drawer ("", xui_rect2d<s32>(0, 0, 16, 16));
-	xui_method_ptrcall(m_iconctrl, set_parent	)(this);
-	xui_method_ptrcall(m_iconctrl, set_backcolor)(xui_colour(0.0f));
+	m_iconctrl	= new xui_drawer  (xui_vector<s32>(16,  16), this);
 	xui_method_ptrcall(m_iconctrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_iconctrl, set_sidestyle)(SIDESTYLE_S);
 	m_widgetvec.push_back(m_iconctrl);
 
 	//name
-	m_namectrl = new xui_textbox("", xui_rect2d<s32>(0, 0,128, 18));
+	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 18), this);
 	m_namectrl->xm_textchanged	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrltextchanged);
-	xui_method_ptrcall(m_namectrl, set_parent	)(this);
 	xui_method_ptrcall(m_namectrl, set_borderrt	)(xui_rect2d<s32>(1));
-	xui_method_ptrcall(m_namectrl, set_backcolor)(xui_colour(0.0f));
 	xui_method_ptrcall(m_namectrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 
 	//flag
-	m_flagctrl = new xui_toggle ("", xui_rect2d<s32>(0, 0, 16, 16));
+	m_flagctrl	= new xui_toggle  (xui_vector<s32>(16,  16), this);
 	m_flagctrl->xm_click		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_flagctrlclick);
-	xui_method_ptrcall(m_flagctrl, set_parent	)(this);
-	xui_method_ptrcall(m_flagctrl, set_backcolor)(xui_colour(0.0f));
 	xui_method_ptrcall(m_flagctrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_flagctrl, set_sidestyle)(SIDESTYLE_S);
 	m_widgetvec.push_back(m_flagctrl);
 
 	//plus
-	m_kindplus = new xui_propplus();
-	xui_method_ptrcall(m_kindplus, set_parent	)(this);
+	m_kindplus	= new xui_propplus(this);
 	m_widgetvec.push_back(m_kindplus);
 
 	//prop
@@ -112,7 +105,7 @@ xui_method_explain(xui_kindctrl, set_propkind,				void			)( const xui_propkind_v
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 	{
 		xui_propdata_vec propdataall = get_propdataall(i);
-		xui_propctrl* propctrl = m_propctrlvec[i];
+		xui_propctrl*    propctrl    = m_propctrlvec[i];
 		propctrl->set_propdata(propdataall);
 
 		for (xui_propdata_vec::iterator itor = propdataall.begin(); itor != propdataall.end(); ++itor)
@@ -135,8 +128,8 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 	{
 		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon());
 		xui_method_ptrcall(m_namectrl, ini_textbox	)(m_propkind->get_name());
-		xui_method_ptrcall(m_namectrl, set_font		)(m_propkind->get_textfont());
-		xui_method_ptrcall(m_namectrl, set_textcolor)(m_propkind->get_textdraw());
+		xui_method_ptrcall(m_namectrl, set_textfont	)(m_propkind->get_textfont());
+		xui_method_ptrcall(m_namectrl, set_textdraw	)(m_propkind->get_textdraw());
 		xui_method_ptrcall(m_namectrl, set_sidestyle)(m_propkind->xm_namechanged.count() >  0 ? SIDESTYLE_S : SIDESTYLE_N);
 		xui_method_ptrcall(m_namectrl, set_readonly	)(m_propkind->xm_namechanged.count() == 0);
 		xui_method_ptrcall(m_flagctrl, set_visible	)(m_propkind->xm_flagchanged.count() >  0);
@@ -148,7 +141,7 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 		}
 	}
 
-	xui_propview* propview = (xui_propview*)m_parent;
+	xui_propview* propview = xui_dynamic_cast(xui_propview, m_parent);
 	xui_vector<s32> sz;
 	sz.w  = get_renderw();
 	sz.h  = xui_propview::LINE_HEIGHT;
@@ -190,24 +183,24 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	//icon
 	pt.x  = rt.ax +  indent;
 	pt.y  = rt.ay + (height-16)/2;
-	m_iconctrl->set_renderpt(pt, false);
+	m_iconctrl->on_perform_pt(pt);
 	//flag
 	pt.x += m_iconctrl->get_renderw()+4;
-	m_flagctrl->set_renderpt(pt, false);
+	m_flagctrl->on_perform_pt(pt);
 	//name
 	pt.x += m_flagctrl->get_renderw()+4;
 	pt.y  = rt.ay + (height-m_namectrl->get_renderh())/2;
 	sz.w  = rt.get_sz().w - pt.x;
 	sz.h  = m_namectrl->get_renderh();
-	m_namectrl->set_renderpt(pt, false);
-	m_namectrl->set_rendersz(sz, false);
+	m_namectrl->on_perform_pt(pt);
+	m_namectrl->on_perform_sz(sz);
 	//plus
 	pt.x  = rt.ax + (indent-16);
 	pt.y  = rt.ay + (height-12)/2;
 	sz.w  = 12;
 	sz.h  = 12;
-	m_kindplus->set_renderpt(pt, false);
-	m_kindplus->set_rendersz(sz, false);
+	m_kindplus->on_perform_pt(pt);
+	m_kindplus->on_perform_sz(sz);
 	if (m_kindplus->was_expanded())
 	{
 		pt.x = rt.ax;
@@ -220,8 +213,8 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 				continue;
 
 			sz.h  = propctrl->get_renderh();
-			propctrl->set_renderpt(pt, false);
-			propctrl->set_rendersz(sz, false);
+			propctrl->on_perform_pt(pt);
+			propctrl->on_perform_sz(sz);
 			pt.y += sz.h;
 		}
 	}

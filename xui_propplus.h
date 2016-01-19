@@ -5,11 +5,13 @@
 
 class xui_propplus : public xui_component
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
 	*/
-	xui_propplus( void );
+	xui_propplus( xui_component* parent );
 
 	/*
 	//method

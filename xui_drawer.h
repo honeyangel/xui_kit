@@ -58,12 +58,13 @@ public:
 	void						set_textfont	( const xui_family& textfont );
 
 	/*
-	//text color
+	//text draw
 	*/
 	const xui_family_render&	get_textdraw	( void ) const;
 	void						set_textdraw	( const xui_family_render& textdraw );
 
 	/*
+	//text color
 	//text align
 	*/
 	const xui_colour&			get_textcolor	( void ) const;

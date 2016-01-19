@@ -69,8 +69,8 @@ protected:
 	/*
 	//method
 	*/
-	void					on_accept				( void );
-	void					on_cancel				( void );
+	virtual void			on_accept				( xui_component* sender, xui_method_args& args );
+	virtual void			on_cancel				( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member

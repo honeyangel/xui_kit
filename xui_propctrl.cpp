@@ -8,14 +8,13 @@
 //////////////////////////////////////////////////////////////////////////
 //propctrl
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl, xui_control);
 /*
 //constructor
 */
 xui_create_explain(xui_propctrl)( void )
-: xui_control("", xui_rect2d<s32>(0, 0, 100, xui_propview::LINE_HEIGHT))
+: xui_control(xui_vector<s32>(100, xui_propview::LINE_HEIGHT), NULL)
 {
-	m_type	   += "propctrl";
-	m_backcolor = xui_colour(0.0f);
 	m_propdata	= NULL;
 }
 
@@ -50,7 +49,7 @@ xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )
 {
 	xui_kindctrl* kindctrl = get_kindctrl();
 	if (kindctrl)
-		return (xui_propview*)kindctrl->get_parent();
+		return xui_dynamic_cast(xui_propview, kindctrl->get_parent());
 
 	return NULL;
 }
@@ -78,6 +77,7 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 //////////////////////////////////////////////////////////////////////////
 //propctrl_base
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_base, xui_propctrl);
 /*
 //constructor
 */
@@ -108,16 +108,8 @@ xui_method_explain(xui_propctrl_base,	on_perform,			void					)( xui_method_args&
 	xui_drawer* namectrl = m_propedit->get_namectrl();
 
 	xui_rect2d<s32> rt = get_renderrtins();
-	xui_vector<s32> pt;
-	xui_vector<s32> sz;
-	pt.x = 0;
-	pt.y = 0;
-	sz.w = rt.get_sz().w/2;
-	sz.h = namectrl->get_renderh();
-	namectrl->set_renderpt(pt, false);
-	namectrl->set_rendersz(sz, false);
-
 	s32 indent = get_indent();
+	namectrl->on_perform_w(rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
@@ -170,13 +162,14 @@ void	class_name::on_editvalue( xui_propedit* sender )						\
 //////////////////////////////////////////////////////////////////////////
 //propctrl_bool
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_bool, xui_propctrl_base);
 /*
 //constructor
 */
 xui_create_explain(xui_propctrl_bool)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
-	xui_propdata_bool* databool = (xui_propdata_bool*)propdata;
+	xui_propdata_bool* databool = dynamic_cast<xui_propdata_bool*>(propdata);
 	xui_propedit_bool* editbool = new xui_propedit_bool(this);
 	xui_propctrl_implement_attach(editbool)
 }
@@ -195,19 +188,20 @@ xui_method_explain(xui_propctrl_bool,	on_perform,			void					)( xui_method_args&
 	xui_vector<s32> pt;
 	pt.x = rt.get_sz().w/2;
 	pt.y = rt.get_sz().h/2 - boolctrl->get_renderh()/2;
-	boolctrl->set_renderpt(pt, false);
+	boolctrl->on_perform_pt(pt);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_enum
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_enum, xui_propctrl_base);
 /*
 //constructor
 */
 xui_create_explain(xui_propctrl_enum)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
-	xui_propdata_enum* dataenum = (xui_propdata_enum*)propdata;
+	xui_propdata_enum* dataenum = dynamic_cast<xui_propdata_enum*>(propdata);
 	xui_propedit_enum* editenum = new xui_propedit_enum(this, dataenum->get_textmap());
 	xui_propctrl_implement_attach(editenum)
 }
@@ -224,25 +218,23 @@ xui_method_explain(xui_propctrl_enum,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	pt.x = rt.get_sz().w/2;
 	pt.y = rt.get_sz().h/2 - enumctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2;
-	sz.h = enumctrl->get_renderh();
-	enumctrl->set_renderpt(pt, false);
-	enumctrl->set_rendersz(sz, false);
+	enumctrl->on_perform_pt(pt);
+	enumctrl->on_perform_w (rt.get_w()/2);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_number
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_number, xui_propctrl_base);
 /*
 //constructor
 */
 xui_create_explain(xui_propctrl_number)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
-	xui_propdata_number* datanumber = (xui_propdata_number*)propdata;
+	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
 	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_interval());
 	xui_propctrl_implement_attach(editnumber)
 }
@@ -259,25 +251,23 @@ xui_method_explain(xui_propctrl_number, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	pt.x = rt.get_sz().w/2;
 	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2;
-	sz.h = textctrl->get_renderh();
-	textctrl->set_renderpt(pt, false);
-	textctrl->set_rendersz(sz, false);
+	textctrl->on_perform_pt(pt);
+	textctrl->on_perform_w (rt.get_w()/2);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_string
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_string, xui_propctrl_base);
 /*
 //constructor
 */
 xui_create_explain(xui_propctrl_string)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
-	xui_propdata_string* datastring = (xui_propdata_string*)propdata;
+	xui_propdata_string* datastring = dynamic_cast<xui_propdata_string*>(propdata);
 	xui_propedit_string* editstring = new xui_propedit_string(this);
 	xui_propctrl_implement_attach(editstring)
 }
@@ -294,11 +284,8 @@ xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	pt.x = rt.get_sz().w/2;
 	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2;
-	sz.h = textctrl->get_renderh();
-	textctrl->set_renderpt(pt, false);
-	textctrl->set_rendersz(sz, false);
+	textctrl->on_perform_pt(pt);
+	textctrl->on_perform_w (rt.get_w()/2);
 }

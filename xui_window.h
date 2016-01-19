@@ -33,8 +33,8 @@ protected:
 	virtual void				on_show			( xui_method_args&	args );
 	virtual void				on_hide			( xui_method_args&	args );
 
-	virtual void				on_accept		( xui_method_args&	args );
-	virtual void				on_cancel		( xui_method_args&	args );
+	virtual void				on_accept		( xui_component* sender, xui_method_args& args );
+	virtual void				on_cancel		( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*

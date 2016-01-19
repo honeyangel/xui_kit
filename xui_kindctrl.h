@@ -9,6 +9,8 @@
 
 class xui_kindctrl : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create

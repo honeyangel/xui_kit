@@ -101,6 +101,7 @@ enum
 	KEY_7,
 	KEY_8,
 	KEY_9,
+	KEY_ESC,
 	KEY_ENTER,
 	KEY_BACK,
 	KEY_TAB,

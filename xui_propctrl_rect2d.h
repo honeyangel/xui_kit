@@ -7,6 +7,8 @@
 
 class xui_propctrl_rect2d : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create

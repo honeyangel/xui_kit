@@ -242,7 +242,7 @@ xui_create_explain(xui_pickwnd)( xui_propctrl* propctrl )
 /*
 //method
 */
-xui_method_explain(xui_pickwnd, on_accept, void)( void )
+xui_method_explain(xui_pickwnd, on_accept, void)( xui_component* sender, xui_method_args& args )
 {
 	void* value = get_value();
 	xui_propdata_vec vec = m_propctrl->get_propdata();
@@ -255,7 +255,7 @@ xui_method_explain(xui_pickwnd, on_accept, void)( void )
 	m_propctrl->on_linkpropdata();
 	set_visible(false);
 }
-xui_method_explain(xui_pickwnd, on_cancel, void)( void )
+xui_method_explain(xui_pickwnd, on_cancel, void)( xui_component* sender, xui_method_args& args )
 {
 	set_visible(false);
 }

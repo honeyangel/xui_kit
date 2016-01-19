@@ -4,6 +4,7 @@
 #include "xui_propview.h"
 #include "xui_propctrl_rect2d.h"
 
+xui_implement_rtti(xui_propctrl_rect2d, xui_propctrl);
 /*
 //create
 */
@@ -18,19 +19,15 @@ xui_method_explain(xui_propctrl_rect2d, create, xui_propctrl*)( xui_propdata* pr
 xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_type     += "propctrlrect2d";
-	m_render    = xui_rect2d<s32>(0, 0, 100, xui_propview::LINE_HEIGHT*2);
-	m_backcolor = xui_colour(0.0f);
+	m_render   = xui_rect2d<s32>(0, 0, 100, xui_propview::LINE_HEIGHT*2);
 
-	xui_propdata_rect2d* datarect2d = (xui_propdata_rect2d*)propdata;
+	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(propdata);
 	m_subxedit = new xui_propedit_number(this, datarect2d->get_interval());
 	m_subyedit = new xui_propedit_number(this, datarect2d->get_interval());
 	m_subwedit = new xui_propedit_number(this, datarect2d->get_interval());
 	m_subhedit = new xui_propedit_number(this, datarect2d->get_interval());
-	m_namectrl = new xui_drawer("", xui_rect2d<s32>(0, 0, 128, 20));
-	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
-	xui_method_ptrcall(m_namectrl,	set_backcolor	)(xui_colour(0.0f));
-	xui_method_ptrcall(m_namectrl,	set_font		)(xui_family("Arial", 16, false));
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
+	xui_method_ptrcall(m_namectrl,	set_textfont	)(xui_family("Arial", 16, false));
 	xui_method_ptrcall(m_namectrl,	set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
@@ -88,11 +85,11 @@ xui_method_explain(xui_propctrl_rect2d, on_linkpropdata,	void)( void )
 	m_namectrl->set_text(m_propdata->get_name());
 
 	bool same = true;
-	xui_propdata_rect2d* datarect2d = (xui_propdata_rect2d*)m_propdata;
+	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(m_propdata);
 	xui_rect2d<f64> value = datarect2d->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_rect2d* data = (xui_propdata_rect2d*)m_propdatavec[i];
+		xui_propdata_rect2d* data = dynamic_cast<xui_propdata_rect2d*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -115,7 +112,7 @@ xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* send
 		f64 x = m_subxedit->get_value();
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_rect2d* data = (xui_propdata_rect2d*)m_propdatavec[i];
+			xui_propdata_rect2d* data = dynamic_cast<xui_propdata_rect2d*>(m_propdatavec[i]);
 			xui_rect2d<f64> value = data->get_value();
 			value.set_x(x);
 			data->set_value(value);
@@ -126,7 +123,7 @@ xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* send
 		f64 y = m_subyedit->get_value();
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_rect2d* data = (xui_propdata_rect2d*)m_propdatavec[i];
+			xui_propdata_rect2d* data = dynamic_cast<xui_propdata_rect2d*>(m_propdatavec[i]);
 			xui_rect2d<f64> value = data->get_value();
 			value.set_y(y);
 			data->set_value(value);
@@ -143,7 +140,7 @@ xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* send
 
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_rect2d* data = (xui_propdata_rect2d*)m_propdatavec[i];
+			xui_propdata_rect2d* data = dynamic_cast<xui_propdata_rect2d*>(m_propdatavec[i]);
 			xui_rect2d<f64> value = data->get_value();
 			value.set_w(w);
 			data->set_value(value);
@@ -159,7 +156,7 @@ xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* send
 		}
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
-			xui_propdata_rect2d* data = (xui_propdata_rect2d*)m_propdatavec[i];
+			xui_propdata_rect2d* data = dynamic_cast<xui_propdata_rect2d*>(m_propdatavec[i]);
 			xui_rect2d<f64> value = data->get_value();
 			value.set_h(h);
 			data->set_value(value);
@@ -185,72 +182,51 @@ xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& ar
 	xui_drawer*	 subhname = m_subhedit->get_namectrl();
 	xui_control* subhedit = m_subhedit->get_editctrl();
 
-	s32 xyeditwidth = (rt.get_sz().w/2 - 18 - subxname->get_renderw() - subyname->get_renderw()) / 2;
+	s32 xyeditwidth = (rt.get_w()/2 - 18 - subxname->get_renderw() - subyname->get_renderw()) / 2;
 	//subxname
-	pt.x = rt.get_sz().w/2;
+	pt.x = rt.get_w()/2;
 	pt.y = 0;
-	sz.w = subxname->get_renderw();
-	sz.h = rt.get_sz().h/2;
-	subxname->set_renderpt(pt, false);
-	subxname->set_rendersz(sz, false);
+	subxname->on_perform_pt(pt);
+	subxname->on_perform_h (rt.get_h()/2);
 	//subxedit
 	pt.x = pt.x + subxname->get_renderw() + 6;
-	pt.y = rt.get_sz().h/4 - subxedit->get_renderh()/2;
-	sz.w = xyeditwidth;
-	sz.h = subxedit->get_renderh();
-	subxedit->set_renderpt(pt, false);
-	subxedit->set_rendersz(sz, false);
+	pt.y = rt.get_h()/4 - subxedit->get_renderh()/2;
+	subxedit->on_perform_pt(pt);
+	subxedit->on_perform_w (xyeditwidth);
 	//subyname
 	pt.x = pt.x + subxedit->get_renderw() + 6;
 	pt.y = 0;
-	sz.w = subyname->get_renderw();
-	sz.h = rt.get_sz().h/2;
-	subyname->set_renderpt(pt, false);
-	subyname->set_rendersz(sz, false);
+	subyname->on_perform_pt(pt);
+	subyname->on_perform_h (rt.get_h()/2);
 	//subyedit
 	pt.x = pt.x + subyname->get_renderw() + 6;
-	pt.y = rt.get_sz().h/4 - subyedit->get_renderh()/2;
-	sz.w = xyeditwidth;
-	sz.h = subyedit->get_renderh();
-	subyedit->set_renderpt(pt, false);
-	subyedit->set_rendersz(sz, false);
+	pt.y = rt.get_h()/4 - subyedit->get_renderh()/2;
+	subyedit->on_perform_pt(pt);
+	subyedit->on_perform_w (xyeditwidth);
 
-	s32 wheditwidth = (rt.get_sz().w/2 - 18 - subwname->get_renderw() - subhname->get_renderw()) / 2;
+	s32 wheditwidth = (rt.get_w()/2 - 18 - subwname->get_renderw() - subhname->get_renderw()) / 2;
 	//subwname
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2;
-	sz.w = subwname->get_renderw();
-	sz.h = rt.get_sz().h/2;
-	subwname->set_renderpt(pt, false);
-	subwname->set_rendersz(sz, false);
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2;
+	subwname->on_perform_pt(pt);
+	subwname->on_perform_h (rt.get_h()/2);
 	//subxedit
 	pt.x = pt.x + subwname->get_renderw() + 6;
-	pt.y = rt.get_sz().h/2 + rt.get_sz().h/4 - subwedit->get_renderh()/2;
-	sz.w = wheditwidth;
-	sz.h = subxedit->get_renderh();
-	subwedit->set_renderpt(pt, false);
-	subwedit->set_rendersz(sz, false);
+	pt.y = rt.get_h()/2 + rt.get_h()/4 - subwedit->get_renderh()/2;
+	subwedit->on_perform_pt(pt);
+	subwedit->on_perform_w (wheditwidth);
 	//subyname
 	pt.x = pt.x + subwedit->get_renderw() + 6;
-	pt.y = rt.get_sz().h/2;
-	sz.w = subhname->get_renderw();
-	sz.h = rt.get_sz().h/2;
-	subhname->set_renderpt(pt, false);
-	subhname->set_rendersz(sz, false);
+	pt.y = rt.get_h()/2;
+	subhname->on_perform_pt(pt);
+	subhname->on_perform_h (rt.get_h()/2);
 	//subyedit
 	pt.x = pt.x + subhname->get_renderw() + 6;
-	pt.y = rt.get_sz().h/2 + rt.get_sz().h/4 - subhedit->get_renderh()/2;
-	sz.w = wheditwidth;
-	sz.h = subhedit->get_renderh();
-	subhedit->set_renderpt(pt, false);
-	subhedit->set_rendersz(sz, false);
+	pt.y = rt.get_h()/2 + rt.get_h()/4 - subhedit->get_renderh()/2;
+	subhedit->on_perform_pt(pt);
+	subhedit->on_perform_w (wheditwidth);
 
 	//namectrl
-	pt.x = 0;
-	pt.y = 0;
-	sz.w = rt.get_sz().w/2;
-	sz.h = m_namectrl->get_renderh();
-	m_namectrl->set_renderpt(pt, false);
-	m_namectrl->set_rendersz(sz, false);
+	m_namectrl->on_perform_w(rt.get_w()/2);
 	m_namectrl->set_textoffset(xui_vector<s32>(get_indent(), 0));
 }

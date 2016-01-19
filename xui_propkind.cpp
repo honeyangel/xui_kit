@@ -3,7 +3,7 @@
 /*
 //constructor
 */
-xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont, const xui_colour& textdraw )
+xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont, const xui_family_render& textdraw )
 {
 	m_root		= root;
 	m_func		= func;
@@ -65,7 +65,7 @@ xui_method_explain(xui_propkind, get_textfont,	const xui_family&		)( void ) cons
 {
 	return m_textfont;
 }
-xui_method_explain(xui_propkind, get_textdraw,	const xui_colour&		)( void ) const
+xui_method_explain(xui_propkind, get_textdraw,	const xui_family_render&)( void ) const
 {
 	return m_textdraw;
 }

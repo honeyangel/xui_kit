@@ -7,6 +7,8 @@
 
 class xui_propctrl_vector : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create
@@ -45,6 +47,8 @@ protected:
 
 class xui_propctrl_vector_button : public xui_propctrl_vector
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create

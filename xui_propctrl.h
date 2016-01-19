@@ -8,6 +8,8 @@
 typedef std::vector<xui_propctrl*> xui_propctrl_vec;
 class xui_propctrl : public xui_control
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
@@ -44,6 +46,8 @@ protected:
 */
 class xui_propctrl_base : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
@@ -75,6 +79,8 @@ protected:
 #define xui_propctrl_declare(class_name)									\
 class class_name : public xui_propctrl_base									\
 {																			\
+	xui_declare_rtti														\
+																			\
 public:																		\
 	static xui_propctrl*	create			( xui_propdata* data )			\
 	{																		\
@@ -95,16 +101,6 @@ xui_propctrl_declare(xui_propctrl_enum)
 xui_propctrl_declare(xui_propctrl_number)
 xui_propctrl_declare(xui_propctrl_string)
 
-///*object*/
-//class xui_propctrl_object : public xui_propctrl
-//{
-//
-//};
-///*rect2d*/
-//class xui_propctrl_rect2d : public xui_propctrl
-//{
-//
-//};
 ///*colour*/
 //class xui_propctrl_colour : public xui_propctrl
 //{

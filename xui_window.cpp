@@ -53,12 +53,22 @@ xui_method_explain(xui_window, on_hide,			void)( xui_method_args&	 args )
 xui_method_explain(xui_window, on_keybddown,	void)( xui_method_keybd& args )
 {
 	xui_panel::on_keybddown(args);
+	if (args.kcode == KEY_ENTER)
+	{
+		xui_method_args args;
+		on_accept(this, args);
+	}
+	if (args.kcode == KEY_ESC)
+	{
+		xui_method_args args;
+		on_cancel(this, args);
+	}
 }
-xui_method_explain(xui_window, on_accept,		void)( xui_method_args&	 args )
+xui_method_explain(xui_window, on_accept,		void)( xui_component* sender, xui_method_args& args )
 {
 
 }
-xui_method_explain(xui_window, on_cancel,		void)( xui_method_args&	 args )
+xui_method_explain(xui_window, on_cancel,		void)( xui_component* sender, xui_method_args& args )
 {
 
 }

@@ -4,6 +4,8 @@
 #include "xui_propview.h"
 #include "xui_propctrl_slider.h"
 
+xui_implement_rtti(xui_propctrl_slider, xui_propctrl);
+
 /*
 //create
 */
@@ -18,10 +20,7 @@ xui_method_explain(xui_propctrl_slider, create, xui_propctrl*)( xui_propdata* pr
 xui_create_explain(xui_propctrl_slider)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_type	   += "propctrlslider";
-	m_backcolor = xui_colour(0.0f);
-
-	xui_propdata_number* datanumber = (xui_propdata_number*)propdata;
+	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
 	xui_propedit_slider* editslider = new xui_propedit_slider(this, datanumber->get_interval(), datanumber->get_minvalue(), datanumber->get_maxvalue());
 
 	xui_drawer*  namectrl = editslider->get_editnumb()->get_namectrl();
@@ -82,27 +81,19 @@ xui_method_explain(xui_propctrl_slider, on_perform,			void			)( xui_method_args&
 	xui_slider*  spinctrl = m_propedit->get_spinctrl();
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
-	//namectrl
-	s32 indent = get_indent();
-	pt.x = 0;
-	pt.y = 0;
-	sz.w = rt.get_sz().w/2;
-	sz.h = rt.get_sz().h;
-	namectrl->set_renderpt(pt, false);
-	namectrl->set_rendersz(sz, false);
-	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 	//textctrl
 	pt.x = rt.bx - textctrl->get_renderw();
-	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
-	textctrl->set_renderpt(pt, false);
+	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
+	textctrl->on_perform_pt(pt);
 	//spinctrl
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - spinctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2 - textctrl->get_renderw();
-	sz.h = spinctrl->get_renderh();
-	spinctrl->set_renderpt(pt, false);
-	spinctrl->set_rendersz(sz, false);
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - spinctrl->get_renderh()/2;
+	spinctrl->on_perform_pt(pt);
+	spinctrl->on_perform_w (rt.get_sz().w/2 - textctrl->get_renderw());
+	//namectrl
+	s32 indent = get_indent();
+	namectrl->on_perform_w (rt.get_w()/2);
+	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
 /*
@@ -113,7 +104,7 @@ xui_method_explain(xui_propctrl_slider, on_editvalue,		void			)( xui_propedit* s
 	f64 value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_number* data = (xui_propdata_number*)m_propdatavec[i];
+		xui_propdata_number* data = dynamic_cast<xui_propdata_number*>(m_propdatavec[i]);
 		data->set_value(value);
 	}
 }

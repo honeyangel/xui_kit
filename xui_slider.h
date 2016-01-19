@@ -1,6 +1,7 @@
 #ifndef __xui_slider_h__
 #define __xui_slider_h__
 
+#include "xui_scrollarrow.h"
 #include "xui_scroll.h"
 
 class xui_slider : public xui_scroll
