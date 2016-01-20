@@ -113,6 +113,6 @@ protected:
 	std::vector<xui_component*>	m_recyclebin;
 };
 
-extern xui_desktop* g_desktop;
+#define g_desktop xui_desktop::get_ins()
 
 #endif//__xui_desktop_h__

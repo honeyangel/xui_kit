@@ -6,10 +6,6 @@ xui_implement_rtti(xui_desktop, xui_panel);
 xui_implement_instance_member(xui_desktop);
 xui_implement_instance_method(xui_desktop);
 
-/*
-//global
-*/
-xui_desktop* g_desktop = NULL;
 
 /*
 //constructor

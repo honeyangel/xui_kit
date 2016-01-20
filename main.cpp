@@ -5,6 +5,7 @@
 #include "xui_bitmap.h"
 #include "xui_method.h"
 #include "xui_window.h"
+#include "xui_toggle.h"
 #include "xui_textbox.h"
 #include "xui_linebox.h"
 #include "xui_gridbox.h"
@@ -57,18 +58,18 @@ public:
 	test_pickwnd(xui_propctrl* propctrl)
 	: xui_pickwnd(propctrl)
 	{
-		xui_button* button = new xui_button("", xui_rect2d<s32>(50, 100, 150, 130));
+		xui_button* button = new xui_button(xui_vector<s32>(50), this);
 		button->set_icon(xui_bitmap::create("button.png"));
 		button->set_text(L"accept");
-		button->set_font(xui_family("Arial", 16, false));
+		button->set_textfont(xui_family("Arial", 16, false));
 		button->set_corner(5);
 		button->set_sidestyle(SIDESTYLE_S);
 		button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
 		button->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
 		button->set_textoffset(xui_vector<s32>( 30, 0));
 		button->set_iconoffset(xui_vector<s32>(-10, 0));
-		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_buttonclick);
-		add_child(button);
+		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
+		m_childctrl.push_back(button);
 	}
 
 	virtual void* get_value( void )
@@ -81,11 +82,6 @@ public:
 	virtual void  set_value( void* value )
 	{
 
-	}
-
-	void on_buttonclick(xui_component* sender, xui_method_args& args)
-	{
-		on_accept();
 	}
 };
 static xui_bitmap* treenode_geticon( xui_propdata* propdata)
@@ -292,22 +288,23 @@ void Resize(int w, int h)
 	glLoadMatrixf(m);
 
 	g_convas->set_viewport(xui_rect2d<s32>(0, 0, w, h));
-	g_convas->set_cliprect(xui_rect2d<s32>(0));
+	//g_convas->set_cliprect(xui_rect2d<s32>(0));
 }
 
 void Render()
 {
-	g_timermgr->update(0.016f);
+	xui_timermgr::get_ins()->update(0.016f);
 	g_desktop->update(0.016f);
 
-	//glDisable(GL_SCISSOR_TEST);
-	//glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
+	g_convas->set_cliprect(xui_rect2d<s32>(0));
+	glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	//g_convas->set_cliprect(xui_rect2d<s32>(50, 50, 200, 200));
+	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
 	g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
+	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
 	g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
-	//g_convas.draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
+	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
+	g_convas->draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
 
 	xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
 	//g_convas.draw_image(image, xui_vector<s32>(30, 30), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
@@ -317,15 +314,17 @@ void Render()
 
 	std::wstringstream text;
 	text << rect2d_value.get_h();
-	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
+	g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
+	g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
+	g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
+
 	//g_convas->draw_text(bool_value ? L"True" : L"False", xui_family("Arial", 30, false), xui_vector<s32>(0, 30), textdraw);
 	//g_convas->draw_text(enum_map[(s32)enum_value], xui_family("Arial", 30, false), xui_vector<s32>(0, 60), textdraw);
 	//g_convas->draw_text(string_value, xui_family("Arial", 30, false), xui_vector<s32>(0, 90), textdraw);
 	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 120), textdraw);
 
-	xui_vector<s32> pt(0, 150);
+	//xui_vector<s32> pt(0, 150);
 	g_desktop->render();
-
 	glutSwapBuffers();
 }
 
@@ -365,21 +364,21 @@ int main(int argc, char** argv)
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	g_family_create = new xui_family_create_win();
-	g_timermgr = new xui_timermgr();
-	g_desktop = new xui_desktop("", xui_rect2d<s32>(0, 0, 800, 600));
+	xui_timermgr::init();
+	xui_desktop::init();
 	xui_convas::init();
-	xui_window* window = new xui_window("", xui_rect2d<s32>(50, 50, 700, 600));
+	xui_window* window = new xui_window(xui_vector<s32>(600, 500));
 	//window->set_corner(5);
 	window->set_sidestyle(SIDESTYLE_S);
 	window->set_sidecolor(xui_colour(1.0f, 0.27f, 0.27f, 0.27f));
 	window->set_backcolor(xui_colour(1.0f, 0.32f, 0.32f, 0.32f));
 	window->set_borderrt(xui_rect2d<s32>(5,5,5,5));
 
-	xui_linebox* linebox = new xui_linebox("", xui_rect2d<s32>(50, 50, 350, 100));
+	xui_linebox* linebox = new xui_linebox(xui_vector<s32>(200, 100), NULL);
 	linebox->set_corner(5);
 	linebox->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
 
-	xui_gridbox* gridbox = new xui_gridbox("", xui_rect2d<s32>(50, 50, 350, 250));
+	xui_gridbox* gridbox = new xui_gridbox(NULL);
 	gridbox->set_corner(5);
 	gridbox->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
 	gridbox->set_sidestyle(SIDESTYLE_S);
@@ -406,7 +405,7 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(button2);
 	//window->add_child(linebox);
 
-	xui_textbox* textbox = new xui_textbox("", xui_rect2d<s32>(50, 50, 150, 100));
+	xui_textbox* textbox = new xui_textbox(xui_vector<s32>(150, 100), NULL);
 	textbox->set_backcolor(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 	textbox->set_sidecolor(xui_colour(1.0f, 1.0f, 1.0f, 1.0f));
 	textbox->set_sidestyle(SIDESTYLE_S);
@@ -420,10 +419,10 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(textbox);
 	gridbox->set_gridctrl(1, 1, textbox);
 
-	xui_button* button = new xui_button("", xui_rect2d<s32>(50, 100, 150, 130));
+	xui_button* button = new xui_button(xui_vector<s32>(50), NULL);
 	button->set_icon(xui_bitmap::create("button.png"));
 	button->set_text(L"button");
-	button->set_font(xui_family("Arial", 16, false));
+	button->set_textfont(xui_family("Arial", 16, false));
 	button->set_corner(5);
 	button->set_sidestyle(SIDESTYLE_S);
 	button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
@@ -435,7 +434,7 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(button);
 	gridbox->set_gridctrl(1, 0, button);
 
-	xui_toggle* toggle = new xui_toggle("", xui_rect2d<s32>(50, 150, 80, 160));
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(100), NULL, TOGGLE_CIRCLE);
 	//toggle->set_icon(xui_bitmap::create("button.png"));
 	//toggle->set_text(L"button");
 	//toggle->set_font(xui_family("Arial", 16, false));
@@ -447,14 +446,13 @@ int main(int argc, char** argv)
 	//toggle->set_borderrt(xui_rect2d<s32>(5,5,5,5));
 	toggle->set_textoffset(xui_vector<s32>( 30, 0));
 	toggle->set_iconoffset(xui_vector<s32>(-10, 0));
-	toggle->set_style(TOGGLE_CIRCLE);
 	//window->add_child(toggle);
 	//linebox->add_linectrl(toggle);
 	gridbox->set_gridctrl(1, 2, toggle);
 
-	xui_separate* separate = new xui_separate("", xui_rect2d<s32>(0, 0, 20, 20));
+	xui_separate* separate = new xui_separate(xui_vector<s32>(20), NULL);
 
-	xui_toolbar* toolbar = new xui_toolbar("", xui_rect2d<s32>(250, 150, 450, 170));
+	xui_toolbar* toolbar = new xui_toolbar(xui_vector<s32>(200), NULL);
 	toolbar->set_backcolor(xui_colour(0.0f, 0.0f, 0.0f, 0.0f));
 	//toolbar->add_item(textbox);
 	//toolbar->add_item(button);
@@ -463,7 +461,7 @@ int main(int argc, char** argv)
 
 	//window->add_child(toolbar);
 
-	xui_scroll* scroll = new xui_slider("", xui_rect2d<s32>(50, 200, 100, 220), FLOWSTYLE_H, true);
+	xui_scroll* scroll = new xui_slider(xui_vector<s32>(100, 20), NULL, FLOWSTYLE_H, true);
 	scroll->set_backcolor(xui_colour(1.0f, 0.30f, 0.30f, 0.30f));
 	//scroll->set_borderrt(xui_rect2d<s32>(0, 2, 0, 2));
 	scroll->set_range(2000);
@@ -472,7 +470,7 @@ int main(int argc, char** argv)
 
 	//u08 widgettype[LIW_COUNT] = {255, LIW_ICON, LIW_TEXT};
 	//s32 widgetsize[LIW_COUNT] = {0,   20,       60};
-	xui_listview* listview = new xui_listview("", xui_rect2d<s32>(50, 50, 250, 200), 20, xui_rect2d<s32>(5), xui_vector<s32>(0), xui_vector<s32>(10, 0));
+	xui_listview* listview = new xui_listview(xui_vector<s32>(250, 200), NULL, false);
 	listview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	listview->set_allowmulti(true);
 	for (int i = 0; i < 20; ++i)
@@ -483,7 +481,7 @@ int main(int argc, char** argv)
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  36, L"", xui_bitmap::create("button.png")));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"test"));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 180, L"main"));
-	xui_treeview* treeview = new xui_treeview("", xui_rect2d<s32>(50, 50, 250, 200), columninfo);
+	xui_treeview* treeview = new xui_treeview(xui_vector<s32>(250, 200), NULL, columninfo);
 	treeview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	treeview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	treeview->set_corner(5);
@@ -510,9 +508,9 @@ int main(int argc, char** argv)
 		}
 	}
 	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
-	window->add_child(treeview);
+	//window->add_child(treeview);
 
-	xui_dropbox* dropbox = new xui_dropbox("", xui_rect2d<s32>(50, 50, 150, 80));
+	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(50), NULL);
 	dropbox->set_backcolor(xui_colour(1.0f, 0.2f, 0.2f, 0.2f));
 	dropbox->set_sidestyle(SIDESTYLE_S);
 	dropbox->set_sidecolor(xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
@@ -523,7 +521,7 @@ int main(int argc, char** argv)
 	dropbox->add_item(L"chris");
 	//window->add_child(dropbox);
 
-	xui_timeview* timeview = new xui_timeview("", xui_rect2d<s32>(50, 50, 450, 250), 300, 24);
+	xui_timeview* timeview = new xui_timeview(xui_vector<s32>(450, 250), NULL, 300, 24);
 	timeview->set_backcolor(xui_colour(1.0f, 0.2f, 0.2f, 0.2f));
 	timeview->set_borderrt(xui_rect2d<s32>(1));
 
@@ -596,13 +594,16 @@ int main(int argc, char** argv)
 	//xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, false, showmap, editmap);
 	xui_propdata_expand* dataexpand = new xui_propdata_expand(propkind, L"simple", xui_propctrl_simple::create, subprop);
 	propkind->add_propdata(dataexpand);
-	xui_propview* propview = new xui_propview("", xui_rect2d<s32>(250, 50, 550, 550));
+	xui_propview* propview = new xui_propview(xui_vector<s32>(400, 250), NULL);
 	propview->set_backcolor(xui_colour(1.0f, 0.3f, 0.3f, 0.3f));
 	propview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	propview->set_sidestyle(SIDESTYLE_S);
 	propview->set_borderrt(xui_rect2d<s32>(6));
 	window->add_child(propview);
 
+	propview->set_renderpt(xui_vector<s32>(50));
+	propview->set_drawcolor(true);
+	propview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	propview->set_proproot(proproot);
 
 	g_desktop->add_child(window);
