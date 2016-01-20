@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 //propctrl_expand
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_expand, xui_propctrl);
 /*
 //create
 */
@@ -21,21 +22,16 @@ xui_method_explain(xui_propctrl_expand,		 create,			xui_propctrl*	)( xui_propdat
 xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_type	   += "propctrlexpand";
-	m_border    = xui_rect2d<s32>(0, 6, 0, 6);
-	m_backcolor = xui_colour(0.0f);
+	m_border   = xui_rect2d<s32>(0, 6, 0, 6);
 
 	//plus
-	m_propplus = new xui_propplus();
-	xui_method_ptrcall(m_propplus, set_parent	)(this);
+	m_propplus = new xui_propplus(this);
 	m_widgetvec.push_back(m_propplus);
 
 	//name
-	m_namectrl = new xui_drawer("", xui_rect2d<s32>(0, 0,128, 20));
-	xui_method_ptrcall(m_namectrl, set_parent	)(this);
-	xui_method_ptrcall(m_namectrl, set_backcolor)(xui_colour(0.0f));
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
 	xui_method_ptrcall(m_namectrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(m_namectrl, set_font		)(xui_family("Arial", 16, false));
+	xui_method_ptrcall(m_namectrl, set_textfont	)(xui_family("Arial", 16, false));
 	xui_method_ptrcall(m_namectrl, set_textcolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
@@ -63,7 +59,7 @@ xui_method_explain(xui_propctrl_expand,		 was_expanded,		bool			)( void ) const
 }
 xui_method_explain(xui_propctrl_expand,		 set_expanded,		void			)( bool flag )
 {
-	xui_propdata_expand* dataexpand = (xui_propdata_expand*)m_propdata;
+	xui_propdata_expand* dataexpand = dynamic_cast<xui_propdata_expand*>(m_propdata);
 	if (dataexpand->can_subfold())
 	{
 		m_propplus->set_expanded(flag);
@@ -75,7 +71,7 @@ xui_method_explain(xui_propctrl_expand,		 set_expanded,		void			)( bool flag )
 */
 xui_method_explain(xui_propctrl_expand,		 on_linkpropdata,	void			)( void )
 {
-	xui_propdata_expand* dataexpand = (xui_propdata_expand*)m_propdata;
+	xui_propdata_expand* dataexpand = dynamic_cast<xui_propdata_expand*>(m_propdata);
 	xui_method_ptrcall(m_namectrl, set_text		)(dataexpand->get_name());
 	xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
 
@@ -102,9 +98,7 @@ xui_method_explain(xui_propctrl_expand,		 on_invalid,		void			)( xui_method_args
 	xui_propctrl::on_invalid(args);
 
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
-	{
 		m_propctrlvec[i]->set_visible(false);
-	}
 
 	xui_propview* propview = get_propview();
 	xui_vector<s32> sz;
@@ -143,36 +137,28 @@ xui_method_explain(xui_propctrl_expand,		 on_perform,		void			)( xui_method_args
 	s32 indent = get_indent();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	//name
-	pt.x = 0;
-	pt.y = rt.ay;
-	sz.w = rt.get_sz().w;
-	sz.h = height;
-	m_namectrl->set_rendersz(sz, false);
+	m_namectrl->on_perform_y (rt.ay);
+	m_namectrl->on_perform_w (rt.get_w());
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 	//plus
 	pt.x = (indent-16);
 	pt.y = rt.ay + (height-12)/2;
-	sz.w = 12;
-	sz.h = 12;
-	m_propplus->set_renderpt(pt, false);
-	m_propplus->set_rendersz(sz, false);
+	m_propplus->on_perform_pt(pt);
+	m_propplus->on_perform_sz(12, 12);
 	if (m_propplus->was_expanded())
 	{
 		pt.x = 0;
 		pt.y = rt.ay + height;
-		sz.w = rt.get_sz().w;
 		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 		{
 			xui_propctrl* propctrl = m_propctrlvec[i];
 			if (propctrl->was_visible() == false)
 				continue;
 
-			sz.h  = propctrl->get_renderh();
-			propctrl->set_renderpt(pt, false);
-			propctrl->set_rendersz(sz, false);
-			pt.y += sz.h;
+			propctrl->on_perform_pt(pt);
+			propctrl->on_perform_w (rt.get_w());
+			pt.y += propctrl->get_renderh();
 		}
 	}
 }
@@ -196,6 +182,7 @@ xui_method_explain(xui_propctrl_expand,		 get_propdataall,	xui_propdata_vec)( u3
 //////////////////////////////////////////////////////////////////////////
 //propctrl_expandbool
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_expand_bool, xui_propctrl_expand);
 /*
 //create
 */
@@ -242,11 +229,11 @@ xui_method_explain(xui_propctrl_expand_bool, on_linkpropdata,	void			)( void )
 	namectrl->set_text(m_propdata->get_name());
 
 	bool same = true;
-	xui_propdata_bool* databool = (xui_propdata_bool*)m_propdata;
+	xui_propdata_bool* databool = dynamic_cast<xui_propdata_bool*>(m_propdata);
 	bool value = databool->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_bool* data = (xui_propdata_bool*)m_propdatavec[i];
+		xui_propdata_bool* data = dynamic_cast<xui_propdata_bool*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -264,7 +251,7 @@ xui_method_explain(xui_propctrl_expand_bool, on_editvalue,		void			)( xui_proped
 	bool value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_bool* data = (xui_propdata_bool*)m_propdatavec[i];
+		xui_propdata_bool* data = dynamic_cast<xui_propdata_bool*>(m_propdatavec[i]);
 		data->set_value(value);
 	}
 
@@ -283,26 +270,21 @@ xui_method_explain(xui_propctrl_expand_bool, on_perform,		void			)( xui_method_a
 	xui_control* boolctrl = m_propedit->get_editctrl();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
-	xui_vector<s32> sz;
 	//boolctrl
-	pt.x = rt.get_sz().w/2;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.ay + height/2 - boolctrl->get_renderh()/2;
-	boolctrl->set_renderpt(pt, false);
+	boolctrl->on_perform_pt(pt);
 	//namectrl
-	pt.x = 0;
-	pt.y = rt.ay;
-	sz.w = rt.get_sz().w/2;
-	sz.h = height;
-	namectrl->set_renderpt(pt, false);
-	namectrl->set_rendersz(sz, false);
-
 	s32 indent = get_indent();
+	namectrl->on_perform_y(rt.ay);
+	namectrl->on_perform_w(rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_expandenum
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_expand_enum, xui_propctrl_expand);
 /*
 //create
 */
@@ -317,7 +299,7 @@ xui_method_explain(xui_propctrl_expand_enum, create,			xui_propctrl*	)( xui_prop
 xui_create_explain(xui_propctrl_expand_enum)( xui_propdata* propdata )
 : xui_propctrl_expand(propdata)
 {
-	xui_propdata_enum* dataenum = (xui_propdata_enum*)propdata;
+	xui_propdata_enum* dataenum = dynamic_cast<xui_propdata_enum*>(propdata);
 	xui_propedit_enum* editenum = new xui_propedit_enum(this, dataenum->get_textmap());
 
 	xui_drawer*  namectrl = editenum->get_namectrl();
@@ -350,11 +332,11 @@ xui_method_explain(xui_propctrl_expand_enum, on_linkpropdata,	void			)( void )
 	namectrl->set_text(m_propdata->get_name());
 
 	bool same = true;
-	xui_propdata_enum* dataenum = (xui_propdata_enum*)m_propdata;
+	xui_propdata_enum* dataenum = dynamic_cast<xui_propdata_enum*>(m_propdata);
 	u32 value = dataenum->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_enum* data = (xui_propdata_enum*)m_propdatavec[i];
+		xui_propdata_enum* data = dynamic_cast<xui_propdata_enum*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -372,7 +354,7 @@ xui_method_explain(xui_propctrl_expand_enum, on_editvalue,		void			)( xui_proped
 	u32 value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_enum* data = (xui_propdata_enum*)m_propdatavec[i];
+		xui_propdata_enum* data = dynamic_cast<xui_propdata_enum*>(m_propdatavec[i]);
 		data->set_value(value);
 	}
 
@@ -393,20 +375,13 @@ xui_method_explain(xui_propctrl_expand_enum, on_perform,		void			)( xui_method_a
 	xui_vector<s32> pt;
 	xui_vector<s32> sz;
 	//enumctrl
-	pt.x = rt.get_sz().w/2;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.ay + height/2 - enumctrl->get_renderh()/2;
-	sz.w = rt.get_sz().w/2;
-	sz.h = enumctrl->get_renderh();
-	enumctrl->set_renderpt(pt, false);
-	enumctrl->set_rendersz(sz, false);
+	enumctrl->on_perform_pt(pt);
+	enumctrl->on_perform_w (rt.get_w()/2);
 	//namectrl
-	pt.x = 0;
-	pt.y = rt.ay;
-	sz.w = rt.get_sz().w/2;
-	sz.h = height;
-	namectrl->set_renderpt(pt, false);
-	namectrl->set_rendersz(sz, false);
-
 	s32 indent = get_indent();
+	namectrl->on_perform_y (rt.ay);
+	namectrl->on_perform_w (rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }

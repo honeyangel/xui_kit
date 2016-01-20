@@ -5,6 +5,8 @@
 
 class xui_propctrl_expand : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create
@@ -50,6 +52,8 @@ protected:
 
 class xui_propctrl_expand_bool : public xui_propctrl_expand
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create
@@ -86,6 +90,8 @@ protected:
 
 class xui_propctrl_expand_enum : public xui_propctrl_expand
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create

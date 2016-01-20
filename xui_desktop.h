@@ -6,11 +6,14 @@
 
 class xui_desktop : public xui_panel
 {
+	xui_declare_rtti
+	xui_declare_instance(xui_desktop)
+
 public:
 	/*
 	//constructor
 	*/
-	xui_desktop( const std::string& name, const xui_rect2d<s32>& rect );
+	xui_desktop( void );
 
 	/*
 	//destructor

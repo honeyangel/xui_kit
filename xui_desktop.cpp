@@ -2,6 +2,10 @@
 #include "xui_window.h"
 #include "xui_desktop.h"
 
+xui_implement_rtti(xui_desktop, xui_panel);
+xui_implement_instance_member(xui_desktop);
+xui_implement_instance_method(xui_desktop);
+
 /*
 //global
 */
@@ -10,8 +14,8 @@ xui_desktop* g_desktop = NULL;
 /*
 //constructor
 */
-xui_create_explain(xui_desktop)( const std::string& name, const xui_rect2d<s32>& rect )
-: xui_panel(name, rect)
+xui_create_explain(xui_desktop)( void )
+: xui_panel(xui_vector<s32>(800, 600), NULL)
 {
 	m_catchctrl = NULL;
 	m_focusctrl = NULL;
@@ -297,35 +301,32 @@ xui_method_explain(xui_desktop, update,			void					)( f32 delta )
 
 xui_method_explain(xui_desktop, render,			void					)( void )
 {
-	// render 
+	xui_convas::get_ins()->set_cliprect(m_render);
 	xui_vecptr_addloop(m_childctrl)
 	{
-		xui_window* window = (xui_window*)m_childctrl[i];
+		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
 		if (window->was_modal())
 			continue;
 
 		m_childctrl[i]->render();
 	}
 
-	// render modal
 	for (u32 i = 0; i < m_modalpool.size(); ++i)
 	{
 		m_modalpool[i]->render();
 	}
 
-	// render float
+	xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
 	if (m_floatctrl)
 	{
 		m_floatctrl->render();
 	}
-
 	if (m_catchctrl)
 	{
 		xui_method_args args;
 		m_catchctrl->on_topdraw(             args);
 		m_catchctrl->xm_topdraw(m_catchctrl, args);
 	}
-
 	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
 	{
 		if (m_allowdrag)
@@ -335,12 +336,12 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 			rt.ay = m_mousecurr.y+16;
 			rt.set_w(16);
 			rt.set_h( 8);
-			g_convas->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 			rt.oft_x( 1);
 			rt.oft_y( 1);
 			rt.set_w(14);
 			rt.set_h( 6);
-			g_convas->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 		}
 		else
 		{
@@ -349,20 +350,20 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 			rt.ay = m_mousecurr.y+16;
 			rt.set_w(16);
 			rt.set_h(16);
-			g_convas->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 
-			g_convas->draw_line(xui_vector<s32>(rt.ax,   rt.ay),   xui_vector<s32>(rt.bx,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			g_convas->draw_line(xui_vector<s32>(rt.ax,   rt.ay+1), xui_vector<s32>(rt.bx-1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			g_convas->draw_line(xui_vector<s32>(rt.ax+1, rt.ay),   xui_vector<s32>(rt.bx,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			g_convas->draw_line(xui_vector<s32>(rt.bx,   rt.ay),   xui_vector<s32>(rt.ax,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			g_convas->draw_line(xui_vector<s32>(rt.bx,   rt.ay+1), xui_vector<s32>(rt.ax+1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			g_convas->draw_line(xui_vector<s32>(rt.bx-1, rt.ay),   xui_vector<s32>(rt.ax,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax,   rt.ay),   xui_vector<s32>(rt.bx,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax,   rt.ay+1), xui_vector<s32>(rt.bx-1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax+1, rt.ay),   xui_vector<s32>(rt.bx,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx,   rt.ay),   xui_vector<s32>(rt.ax,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx,   rt.ay+1), xui_vector<s32>(rt.ax+1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx-1, rt.ay),   xui_vector<s32>(rt.ax,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 
 			rt.oft_x( 1);
 			rt.oft_y( 1);
 			rt.set_w(14);
 			rt.set_h(14);
-			g_convas->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 		}
 	}
 }
@@ -372,13 +373,10 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 */
 xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args )
 {
-	m_mousedown = args.point;
-
 	xui_component* component = NULL;
 
 	if (m_floatctrl)
 		component = m_floatctrl->choose(args.point);
-
 	if (component == NULL)
 	{
 		if (get_modaltop())
@@ -387,38 +385,62 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 			component = choose(args.point);
 	}
 
-	set_catchctrl(component);
-
-	if (m_catchctrl)
+	if (args.mouse == MB_L)
 	{
-		m_catchctrl->on_mousedown(             args);
-		m_catchctrl->xm_mousedown(m_catchctrl, args);
+		set_catchctrl(component);
+		m_mousedown = args.point;
+	}
+
+	if (component)
+	{
+		component->on_mousedown(             args);
+		component->xm_mousedown(m_catchctrl, args);
 	}
 }
 
 xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args )
 {
-	if (m_catchctrl)
+	xui_component* component = NULL;
+
+	if (args.mouse == MB_L)
 	{
-		if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_allowdrag && m_catchdata)
+		component = m_catchctrl;
+		if (m_catchctrl)
 		{
-			xui_method_dragdrop other_args;
-			other_args.allow = m_allowdrag;
-			other_args.drag  = m_catchctrl;
-			other_args.data  = m_catchdata;
-			other_args.type  = m_catchtype;
-			m_hoverctrl->on_mousedragdrop(             other_args);
-			m_hoverctrl->xm_mousedragdrop(m_hoverctrl, other_args);
+			if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_allowdrag && m_catchdata)
+			{
+				xui_method_dragdrop other_args;
+				other_args.allow = m_allowdrag;
+				other_args.drag  = m_catchctrl;
+				other_args.data  = m_catchdata;
+				other_args.type  = m_catchtype;
+				m_hoverctrl->on_mousedragdrop(             other_args);
+				m_hoverctrl->xm_mousedragdrop(m_hoverctrl, other_args);
+			}
+
+			set_catchctrl(NULL);
+			m_allowdrag = false;
+			m_catchdata = NULL;
 		}
-
-		m_catchctrl->on_mouserise(             args);
-		m_catchctrl->xm_mouserise(m_catchctrl, args);
-
-		set_catchctrl(NULL);
+	}
+	else
+	{
+		if (m_floatctrl)
+			component = m_floatctrl->choose(args.point);
+		if (component == NULL)
+		{
+			if (get_modaltop())
+				component = get_modaltop()->choose(args.point);
+			else
+				component = choose(args.point);
+		}
 	}
 
-	m_allowdrag = false;
-	m_catchdata = NULL;
+	if (component)
+	{
+		component->on_mouserise(           args);
+		component->xm_mouserise(component, args);
+	}
 }
 
 xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args )
@@ -430,7 +452,6 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 
 	if (m_floatctrl)
 		component = m_floatctrl->choose(args.point);
-
 	if (component == NULL)
 	{
 		if (get_modaltop())
@@ -508,8 +529,8 @@ xui_method_explain(xui_desktop, os_setcursor,	void					)( u32 cursor )
 	case CURSOR_NS:			glutSetCursor(GLUT_CURSOR_UP_DOWN);		break;
 	case CURSOR_WE:			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);	break;
 	case CURSOR_TEXT:		glutSetCursor(GLUT_CURSOR_TEXT);		break;
-	case CURSOR_STOP:		glutSetCursor(GLUT_CURSOR_WAIT);		break;
 	case CURSOR_MOVE:		glutSetCursor(GLUT_CURSOR_CROSSHAIR);	break;
+	case CURSOR_DRAGBAN:	glutSetCursor(GLUT_CURSOR_WAIT);		break;
 	}
 }
 
@@ -523,7 +544,7 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 	xui_component* component = (xui_component*)(args.wparam);
 	if (component)
 	{
-		xui_window* window = (xui_window*)component;
+		xui_window* window = xui_dynamic_cast(xui_window, component);
 		if (window->was_visible() && window->was_modal())
 			add_modalwnd(window);
 	}
@@ -536,7 +557,7 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 	xui_component* component = (xui_component*)(args.wparam);
 	if (component)
 	{
-		xui_window* window = (xui_window*)component;
+		xui_window* window = xui_dynamic_cast(xui_window, component);
 		if (window->was_visible() && window->was_modal())
 			del_modalwnd(window);
 	}

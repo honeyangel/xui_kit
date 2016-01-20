@@ -1,6 +1,7 @@
 #ifndef __xui_timeview_h__
 #define __xui_timeview_h__
 
+#include "xui_family_render.h"
 #include "xui_container.h"
 
 enum 

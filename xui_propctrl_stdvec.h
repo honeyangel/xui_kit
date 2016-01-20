@@ -6,6 +6,8 @@
 
 class xui_propctrl_stdvec : public xui_propctrl
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//create
