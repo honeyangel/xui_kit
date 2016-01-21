@@ -7,6 +7,16 @@ class xui_colour
 {
 public:
 	/*
+	//static
+	*/
+	static const xui_colour transparent;
+	static const xui_colour white;
+	static const xui_colour black;
+	static const xui_colour red;
+	static const xui_colour green;
+	static const xui_colour blue;
+
+	/*
 	// member
 	*/
 	union

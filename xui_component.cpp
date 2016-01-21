@@ -22,8 +22,8 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size, xui_component* p
 	m_alignvert = 0;
 	m_dockstyle = 0;
 	m_backalpha = 1.0f;
-	m_backcolor = xui_colour(0.0f, 0.0f, 0.0f, 0.0f);
-	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
+	m_backcolor = xui_colour::transparent;
+	m_maskcolor = xui_colour::white;
 }
 
 /*

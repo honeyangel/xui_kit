@@ -205,6 +205,7 @@
     <ClInclude Include="xui_window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="demo.cpp" />
     <ClCompile Include="libpng\src\png.c" />
     <ClCompile Include="libpng\src\pngerror.c" />
     <ClCompile Include="libpng\src\pnggccrd.c" />

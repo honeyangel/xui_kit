@@ -657,5 +657,6 @@
     <ClCompile Include="xui_caretdrawer.cpp">
       <Filter>LibGUI\textbox</Filter>
     </ClCompile>
+    <ClCompile Include="demo.cpp" />
   </ItemGroup>
 </Project>
