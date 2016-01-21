@@ -445,9 +445,12 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_control::choose_else(pt);
-	xui_vector<s32> relative = pt - m_render.get_pt();
 	if (m_render.was_inside(pt))
 	{
+		xui_vector<s32> screenpt;
+		screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+		screenpt.y = 0;
+		xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
 		if (component == NULL)
 		{
 			xui_vecptr_addloop(m_columngrid)
@@ -468,6 +471,10 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 	xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 	if (rt.was_inside(pt))
 	{
+		xui_vector<s32> screenpt;
+		screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+		screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+		xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
 		if (component == NULL)
 		{
 			std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
@@ -501,13 +508,13 @@ xui_method_explain(xui_treeview, update_else,			void								)( f32 delta )
 xui_method_explain(xui_treeview, render_else,			void								)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
 	xui_vecptr_addloop(alltreenodes)
 	{
 		alltreenodes[i]->render();
 	}
-	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
 	xui_vecptr_addloop(m_columnhead)
 	{
 		m_columnhead[i]->render();

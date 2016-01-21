@@ -29,12 +29,8 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 	if (m_cliprect != rt)
 	{
 		m_cliprect  = rt;
-		if (m_cliprect.get_w() == 0 || 
-			m_cliprect.get_h() == 0)
-		{
-			glDisable(GL_SCISSOR_TEST);
-		}
-		else
+		if (m_cliprect.get_w() > 0 &&
+			m_cliprect.get_h() > 0)
 		{
 			glEnable (GL_SCISSOR_TEST);
 			glScissor(
@@ -42,6 +38,10 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 				m_viewport.get_h()-m_cliprect.by, 
 				m_cliprect.get_w(), 
 				m_cliprect.get_h());
+		}
+		else
+		{
+			glDisable(GL_SCISSOR_TEST);
 		}
 	}
 }
@@ -92,7 +92,7 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 																			   const xui_rect2d<s32>&	dst,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
 	image->set_bind();
@@ -475,9 +475,10 @@ xui_method_explain(xui_convas, draw_line,			void					)( const xui_vector<s32>&	p
 																			   const xui_vector<s32>&	p2,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glColor4fv(color.value);
@@ -495,9 +496,10 @@ xui_method_explain(xui_convas, draw_path,			void					)( xui_vector<s32>*			pt,
 																			   u32						count,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINE_LOOP);
 	glColor4fv(color.value);
@@ -512,9 +514,10 @@ xui_method_explain(xui_convas, fill_poly,			void					)( xui_vector<s32>*			pt,
 																			   u32						count,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_POLYGON_SMOOTH);
 	glBegin(GL_TRIANGLES);
 	glColor4fv(color.value);
@@ -600,9 +603,6 @@ xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32
 																			   const xui_colour&		color,
 																			   s32						thick )
 {
-	if (color.a == 0.0f)
-		return;
-
 	draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay),	color);
 	draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.ax, rt.by),	color);
 	draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by),	color);
@@ -624,9 +624,10 @@ xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32
 xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32>&	rt,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_POLYGON_SMOOTH);
 	glBegin(GL_QUADS);
 	glColor4fv(color.value);
@@ -813,9 +814,10 @@ xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt
 																			   s32						sweep,
 																			   s32						precision )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LINE_SMOOTH);
 	glBegin(GL_LINE_STRIP);
 	glColor4fv(color.value);
@@ -848,9 +850,10 @@ xui_method_explain(xui_convas, fill_arc,			void					)( const xui_rect2d<s32>&	rt
 																			   s32						sweep,
 																			   s32						precision )
 {
-	if (color.a == 0.0f)
+	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_POLYGON_SMOOTH);
 	glBegin(GL_TRIANGLE_FAN);
 	glColor4fv(color.value);

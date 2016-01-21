@@ -86,7 +86,10 @@ xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vect
 	xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 	if (component == NULL && rt.was_inside(pt))
 	{
-		xui_vector<s32> relative = pt - m_render.get_pt();
+		xui_vector<s32> screenpt;
+		screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+		screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+		xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
 		xui_vecptr_addloop(m_ascrollitem)
 		{
 			if (component = m_ascrollitem[i]->choose(relative))
@@ -108,7 +111,7 @@ xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 xui_method_explain(xui_container, render_else,		void			)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	xui_vecptr_addloop(m_ascrollitem)
 	{
 		if (m_ascrollitem[i]->was_visible())

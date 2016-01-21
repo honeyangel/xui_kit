@@ -211,8 +211,7 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 	xui_component* component = xui_container::choose_else(pt);
 	if (component == NULL)
 	{
-		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
-		if (rt.was_inside(pt))
+		if (m_render.was_inside(pt))
 		{
 			xui_vector<s32> relative = pt - m_render.get_pt();
 			xui_vecptr_addloop(m_resizevec)
@@ -220,6 +219,17 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 				if (component = m_resizevec[i]->choose(relative))
 					return component;
 			}
+		}
+	}
+	if (component == NULL)
+	{
+		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
+		if (rt.was_inside(pt))
+		{
+			xui_vector<s32> screenpt;
+			screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+			screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+			xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
 			xui_vecptr_addloop(m_childctrl)
 			{
 				if (component = m_childctrl[i]->choose(relative))
@@ -242,7 +252,7 @@ xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 xui_method_explain(xui_panel, render_else,		void								)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	xui_vecptr_addloop(m_childctrl)
 	{
 		if (m_childctrl[i]->was_visible())

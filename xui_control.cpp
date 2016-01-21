@@ -244,7 +244,7 @@ xui_method_explain(xui_control, render,				void					)( void )
 xui_method_explain(xui_control, render_else,		void					)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(get_renderrtabs());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
 	xui_vecptr_addloop(m_widgetvec)
 	{
 		if (m_widgetvec[i]->was_visible())

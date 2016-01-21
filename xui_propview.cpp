@@ -170,7 +170,7 @@ xui_method_explain(xui_propview, on_renderself,		void					)( xui_method_args& ar
 		if (kindctrl->was_visible() == false)
 			continue;
 
-		s32 y = rt.ay + kindctrl->get_rendery() + kindctrl->get_renderh();
+		s32 y = kindctrl->get_renderrtabs().by;
 		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	y);
 		xui_vector<s32> p2 = xui_vector<s32>(rt.bx, y);
 		xui_convas::get_ins()->draw_line(p1, p2, color);

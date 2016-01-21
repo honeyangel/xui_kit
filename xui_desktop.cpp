@@ -312,7 +312,7 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 		m_modalpool[i]->render();
 	}
 
-	xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
+	xui_convas::get_ins()->set_cliprect(m_render);
 	if (m_floatctrl)
 	{
 		m_floatctrl->render();

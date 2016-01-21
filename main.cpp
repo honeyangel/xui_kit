@@ -288,7 +288,6 @@ void Resize(int w, int h)
 	glLoadMatrixf(m);
 
 	g_convas->set_viewport(xui_rect2d<s32>(0, 0, w, h));
-	//g_convas->set_cliprect(xui_rect2d<s32>(0));
 }
 
 void Render()
@@ -296,14 +295,11 @@ void Render()
 	xui_timermgr::get_ins()->update(0.016f);
 	g_desktop->update(0.016f);
 
-	g_convas->set_cliprect(xui_rect2d<s32>(0));
+	g_convas->set_cliprect(g_convas->get_viewport());
 	glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
 	g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
-	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
 	g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
-	//g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
 	g_convas->draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
 
 	xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
@@ -314,9 +310,7 @@ void Render()
 
 	std::wstringstream text;
 	text << rect2d_value.get_h();
-	g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
-	g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
-	g_convas->set_cliprect(xui_rect2d<s32>(0, 0, 50, 50));
+	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
 
 	//g_convas->draw_text(bool_value ? L"True" : L"False", xui_family("Arial", 30, false), xui_vector<s32>(0, 30), textdraw);
 	//g_convas->draw_text(enum_map[(s32)enum_value], xui_family("Arial", 30, false), xui_vector<s32>(0, 60), textdraw);
@@ -367,7 +361,7 @@ int main(int argc, char** argv)
 	xui_timermgr::init();
 	xui_desktop::init();
 	xui_convas::init();
-	xui_window* window = new xui_window(xui_vector<s32>(600, 500));
+	xui_window* window = new xui_window(xui_vector<s32>(500, 500));
 	//window->set_corner(5);
 	window->set_sidestyle(SIDESTYLE_S);
 	window->set_sidecolor(xui_colour(1.0f, 0.27f, 0.27f, 0.27f));
@@ -594,7 +588,7 @@ int main(int argc, char** argv)
 	//xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, false, showmap, editmap);
 	xui_propdata_expand* dataexpand = new xui_propdata_expand(propkind, L"simple", xui_propctrl_simple::create, subprop);
 	propkind->add_propdata(dataexpand);
-	xui_propview* propview = new xui_propview(xui_vector<s32>(400, 250), NULL);
+	xui_propview* propview = new xui_propview(xui_vector<s32>(400, 400), NULL);
 	propview->set_backcolor(xui_colour(1.0f, 0.3f, 0.3f, 0.3f));
 	propview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	propview->set_sidestyle(SIDESTYLE_S);

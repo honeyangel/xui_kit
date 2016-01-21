@@ -419,7 +419,10 @@ xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_
 		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 		if (rt.was_inside(pt))
 		{
-			xui_vector<s32> relative = pt - m_render.get_pt();
+			xui_vector<s32> screenpt;
+			screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+			screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+			xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
 			if (m_timerect->choose(relative))
 				return m_timerect;
 			if (m_timehead->choose(relative))
@@ -456,7 +459,7 @@ xui_method_explain(xui_timeview, render_else,				void						)( void )
 	xui_control::render_else();
 
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 	xui_vecptr_addloop(nodes)
 	{

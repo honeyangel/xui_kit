@@ -202,11 +202,11 @@ public:
 	*/
 	xui_rect2d<T> get_inter( const xui_rect2d<T>& other ) const
 	{
-		if (bx < other.ax ||
-			ax > other.bx ||
-			by < other.ay ||
-			ay > other.by)
-			return xui_rect2d<T>();
+		//if (bx < other.ax ||
+		//	ax > other.bx ||
+		//	by < other.ay ||
+		//	ay > other.by)
+		//	return xui_rect2d<T>();
 
 		xui_rect2d<T> temp;
 		temp.ax = (ax > other.ax) ? ax : other.ax;
