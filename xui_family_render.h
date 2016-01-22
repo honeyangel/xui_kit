@@ -15,6 +15,11 @@ class xui_family_render
 {
 public:
 	/*
+	//static
+	*/
+	static const xui_family_render default;
+
+	/*
 	//member
 	*/
 	u08			renderstyle;
@@ -28,7 +33,7 @@ public:
 	xui_family_render( void )
 	{
 		renderstyle = 0;
-		normalcolor = xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
+		normalcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
 		strokewidth = 1;
 		strokecolor = xui_colour(1.0f, 0.0f, 0.0f, 0.0f);
 	}

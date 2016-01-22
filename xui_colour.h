@@ -44,6 +44,13 @@ public:
 		for (u32 i = 0; i < 4; ++i)
 			value[i] = _v;
 	}
+	xui_colour( f32 _a, f32 _v )
+	{
+		a = _a;
+		r = _v;
+		g = _v;
+		b = _v;
+	}
 	xui_colour( f32 _a, f32 _r, f32 _g, f32 _b )
 	{
 		a = _a;

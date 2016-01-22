@@ -7,18 +7,24 @@
 xui_implement_rtti(xui_control, xui_component);
 
 /*
+//config
+*/
+const xui_colour xui_control::default_single_sidecolor = xui_colour(1.0f, 0.7f);
+const xui_colour xui_control::default_double_sidecolor = xui_colour(1.0f, 0.2f);
+
+/*
 //constructor
 */
 xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
 : xui_component(size, parent)
 {
 	m_client	= m_render;
-	m_border	= xui_rect2d<s32>(2);
+	m_border	= xui_rect2d<s32>(0);
 	m_scroll	= xui_vector<s32>(0);
 	m_corner	= 0;
 	m_drawcolor = false;
 	m_sidestyle = 0;
-	m_sidecolor = xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
+	m_sidecolor = default_single_sidecolor;
 }
 
 /*
@@ -64,7 +70,7 @@ xui_method_explain(xui_control, get_borderrt,		const xui_rect2d<s32>&	)( void ) 
 {
 	return m_border;
 }
-xui_method_explain(xui_control, set_borderrt,		void							)( const xui_rect2d<s32>& rt )
+xui_method_explain(xui_control, set_borderrt,		void					)( const xui_rect2d<s32>& rt )
 {
 	if (m_border != rt)
 	{
@@ -277,6 +283,8 @@ xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& arg
 	}
 	if (m_sidestyle)
 	{
+		renderrt.bx -= 1;
+		renderrt.by -= 1;
 		xui_colour side_color = m_sidecolor * color;
 		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
 
@@ -288,9 +296,7 @@ xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& arg
 				renderrt.bx-1, 
 				renderrt.by-1);
 
-			side_color.r = 1.0f - side_color.r;
-			side_color.g = 1.0f - side_color.g;
-			side_color.b = 1.0f - side_color.b;
+			side_color = default_double_sidecolor * color;
 			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
 		}
 	}

@@ -21,10 +21,13 @@ class xui_control : public xui_component
 	xui_declare_rtti
 
 public:
+	static const xui_colour default_single_sidecolor;
+	static const xui_colour default_double_sidecolor;
+
 	/*
 	//constructor
 	*/
-	xui_control( const xui_vector<s32>& size, xui_component* parent );
+	xui_control( const xui_vector<s32>& size, xui_component* parent = NULL );
 
 	/*
 	//destructor

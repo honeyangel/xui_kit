@@ -36,6 +36,7 @@
 #include "xui_propview.h"
 #include "xui_kindctrl.h"
 #include "xui_desktop.h"
+#include "demo.h"
 
 static s32  prop_value = 0;
 static bool bool_value = false;
@@ -296,20 +297,20 @@ void Render()
 	g_desktop->update(0.016f);
 
 	g_convas->set_cliprect(g_convas->get_viewport());
-	glClearColor(0.36f, 0.36f, 0.36f, 1.0f);
+	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
-	g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
-	g_convas->draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
+	//g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
+	//g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
+	//g_convas->draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
 
-	xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
+	//xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
 	//g_convas.draw_image(image, xui_vector<s32>(30, 30), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 
-	xui_family_render textdraw;
-	textdraw.renderstyle = TEXTDRAW_STROKE;
+	//xui_family_render textdraw;
+	//textdraw.renderstyle = TEXTDRAW_STROKE;
 
-	std::wstringstream text;
-	text << rect2d_value.get_h();
+	//std::wstringstream text;
+	//text << rect2d_value.get_h();
 	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 0), textdraw);
 
 	//g_convas->draw_text(bool_value ? L"True" : L"False", xui_family("Arial", 30, false), xui_vector<s32>(0, 30), textdraw);
@@ -334,6 +335,7 @@ void Idle()
 
 int main(int argc, char** argv)
 {
+
 	glutInit(&argc, argv);
 	glutInitWindowSize(800, 600);
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
@@ -362,11 +364,8 @@ int main(int argc, char** argv)
 	xui_desktop::init();
 	xui_convas::init();
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500));
+	window->ini_component(0, 0, DOCKSTYLE_F);
 	//window->set_corner(5);
-	window->set_sidestyle(SIDESTYLE_S);
-	window->set_sidecolor(xui_colour(1.0f, 0.27f, 0.27f, 0.27f));
-	window->set_backcolor(xui_colour(1.0f, 0.32f, 0.32f, 0.32f));
-	window->set_borderrt(xui_rect2d<s32>(5,5,5,5));
 
 	xui_linebox* linebox = new xui_linebox(xui_vector<s32>(200, 100), NULL);
 	linebox->set_corner(5);
@@ -403,7 +402,7 @@ int main(int argc, char** argv)
 	textbox->set_backcolor(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 	textbox->set_sidecolor(xui_colour(1.0f, 1.0f, 1.0f, 1.0f));
 	textbox->set_sidestyle(SIDESTYLE_S);
-	textbox->set_hinttext(L"abc");
+	textbox->set_hinttext(L"");
 	textbox->set_textalign(TA_RC);
 	textbox->set_borderrt(xui_rect2d<s32>(0, 0, 20, 0));
 	//textbox->set_numbonly(true);
@@ -551,7 +550,7 @@ int main(int argc, char** argv)
 	}
 
 	//window->add_child(timeview);
-
+	/*
 	xui_proproot* proproot = new xui_proproot();
 	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", xui_kindctrl::create, NULL, true, xui_family("Arial", 16, true), xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"P", xui_propctrl_vector_button::create, &vector_value, 1));
@@ -593,13 +592,14 @@ int main(int argc, char** argv)
 	propview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	propview->set_sidestyle(SIDESTYLE_S);
 	propview->set_borderrt(xui_rect2d<s32>(6));
-	window->add_child(propview);
+	//window->add_child(propview);
 
 	propview->set_renderpt(xui_vector<s32>(50));
 	propview->set_drawcolor(true);
 	propview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
-	propview->set_proproot(proproot);
+	propview->set_proproot(proproot);*/
 
+	test_button(window);
 	g_desktop->add_child(window);
 
 	glutMainLoop();

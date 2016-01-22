@@ -9,9 +9,20 @@ class xui_button : public xui_drawer
 
 public:
 	/*
+	//static
+	*/
+	static const xui_colour default_backcolor;
+	static const xui_colour default_sidecolor;
+	static const xui_colour default_movecolor;
+	static const xui_colour default_downcolor;
+
+	static xui_button*			create			( xui_bitmap* icon );
+	static xui_button*			create			( xui_bitmap* icon, const std::wstring& text );
+
+	/*
 	//constructor
 	*/
-	xui_button( const xui_vector<s32>& size, xui_component* parent );
+	xui_button( const xui_vector<s32>& size, xui_component* parent = NULL );
 
 	/*
 	//color

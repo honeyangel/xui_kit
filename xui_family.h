@@ -19,6 +19,8 @@ enum
 class xui_family
 {
 public:
+	static const xui_family default;
+
 	/*
 	//member
 	*/
@@ -33,10 +35,18 @@ public:
 	*/
 	xui_family( void )
 	{
-		face = "Arial";
+		face = "Î¢ÈíÑÅºÚ";
 		size = 12;
 		bold = false;
-		horz = 1;
+		horz = 0;
+		vert = 0;
+	}
+	xui_family( s32 _size, bool _bold = false )
+	{
+		face = "Î¢ÈíÑÅºÚ";
+		size = _size;
+		bold = _bold;
+		horz = 0;
 		vert = 0;
 	}
 	xui_family( const std::string& _face, s32 _size, bool _bold )
@@ -44,7 +54,7 @@ public:
 		face = _face;
 		size = _size;
 		bold = _bold;
-		horz = 1;
+		horz = 0;
 		vert = 0;
 	}
 	xui_family( const xui_family& other )

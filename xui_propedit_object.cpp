@@ -47,7 +47,7 @@ xui_method_explain(xui_propedit_object, reset,					void		)( void )
 {
 	xui_propedit_base::reset();
 	xui_drawer* editctrl = xui_dynamic_cast(xui_drawer, m_editctrl);
-	editctrl->ini_drawer(NULL, L"");
+	editctrl->ini_drawer(L"");
 }
 
 /*

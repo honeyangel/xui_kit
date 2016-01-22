@@ -11,6 +11,7 @@ xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* pare
 : xui_control(size, parent)
 {
 	m_icon			= NULL;
+	m_iconsize		= xui_vector<s32>(0);
 	m_textalign		= TA_LC;
 	m_iconalign		= IMAGE_FRONT_TEXT;
 	m_textoffset	= xui_vector<s32>(2, 0);
@@ -23,18 +24,22 @@ xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* pare
 */
 xui_method_explain(xui_drawer, ini_drawer,			void					)( xui_bitmap* icon )
 {
+	ini_drawer(icon, (icon == NULL) ? xui_vector<s32>(0) : icon->get_size());
+}
+xui_method_explain(xui_drawer, ini_drawer,			void					)( xui_bitmap* icon, const xui_vector<s32>& iconsize )
+{
 	m_icon		= icon;
+	m_iconsize	= iconsize;
+}
+xui_method_explain(xui_drawer, ini_drawer,			void					)( const std::wstring& text )
+{
+	ini_drawer(text, m_textfont, m_textdraw);
 }
 xui_method_explain(xui_drawer, ini_drawer,			void					)( const std::wstring& text, const xui_family& textfont, const xui_family_render& textdraw )
 {
 	m_text		= text;
 	m_textfont	= textfont;
 	m_textdraw	= textdraw;
-}
-xui_method_explain(xui_drawer, ini_drawer,			void					)( xui_bitmap* icon, const std::wstring& text )
-{
-	m_icon		= icon;
-	m_text		= text;
 }
 
 /*
@@ -67,6 +72,14 @@ xui_method_explain(xui_drawer, set_text,			void					)( const std::wstring& text 
 		xui_method_args args;
 		on_textchanged( args);
 	}
+}
+xui_method_explain(xui_drawer, get_iconsize,		const xui_vector<s32>&	)( void ) const
+{
+	return m_iconsize;
+}
+xui_method_explain(xui_drawer, set_iconsize,		void					)( const xui_vector<s32>& iconsize )
+{
+	m_iconsize = iconsize;
 }
 xui_method_explain(xui_drawer, get_textfont,		const xui_family&		)( void ) const
 {
@@ -144,6 +157,7 @@ xui_method_explain(xui_drawer, set_singleline,		void					)( bool flag )
 */
 xui_method_explain(xui_drawer, on_iconchanged,		void					)( xui_method_args& args )
 {
+	m_iconsize = (m_icon == NULL) ? xui_vector<s32>(0) : m_icon->get_size();
 	xm_iconchanged(this, args);
 }
 xui_method_explain(xui_drawer, on_textchanged,		void					)( xui_method_args& args )
@@ -181,7 +195,7 @@ xui_method_explain(xui_drawer, on_renderself,		void					)( xui_method_args& args
 	{
 		xui_convas::get_ins()->draw_image(
 			icon, 
-			get_rendericonpt()+get_screenpt(), 
+			xui_rect2d<s32>(get_rendericonpt()+get_screenpt(), m_iconsize), 
 			color);
 	}
 }
@@ -198,66 +212,53 @@ xui_method_explain(xui_drawer, get_rendertext,		std::wstring			)( void ) const
 }
 xui_method_explain(xui_drawer, get_rendericonpt,	xui_vector<s32>			)( void ) const
 {
-	xui_bitmap*     icon = get_rendericon ();
-	xui_rect2d<s32> rt   = get_renderrtins();
-	xui_vector<s32> pt   = rt.get_pt();
-	if (icon)
+	xui_rect2d<s32> rt = get_renderrtins();
+	xui_vector<s32> pt = rt.get_pt();
+	switch (m_iconalign)
 	{
-		switch (m_iconalign)
-		{
-		case IMAGE_L:
-			pt.x = rt.ax;
-			pt.y = rt.ay + (rt.get_h() - icon->get_size().h) / 2;
-			break;
-		case IMAGE_T:
-			pt.x = rt.ax + (rt.get_w() - icon->get_size().w) / 2;
-			pt.y = rt.ay;
-			break;
-		case IMAGE_R:
-			pt.x = rt.ax + (rt.get_w() - icon->get_size().w);
-			pt.y = rt.ay + (rt.get_h() - icon->get_size().h) / 2;
-			break;
-		case IMAGE_B:
-			pt.x = rt.ax + (rt.get_w() - icon->get_size().w) / 2;
-			pt.y = rt.ay + (rt.get_h() - icon->get_size().h);
-			break;
-		case IMAGE_C:
-			pt.x = rt.ax + (rt.get_w() - icon->get_size().w) / 2;
-			pt.y = rt.ay + (rt.get_h() - icon->get_size().h) / 2;
-			break;
-		}
+	case IMAGE_L:
+		pt.x = rt.ax;
+		pt.y = rt.ay + (rt.get_h() - m_iconsize.h) / 2;
+		break;
+	case IMAGE_T:
+		pt.x = rt.ax + (rt.get_w() - m_iconsize.w) / 2;
+		pt.y = rt.ay;
+		break;
+	case IMAGE_R:
+		pt.x = rt.ax + (rt.get_w() - m_iconsize.w);
+		pt.y = rt.ay + (rt.get_h() - m_iconsize.h) / 2;
+		break;
+	case IMAGE_B:
+		pt.x = rt.ax + (rt.get_w() - m_iconsize.w) / 2;
+		pt.y = rt.ay + (rt.get_h() - m_iconsize.h);
+		break;
+	case IMAGE_C:
+		pt.x = rt.ax + (rt.get_w() - m_iconsize.w) / 2;
+		pt.y = rt.ay + (rt.get_h() - m_iconsize.h) / 2;
+		break;
 	}
 
 	return pt + m_iconoffset;
 }
 xui_method_explain(xui_drawer, get_rendertextrt,	xui_rect2d<s32>			)( void ) const
 {
-	xui_bitmap*     icon = get_rendericon  ();
 	std::wstring    text = get_rendertext  ();
 	xui_rect2d<s32> rt   = get_renderrtins ();
 	xui_vector<s32> pt   = get_rendericonpt();
-	if (icon)
+	switch (m_iconalign)
 	{
-		switch (m_iconalign)
-		{
-		case IMAGE_FRONT_TEXT:
-			rt.ax = pt.x + icon->get_size().w;
-			break;
-		case IMAGE_AFTER_TEXT:
-			rt.bx = pt.x;
-			break;
-		case IMAGE_ABOVE_TEXT:
-			rt.ay = pt.y + icon->get_size().h;
-			break;
-		case IMAGE_BELOW_TEXT: 
-			rt.by = pt.y;
-			break;
-		}
-	}
-	else
-	{
-		rt.ax = pt.x;
-		rt.ay = pt.y;
+	case IMAGE_FRONT_TEXT:
+		rt.ax = pt.x + m_iconsize.w;
+		break;
+	case IMAGE_AFTER_TEXT:
+		rt.bx = pt.x;
+		break;
+	case IMAGE_ABOVE_TEXT:
+		rt.ay = pt.y + m_iconsize.h;
+		break;
+	case IMAGE_BELOW_TEXT: 
+		rt.by = pt.y;
+		break;
 	}
 
 	if (text.length() > 0)

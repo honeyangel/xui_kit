@@ -30,14 +30,15 @@ public:
 	/*
 	//constructor
 	*/
-	xui_drawer( const xui_vector<s32>& size, xui_component* parent );
+	xui_drawer( const xui_vector<s32>& size, xui_component* parent = NULL );
 
 	/*
 	//init
 	*/
+	void						ini_drawer		( const std::wstring& text );
 	void						ini_drawer		( const std::wstring& text, const xui_family& textfont, const xui_family_render& textdraw );
 	void						ini_drawer		( xui_bitmap* icon );
-	void						ini_drawer		( xui_bitmap* icon, const std::wstring& text );
+	void						ini_drawer		( xui_bitmap* icon, const xui_vector<s32>& iconsize );
 
 	/*
 	//text
@@ -52,7 +53,13 @@ public:
 	void						set_icon		( xui_bitmap* icon );
 
 	/*
-	//font
+	//icon size
+	*/
+	const xui_vector<s32>&		get_iconsize	( void ) const;
+	void						set_iconsize	( const xui_vector<s32>& iconsize );
+
+	/*
+	//text font
 	*/
 	const xui_family&			get_textfont	( void ) const;
 	void						set_textfont	( const xui_family& textfont );
@@ -118,6 +125,7 @@ protected:
 	*/
 	std::wstring				m_text;
 	xui_bitmap*					m_icon;
+	xui_vector<s32>				m_iconsize;
 	xui_family					m_textfont;
 	xui_family_render			m_textdraw;
 	u08							m_textalign;

@@ -4,13 +4,47 @@
 xui_implement_rtti(xui_button, xui_drawer);
 
 /*
+//static
+*/
+const xui_colour xui_button::default_backcolor = xui_colour(1.0f,  90.0f/255.0f);
+const xui_colour xui_button::default_sidecolor = xui_colour(1.0f,  80.0f/255.0f);
+const xui_colour xui_button::default_movecolor = xui_colour(1.0f, 127.0f/255.0f);
+const xui_colour xui_button::default_downcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+
+xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon )
+{
+	xui_button* button = new xui_button(xui_vector<s32>(24));
+	xui_method_ptrcall(button, set_sidestyle)(SIDESTYLE_S);
+	xui_method_ptrcall(button, set_corner	)(5);
+	xui_method_ptrcall(button, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(button, set_drawcolor)(true);
+	xui_method_ptrcall(button, ini_drawer	)(icon, xui_vector<s32>(16));
+
+	return button;
+}
+xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon, const std::wstring& text )
+{
+	xui_button* button = new xui_button(xui_vector<s32>(80, 24));
+	xui_method_ptrcall(button, set_sidestyle)(SIDESTYLE_S);
+	xui_method_ptrcall(button, set_corner	)(5);
+	xui_method_ptrcall(button, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(button, set_drawcolor)(true);
+	xui_method_ptrcall(button, ini_drawer	)(icon, xui_vector<s32>(16));
+	xui_method_ptrcall(button, ini_drawer	)(text, xui_family("Î¢ÈíÑÅºÚ", 16, false), xui_family_render());
+
+	return button;
+}
+
+/*
 //constructor
 */
 xui_create_explain(xui_button)( const xui_vector<s32>& size, xui_component* parent )
 : xui_drawer(size, parent)
 {
-	m_movecolor = xui_colour(1.0f, 0.61f, 0.61f, 0.61f);
-	m_downcolor = xui_colour(1.0f, 0.16f, 0.52f, 0.74f);
+	m_backcolor = default_backcolor;
+	m_sidecolor = default_sidecolor;
+	m_movecolor = default_movecolor;
+	m_downcolor = default_downcolor;
 }
 
 /*
