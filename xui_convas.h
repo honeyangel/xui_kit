@@ -53,6 +53,9 @@ public:
 	/*
 	//text
 	*/
+	s32						calc_height			( const std::wstring&		text, 
+												  const xui_family&			textfont );
+
 	xui_vector<s32>			calc_size			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
 												  s32						maxwidth, 

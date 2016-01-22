@@ -36,7 +36,7 @@ public:
 	xui_family( void )
 	{
 		face = "Î¢ÈíÑÅºÚ";
-		size = 12;
+		size = 14;
 		bold = false;
 		horz = 0;
 		vert = 0;

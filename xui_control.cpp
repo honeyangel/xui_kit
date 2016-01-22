@@ -7,12 +7,6 @@
 xui_implement_rtti(xui_control, xui_component);
 
 /*
-//config
-*/
-const xui_colour xui_control::default_single_sidecolor = xui_colour(1.0f, 0.7f);
-const xui_colour xui_control::default_double_sidecolor = xui_colour(1.0f, 0.2f);
-
-/*
 //constructor
 */
 xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
@@ -24,7 +18,7 @@ xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* par
 	m_corner	= 0;
 	m_drawcolor = false;
 	m_sidestyle = 0;
-	m_sidecolor = default_single_sidecolor;
+	m_sidecolor = xui_colour::lightgray;
 }
 
 /*
@@ -296,7 +290,9 @@ xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& arg
 				renderrt.bx-1, 
 				renderrt.by-1);
 
-			side_color = default_double_sidecolor * color;
+			side_color.r = 1.0f - side_color.r;
+			side_color.g = 1.0f - side_color.g;
+			side_color.b = 1.0f - side_color.b;
 			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
 		}
 	}

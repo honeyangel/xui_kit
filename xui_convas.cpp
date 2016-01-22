@@ -117,15 +117,28 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 /*
 //text
 */
+xui_method_explain(xui_convas, calc_height,			s32						)( const std::wstring&		text, 
+																			   const xui_family&		textfont )
+{
+	s32 height = 0;
+	for (u32 i = 0; i < text.length(); ++i)
+	{
+		//非可见字符
+		if (text[i] < 0x20)
+			continue;
+
+		xui_family_member* member = get_family_member(textfont, text[i]);
+		height = xui_max(height, member->rt.get_h()+textfont.vert);
+	}
+
+	return height;
+}
 xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																		       s32						maxwidth,
 																			   bool						singleline )
 {
-	xui_vector<s32> size;
-	size.w = 0;
-	size.h = textfont.size + textfont.vert;
-
+	xui_vector<s32> size(0);
 	if (singleline)
 	{
 		for (u32 i = 0; i < text.length(); ++i)
@@ -138,12 +151,15 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			size.w += member->rt.get_sz().w;
 			size.w += textfont.horz;
 		}
+
+		size.h = calc_height(text, textfont);
 	}
 	else
 	{
 		//绘制多行
 		s32 textline = 0;
 		s32 curwidth = 0;
+		s32 linemaxh = 0;
 
 		//single line buffer
 		std::wstring buffer;
@@ -154,8 +170,10 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			if (*p == L'\n')
 			{
 				buffer.clear();
+				size.h += linemaxh;
 
 				curwidth = 0;
+				linemaxh = 0;
 				++textline;
 				++p;
 			}
@@ -173,11 +191,15 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 						break;
 
 					buffer.clear();
+					size.h += linemaxh;
+
 					curwidth = 0;
+					linemaxh = 0;
 					++textline;
 				}
 				else
 				{
+					linemaxh  = xui_max(linemaxh, calc_height(word, textfont));
 					curwidth += sw;
 					buffer	 += word;
 					p		 += word.length();
@@ -185,11 +207,13 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			}
 		}
 
-		if (!buffer.empty())
+		if (buffer.length() > 0)
+		{
+			size.h += linemaxh;
 			++textline;
+		}
 
-		size.w  = textline > 1 ? maxwidth : curwidth;
-		size.h *= textline;
+		size.w = textline > 1 ? maxwidth : curwidth;
 	}
 
 	return size;

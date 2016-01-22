@@ -21,9 +21,6 @@ class xui_control : public xui_component
 	xui_declare_rtti
 
 public:
-	static const xui_colour default_single_sidecolor;
-	static const xui_colour default_double_sidecolor;
-
 	/*
 	//constructor
 	*/

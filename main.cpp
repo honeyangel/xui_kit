@@ -19,7 +19,7 @@
 #include "xui_treedata.h"
 #include "xui_dropbox.h"
 #include "xui_timeview.h"
-#include "xui_timeline.h"
+#include "xui_timeline.h" 
 #include "xui_timedata.h"
 #include "xui_proproot.h"
 #include "xui_propkind.h"
@@ -36,7 +36,7 @@
 #include "xui_propview.h"
 #include "xui_kindctrl.h"
 #include "xui_desktop.h"
-#include "demo.h"
+#include "xui_demo.h"
 
 static s32  prop_value = 0;
 static bool bool_value = false;
@@ -599,7 +599,7 @@ int main(int argc, char** argv)
 	propview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	propview->set_proproot(proproot);*/
 
-	test_button(window);
+	xui_demo::test_button(window);
 	g_desktop->add_child(window);
 
 	glutMainLoop();

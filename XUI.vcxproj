@@ -41,6 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -58,6 +59,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,6 +81,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="xui_config.h" />
+    <ClInclude Include="xui_demo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_propctrl_object.h" />
     <ClInclude Include="xui_propctrl_simple.h" />
@@ -205,7 +210,6 @@
     <ClInclude Include="xui_window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="demo.h" />
     <ClCompile Include="libpng\src\png.c" />
     <ClCompile Include="libpng\src\pngerror.c" />
     <ClCompile Include="libpng\src\pnggccrd.c" />
@@ -238,6 +242,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="xui_colour.cpp" />
     <ClCompile Include="xui_config.cpp" />
+    <ClCompile Include="xui_demo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="xui_family.cpp" />
+    <ClCompile Include="xui_family_render.cpp" />
     <ClCompile Include="xui_kindctrl.cpp" />
     <ClCompile Include="xui_propctrl_object.cpp" />
     <ClCompile Include="xui_propctrl_simple.cpp" />

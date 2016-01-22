@@ -15,6 +15,7 @@ public:
 	static const xui_colour red;
 	static const xui_colour green;
 	static const xui_colour blue;
+	static const xui_colour lightgray;
 
 	/*
 	// member

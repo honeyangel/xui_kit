@@ -369,6 +369,7 @@
     <ClInclude Include="xui_caretdrawer.h">
       <Filter>LibGUI\textbox</Filter>
     </ClInclude>
+    <ClInclude Include="xui_demo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -660,6 +661,12 @@
     <ClCompile Include="xui_colour.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="demo.h" />
+    <ClCompile Include="xui_family.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_family_render.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_demo.cpp" />
   </ItemGroup>
 </Project>
