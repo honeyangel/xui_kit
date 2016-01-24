@@ -9,9 +9,14 @@ class xui_linebox : public xui_control
 
 public:
 	/*
+	//static
+	*/
+	static xui_linebox*		create				( void );
+
+	/*
 	//constructor
 	*/
-	xui_linebox( const xui_vector<s32>& size, xui_component* parent );
+	xui_linebox( const xui_vector<s32>& size, u08 flow = FLOWSTYLE_H, xui_component* parent = NULL );
 
 	/*
 	//flow
@@ -22,9 +27,14 @@ public:
 	/*
 	//ctrl
 	*/
-	void					add_linectrl		( xui_component* component );
-	void					del_linectrl		( xui_component* component );
+	void					add_linectrl		( xui_control* ctrl );
+	void					del_linectrl		( xui_control* ctrl );
 	virtual xui_rect2d<s32>	get_cornerrt		( xui_component* component ) const;
+
+	/*
+	//virtual
+	*/
+	virtual void			render_else			( void );
 
 protected:
 	/*
@@ -32,6 +42,7 @@ protected:
 	*/
 	virtual void			on_invalid			( xui_method_args& args );
 	virtual void			on_perform			( xui_method_args& args );
+	virtual void			on_renderback		( xui_method_args& args );
 
 	/*
 	//member

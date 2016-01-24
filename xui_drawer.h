@@ -28,6 +28,12 @@ class xui_drawer : public xui_control
 
 public:
 	/*
+	//static
+	*/
+	static xui_drawer*			create			( xui_bitmap* icon );
+	static xui_drawer*			create			( const std::wstring& text );
+
+	/*
 	//constructor
 	*/
 	xui_drawer( const xui_vector<s32>& size, xui_component* parent = NULL );

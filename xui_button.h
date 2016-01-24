@@ -42,12 +42,12 @@ protected:
 	//callback
 	*/
 	virtual void				on_mouseclick	( xui_method_mouse& args );
+	virtual void				on_renderself	( xui_method_args&  args );
 
 	/*
 	//virtual
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
-	virtual xui_vector<s32>		get_rendericonpt( void ) const;
 
 	/*
 	//member

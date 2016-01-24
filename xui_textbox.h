@@ -10,9 +10,15 @@ class xui_textbox : public xui_drawer
 
 public:
 	/*
+	//static
+	*/
+	static const xui_colour		default_selectedcolor;
+	static xui_textbox*			create			( s32 width );
+
+	/*
 	//constructor
 	*/
-	xui_textbox( const xui_vector<s32>& size, xui_component* parent );
+	xui_textbox( const xui_vector<s32>& size, xui_component* parent = NULL );
 
 	/*
 	//destructor
@@ -62,7 +68,6 @@ public:
 	//update&render
 	*/
 	virtual void				update			( f32 delta );
-	virtual void				render			( void );
 
 	/*
 	//method

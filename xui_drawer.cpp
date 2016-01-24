@@ -5,6 +5,26 @@
 xui_implement_rtti(xui_drawer, xui_control);
 
 /*
+//static
+*/
+xui_method_explain(xui_drawer, create,				xui_drawer*				)( xui_bitmap* icon )
+{
+	xui_drawer* drawer = new xui_drawer(xui_vector<s32>(24));
+	xui_method_ptrcall(drawer, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(drawer, set_iconalign)(IMAGE_C);
+	xui_method_ptrcall(drawer, ini_drawer	)(icon);
+	return drawer;
+}
+xui_method_explain(xui_drawer, create,				xui_drawer*				)( const std::wstring& text )
+{
+	xui_drawer* drawer = new xui_drawer(xui_vector<s32>(80, 24));
+	xui_method_ptrcall(drawer, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(drawer, set_textalign)(TA_LC);
+	xui_method_ptrcall(drawer, ini_drawer	)(text);
+	return drawer;
+}
+
+/*
 //constructor
 */
 xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* parent )
@@ -14,8 +34,8 @@ xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* pare
 	m_iconsize		= xui_vector<s32>(0);
 	m_textalign		= TA_LC;
 	m_iconalign		= IMAGE_FRONT_TEXT;
-	m_textoffset	= xui_vector<s32>(2, 0);
-	m_iconoffset	= xui_vector<s32>(0, 0);
+	m_textoffset	= xui_vector<s32>(0);
+	m_iconoffset	= xui_vector<s32>(0);
 	m_singleline	= true;
 }
 
@@ -261,6 +281,8 @@ xui_method_explain(xui_drawer, get_rendertextrt,	xui_rect2d<s32>			)( void ) con
 		break;
 	}
 
+	rt.ax += m_textoffset.x;
+	rt.ay += m_textoffset.y;
 	if (text.length() > 0)
 	{
 		rt = g_convas->calc_draw(
@@ -271,5 +293,5 @@ xui_method_explain(xui_drawer, get_rendertextrt,	xui_rect2d<s32>			)( void ) con
 			m_singleline);
 	}
 
-	return rt + m_textoffset;
+	return rt;
 }

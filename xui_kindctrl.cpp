@@ -39,7 +39,7 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_widgetvec.push_back(m_namectrl);
 
 	//flag
-	m_flagctrl	= new xui_toggle  (xui_vector<s32>(16,  16), this);
+	m_flagctrl	= new xui_toggle  (xui_vector<s32>(16), TOGGLE_NORMAL, this);
 	m_flagctrl->xm_click		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_flagctrlclick);
 	xui_method_ptrcall(m_flagctrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_flagctrl, set_sidestyle)(SIDESTYLE_S);

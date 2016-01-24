@@ -16,7 +16,7 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, xui_component* par
 {
 	m_maxdrop	= 8;
 	m_selitem   = NULL;
-	m_droptog   = new xui_toggle	(xui_vector<s32>(16), this);
+	m_droptog   = new xui_toggle	(xui_vector<s32>(16), TOGGLE_NORMAL, this);
 	m_droptog->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_droptogmousedown);
 	m_droptog->xm_renderself	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droptogrenderself);
 	m_droptog->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);

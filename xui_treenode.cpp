@@ -25,7 +25,7 @@ xui_create_explain(xui_treenode)( xui_component* parent, xui_treedata* linkdata 
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
 		xui_drawer* drawer = (columninfo.type == TREECOLUMN_BOOL) 
-			? new xui_toggle(xui_vector<s32>(0), this, TOGGLE_CIRCLE) 
+			? new xui_toggle(xui_vector<s32>(0), TOGGLE_CIRCLE, this) 
 			: new xui_drawer(xui_vector<s32>(0), this);
 
 		xui_method_ptrcall(drawer, set_borderrt	)(columninfo.borderrt);

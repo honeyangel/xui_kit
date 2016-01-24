@@ -1,17 +1,37 @@
+#include "xui_convas.h"
 #include "xui_gridbox.h"
 
 xui_implement_rtti(xui_gridbox, xui_control);
 
 /*
+//static
+*/
+xui_method_explain(xui_gridbox, create, xui_gridbox*)( u32 row, u32 col, s32 titlewidth )
+{
+	xui_gridbox* gridbox = new xui_gridbox(row, col);
+	xui_method_ptrcall(gridbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(gridbox, set_drawcolor	)(true);
+	xui_method_ptrcall(gridbox, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(gridbox, set_sidecolor	)(xui_colour(1.0f, 160.0f/255.0f));
+	xui_method_ptrcall(gridbox, set_corner		)(3);
+	xui_method_ptrcall(gridbox, set_colpixel	)(0, titlewidth);
+
+	return gridbox;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_gridbox)( xui_component* parent )
+xui_create_explain(xui_gridbox)( u32 row, u32 col, xui_component* parent )
 : xui_control(xui_vector<s32>(0), parent)
 {
-	m_rowcount = 1;
-	m_colcount = 1;
-	memset(m_rowpixel, 50, sizeof(m_rowpixel));
-	memset(m_colpixel, 50, sizeof(m_colpixel));
+	m_rowcount = row;
+	m_colcount = col;
+	for (u32 i = 0; i < MAX_ROW; ++i)
+		m_rowpixel[i] = 24;
+	for (u32 i = 0; i < MAX_COL; ++i)
+		m_colpixel[i] = 24;
+
 	memset(m_ptrarray,  0, sizeof(m_ptrarray));
 }
 
@@ -74,7 +94,7 @@ xui_method_explain(xui_gridbox, set_colpixel,	void			)( u32 col, s32 pixel )
 /*
 //grid ctrl
 */
-xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_component* component )
+xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_control* ctrl )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -87,11 +107,12 @@ xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_co
 		delete (*itor);
 	}
 
-	m_ptrarray[row][col] = component;
-	if (component)
+	m_ptrarray[row][col] = ctrl;
+	if (ctrl)
 	{
-		component->set_parent(this);
-		m_widgetvec.push_back(component);
+		xui_method_ptrcall(ctrl, set_parent		)(this);
+		xui_method_ptrcall(ctrl, set_sidestyle	)(SIDESTYLE_N);
+		m_widgetvec.push_back(ctrl);
 		perform();
 	}
 }
@@ -131,6 +152,42 @@ xui_method_explain(xui_gridbox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* 
 	}
 
 	return corner;
+}
+
+/*
+//virtual
+*/
+xui_method_explain(xui_gridbox, render_else,	void			)( void )
+{
+	xui_control::render_else();
+
+	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
+
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(renderrt));
+	if (m_sidestyle)
+	{
+		renderrt.bx -= 1;
+		renderrt.by -= 1;
+		xui_colour side_color = m_sidecolor * color;
+		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
+
+		if (m_rowcount > 1)
+		{
+			xui_vector<s32> p1 = renderrt.get_pt(); 
+			xui_vector<s32> p2 = p1 + xui_vector<s32>(renderrt.get_w(), 0);
+			for (u32 i = 0; i < m_rowcount-1; ++i)
+			{
+				s32 h = m_rowpixel[i];
+				p1 += xui_vector<s32>(0, h);
+				p2 += xui_vector<s32>(0, h);
+				xui_convas::get_ins()->draw_line(p1, p2, side_color);
+			}
+		}
+	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
@@ -176,5 +233,17 @@ xui_method_explain(xui_gridbox, on_perform,		void			)( xui_method_args& args )
 		}
 
 		pt.y += m_rowpixel[row];
+	}
+}
+xui_method_explain(xui_gridbox, on_renderback,	void			)( xui_method_args& args )
+{
+	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
+
+	if (m_drawcolor)
+	{
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
 	}
 }

@@ -16,9 +16,17 @@ class xui_toggle : public xui_button
 
 public:
 	/*
+	//static
+	*/
+	static xui_toggle*			circle			( void );
+	static xui_toggle*			create			( void );
+	static xui_toggle*			create			( xui_bitmap* icon );
+	static xui_toggle*			create			( xui_bitmap* icon, const std::wstring& text, s32 width );
+
+	/*
 	//constructor
 	*/
-	xui_toggle( const xui_vector<s32>& size, xui_component* parent, u08 drawstyle = TOGGLE_CIRCLE );
+	xui_toggle( const xui_vector<s32>& size, u08 drawstyle = TOGGLE_CIRCLE, xui_component* parent = NULL );
 
 	/*
 	//init
@@ -47,7 +55,6 @@ protected:
 	//virtual
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
-	virtual xui_vector<s32>		get_rendericonpt( void ) const;
 
 	/*
 	//member

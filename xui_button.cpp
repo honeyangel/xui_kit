@@ -1,4 +1,5 @@
 #include "xui_desktop.h"
+#include "xui_convas.h"
 #include "xui_button.h"
 
 xui_implement_rtti(xui_button, xui_drawer);
@@ -14,23 +15,25 @@ const xui_colour xui_button::default_downcolor = xui_colour(1.0f,  42.0f/255.0f,
 xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon )
 {
 	xui_button* button = new xui_button(xui_vector<s32>(24));
-	xui_method_ptrcall(button, set_sidestyle)(SIDESTYLE_S);
-	xui_method_ptrcall(button, set_corner	)(5);
-	xui_method_ptrcall(button, set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(button, set_drawcolor)(true);
-	xui_method_ptrcall(button, ini_drawer	)(icon, xui_vector<s32>(16));
+	xui_method_ptrcall(button, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(button, set_corner		)(3);
+	xui_method_ptrcall(button, set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(button, set_drawcolor	)(true);
+	xui_method_ptrcall(button, set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(button, ini_drawer		)(icon, xui_vector<s32>(16));
 
 	return button;
 }
 xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon, const std::wstring& text, s32 width )
 {
 	xui_button* button = new xui_button(xui_vector<s32>(width, 24));
-	xui_method_ptrcall(button, set_sidestyle)(SIDESTYLE_S);
-	xui_method_ptrcall(button, set_corner	)(5);
-	xui_method_ptrcall(button, set_borderrt	)(xui_rect2d<s32>(2));
-	xui_method_ptrcall(button, set_drawcolor)(true);
-	xui_method_ptrcall(button, ini_drawer	)(icon, xui_vector<s32>(16));
-	xui_method_ptrcall(button, ini_drawer	)(text);
+	xui_method_ptrcall(button, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(button, set_corner		)(3);
+	xui_method_ptrcall(button, set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(button, set_drawcolor	)(true);
+	xui_method_ptrcall(button, set_textoffset	)(xui_vector<s32>(6, 0));
+	xui_method_ptrcall(button, ini_drawer		)(icon, xui_vector<s32>(16));
+	xui_method_ptrcall(button, ini_drawer		)(text);
 
 	return button;
 }
@@ -76,6 +79,45 @@ xui_method_explain(xui_button, on_mouseclick,	void				)( xui_method_mouse& args 
 	xui_method_args other_args;
 	xm_click(this,  other_args);
 }
+xui_method_explain(xui_button, on_renderself,	void				)( xui_method_args&  args )
+{
+	xui_control::on_renderself(args);
+	xui_bitmap*  icon = get_rendericon();
+	std::wstring text = get_rendertext();
+	if (icon == NULL && text.empty())
+		return;
+
+	xui_colour color  = get_vertexcolor();
+	// draw text
+	xui_family_render textdraw = m_textdraw;
+	textdraw.normalcolor *= color;
+	textdraw.strokecolor *= color;
+	if (text.length() > 0)
+	{
+		xui_rect2d<s32> rt = get_rendertextrt();
+		if (has_catch())
+			rt += xui_vector<s32>(0, 1);
+
+		xui_convas::get_ins()->draw_text(
+			text, 
+			m_textfont, 
+			rt+get_screenpt(), 
+			textdraw);
+	}
+
+	// draw icon
+	if (icon)
+	{
+		xui_vector<s32> pt = get_rendericonpt();
+		if (has_catch())
+			pt += xui_vector<s32>(0, 1);
+
+		xui_convas::get_ins()->draw_image(
+			icon, 
+			xui_rect2d<s32>(pt+get_screenpt(), m_iconsize), 
+			color);
+	}
+}
 
 /*
 //virtual
@@ -85,13 +127,5 @@ xui_method_explain(xui_button, get_rendercolor, xui_colour			)( void ) const
 	if		(g_desktop->get_catchctrl() == this) return m_downcolor;
 	else if (g_desktop->get_hoverctrl() == this) return m_movecolor;
 	else										 return m_backcolor;
-}
-xui_method_explain(xui_button, get_rendericonpt,xui_vector<s32>		)( void ) const
-{
-	xui_vector<s32> pt = xui_drawer::get_rendericonpt();
-	if (g_desktop->get_catchctrl() == this)
-		pt.y += 1;
-
-	return pt;
 }
 

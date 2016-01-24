@@ -44,7 +44,7 @@ xui_method_explain(xui_caretdrawer, render,			void					)( void )
 {
 	if (m_caretshow)
 	{
-		g_convas->fill_rectangle(m_caretrect, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+		g_convas->fill_rectangle(m_caretrect, xui_colour::white);
 	}
 }
 xui_method_explain(xui_caretdrawer, reset,			void					)( void )

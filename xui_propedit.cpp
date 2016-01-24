@@ -86,7 +86,7 @@ xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_com
 xui_create_explain(xui_propedit_bool)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
-	xui_toggle* boolctrl = new xui_toggle(xui_vector<s32>(16, 16), NULL, TOGGLE_NORMAL);
+	xui_toggle* boolctrl = new xui_toggle(xui_vector<s32>(16, 16), TOGGLE_NORMAL);
 	xui_method_ptrcall(boolctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(boolctrl, set_sidestyle	)(SIDESTYLE_S);
 	boolctrl->xm_nonfocus	+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlnonfocus);

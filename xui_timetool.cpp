@@ -34,7 +34,7 @@ xui_create_explain(xui_timetool)( xui_component* parent )
 	xui_method_ptrcall(m_prev,	 set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_prev,	 set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 
-	xui_linebox* prevline = new xui_linebox(xui_vector<s32>(48, 24), this);
+	xui_linebox* prevline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H, this);
 	xui_method_ptrcall(prevline, set_corner		)(5);
 	xui_method_ptrcall(prevline, add_linectrl	)(m_head);
 	xui_method_ptrcall(prevline, add_linectrl	)(m_prev);
@@ -53,7 +53,7 @@ xui_create_explain(xui_timetool)( xui_component* parent )
 	xui_method_ptrcall(m_play,	 set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_play,	 set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 
-	xui_linebox* playline = new xui_linebox(xui_vector<s32>(48, 24), this);
+	xui_linebox* playline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H, this);
 	xui_method_ptrcall(playline, set_corner		)(5);
 	xui_method_ptrcall(playline, add_linectrl	)(m_back);
 	xui_method_ptrcall(playline, add_linectrl	)(m_play);
@@ -72,7 +72,7 @@ xui_create_explain(xui_timetool)( xui_component* parent )
 	xui_method_ptrcall(m_tail,	 set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_tail,	 set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 
-	xui_linebox* nextline = new xui_linebox(xui_vector<s32>(48, 24), this);
+	xui_linebox* nextline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H, this);
 	xui_method_ptrcall(nextline, set_corner		)(5);
 	xui_method_ptrcall(nextline, add_linectrl	)(m_next);
 	xui_method_ptrcall(nextline, add_linectrl	)(m_tail);

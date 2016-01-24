@@ -7,3 +7,6 @@ const xui_colour xui_colour::red			= xui_colour(1.0f, 1.0f, 0.0f, 0.0f);
 const xui_colour xui_colour::green			= xui_colour(1.0f, 0.0f, 1.0f, 0.0f);
 const xui_colour xui_colour::blue			= xui_colour(1.0f, 0.0f, 0.0f, 1.0f);
 const xui_colour xui_colour::lightgray		= xui_colour(1.0f, 0.7f);
+const xui_colour xui_colour::darkgray		= xui_colour(1.0f, 0.2f);
+const xui_colour xui_colour::gray			= xui_colour(1.0f, 0.5f);
+const xui_colour xui_colour::lighttrace		= xui_colour(1.0f);

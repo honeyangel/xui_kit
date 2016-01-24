@@ -300,7 +300,7 @@ void Render()
 	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
-	//g_convas->draw_round(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f), 8);
+	//g_convas->draw_rectangle(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 	//g_convas->draw_round(xui_rect2d<s32>(100, 100, 300, 200), xui_colour(1.0f, 0.0f, 0.0f, 0.0f), 8);
 
 	//xui_bitmap* image = xui_bitmap::create(std::string("test.png"));
@@ -355,7 +355,7 @@ int main(int argc, char** argv)
 	//glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	//glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 	//glEnable(GL_POLYGON_SMOOTH);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
@@ -427,21 +427,21 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(button);
 	gridbox->set_gridctrl(1, 0, button);
 
-	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(100), NULL, TOGGLE_CIRCLE);
+	//xui_toggle* toggle = new xui_toggle(xui_vector<s32>(100), NULL, TOGGLE_CIRCLE);
 	//toggle->set_icon(xui_bitmap::create("button.png"));
 	//toggle->set_text(L"button");
 	//toggle->set_font(xui_family("Arial", 16, false));
 	//toggle->set_corner(5);
-	toggle->set_sidestyle(SIDESTYLE_S);
-	toggle->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
-	toggle->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
+	//toggle->set_sidestyle(SIDESTYLE_S);
+	//toggle->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
+	//toggle->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
 	//toggle->set_borderrt(xui_rect2d<s32>(10, 10, 10, 10));
 	//toggle->set_borderrt(xui_rect2d<s32>(5,5,5,5));
-	toggle->set_textoffset(xui_vector<s32>( 30, 0));
-	toggle->set_iconoffset(xui_vector<s32>(-10, 0));
+	//toggle->set_textoffset(xui_vector<s32>( 30, 0));
+	//toggle->set_iconoffset(xui_vector<s32>(-10, 0));
 	//window->add_child(toggle);
 	//linebox->add_linectrl(toggle);
-	gridbox->set_gridctrl(1, 2, toggle);
+	//gridbox->set_gridctrl(1, 2, toggle);
 
 	xui_separate* separate = new xui_separate(xui_vector<s32>(20), NULL);
 
@@ -600,6 +600,12 @@ int main(int argc, char** argv)
 	propview->set_proproot(proproot);*/
 
 	xui_demo::test_button(window);
+	xui_demo::test_toggle(window);
+	xui_demo::test_textbox(window);
+	xui_demo::test_linebox(window);
+	xui_demo::test_gridbox(window);
+	xui_demo::test_toolbar(window);
+
 	g_desktop->add_child(window);
 
 	glutMainLoop();

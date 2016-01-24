@@ -16,6 +16,9 @@ public:
 	static const xui_colour green;
 	static const xui_colour blue;
 	static const xui_colour lightgray;
+	static const xui_colour darkgray;
+	static const xui_colour gray;
+	static const xui_colour lighttrace;
 
 	/*
 	// member

@@ -628,9 +628,9 @@ xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32
 																			   s32						thick )
 {
 	draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay),	color);
-	draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.ax, rt.by),	color);
-	draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by),	color);
 	draw_line(xui_vector<s32>(rt.bx, rt.ay), xui_vector<s32>(rt.bx, rt.by),	color);
+	draw_line(xui_vector<s32>(rt.bx, rt.by), xui_vector<s32>(rt.ax, rt.by),	color);
+	draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.ax, rt.ay),	color);
 	if (thick > 1)
 	{
 		for (s32 i = 1; i < thick; ++i)
@@ -912,16 +912,35 @@ xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	c
 {
 	xui_vector<s32> p1;
 	xui_vector<s32> p2;
-	p1 = xui_vector<s32>(center.x-half, center.y  );
-	p2 = xui_vector<s32>(center.x,		center.y+half);
-	draw_line(p1,						  p2,						  color);
-	draw_line(p1+xui_vector<s32>(-1,  1), p2+xui_vector<s32>(-1,  1), color);
-	draw_line(p1+xui_vector<s32>( 1, -1), p2+xui_vector<s32>( 1, -1), color);
-	p1 = xui_vector<s32>(center.x,		center.y+half);
-	p2 = xui_vector<s32>(center.x+half, center.y-half);
-	draw_line(p1,						  p2,						  color);
-	draw_line(p1+xui_vector<s32>(-1, -1), p2+xui_vector<s32>(-1, -1), color);
-	draw_line(p1+xui_vector<s32>( 1,  1), p2+xui_vector<s32>( 1,  1), color);
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_LINE_SMOOTH);
+	glBegin(GL_LINES);
+	glColor4fv(color.value);
+
+	p1 = xui_vector<s32>(center.x-half+1, center.y  );
+	p2 = xui_vector<s32>(center.x-half+5, center.y+half-1);
+	glVertex2f((f32)(p1.x  ), (f32)(p1.y  ));
+	glVertex2f((f32)(p2.x  ), (f32)(p2.y  ));
+	glVertex2f((f32)(p1.x+1), (f32)(p1.y  ));
+	glVertex2f((f32)(p2.x+1), (f32)(p2.y  ));
+	glVertex2f((f32)(p1.x  ), (f32)(p1.y-1));
+	glVertex2f((f32)(p2.x  ), (f32)(p2.y-1));
+	glVertex2f((f32)(p1.x+1), (f32)(p1.y-1));
+	glVertex2f((f32)(p2.x+1), (f32)(p2.y-1));
+
+	p1 = xui_vector<s32>(center.x-half+5, center.y+half-1);
+	p2 = xui_vector<s32>(center.x+half-1, center.y-half+2);
+	glVertex2f((f32)(p1.x  ), (f32)(p1.y  ));
+	glVertex2f((f32)(p2.x  ), (f32)(p2.y  ));
+	glVertex2f((f32)(p1.x-1), (f32)(p1.y  ));
+	glVertex2f((f32)(p2.x-1), (f32)(p2.y  ));
+	glVertex2f((f32)(p1.x  ), (f32)(p1.y-1));
+	glVertex2f((f32)(p2.x  ), (f32)(p2.y-1));
+	glVertex2f((f32)(p1.x-1), (f32)(p1.y-1));
+	glVertex2f((f32)(p2.x-1), (f32)(p2.y-1));
+
+	glEnd();
 }
 
 xui_method_explain(xui_convas, get_family_bitmap,	xui_family_bitmap*		)( const xui_family&		family )

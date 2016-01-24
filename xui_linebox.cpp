@@ -1,14 +1,27 @@
+#include "xui_convas.h"
 #include "xui_linebox.h"
 
 xui_implement_rtti(xui_linebox, xui_control);
 
 /*
+//static
+*/
+xui_method_explain(xui_linebox, create,			xui_linebox*	)( void )
+{
+	xui_linebox* linebox = new xui_linebox(xui_vector<s32>(0, 24));
+	xui_method_ptrcall(linebox, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(linebox, set_sidecolor	)(xui_colour(1.0f, 160.0f/255.0f));
+	xui_method_ptrcall(linebox, set_corner		)(3);
+	return linebox;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_linebox)( const xui_vector<s32>& size, xui_component* parent )
+xui_create_explain(xui_linebox)( const xui_vector<s32>& size, u08 flow, xui_component* parent )
 : xui_control(size, parent)
 {
-	m_flow = FLOWSTYLE_H;
+	m_flow = flow;
 }
 
 /*
@@ -30,30 +43,35 @@ xui_method_explain(xui_linebox, set_flow,		void			)( u08 flow )
 /*
 //line ctrl
 */
-xui_method_explain(xui_linebox, add_linectrl,	void			)( xui_component* component )
+xui_method_explain(xui_linebox, add_linectrl,	void			)( xui_control* ctrl )
 {
-	if (component->get_parent())
+	if (ctrl->get_parent())
 		return;
 
-	component->set_parent(this);
-	m_widgetvec.push_back(component);
+	xui_method_ptrcall(ctrl, set_parent		)(this);
+	xui_method_ptrcall(ctrl, set_sidestyle	)(SIDESTYLE_N);
+	m_widgetvec.push_back(ctrl);
 	invalid();
 }
-xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_component* component )
+xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_control* ctrl )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
 		m_widgetvec.end(),
-		component);
+		ctrl);
 
 	if (itor == m_widgetvec.end())
 		return;
 
-	component->set_parent(NULL);
-	delete component;
+	ctrl->set_parent(NULL);
+	delete ctrl;
 	m_widgetvec.erase(itor);
 	invalid();
 }
+
+/*
+//virtual
+*/
 xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* component ) const
 {
 	xui_rect2d<s32> corner(0);
@@ -91,6 +109,38 @@ xui_method_explain(xui_linebox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* 
 	}
 
 	return corner;
+}
+xui_method_explain(xui_linebox, render_else,	void			)( void )
+{
+	xui_control::render_else();
+
+	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
+
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(renderrt));
+	if (m_sidestyle)
+	{
+		renderrt.bx -= 1;
+		renderrt.by -= 1;
+		xui_colour side_color = m_sidecolor * color;
+		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
+
+		if (m_widgetvec.size() > 0)
+		{
+			xui_vector<s32> p1 = renderrt.get_pt(); 
+			xui_vector<s32> p2 = p1 + xui_vector<s32>(0, renderrt.get_h());
+			for (u32 i = 0; i < m_widgetvec.size()-1; ++i)
+			{
+				s32 w = m_widgetvec[i]->get_renderw();
+				p1 += xui_vector<s32>(w, 0);
+				p2 += xui_vector<s32>(w, 0);
+				xui_convas::get_ins()->draw_line(p1, p2, side_color);
+			}
+		}
+	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
@@ -148,5 +198,17 @@ xui_method_explain(xui_linebox, on_perform,		void			)( xui_method_args& args )
 			pt.y += comp->get_renderh();
 			break;
 		}
+	}
+}
+xui_method_explain(xui_linebox, on_renderback,	void			)( xui_method_args& args )
+{
+	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
+
+	if (m_drawcolor)
+	{
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
 	}
 }

@@ -6,9 +6,52 @@
 xui_implement_rtti(xui_toggle, xui_button);
 
 /*
+//static
+*/
+xui_method_explain(xui_toggle, circle,				xui_toggle*		)( void )
+{
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(16), TOGGLE_CIRCLE);
+	return toggle;
+}
+xui_method_explain(xui_toggle, create,				xui_toggle*		)( void )
+{
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(16), TOGGLE_NORMAL);
+	xui_method_ptrcall(toggle, set_corner		)(3);
+	xui_method_ptrcall(toggle, set_drawcolor	)(true);
+	xui_method_ptrcall(toggle, set_backcolor	)(xui_colour::darkgray);
+
+	return toggle;
+}
+xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon )
+{
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
+	xui_method_ptrcall(toggle, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(toggle, set_corner		)(3);
+	xui_method_ptrcall(toggle, set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(toggle, set_drawcolor	)(true);
+	xui_method_ptrcall(toggle, set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(toggle, ini_drawer		)(icon, xui_vector<s32>(16));
+
+	return toggle;
+}
+xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon, const std::wstring& text, s32 width )
+{
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(width, 24), TOGGLE_BUTTON);
+	xui_method_ptrcall(toggle, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(toggle, set_corner		)(3);
+	xui_method_ptrcall(toggle, set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(toggle, set_drawcolor	)(true);
+	xui_method_ptrcall(toggle, set_textoffset	)(xui_vector<s32>(6, 0));
+	xui_method_ptrcall(toggle, ini_drawer		)(icon, xui_vector<s32>(16));
+	xui_method_ptrcall(toggle, ini_drawer		)(text);
+
+	return toggle;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_toggle)( const xui_vector<s32>& size, xui_component* parent, u08 drawstyle )
+xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle, xui_component* parent )
 : xui_button(size, parent)
 {
 	m_push		= false;
@@ -53,6 +96,9 @@ xui_method_explain(xui_toggle, on_mousedown,		void			)( xui_method_mouse& args )
 }
 xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args )
 {
+	if (m_drawstyle == TOGGLE_NORMAL && m_push == false)
+		return;
+
 	xui_colour      color  = get_vertexcolor();
 	xui_rect2d<s32> rt     = get_renderrtabs();
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
@@ -61,13 +107,15 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 	{
 	case TOGGLE_CIRCLE:
 		{
-			xui_convas::get_ins()->fill_circle(center, 4, color*get_rendercolor(),	0, 360);
-			xui_convas::get_ins()->draw_circle(center, 4, color*m_sidecolor,		0, 360);
+			if (was_hover() || m_push)
+			xui_convas::get_ins()->fill_circle(center, 6,	 color*get_rendercolor(),	0, 360);
+			xui_convas::get_ins()->draw_circle(center, 6,	 color*m_sidecolor,			0, 360);
 		}
 		break;
 	case TOGGLE_NORMAL:
 		{
-			xui_convas::get_ins()->draw_tick  (center, 6, color*get_rendercolor());
+			s32	half = rt.get_w()/2;
+			xui_convas::get_ins()->draw_tick  (center, half, color*xui_colour::white);
 		}
 		break;
 	case TOGGLE_BUTTON:
@@ -83,16 +131,28 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 */
 xui_method_explain(xui_toggle, get_rendercolor,		xui_colour		)( void ) const
 {
-	if (m_push)
-		return m_downcolor;
-
-	return xui_button::get_rendercolor();
-}
-xui_method_explain(xui_toggle, get_rendericonpt,	xui_vector<s32>	)( void ) const
-{
-	xui_vector<s32> pt = xui_drawer::get_rendericonpt();
-	if (m_push)
-		pt.y += 1;
-
-	return pt;
+	if (m_drawstyle == TOGGLE_NORMAL)
+	{
+		return m_backcolor;
+	}
+	else
+	if (m_drawstyle == TOGGLE_CIRCLE)
+	{
+		if (m_push)
+		{
+			if (was_hover())return m_movecolor;
+			else			return m_backcolor;
+		}
+		else
+		{
+			return xui_colour::transparent;
+		}
+	}
+	else
+	{
+		if (m_push)
+			return m_downcolor;
+		else
+			return xui_button::get_rendercolor();
+	}
 }

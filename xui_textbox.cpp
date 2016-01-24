@@ -6,6 +6,23 @@
 xui_implement_rtti(xui_textbox, xui_drawer);
 
 /*
+//static
+*/
+const xui_colour xui_textbox::default_selectedcolor = xui_colour(1.0f, 0.6f);
+xui_method_explain(xui_textbox, create, xui_textbox*)( s32 width )
+{
+	xui_textbox* textbox = new xui_textbox(xui_vector<s32>(width, 24));
+	xui_method_ptrcall(textbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(textbox, set_drawcolor	)(true);
+	xui_method_ptrcall(textbox, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(textbox, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(textbox, set_textalign	)(TA_RC);
+	xui_method_ptrcall(textbox, set_hintdraw	)(xui_family_render(xui_colour::gray));
+
+	return textbox;
+}
+
+/*
 //constructor
 */
 xui_create_explain(xui_textbox)( const xui_vector<s32>& size, xui_component* parent )
@@ -203,16 +220,6 @@ xui_method_explain(xui_textbox, update,				void					)( f32 delta )
 		m_caretdrawer->update(delta);
 	}
 }
-xui_method_explain(xui_textbox, render,				void					)( void )
-{
-	xui_drawer::render();
-
-	//caret
-	if (has_focus() && m_readonly == false)
-	{
-		m_caretdrawer->render();
-	}
-}
 
 /*
 //callback
@@ -340,7 +347,7 @@ xui_method_explain(xui_textbox, on_renderself,		void					)( xui_method_args&  ar
 			xui_rect2d<s32> rt = get_rendertextrt() + get_screenpt();
 			rt.oft_x(x);
 			rt.set_w(w);
-			xui_convas::get_ins()->fill_rectangle(rt, color*xui_colour(0.3f, 0.0f, 0.0f, 1.0f));
+			xui_convas::get_ins()->fill_rectangle(rt, color*default_selectedcolor);
 		}
 	}
 
@@ -352,11 +359,16 @@ xui_method_explain(xui_textbox, on_renderself,		void					)( xui_method_args&  ar
 		xui_family_render textdraw = m_hintdraw;
 		textdraw.normalcolor *= color;
 		textdraw.strokecolor *= color;
-		g_convas->draw_text(
+		xui_convas::get_ins()->draw_text(
 			m_hinttext, 
 			m_textfont, 
 			get_rendertextrt() + get_screenpt(), 
 			textdraw);
+	}
+
+	if (has_focus() && m_readonly == false)
+	{
+		m_caretdrawer->render();
 	}
 }
 
@@ -373,32 +385,21 @@ xui_method_explain(xui_textbox, get_rendertext,		std::wstring			)( void ) const
 }
 xui_method_explain(xui_textbox, get_rendericonpt,	xui_vector<s32>			)( void ) const
 {
-	xui_bitmap*     icon = get_rendericon ();
-	xui_rect2d<s32> rt   = get_renderrtins();
-	xui_vector<s32> pt   = rt.get_pt();
-	if (icon)
-	{
-		pt.x = rt.ax;
-		pt.y = rt.ay + (rt.get_h() - icon->get_size().h) / 2;
-	}
+	xui_rect2d<s32> rt = get_renderrtins();
+	xui_vector<s32> pt = rt.get_pt();
+	pt.x = rt.ax;
+	pt.y = rt.ay + (rt.get_h() - m_iconsize.h) / 2;
 
 	return pt + m_iconoffset;
 }
 xui_method_explain(xui_textbox, get_rendertextrt,	xui_rect2d<s32>			)( void ) const
 {
-	xui_bitmap*     icon = get_rendericon  ();
 	std::wstring    text = get_rendertext  ();
 	xui_rect2d<s32> rt   = get_renderrtins ();
 	xui_vector<s32> pt   = get_rendericonpt();
-	if (icon)
-	{
-		rt.ax = pt.x + icon->get_size().w;
-	}
-	else
-	{
-		rt.ax = pt.x;
-		rt.ay = pt.y;
-	}
+	rt.ax  = pt.x + m_iconsize.w;
+	rt.ax += m_textoffset.x;
+	rt.ay += m_textoffset.y;
 
 	if (text.length() == 0)
 		text = m_hinttext;
@@ -412,7 +413,7 @@ xui_method_explain(xui_textbox, get_rendertextrt,	xui_rect2d<s32>			)( void ) co
 			true);
 	}
 
-	return rt + m_textoffset;
+	return rt;
 }
 
 /*
