@@ -1,6 +1,7 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_toggle.h"
+#include "xui_scroll.h"
 #include "xui_listview.h"
 #include "xui_listitem.h"
 #include "xui_itemtag.h"
@@ -9,28 +10,61 @@
 xui_implement_rtti(xui_dropbox, xui_textbox);
 
 /*
+//static
+*/
+xui_method_explain(xui_dropbox, create,					xui_dropbox*	)( s32 width )
+{
+	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(width, 24));
+	xui_method_ptrcall(dropbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(dropbox, set_drawcolor	)(true);
+	xui_method_ptrcall(dropbox, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(dropbox, set_corner		)(3);
+	xui_method_ptrcall(dropbox, set_borderrt	)(xui_rect2d<s32>(4, 4, 0, 4));
+	xui_method_ptrcall(dropbox, set_readonly	)(true);
+
+	return dropbox;
+}
+xui_method_explain(xui_dropbox, create,					xui_dropbox*	)( s32 width, xui_bitmap* icon )
+{
+	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(width, 24), true);
+	xui_method_ptrcall(dropbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(dropbox, set_drawcolor	)(true);
+	xui_method_ptrcall(dropbox, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(dropbox, set_corner		)(3);
+	xui_method_ptrcall(dropbox, set_borderrt	)(xui_rect2d<s32>(4, 4, 0, 4));
+	xui_method_ptrcall(dropbox, set_icon		)(icon);
+	xui_method_ptrcall(dropbox, set_textoffset	)(xui_vector<s32>(4, 0));
+
+	return dropbox;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, xui_component* parent )
+xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon, xui_component* parent )
 : xui_textbox(size, parent)
 {
 	m_maxdrop	= 8;
 	m_selitem   = NULL;
-	m_droptog   = new xui_toggle	(xui_vector<s32>(16), TOGGLE_NORMAL, this);
+	m_droptog   = new xui_toggle	(xui_vector<s32>(24), TOGGLE_BUTTON, this);
 	m_droptog->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_droptogmousedown);
 	m_droptog->xm_renderself	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droptogrenderself);
 	m_droptog->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
 	xui_method_ptrcall(m_droptog, ini_component)(0, 0, DOCKSTYLE_R);
 	m_widgetvec.push_back(m_droptog);
 
-	m_droplst   = new xui_listview	(xui_vector<s32>(0), this, false);
+	m_droplst   = new xui_listview	(xui_vector<s32>(0), false);
 	m_droplst->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
 	m_droplst->xm_selectedchange += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstselection);
 	m_droplst->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_dropallmousedown);
 	m_droplst->xm_keybddown		 += new xui_method_member<xui_method_keybd, xui_dropbox>(this, &xui_dropbox::on_dropallkeybddown);
 	m_droplst->xm_setclientsz	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstsetclientsz);
 	m_droplst->xm_setrendersz	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstsetrendersz);
-	xui_method_ptrcall(m_droplst, ini_component)(true, false);
+	xui_method_ptrcall(m_droplst, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_droplst, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_droplst, set_corner	)(3);
+	xui_method_ptrcall(m_droplst, set_iconsize	)(itemicon ? xui_vector<s32>(16) : xui_vector<s32>(0));
+	xui_method_ptrcall(m_droplst, ini_component	)(true, false);
 
 	refresh();
 }
@@ -170,17 +204,6 @@ xui_method_explain(xui_dropbox, get_renderrtins,		xui_rect2d<s32>	)( void ) cons
 	rt.bx -= m_droptog->get_renderw();
 	return rt;
 }
-xui_method_explain(xui_dropbox, get_rendercolor,		xui_colour		)( void ) const
-{
-	xui_component* hoverctrl = g_desktop->get_hoverctrl();
-	if (m_readonly && hoverctrl)
-	{
-		if (hoverctrl == this || hoverctrl == m_droptog || m_droplst->was_visible())
-			return xui_colour(1.0f, m_backcolor.r+0.2f, m_backcolor.g+0.2f, m_backcolor.b+0.2f);
-	}
-
-	return m_backcolor;
-}
 xui_method_explain(xui_dropbox, update,					void			)( f32 delta )
 {
 	xui_textbox::update(delta);
@@ -245,7 +268,7 @@ xui_method_explain(xui_dropbox, on_nonfocus,			void			)( xui_method_args&  args 
 {
 	xui_textbox::on_nonfocus(args);
 	xui_component* focusctrl = (xui_component*)args.wparam;
-	if (focusctrl == NULL || (focusctrl->was_ancestor(this) == false && focusctrl->was_ancestor(m_droplst)))
+	if (focusctrl == NULL || (focusctrl->was_ancestor(this) == false && focusctrl->was_ancestor(m_droplst) == false))
 	{
 		set_droplisthide();
 	}
@@ -265,6 +288,10 @@ xui_method_explain(xui_dropbox, on_textchanged,			void			)( xui_method_args&  ar
 	{
 		set_droplistshow(m_text);
 	}
+}
+xui_method_explain(xui_dropbox, on_perform,				void			)( xui_method_args&	 args )
+{
+	perform_dockstyle(get_renderrt(), m_widgetvec);
 }
 
 /*
@@ -286,20 +313,10 @@ xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_component* se
 }
 xui_method_explain(xui_dropbox, on_droptogrenderself,	void			)( xui_component* sender, xui_method_args&  args )
 {
-	xui_component* hoverctrl = g_desktop->get_hoverctrl();
-
-	xui_colour color;
-	if		(m_droptog->was_push())				color = xui_colour(1.0f);
-	else if (hoverctrl == m_droptog)			color = xui_colour(1.0f, 0.0f, 0.0f, 0.7f);
-	else if (hoverctrl == this && m_readonly)	color = xui_colour(1.0f, 0.0f, 0.0f, 0.7f);
-	else										color = xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
-
-	xui_rect2d<s32> rt = m_droptog->get_renderrtabs();
-	xui_vector<s32> poly[3];
-	poly[0] = xui_vector<s32>(rt.ax + (rt.get_sz().w-10)/2, rt.ay + (rt.get_sz().h-6)/2);
-	poly[1] = xui_vector<s32>(rt.bx - (rt.get_sz().w-10)/2, rt.ay + (rt.get_sz().h-6)/2);
-	poly[2] = xui_vector<s32>(rt.ax +  rt.get_sz().w    /2, rt.by - (rt.get_sz().h-6)/2);
-	xui_convas::get_ins()->fill_poly(poly, 3, color * get_vertexcolor());
+	xui_rect2d<s32> rt		= m_droptog->get_renderrtabs();
+	xui_colour		color   = m_droptog->get_rendercolor() * get_vertexcolor();
+	xui_vector<s32> center	= xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+	xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN,  color);
 }
 xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_component* sender, xui_method_args&  args )
 {
@@ -334,11 +351,16 @@ xui_method_explain(xui_dropbox, on_dropallmousedown,	void			)( xui_component* se
 xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_vector<s32> sz = m_droplst->get_clientsz();
+	xui_rect2d<s32> rt = m_droplst->get_borderrt();
+	sz.w += rt.ax;
+	sz.w += rt.bx;
 	if (m_maxdrop < m_droplst->get_itemcount())
-		sz.w += 20;
+		sz.w += xui_scroll::default_size;
 
-	sz.w = xui_max(sz.w, get_renderw());
-	sz.h = xui_min(m_maxdrop, m_droplst->get_itemcount()) * m_droplst->get_lineheight();
+	sz.w  = xui_max(sz.w, get_renderw());
+	sz.h  = xui_min(m_maxdrop, m_droplst->get_itemcount()) * m_droplst->get_lineheight();
+	sz.h += rt.ay;
+	sz.h += rt.by;
 
 	m_droplst->set_rendersz(sz);
 }
@@ -346,9 +368,14 @@ xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* 
 {
 	xui_vector<s32> sz = m_droplst->get_rendersz();
 	xui_vector<s32> pt;
-	pt.x  = g_desktop->get_rendersz().w - get_screenpt().x - sz.w ;
+	pt.x  = g_desktop->get_renderw() - get_screenpt().x - sz.w ;
 	pt.x  = xui_min(pt.x, 0);
 	pt.y  = get_renderh();
+
+	if (get_renderrtabs().by + m_droplst->get_renderh() < g_desktop->get_renderh())
+		pt.y = get_renderh();
+	else
+		pt.y = -m_droplst->get_renderh();
 
 	m_droplst->set_renderpt(pt+get_screenpt());
 }
@@ -388,6 +415,7 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 	{
 		xui_listitem* item = m_droplst->get_item(i);
 		item->set_text(showvec[i]->get_text());
+		item->set_icon(showvec[i]->get_icon());
 		item->set_data(showvec[i]);
 
 		if (m_selitem == showvec[i])

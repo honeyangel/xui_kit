@@ -9,9 +9,15 @@ class xui_dropbox : public xui_textbox
 
 public:
 	/*
+	//static
+	*/
+	static xui_dropbox*			create					( s32 width );
+	static xui_dropbox*			create					( s32 width, xui_bitmap* icon );
+
+	/*
 	//constructor
 	*/
-	xui_dropbox( const xui_vector<s32>& size, xui_component* parent );
+	xui_dropbox( const xui_vector<s32>& size, bool itemicon = false, xui_component* parent = NULL );
 
 	/*
 	//destructor
@@ -51,7 +57,7 @@ public:
 	//virtual
 	*/
 	virtual xui_rect2d<s32>		get_renderrtins			( void ) const;
-	virtual xui_colour			get_rendercolor			( void ) const;
+	//virtual xui_colour			get_rendercolor			( void ) const;
 	virtual void				update					( f32 delta );
 
 	/*
@@ -68,6 +74,7 @@ protected:
 	virtual void				on_nonfocus				( xui_method_args&  args );
 	virtual void				on_getfocus				( xui_method_args&  args );
 	virtual void				on_textchanged			( xui_method_args&  args );
+	virtual void				on_perform				( xui_method_args&  args );
 
 	/*
 	//event

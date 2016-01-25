@@ -7,7 +7,7 @@ xui_implement_rtti(xui_scrollarrow, xui_button);
 /*
 //constructor
 */
-xui_create_explain(xui_scrollarrow)( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle, s32 direction, u08 arrowdraw )
+xui_create_explain(xui_scrollarrow)( const xui_vector<s32>& size, u08 flowstyle, s32 direction, u08 arrowdraw, xui_component* parent )
 : xui_button(size, parent)
 {
 	m_flowstyle	= flowstyle;
@@ -73,17 +73,17 @@ xui_method_explain(xui_scrollarrow, on_renderself,	void)( xui_method_args&  args
 	if (m_arrowdraw == ARROWDRAW_PLUSANDMINUS)
 	{
 		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
-			center.x-6,
+			center.x-4,
 			center.y-1,
-			center.x+6,
+			center.x+4,
 			center.y+1), color);
 
 		if (m_direction > 0)
 			xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
 				center.x-1,
-				center.y-6,
+				center.y-4,
 				center.x+1,
-				center.y+6), color);
+				center.y+4), color);
 	}
 	else
 	{

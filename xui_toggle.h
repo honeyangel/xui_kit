@@ -40,6 +40,11 @@ public:
 	void						set_push		( bool push );
 
 	/*
+	//virtual
+	*/
+	virtual xui_colour			get_rendercolor	( void ) const;
+
+	/*
 	//method
 	*/
 	xui_method<xui_method_args>	xm_click;
@@ -50,11 +55,6 @@ protected:
 	*/
 	virtual void				on_mousedown	( xui_method_mouse& args);
 	virtual void				on_renderself	( xui_method_args&  args);
-
-	/*
-	//virtual
-	*/
-	virtual xui_colour			get_rendercolor	( void ) const;
 
 	/*
 	//member

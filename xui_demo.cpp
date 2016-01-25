@@ -89,3 +89,61 @@ void xui_demo::test_toolbar( xui_window* window )
 	toolbar->add_separate();
 	toolbar->add_item(xui_textbox::create(80));
 }
+void xui_demo::test_scroll( xui_window* window )
+{
+	xui_scroll* scroll = NULL;
+	scroll = xui_scroll::create(FLOWSTYLE_H);
+	scroll->set_renderpt(xui_vector<s32>(10, 300));
+	window->add_child(scroll);
+	scroll = xui_scroll::create(FLOWSTYLE_V);
+	scroll->set_renderpt(xui_vector<s32>(120, 300));
+	window->add_child(scroll);
+}
+void xui_demo::test_slider( xui_window* window )
+{
+	xui_slider* slider = NULL;
+	slider = xui_slider::create(FLOWSTYLE_H);
+	slider->set_renderpt(xui_vector<s32>(10, 330));
+	window->add_child(slider);
+	slider = xui_slider::create(FLOWSTYLE_V);
+	slider->set_renderpt(xui_vector<s32>(150, 300));
+	window->add_child(slider);
+}
+void xui_demo::test_listview( xui_window* window )
+{
+	xui_listview* listview = xui_listview::create(xui_vector<s32>(200, 100), false);
+	listview->set_renderpt(xui_vector<s32>(250, 10));
+	window->add_child(listview);
+
+	listview->add_item(L"Window", xui_bitmap::create("icon/edit.png"));
+	listview->add_item(L"Panel");
+	listview->add_item(L"Button");
+	listview->add_item(L"TextBox", xui_bitmap::create("icon/edit.png"));
+	listview->add_item(L"ListView");
+	listview->add_item(L"Menu", xui_bitmap::create("icon/edit.png"));
+}
+void xui_demo::test_dropbox( xui_window* window )
+{
+	xui_dropbox* dropbox = NULL;
+	dropbox= xui_dropbox::create(120);
+	dropbox->set_renderpt(xui_vector<s32>(250, 120));
+	window->add_child(dropbox);
+
+	dropbox->add_item(L"DockLeft");
+	dropbox->add_item(L"DockRight");
+	dropbox->add_item(L"DockTop");
+	dropbox->add_item(L"DockBottom");
+	dropbox->add_item(L"DockFill");
+	dropbox->ini_dropbox(0);
+
+	dropbox= xui_dropbox::create(120, xui_bitmap::create("icon/edit.png"));
+	dropbox->set_renderpt(xui_vector<s32>(250, 150));
+	window->add_child(dropbox);
+
+	dropbox->add_item(L"ImageL");
+	dropbox->add_item(L"ImageR");
+	dropbox->add_item(L"ImageT");
+	dropbox->add_item(L"ImageB");
+	dropbox->add_item(L"ImageC");
+	dropbox->ini_dropbox(0);
+}

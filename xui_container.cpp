@@ -10,6 +10,8 @@ xui_implement_rtti(xui_container, xui_control);
 xui_create_explain(xui_container)( const xui_vector<s32>& size, xui_component* parent )
 : xui_control(size, parent)
 {
+	m_drawcolor		= true;
+	m_backcolor		= xui_colour(1.0f, 0.25f);
 	m_vscroll		= NULL;
 	m_hscroll		= NULL;
 	m_vscrollshow	= false;
@@ -219,8 +221,8 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 	bool needhscroll = false;
 	if (clientrt.get_h() > renderrt.get_h()) needvscroll = true;
 	if (clientrt.get_w() > renderrt.get_w()) needhscroll = true;
-	if (needvscroll) renderrt.bx -= 20;
-	if (needhscroll) renderrt.by -= 20;
+	if (needvscroll) renderrt.bx -= xui_scroll::default_size;
+	if (needhscroll) renderrt.by -= xui_scroll::default_size;
 
 	if (clientrt.get_h() > renderrt.get_h())
 	{
@@ -274,8 +276,9 @@ xui_method_explain(xui_container, create_scroll,	void			)( u08 style )
 	if (style == FLOWSTYLE_V && m_vscroll)
 		return;
 
-	xui_scroll* scroll = new xui_scroll(xui_vector<s32>(20), this, style);
+	xui_scroll* scroll = xui_scroll::create(style);
 	scroll->xm_scroll += new xui_method_member<xui_method_args, xui_container>(this, &xui_container::on_scroll);
+	scroll->set_parent(this);
 	m_widgetvec.push_back(scroll);
 
 	switch (style)

@@ -23,7 +23,7 @@ xui_create_explain(xui_propedit_slider)( xui_propctrl* propctrl, f64 interval, f
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextchanged);
 	textctrl->xm_textenter		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextenter);
 
-	m_spinctrl = new xui_slider(xui_vector<s32>(32, 20), NULL, FLOWSTYLE_H, ARROWDRAW_NONE);
+	m_spinctrl = xui_slider::create(FLOWSTYLE_H);//new xui_slider(xui_vector<s32>(32, 20), NULL, FLOWSTYLE_H, ARROWDRAW_NONE);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlnonfocus);
 	m_spinctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlgetfocus);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlnonfocus);

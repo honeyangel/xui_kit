@@ -17,9 +17,15 @@ class xui_scroll : public xui_control
 
 public:
 	/*
+	//static
+	*/
+	static const s32			default_size = 16;
+	static xui_scroll*			create			( u08 style );
+
+	/*
 	//constructor
 	*/
-	xui_scroll( const xui_vector<s32>& size, xui_component* parent, u08 style );
+	xui_scroll( const xui_vector<s32>& size, u08 style, xui_component* parent = NULL );
 
 	/*
 	//init

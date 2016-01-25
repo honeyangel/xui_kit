@@ -18,7 +18,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_scrollarrow( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle, s32 direction, u08 arrowdraw );
+	xui_scrollarrow( const xui_vector<s32>& size, u08 flowstyle, s32 direction, u08 arrowdraw, xui_component* parent );
 
 	/*
 	//method

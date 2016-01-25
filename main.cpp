@@ -297,7 +297,7 @@ void Render()
 	g_desktop->update(0.016f);
 
 	g_convas->set_cliprect(g_convas->get_viewport());
-	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
 	//g_convas->draw_rectangle(xui_rect2d<s32>(0, 0, 150, 150), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
@@ -454,10 +454,10 @@ int main(int argc, char** argv)
 
 	//window->add_child(toolbar);
 
-	xui_scroll* scroll = new xui_slider(xui_vector<s32>(100, 20), NULL, FLOWSTYLE_H, true);
-	scroll->set_backcolor(xui_colour(1.0f, 0.30f, 0.30f, 0.30f));
+	//xui_scroll* scroll = new xui_slider(xui_vector<s32>(100, 20), NULL, FLOWSTYLE_H, true);
+	//scroll->set_backcolor(xui_colour(1.0f, 0.30f, 0.30f, 0.30f));
 	//scroll->set_borderrt(xui_rect2d<s32>(0, 2, 0, 2));
-	scroll->set_range(2000);
+	//scroll->set_range(2000);
 
 	//window->add_child(scroll);
 
@@ -605,6 +605,10 @@ int main(int argc, char** argv)
 	xui_demo::test_linebox(window);
 	xui_demo::test_gridbox(window);
 	xui_demo::test_toolbar(window);
+	xui_demo::test_scroll(window);
+	xui_demo::test_slider(window);
+	xui_demo::test_listview(window);
+	xui_demo::test_dropbox(window);
 
 	g_desktop->add_child(window);
 

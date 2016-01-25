@@ -6,21 +6,37 @@
 xui_implement_rtti(xui_listview, xui_container);
 
 /*
+//static
+*/
+const xui_colour xui_listview::default_movecolor = xui_colour(1.0f, 127.0f/255.0f);
+const xui_colour xui_listview::default_tickcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+
+xui_method_explain(xui_listview, create,				xui_listview*				)( const xui_vector<s32>& size, bool drawtick )
+{
+	xui_listview* listview = new xui_listview(size, drawtick);
+	xui_method_ptrcall(listview, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(listview, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(listview, set_corner		)(3);
+	xui_method_ptrcall(listview, set_iconsize	)(xui_vector<s32>(16));
+	xui_method_ptrcall(listview, set_iconoffset	)(xui_vector<s32>(4, 0));
+	return listview;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_listview)( const xui_vector<s32>& size, xui_component* parent, bool drawtick )
+xui_create_explain(xui_listview)( const xui_vector<s32>& size, bool drawtick, xui_component* parent )
 : xui_container(size, parent)
 {
 	m_drawtick		= drawtick;
-	m_textfont		= xui_family("Arial", 16, false);
-	m_textdraw		= xui_family_render();
+	m_iconsize		= xui_vector<s32>(0);
 	m_textalign		= TA_LC;
 	m_iconalign		= IMAGE_FRONT_TEXT;
-	m_movecolor		= xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
-	m_tickcolor		= xui_colour(1.0f, 0.0f, 0.0f, 1.0f);
+	m_movecolor		= default_movecolor;
+	m_tickcolor		= default_tickcolor;
 	m_itemborder	= xui_rect2d<s32>(2);
-	m_iconoffset	= xui_vector<s32>(2, 0);
-	m_textoffset	= xui_vector<s32>(2, 0);
+	m_iconoffset	= xui_vector<s32>(0);
+	m_textoffset	= xui_vector<s32>(4, 0);
 	m_lineheight	= 20;
 	m_allowmulti	= false;
 }
@@ -40,6 +56,24 @@ xui_method_explain(xui_listview, set_allowmulti,		void						)( bool flag )
 /*
 //property
 */
+xui_method_explain(xui_listview, get_iconsize,			const xui_vector<s32>&		)( void ) const
+{
+	return m_iconsize;
+}
+xui_method_explain(xui_listview, set_iconsize,			void						)( const xui_vector<s32>& iconsize )
+{
+	if (m_iconsize != iconsize)
+	{
+		m_iconsize  = iconsize;
+		xui_vecptr_addloop(m_ascrollitem)
+		{
+			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
+			item->set_iconsize(m_iconsize);
+		}
+
+		invalid();
+	}
+}
 xui_method_explain(xui_listview, get_textfont,			const xui_family&			)( void ) const
 {
 	return m_textfont;
@@ -305,7 +339,7 @@ xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wst
 {
 	xui_listitem* item = new xui_listitem(this, m_itemborder, m_drawtick);
 	m_ascrollitem.push_back(item);
-	xui_method_ptrcall(item, ini_drawer		)(icon);
+	xui_method_ptrcall(item, ini_drawer		)(icon, m_iconsize);
 	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, m_textdraw);
 	xui_method_ptrcall(item, set_iconalign	)(m_iconalign);
 	xui_method_ptrcall(item, set_textalign	)(m_textalign);
@@ -387,10 +421,16 @@ xui_method_explain(xui_listview, on_perform,			void						)( xui_method_args& arg
 {
 	xui_container::on_perform(args);
 
-	xui_vector<s32> sz = get_clientsz();
+	xui_vector<s32> pt;
+	xui_vector<s32> sz;
+	pt.x = m_border.ax;
+	pt.y = m_border.ay;
+	sz.w = get_clientw();
+	sz.h = m_lineheight;
 	xui_vecptr_addloop(m_ascrollitem)
 	{
-		m_ascrollitem[i]->on_perform_pt(m_border.ax, m_lineheight*i);
-		m_ascrollitem[i]->on_perform_sz(sz.w,        m_lineheight);
+		m_ascrollitem[i]->on_perform_pt(pt);
+		m_ascrollitem[i]->on_perform_sz(sz);
+		pt.y += m_lineheight;
 	}
 }

@@ -5,25 +5,52 @@
 xui_implement_rtti(xui_scroll, xui_control);
 
 /*
+//static
+*/
+xui_method_explain(xui_scroll, create,			xui_scroll*		)( u08 style )
+{
+	xui_vector<s32> size(default_size);
+	switch (style)
+	{
+	case FLOWSTYLE_H:
+		size.w = 100;
+		break;
+	case FLOWSTYLE_V:
+		size.h = 100;
+		break;
+	}
+
+	xui_scroll* scroll = new xui_scroll(size, style);
+	xui_method_ptrcall(scroll, set_backcolor)(xui_colour(1.0f, 0.2f));
+	xui_method_ptrcall(scroll, set_drawcolor)(true);
+	xui_method_ptrcall(scroll, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(scroll, ini_scroll	)(100, 0);
+
+	return scroll;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_scroll)( const xui_vector<s32>& size, xui_component* parent, u08 style )
+xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style, xui_component* parent )
 : xui_control(size, parent)
 {
 	m_smallchange   = 1;
-	m_largechange	= 100;
+	m_largechange	= 10;
 	m_thumbresize	= true;
 	m_style			= style;
 	m_range			= 0;
 	m_value			= 0;
 
 	//thumb
-	m_thumb	= new xui_scrollthumb(xui_vector<s32>(16), this, style);
+	m_thumb	= new xui_scrollthumb(xui_vector<s32>(12), style, this);
+	xui_method_ptrcall(m_thumb, set_drawcolor	)(true);
+	xui_method_ptrcall(m_thumb, set_corner		)(5);
 	m_widgetvec.push_back(m_thumb);
 
 	//arrow
-	m_arrow[ARROW_INC] = new xui_scrollarrow(xui_vector<s32>(16), this, style, -1, ARROWDRAW_TRIANGLE);
-	m_arrow[ARROW_DEC] = new xui_scrollarrow(xui_vector<s32>(16), this, style,  1, ARROWDRAW_TRIANGLE);
+	m_arrow[ARROW_INC] = new xui_scrollarrow(xui_vector<s32>(12), style,  1, ARROWDRAW_TRIANGLE, this);
+	m_arrow[ARROW_DEC] = new xui_scrollarrow(xui_vector<s32>(12), style, -1, ARROWDRAW_TRIANGLE, this);
 	m_widgetvec.push_back(m_arrow[ARROW_DEC]);
 	m_widgetvec.push_back(m_arrow[ARROW_INC]);
 	switch(m_style)
@@ -238,13 +265,13 @@ xui_method_explain(xui_scroll, resize_thumb,	void			)( void )
 		case FLOWSTYLE_H:
 			{
 				s32 w = rt.get_w() - m_range;
-				m_thumb->on_perform_w(xui_max(w, 10));
+				m_thumb->on_perform_w(xui_max(w, 12));
 			}
 			break;
 		case FLOWSTYLE_V:
 			{
 				s32 h = rt.get_h() - m_range;
-				m_thumb->on_perform_h(xui_max(h, 10));
+				m_thumb->on_perform_h(xui_max(h, 12));
 			}
 			break;
 		}

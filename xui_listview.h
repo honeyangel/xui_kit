@@ -11,9 +11,16 @@ class xui_listview : public xui_container
 
 public:
 	/*
+	//static
+	*/
+	static const xui_colour		default_movecolor;
+	static const xui_colour		default_tickcolor;
+	static xui_listview*		create					( const xui_vector<s32>& size, bool drawtick );
+
+	/*
 	//constructor
 	*/
-	xui_listview( const xui_vector<s32>& size, xui_component* parent, bool drawtick );
+	xui_listview( const xui_vector<s32>& size, bool drawtick, xui_component* parent = NULL );
 
 	/*
 	//multi select
@@ -24,6 +31,8 @@ public:
 	/*
 	//method
 	*/
+	const xui_vector<s32>&		get_iconsize			( void ) const;
+	void						set_iconsize			( const xui_vector<s32>& iconsize );
 	const xui_family&			get_textfont			( void ) const;
 	void						set_textfont			( const xui_family& textfont );
 	const xui_family_render&	get_textdraw			( void ) const;
@@ -82,6 +91,7 @@ protected:
 	//member
 	*/
 	bool						m_drawtick;
+	xui_vector<s32>				m_iconsize;
 	xui_family					m_textfont;
 	xui_family_render			m_textdraw;
 	u08							m_textalign;

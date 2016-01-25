@@ -12,6 +12,7 @@ xui_implement_rtti(xui_listitem, xui_drawer);
 xui_create_explain(xui_listitem)( xui_component* parent, const xui_rect2d<s32>& border, bool drawtick )
 : xui_drawer(xui_vector<s32>(0), parent)
 {
+	m_drawcolor = true;
 	m_border	= border;
 	m_selected	= false;
 	m_drawtick	= drawtick;
@@ -35,19 +36,17 @@ xui_method_explain(xui_listitem, set_selected,		void				)( bool flag )
 xui_method_explain(xui_listitem, get_maxwidth,		s32					)( void )
 {
 	s32 width = m_border.ax + m_border.bx;
+
 	if (m_drawtick)
 	{
 		width += 16;
 	}
-	if (m_icon)
-	{
-		width += m_icon->get_size().w;
-		width += m_iconoffset.x;
-	}
+	width += m_iconoffset.x;
+	width += m_iconsize.w;
+	width += m_textoffset.x;
 	if (m_text.length() > 0)
 	{
 		width += xui_convas::get_ins()->calc_size(m_text, m_textfont, 0, true).w;
-		width += m_textoffset.x;
 	}
 
 	return width;
@@ -98,12 +97,12 @@ xui_method_explain(xui_listitem, on_fontchanged,	void				)( xui_method_args&  ar
 xui_method_explain(xui_listitem, on_renderself,		void				)( xui_method_args&  args )
 {
 	xui_drawer::on_renderself(args);
-	if (m_drawtick)
+	if (m_drawtick && m_selected)
 	{
 		xui_colour      color  = get_vertexcolor();
 		xui_rect2d<s32> rt     = get_renderrtabs();
 		xui_vector<s32> center = xui_vector<s32>(rt.ax+m_border.ax+8, rt.ay+rt.get_h()/2);
-		xui_convas::get_ins()->draw_tick(center, 6, color*xui_colour(1.0f));
+		xui_convas::get_ins()->draw_tick(center, 8, color*xui_colour(1.0f));
 	}
 }
 xui_method_explain(xui_listitem, on_mousedown,		void				)( xui_method_mouse& args )
@@ -111,7 +110,7 @@ xui_method_explain(xui_listitem, on_mousedown,		void				)( xui_method_mouse& arg
 	xui_drawer::on_mousedown(args);
 	if (args.mouse == MB_L)
 	{
-		xui_listview* listview = (xui_listview*)m_parent;
+		xui_listview* listview = xui_dynamic_cast(xui_listview, m_parent);
 		if (args.ctrl  == false &&
 			args.shift == false)
 			listview->non_selecteditem(false);
@@ -141,7 +140,7 @@ xui_method_explain(xui_listitem, on_keybddown,		void				)( xui_method_keybd& arg
 	if (args.kcode == KEY_UARROW ||
 		args.kcode == KEY_DARROW)
 	{
-		xui_listview* listview = (xui_listview*)m_parent;
+		xui_listview* listview = xui_dynamic_cast(xui_listview, m_parent);
 		std::vector<u32> selectedindex = listview->get_selecteditemindex();
 		if (selectedindex.empty())
 			return;

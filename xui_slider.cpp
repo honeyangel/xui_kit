@@ -6,12 +6,35 @@
 xui_implement_rtti(xui_slider, xui_scroll);
 
 /*
+//static
+*/
+xui_method_explain(xui_slider, create,			xui_slider*	)( u08 style, u08 arrowdraw )
+{
+	xui_vector<s32> size(16);
+	switch (style)
+	{
+	case FLOWSTYLE_H:
+		size.w = 100;
+		break;
+	case FLOWSTYLE_V:
+		size.h = 100;
+		break;
+	}
+
+	xui_slider* scroll = new xui_slider(size, style, arrowdraw);
+	xui_method_ptrcall(scroll, set_backcolor)(xui_colour(1.0f, 0.2f));
+	xui_method_ptrcall(scroll, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(scroll, ini_scroll	)(100, 0);
+
+	return scroll;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_slider)( const xui_vector<s32>& size, xui_component* parent, u08 style, u08 arrowdraw )
-: xui_scroll(size, parent, style)
+xui_create_explain(xui_slider)( const xui_vector<s32>& size, u08 style, u08 arrowdraw, xui_component* parent )
+: xui_scroll(size, style, parent)
 {
-	m_thumbresize = false;
 	if (arrowdraw == ARROWDRAW_NONE)
 	{
 		m_arrow[ARROW_DEC]->set_visible(false);
@@ -23,8 +46,9 @@ xui_create_explain(xui_slider)( const xui_vector<s32>& size, xui_component* pare
 		m_arrow[ARROW_INC]->set_arrowdraw(arrowdraw);
 	}
 
-	m_thumb->set_corner(10);
-	m_thumb->on_perform_sz(xui_vector<s32>(20, 20));
+	m_thumbresize = false;
+	m_thumb->on_perform_sz(xui_vector<s32>(12));
+	m_thumb->set_corner(6);
 
 	refresh();
 }
@@ -32,7 +56,7 @@ xui_create_explain(xui_slider)( const xui_vector<s32>& size, xui_component* pare
 /*
 //callback
 */
-xui_method_explain(xui_slider, on_mousedown,	void)( xui_method_mouse& args )
+xui_method_explain(xui_slider, on_mousedown,	void		)( xui_method_mouse& args )
 {
 	xui_control::on_mousedown(args);
 	if (args.mouse == MB_L)
@@ -68,29 +92,23 @@ xui_method_explain(xui_slider, on_mousedown,	void)( xui_method_mouse& args )
 		m_thumb->req_catch();
 	}
 }
-xui_method_explain(xui_slider, on_renderback,	void)( xui_method_args&  args )
+xui_method_explain(xui_slider, on_renderback,	void		)( xui_method_args&  args )
 {
 	xui_scroll::on_renderback(args);
 
-	//xui_rect2d<s32> rt = get_hallowrt() + get_screenpt();
-	//xui_vector<s32> pt[3];
-	//switch (m_style)
-	//{
-	//case FLOWSTYLE_H:
-	//	pt[0] = xui_vector<s32>(rt.ax, rt.by);
-	//	pt[1] = xui_vector<s32>(rt.bx, rt.ay);
-	//	pt[2] = xui_vector<s32>(rt.bx, rt.by);
-	//	break;
-	//case FLOWSTYLE_V:
-	//	pt[0] = xui_vector<s32>(rt.ax, rt.ay);
-	//	pt[1] = xui_vector<s32>(rt.ax, rt.by);
-	//	pt[2] = xui_vector<s32>(rt.bx, rt.by);
-	//	break;
-	//}
-
-	//xui_colour color = m_backcolor;
-	//color.r = xui_max(0.0f, color.r - 0.1f); 
-	//color.g = xui_max(0.0f, color.g - 0.1f);
-	//color.b = xui_max(0.0f, color.b - 0.1f);
-	//g_convas->fill_poly(pt, 3, get_vertexcolor()*color);
+	xui_colour		color = get_rendercolor() * get_vertexcolor();
+	xui_rect2d<s32> rt    = get_hallowrt() + get_screenpt();
+	switch (m_style)
+	{
+	case FLOWSTYLE_H:
+		rt.oft_y(rt.get_h()/4);
+		rt.set_h(rt.get_h()/2);
+		xui_convas::get_ins()->fill_round(rt, color, rt.get_h()/2);
+		break;
+	case FLOWSTYLE_V:
+		rt.oft_x(rt.get_w()/4);
+		rt.set_w(rt.get_w()/2);
+		xui_convas::get_ins()->fill_round(rt, color, rt.get_w()/2);
+		break;
+	}
 }

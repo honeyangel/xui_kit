@@ -7,7 +7,7 @@ xui_implement_rtti(xui_scrollthumb, xui_button);
 /*
 //constructor
 */
-xui_create_explain(xui_scrollthumb)( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle )
+xui_create_explain(xui_scrollthumb)( const xui_vector<s32>& size, u08 flowstyle, xui_component* parent )
 : xui_button(size, parent)
 {
 	m_flowstyle	= flowstyle;

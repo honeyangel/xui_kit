@@ -10,16 +10,20 @@ class xui_slider : public xui_scroll
 
 public:
 	/*
+	//static
+	*/
+	static xui_slider*	create			( u08 style, u08 arrowdraw = ARROWDRAW_NONE );
+	/*
 	//constructor
 	*/
-	xui_slider( const xui_vector<s32>& size, xui_component* parent, u08 style, u08 arrowdraw );
+	xui_slider( const xui_vector<s32>& size, u08 style, u08 arrowdraw, xui_component* parent = NULL );
 
 protected:
 	/*
 	//callback
 	*/
-	virtual void	on_mousedown	( xui_method_mouse& args );
-	virtual void	on_renderback	( xui_method_args&  args );
+	virtual void		on_mousedown	( xui_method_mouse& args );
+	virtual void		on_renderback	( xui_method_args&  args );
 };
 
 #endif//__xui_slider_h__

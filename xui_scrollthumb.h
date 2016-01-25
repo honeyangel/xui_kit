@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_scrollthumb( const xui_vector<s32>& size, xui_component* parent, u08 flowstyle );
+	xui_scrollthumb( const xui_vector<s32>& size, u08 flowstyle, xui_component* parent );
 
 protected:
 	/*

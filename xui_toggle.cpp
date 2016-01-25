@@ -11,6 +11,7 @@ xui_implement_rtti(xui_toggle, xui_button);
 xui_method_explain(xui_toggle, circle,				xui_toggle*		)( void )
 {
 	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(16), TOGGLE_CIRCLE);
+	xui_method_ptrcall(toggle, set_drawcolor	)(false);
 	return toggle;
 }
 xui_method_explain(xui_toggle, create,				xui_toggle*		)( void )
@@ -56,7 +57,6 @@ xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle, xui_
 {
 	m_push		= false;
 	m_drawstyle = drawstyle;
-	set_drawcolor(m_drawstyle != TOGGLE_CIRCLE);
 }
 
 /*

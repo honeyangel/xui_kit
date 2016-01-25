@@ -606,14 +606,14 @@ xui_method_explain(xui_convas, fill_triangle,		void					)( const xui_vector<s32>
 		pt[2] = xui_vector<s32>(center.x,        center.y+half);
 		break;
 	case TRIANGLE_LEFT:
-		pt[0] = xui_vector<s32>(center.x-half,   center.y-half*2);
-		pt[1] = xui_vector<s32>(center.x-half,   center.y+half*2);
-		pt[2] = xui_vector<s32>(center.x+half,   center.y);
-		break;
-	case TRIANGLE_RIGHT:
 		pt[0] = xui_vector<s32>(center.x+half,   center.y-half*2);
 		pt[1] = xui_vector<s32>(center.x+half,   center.y+half*2);
 		pt[2] = xui_vector<s32>(center.x-half,   center.y);
+		break;
+	case TRIANGLE_RIGHT:
+		pt[0] = xui_vector<s32>(center.x-half,   center.y-half*2);
+		pt[1] = xui_vector<s32>(center.x-half,   center.y+half*2);
+		pt[2] = xui_vector<s32>(center.x+half,   center.y);
 		break;
 	}
 

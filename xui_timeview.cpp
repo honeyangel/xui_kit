@@ -59,7 +59,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, xui_component* pa
 	m_timetree->xm_invalid		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
 	m_widgetvec.push_back(m_timetree);
 
-	m_ksslider = new xui_slider  (xui_vector<s32>(150, 10), this, FLOWSTYLE_H, true);
+	m_ksslider = xui_slider::create(FLOWSTYLE_H);//new xui_slider  (xui_vector<s32>(150, 10), this, FLOWSTYLE_H, true);
 	m_ksslider->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_kssliderscroll);
 	xui_method_ptrcall(m_ksslider, ini_component)(ALIGNHORZ_L, ALIGNVERT_B, 0);
 	xui_method_ptrcall(m_ksslider, set_sidestyle)(SIDESTYLE_S);
