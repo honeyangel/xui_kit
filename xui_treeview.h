@@ -3,6 +3,7 @@
 
 #include "xui_convas.h"
 #include "xui_drawer.h"
+#include "xui_plusctrl.h"
 #include "xui_container.h"
 
 enum
@@ -11,12 +12,6 @@ enum
 	TREECOLUMN_TEXT,
 	TREECOLUMN_ICON,
 	TREECOLUMN_BOOL,
-};
-
-enum
-{
-	PLUSRENDER_NORMAL,
-	PLUSRENDER_SYMBOL,
 };
 
 enum
@@ -94,11 +89,7 @@ public:
 		s32						 _minsize	= 20,
 		s32						 _maxsize	= 128,
 		bool					 _editable	= true,
-		const xui_rect2d<s32>&	 _borderrt	= xui_rect2d<s32>(2),
-		const xui_family&		 _textfont	= xui_family("Consolas", 14, false),
-		const xui_family_render& _textdraw	= xui_family_render(),
-		u08						 _textalign	= TA_LC,
-		u08						 _iconalign	= IMAGE_C )
+		const xui_rect2d<s32>&	 _borderrt	= xui_rect2d<s32>(2) )
 	{
 		type		= _type;
 		size		= _size;
@@ -109,10 +100,8 @@ public:
 		maxsize		= _maxsize;
 		editable	= _editable;
 		borderrt	= _borderrt;
-		textfont	= _textfont;
-		textdraw	= _textdraw;
-		textalign	= _textalign;
-		iconalign	= _iconalign;
+		textalign	= TA_LC;
+		iconalign	= IMAGE_C;
 	}
 };
 
@@ -123,9 +112,16 @@ class xui_treeview : public xui_container
 
 public:
 	/*
+	//static
+	*/
+	static const xui_colour				lighttrace_color;
+	static const xui_colour				nodeselect_color;
+	static xui_treeview*				create				( const std::vector<xui_treecolumn>& columninfo );
+
+	/*
 	//constructor
 	*/
-	xui_treeview( const xui_vector<s32>& size, xui_component* parent, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
+	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true, xui_component* parent = NULL );
 
 	/*
 	//destructor

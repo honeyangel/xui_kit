@@ -87,7 +87,16 @@ void xui_demo::test_toolbar( xui_window* window )
 	toolbar->add_separate();
 	toolbar->add_item(xui_toggle::create(xui_bitmap::create("icon/edit.png")));
 	toolbar->add_separate();
-	toolbar->add_item(xui_textbox::create(80));
+
+	xui_dropbox* dropbox= xui_dropbox::create(120, xui_bitmap::create("icon/edit.png"));
+	dropbox->add_item(L"ImageL");
+	dropbox->add_item(L"ImageR");
+	dropbox->add_item(L"ImageT");
+	dropbox->add_item(L"ImageB");
+	dropbox->add_item(L"ImageC");
+	dropbox->ini_dropbox(0);
+
+	toolbar->add_item(dropbox);
 }
 void xui_demo::test_scroll( xui_window* window )
 {
@@ -146,4 +155,36 @@ void xui_demo::test_dropbox( xui_window* window )
 	dropbox->add_item(L"ImageB");
 	dropbox->add_item(L"ImageC");
 	dropbox->ini_dropbox(0);
+}
+void xui_demo::test_treeview( xui_window* window )
+{
+	std::vector<xui_treecolumn> columninfo;
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  20, L"", xui_bitmap::create("icon/edit.png")));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc"));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 160, L"main"));
+	xui_treeview* treeview = xui_treeview::create(columninfo);
+	treeview->set_renderpt(xui_vector<s32>(250, 180));
+	window->add_child(treeview);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		std::wstringstream text;
+		text << L"test";
+		text << i+5;
+		xui_treedata* data = new xui_treedata(text.str(), xui_bitmap::create("icon/edit.png"));
+		xui_treenode* node = treeview->add_upmostnode(i, data);
+
+		if (i % 2 == 0)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				std::wstringstream childtext;
+				childtext << L"child";
+				childtext << j;
+
+				xui_treedata* childdata = new xui_treedata(childtext.str());
+				xui_treenode* childnode = node->add_leafnode(j, childdata);
+			}
+		}
+	}
 }

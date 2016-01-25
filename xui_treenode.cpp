@@ -1,7 +1,6 @@
 #include "xui_desktop.h"
 #include "xui_textbox.h"
 #include "xui_toggle.h"
-#include "xui_treeplus.h"
 #include "xui_treedata.h"
 #include "xui_treeview.h"
 #include "xui_treenode.h"
@@ -11,7 +10,7 @@ xui_implement_rtti(xui_treenode, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_treenode)( xui_component* parent, xui_treedata* linkdata )
+xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent )
 : xui_control(xui_vector<s32>(0), parent)
 {
 	m_selected	= false;
@@ -44,7 +43,8 @@ xui_create_explain(xui_treenode)( xui_component* parent, xui_treedata* linkdata 
 	m_edittext->xm_keybddown += new xui_method_member<xui_method_keybd, xui_treenode>(this, &xui_treenode::on_textkeybddown);
 	m_widgetvec.push_back(m_edittext);
 
-	m_treeplus = new xui_treeplus(this);
+	m_treeplus = new xui_plusctrl(treeview->get_plusrender(), this);
+	m_treeplus->xm_expand	+= new xui_method_member<xui_method_args,	xui_treenode>(this, &xui_treenode::on_nodeexpand);
 	m_widgetvec.push_back(m_treeplus);
 
 	use_linkdata();
@@ -222,7 +222,7 @@ xui_method_explain(xui_treenode, get_rendercolor,	xui_colour							)( void ) con
 	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
 	if (treeview->was_lighttrace() && m_selected)
 	{
-		return xui_colour(0.5f, 0.0f, 0.0f, 0.7f);
+		return xui_treeview::nodeselect_color;
 	}
 
 	return m_backcolor;
@@ -321,53 +321,51 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 			xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[i]);
 
 			s32 indent = get_currnodedepth()*treeview->get_nodeindent();
-			s32 offset = (treeview->get_lineheight() - 12) / 2;
-			xui_vector<s32> pluspt = drawer->get_renderpt() + xui_vector<s32>(offset, offset);
-			xui_vector<s32> plussz(12, 12);
-			pluspt.x += indent;
+			s32 offset = (treeview->get_lineheight()-m_treeplus->get_renderh()) / 2;
+			xui_vector<s32> pluspt = drawer->get_renderpt() + xui_vector<s32>(offset+indent, offset);
 			m_treeplus->on_perform_pt(pluspt);
-			m_treeplus->on_perform_sz(plussz);
 
-			drawer->set_iconoffset(xui_vector<s32>(offset+indent+plussz.w, 0));
+			drawer->set_iconoffset(xui_vector<s32>(offset+indent+m_treeplus->get_renderw(), 0));
 		}
 	}
 }
 xui_method_explain(xui_treenode, on_topdraw,		void								)( xui_method_args&		args )
 {
-	xui_control::on_topdraw(args);
-	xui_component* hoverctrl = g_desktop->get_hoverctrl();
-	if (hoverctrl != this && hoverctrl)
-	{
-		if (hoverctrl->get_parent() == m_parent && xui_issub_kindof(xui_treenode, hoverctrl))
-		{
-			xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-			xui_vector<s32> pt = g_desktop->get_mousecurr() - hoverctrl->get_screenpt();
-			xui_rect2d<s32> rt = hoverctrl->get_renderrtabs().get_inter(treeview->get_renderrtins()+treeview->get_screenpt());
-			xui_vector<s32> p1;
-			xui_vector<s32> p2;
-			if (pt.y < get_renderh()/3)
-			{
-				p1 = xui_vector<s32>(rt.ax, rt.ay);
-				p2 = xui_vector<s32>(rt.bx, rt.ay);
-			}
-			if (pt.y > get_renderh()*2/3)
-			{
-				p1 = xui_vector<s32>(rt.ax, rt.by-2);
-				p2 = xui_vector<s32>(rt.bx, rt.by-2);
-			}
+	//TODO
+	//xui_control::on_topdraw(args);
+	//xui_component* hoverctrl = g_desktop->get_hoverctrl();
+	//if (hoverctrl != this && hoverctrl)
+	//{
+	//	if (hoverctrl->get_parent() == m_parent && xui_issub_kindof(xui_treenode, hoverctrl))
+	//	{
+	//		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+	//		xui_vector<s32> pt = g_desktop->get_mousecurr() - hoverctrl->get_screenpt();
+	//		xui_rect2d<s32> rt = hoverctrl->get_renderrtabs().get_inter(treeview->get_renderrtins()+treeview->get_screenpt());
+	//		xui_vector<s32> p1;
+	//		xui_vector<s32> p2;
+	//		if (pt.y < get_renderh()/3)
+	//		{
+	//			p1 = xui_vector<s32>(rt.ax, rt.ay);
+	//			p2 = xui_vector<s32>(rt.bx, rt.ay);
+	//		}
+	//		if (pt.y > get_renderh()*2/3)
+	//		{
+	//			p1 = xui_vector<s32>(rt.ax, rt.by-2);
+	//			p2 = xui_vector<s32>(rt.bx, rt.by-2);
+	//		}
 
-			xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+2), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-			xui_vector<s32> path[3];
-			path[0] = xui_vector<s32>(p1.x,   p1.y-4);
-			path[1] = xui_vector<s32>(p1.x+5, p1.y  );
-			path[2] = xui_vector<s32>(p1.x,   p1.y+6);
-			xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-			path[0] = xui_vector<s32>(p2.x,   p1.y-4);
-			path[1] = xui_vector<s32>(p2.x-5, p1.y  );
-			path[2] = xui_vector<s32>(p2.x,   p1.y+6);
-			xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-		}
-	}
+	//		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+2), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+	//		xui_vector<s32> path[3];
+	//		path[0] = xui_vector<s32>(p1.x,   p1.y-4);
+	//		path[1] = xui_vector<s32>(p1.x+5, p1.y  );
+	//		path[2] = xui_vector<s32>(p1.x,   p1.y+6);
+	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+	//		path[0] = xui_vector<s32>(p2.x,   p1.y-4);
+	//		path[1] = xui_vector<s32>(p2.x-5, p1.y  );
+	//		path[2] = xui_vector<s32>(p2.x,   p1.y+6);
+	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+	//	}
+	//}
 }
 xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&		args )
 {
@@ -505,4 +503,8 @@ xui_method_explain(xui_treenode, on_textkeybddown,	void								)( xui_component*
 	{
 		set_linktext();
 	}
+}
+xui_method_explain(xui_treenode, on_nodeexpand,		void								)( xui_component* sender, xui_method_args&  args )
+{
+	m_parent->invalid();
 }

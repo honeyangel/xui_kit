@@ -2,6 +2,7 @@
 #define __xui_treenode_h__
 
 #include "xui_control.h"
+#include "xui_plusctrl.h"
 
 class xui_treenode : public xui_control
 {
@@ -12,7 +13,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treenode( xui_component* parent, xui_treedata* linkdata );
+	xui_treenode( xui_treedata* linkdata, xui_component* parent );
 
 	/*
 	//static compare
@@ -81,6 +82,7 @@ protected:
 	*/
 	void								on_textnonfocus		( xui_component* sender, xui_method_args&  args );
 	void								on_textkeybddown	( xui_component* sender, xui_method_keybd& args );
+	void								on_nodeexpand		( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//member
@@ -90,7 +92,7 @@ protected:
 	xui_treenode*						m_rootnode;
 	std::vector<xui_treenode*>			m_leafnode;
 	std::vector<xui_treenode*>			m_leafback;
-	xui_treeplus*						m_treeplus;
+	xui_plusctrl*						m_treeplus;
 	xui_textbox*						m_edittext;
 	s32									m_holdtime;
 };

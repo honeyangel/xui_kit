@@ -138,7 +138,7 @@
     <ClInclude Include="xui_dropbox.h" />
     <ClInclude Include="xui_itemtag.h" />
     <ClInclude Include="xui_treegrid.h" />
-    <ClInclude Include="xui_treeplus.h">
+    <ClInclude Include="xui_plusctrl.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="xui_caretdrawer.h" />
@@ -339,7 +339,7 @@
     <ClCompile Include="xui_treenode.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="xui_treeplus.cpp">
+    <ClCompile Include="xui_plusctrl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="xui_treeview.cpp">

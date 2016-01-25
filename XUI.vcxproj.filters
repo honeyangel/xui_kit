@@ -312,9 +312,6 @@
     <ClInclude Include="xui_kindctrl.h">
       <Filter>LibGUI\propview</Filter>
     </ClInclude>
-    <ClInclude Include="xui_treeplus.h">
-      <Filter>LibGUI\treeview</Filter>
-    </ClInclude>
     <ClInclude Include="xui_propplus.h">
       <Filter>LibGUI\propview</Filter>
     </ClInclude>
@@ -370,6 +367,9 @@
       <Filter>LibGUI\textbox</Filter>
     </ClInclude>
     <ClInclude Include="xui_demo.h" />
+    <ClInclude Include="xui_plusctrl.h">
+      <Filter>LibGUI\widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -604,9 +604,6 @@
     <ClCompile Include="xui_kindctrl.cpp">
       <Filter>LibGUI\propview</Filter>
     </ClCompile>
-    <ClCompile Include="xui_treeplus.cpp">
-      <Filter>LibGUI\treeview</Filter>
-    </ClCompile>
     <ClCompile Include="xui_propplus.cpp">
       <Filter>LibGUI\propview</Filter>
     </ClCompile>
@@ -668,5 +665,8 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="xui_demo.cpp" />
+    <ClCompile Include="xui_plusctrl.cpp">
+      <Filter>LibGUI\widget</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,6 +13,9 @@
 #include "xui_slider.h"
 #include "xui_listview.h"
 #include "xui_dropbox.h"
+#include "xui_treedata.h"
+#include "xui_treenode.h"
+#include "xui_treeview.h"
 
 class xui_demo
 {
@@ -27,6 +30,7 @@ public:
 	static void test_slider		( xui_window* window );
 	static void test_listview	( xui_window* window );
 	static void test_dropbox	( xui_window* window );
+	static void test_treeview	( xui_window* window );
 };
 
 #endif//__xui_demo_h__

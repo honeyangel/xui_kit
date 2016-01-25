@@ -474,7 +474,7 @@ int main(int argc, char** argv)
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  36, L"", xui_bitmap::create("button.png")));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"test"));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 180, L"main"));
-	xui_treeview* treeview = new xui_treeview(xui_vector<s32>(250, 200), NULL, columninfo);
+	xui_treeview* treeview = new xui_treeview(xui_vector<s32>(250, 200), columninfo);
 	treeview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	treeview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	treeview->set_corner(5);
@@ -609,6 +609,7 @@ int main(int argc, char** argv)
 	xui_demo::test_slider(window);
 	xui_demo::test_listview(window);
 	xui_demo::test_dropbox(window);
+	xui_demo::test_treeview(window);
 
 	g_desktop->add_child(window);
 

@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treegrid( xui_component* parent, u32 index );
+	xui_treegrid( u32 index, xui_component* parent );
 
 protected:
 	/*

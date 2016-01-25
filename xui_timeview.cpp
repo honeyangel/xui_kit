@@ -54,7 +54,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, xui_component* pa
 	}
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, treesize-16*lineflag, L""));
 
-	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), this, columninfo, lineheight, PLUSRENDER_SYMBOL, false, false);
+	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, false, this);
 	m_timetree->xm_setclientsz	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
 	m_timetree->xm_invalid		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
 	m_widgetvec.push_back(m_timetree);
