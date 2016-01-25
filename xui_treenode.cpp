@@ -13,6 +13,7 @@ xui_implement_rtti(xui_treenode, xui_control);
 xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent )
 : xui_control(xui_vector<s32>(0), parent)
 {
+	m_drawcolor = true;
 	m_selected	= false;
 	m_rootnode	= NULL;
 	m_holdtime  = -1;
@@ -27,18 +28,22 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 			? new xui_toggle(xui_vector<s32>(0), TOGGLE_CIRCLE, this) 
 			: new xui_drawer(xui_vector<s32>(0), this);
 
-		xui_method_ptrcall(drawer, set_borderrt	)(columninfo.borderrt);
-		xui_method_ptrcall(drawer, set_textfont	)(columninfo.textfont);
-		xui_method_ptrcall(drawer, set_textdraw	)(columninfo.textdraw);
-		xui_method_ptrcall(drawer, set_iconalign)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT : columninfo.iconalign);
-		xui_method_ptrcall(drawer, set_textalign)(columninfo.type == TREECOLUMN_MAIN ? TA_LC            : columninfo.textalign);
+		xui_method_ptrcall(drawer, set_borderrt		)(columninfo.borderrt);
+		xui_method_ptrcall(drawer, set_textfont		)(columninfo.textfont);
+		xui_method_ptrcall(drawer, set_textdraw		)(columninfo.textdraw);
+		xui_method_ptrcall(drawer, set_iconsize		)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(16)   : xui_vector<s32>(0));
+		xui_method_ptrcall(drawer, set_iconalign	)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT		 : columninfo.iconalign);
+		xui_method_ptrcall(drawer, set_textalign	)(columninfo.type == TREECOLUMN_MAIN ? TA_LC				 : columninfo.textalign);
+		xui_method_ptrcall(drawer, set_textoffset	)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(2, 0) : xui_vector<s32>(0));
 		m_widgetvec.push_back(drawer);
 	}
 
 	m_edittext = new xui_textbox(xui_vector<s32>(0), this);
 	xui_method_ptrcall(m_edittext, ini_component)(true, false);
+	xui_method_ptrcall(m_edittext, set_backcolor)(xui_colour(1.0f, 0.2f));
+	xui_method_ptrcall(m_edittext, set_drawcolor)(true);
 	xui_method_ptrcall(m_edittext, set_sidestyle)(SIDESTYLE_S);
-	xui_method_ptrcall(m_edittext, set_sidecolor)(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+	xui_method_ptrcall(m_edittext, set_sidecolor)(xui_colour::black);
 	m_edittext->xm_nonfocus  += new xui_method_member<xui_method_args,  xui_treenode>(this, &xui_treenode::on_textnonfocus);
 	m_edittext->xm_keybddown += new xui_method_member<xui_method_keybd, xui_treenode>(this, &xui_treenode::on_textkeybddown);
 	m_widgetvec.push_back(m_edittext);
@@ -322,10 +327,10 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 
 			s32 indent = get_currnodedepth()*treeview->get_nodeindent();
 			s32 offset = (treeview->get_lineheight()-m_treeplus->get_renderh()) / 2;
-			xui_vector<s32> pluspt = drawer->get_renderpt() + xui_vector<s32>(offset+indent, offset);
+			xui_vector<s32> pluspt = drawer->get_renderpt() + xui_vector<s32>(indent+drawer->get_borderrt().ax, offset);
 			m_treeplus->on_perform_pt(pluspt);
 
-			drawer->set_iconoffset(xui_vector<s32>(offset+indent+m_treeplus->get_renderw(), 0));
+			drawer->set_iconoffset(xui_vector<s32>(indent+m_treeplus->get_renderw(), 0));
 		}
 	}
 }
@@ -405,10 +410,10 @@ xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&
 xui_method_explain(xui_treenode, set_edittext,		void								)( u32 index )
 {
 	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[index]);
-	drawer->set_visible(false);
 
 	xui_rect2d<s32> rt = drawer->get_renderrt()+drawer->get_renderpt();
 	rt.ax += drawer->get_iconoffset().x;
+	rt.ax += drawer->get_iconsize().w;
 	rt.ax += drawer->get_textoffset().x;
 
 	xui_method_ptrcall(m_edittext, set_visible		)(true);
@@ -423,6 +428,8 @@ xui_method_explain(xui_treenode, set_edittext,		void								)( u32 index )
 	xui_method_ptrcall(m_edittext, set_selecttext	)(0, drawer->get_text().length());
 	xui_method_ptrcall(m_edittext, set_data			)((void*)index);
 	xui_method_ptrcall(m_edittext, req_focus		)();
+
+	drawer->set_text(L"");
 }
 xui_method_explain(xui_treenode, set_linktext,		void								)( void )
 {

@@ -159,9 +159,9 @@ void xui_demo::test_dropbox( xui_window* window )
 void xui_demo::test_treeview( xui_window* window )
 {
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  20, L"", xui_bitmap::create("icon/edit.png")));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, IMAGE_C));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc"));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 160, L"main"));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"main", NULL, 0, true));
 	xui_treeview* treeview = xui_treeview::create(columninfo);
 	treeview->set_renderpt(xui_vector<s32>(250, 180));
 	window->add_child(treeview);

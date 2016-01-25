@@ -34,7 +34,7 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void				on_mousedown	( xui_method_mouse& args );
+	virtual void				on_mouseclick	( xui_method_mouse& args );
 	virtual void				on_renderself	( xui_method_args&  args );
 
 	/*

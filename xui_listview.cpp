@@ -8,7 +8,7 @@ xui_implement_rtti(xui_listview, xui_container);
 /*
 //static
 */
-const xui_colour xui_listview::default_movecolor = xui_colour(1.0f, 127.0f/255.0f);
+const xui_colour xui_listview::default_movecolor = xui_colour(0.5f, 127.0f/255.0f);
 const xui_colour xui_listview::default_tickcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
 xui_method_explain(xui_listview, create,				xui_listview*				)( const xui_vector<s32>& size, bool drawtick )

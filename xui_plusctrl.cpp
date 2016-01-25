@@ -28,21 +28,16 @@ xui_method_explain(xui_plusctrl, set_expanded,	void)( bool flag )
 
 		xui_method_args args;
 		xm_expand(this, args);
-		//xui_treenode* treenode = xui_dynamic_cast(xui_treenode, m_parent);
-		//xui_treeview* treeview = xui_dynamic_cast(xui_treeview, treenode->get_parent());
-		//if (treeview)
-		//	treeview->invalid();
 	}
 }
 
 /*
 //callback
 */
-xui_method_explain(xui_plusctrl, on_mousedown,	void)( xui_method_mouse& args )
+xui_method_explain(xui_plusctrl, on_mouseclick,	void)( xui_method_mouse& args )
 {
-	xui_button::on_mousedown(args);
-	if (args.mouse == MB_L)
-		set_expanded(!m_expanded);
+	xui_button::on_mouseclick(args);
+	set_expanded(!m_expanded);
 }
 xui_method_explain(xui_plusctrl, on_renderself, void)( xui_method_args&  args )
 {

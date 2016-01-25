@@ -86,22 +86,21 @@ public:
 		const std::wstring&		 _name, 
 		xui_bitmap*				 _icon		= NULL, 
 		u08						 _sort		= 1,
-		s32						 _minsize	= 20,
-		s32						 _maxsize	= 128,
-		bool					 _editable	= true,
-		const xui_rect2d<s32>&	 _borderrt	= xui_rect2d<s32>(2) )
+		bool					 _editable	= false,
+		u08                      _iconalign = IMAGE_FRONT_TEXT,
+		u08                      _textalign = TA_LC )
 	{
 		type		= _type;
 		size		= _size;
 		name		= _name;
 		icon		= _icon;
 		sort		= _sort;
-		minsize		= _minsize;
-		maxsize		= _maxsize;
+		minsize		= _size;
+		maxsize		= _size;
 		editable	= _editable;
-		borderrt	= _borderrt;
-		textalign	= TA_LC;
-		iconalign	= IMAGE_C;
+		borderrt	= xui_rect2d<s32>(2);
+		textalign	= _textalign;
+		iconalign	= _iconalign;
 	}
 };
 

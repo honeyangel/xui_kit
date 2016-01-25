@@ -560,9 +560,8 @@ xui_method_explain(xui_component, on_mousedown,			void					)( xui_method_mouse&	
 }
 xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&		args )
 {
-	if (g_desktop->get_catchctrl() == this &&
-		g_desktop->get_hoverctrl() == this &&
-		args.mouse == MB_L)
+	if (args.mouse == MB_L && 
+		g_desktop->get_hoverctrl() == this)
 	{
 		on_mouseclick(      args);
 		xm_mouseclick(this, args);

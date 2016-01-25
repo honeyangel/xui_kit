@@ -251,32 +251,13 @@ xui_method_explain(xui_control, render_else,		void					)( void )
 			m_widgetvec[i]->render();
 	}
 	xui_convas::get_ins()->set_cliprect(cliprect);
-}
 
-/*
-//callback
-*/
-xui_method_explain(xui_control, on_setclientsz,		void					)( xui_method_args& args )
-{
-	perform();
-}
-xui_method_explain(xui_control, on_setborderrt,		void					)( xui_method_args& args )
-{
-	perform();
-}
-xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& args )
-{
-	xui_rect2d<s32> cornerrt = get_cornerrt();
-	xui_rect2d<s32> renderrt = get_renderrtabs();
-	xui_colour      color    = get_vertexcolor();
-
-	if (m_drawcolor)
-	{
-		xui_colour fill_color = get_rendercolor() * color;
-		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
-	}
 	if (m_sidestyle)
 	{
+		xui_rect2d<s32> cornerrt = get_cornerrt();
+		xui_rect2d<s32> renderrt = get_renderrtabs();
+		xui_colour      color    = get_vertexcolor();
+
 		renderrt.bx -= 1;
 		renderrt.by -= 1;
 		xui_colour side_color = m_sidecolor * color;
@@ -295,6 +276,30 @@ xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& arg
 			side_color.b = 1.0f - side_color.b;
 			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
 		}
+	}
+}
+
+/*
+//callback
+*/
+xui_method_explain(xui_control, on_setclientsz,		void					)( xui_method_args& args )
+{
+	perform();
+}
+xui_method_explain(xui_control, on_setborderrt,		void					)( xui_method_args& args )
+{
+	perform();
+}
+xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& args )
+{
+	if (m_drawcolor)
+	{
+		xui_rect2d<s32> cornerrt = get_cornerrt   ();
+		xui_rect2d<s32> renderrt = get_renderrtabs();
+		xui_colour      color    = get_vertexcolor();
+
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
 	}
 }
 xui_method_explain(xui_control, on_renderself,		void					)( xui_method_args& args )

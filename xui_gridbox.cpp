@@ -161,18 +161,15 @@ xui_method_explain(xui_gridbox, render_else,	void			)( void )
 {
 	xui_control::render_else();
 
-	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
-	xui_rect2d<s32> renderrt = get_renderrtabs();
-	xui_colour      color    = get_vertexcolor();
-
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(renderrt));
 	if (m_sidestyle)
 	{
+		xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
+		xui_rect2d<s32> renderrt = get_renderrtabs();
+		xui_colour      color    = get_vertexcolor();
+
 		renderrt.bx -= 1;
 		renderrt.by -= 1;
 		xui_colour side_color = m_sidecolor * color;
-		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
 
 		if (m_rowcount > 1)
 		{
@@ -187,7 +184,6 @@ xui_method_explain(xui_gridbox, render_else,	void			)( void )
 			}
 		}
 	}
-	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
@@ -233,17 +229,5 @@ xui_method_explain(xui_gridbox, on_perform,		void			)( xui_method_args& args )
 		}
 
 		pt.y += m_rowpixel[row];
-	}
-}
-xui_method_explain(xui_gridbox, on_renderback,	void			)( xui_method_args& args )
-{
-	xui_rect2d<s32> cornerrt = xui_control::get_cornerrt();
-	xui_rect2d<s32> renderrt = get_renderrtabs();
-	xui_colour      color    = get_vertexcolor();
-
-	if (m_drawcolor)
-	{
-		xui_colour fill_color = get_rendercolor() * color;
-		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
 	}
 }

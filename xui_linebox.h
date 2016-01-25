@@ -42,7 +42,6 @@ protected:
 	*/
 	virtual void			on_invalid			( xui_method_args& args );
 	virtual void			on_perform			( xui_method_args& args );
-	virtual void			on_renderback		( xui_method_args& args );
 
 	/*
 	//member
