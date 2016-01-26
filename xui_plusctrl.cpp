@@ -6,15 +6,15 @@ xui_implement_rtti(xui_plusctrl, xui_button);
 /*
 //constructor
 */
-xui_create_explain(xui_plusctrl)( u08 drawmode, xui_component* parent )
+xui_create_explain(xui_plusctrl)( u08 drawmode, bool expanded, xui_component* parent )
 : xui_button(xui_vector<s32>(16), parent)
 {
 	m_backcolor = xui_colour::white;
 	m_movecolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 	m_downcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 	m_visible	= false;
-	m_expanded	= false;
 	m_onlyside  = false;
+	m_expanded	= expanded;
 }
 
 /*

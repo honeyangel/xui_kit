@@ -48,7 +48,7 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 	m_edittext->xm_keybddown += new xui_method_member<xui_method_keybd, xui_treenode>(this, &xui_treenode::on_textkeybddown);
 	m_widgetvec.push_back(m_edittext);
 
-	m_treeplus = new xui_plusctrl(treeview->get_plusrender(), this);
+	m_treeplus = new xui_plusctrl(treeview->get_plusrender(), false, this);
 	m_treeplus->xm_expand	+= new xui_method_member<xui_method_args,	xui_treenode>(this, &xui_treenode::on_nodeexpand);
 	m_widgetvec.push_back(m_treeplus);
 

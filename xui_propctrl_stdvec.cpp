@@ -27,7 +27,7 @@ xui_create_explain(xui_propctrl_stdvec)( xui_propdata* propdata )
 	m_dropelem = -1;
 
 	//plus
-	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, this);
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true, this);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_propexpand);
 	xui_method_ptrcall(m_propplus,	ini_component	)(true, true);
 	m_widgetvec.push_back(m_propplus);

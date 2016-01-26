@@ -47,7 +47,7 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_widgetvec.push_back(m_flagctrl);
 
 	//plus
-	m_kindplus	= new xui_plusctrl(PLUSRENDER_NORMAL, this);
+	m_kindplus	= new xui_plusctrl(PLUSRENDER_NORMAL, true, this);
 	m_kindplus->xm_expand		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_kindexpand);
 	m_widgetvec.push_back(m_kindplus);
 

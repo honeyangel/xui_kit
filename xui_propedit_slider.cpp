@@ -23,16 +23,12 @@ xui_create_explain(xui_propedit_slider)( xui_propctrl* propctrl, f64 interval, f
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextchanged);
 	textctrl->xm_textenter		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_textctrltextenter);
 
-	m_spinctrl = xui_slider::create(FLOWSTYLE_H);//new xui_slider(xui_vector<s32>(32, 20), NULL, FLOWSTYLE_H, ARROWDRAW_NONE);
+	m_spinctrl = xui_slider::create(FLOWSTYLE_H);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlnonfocus);
 	m_spinctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_base>(m_editnumb, &xui_propedit_base::on_editctrlgetfocus);
 	m_spinctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlnonfocus);
 	m_spinctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlgetfocus);
 	m_spinctrl->xm_scroll		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlscroll);
-
-	xui_scrollthumb* thumb = m_spinctrl->get_thumb();
-	thumb->set_sidestyle(SIDESTYLE_N);
-	thumb->set_sidecolor(xui_colour(1.0f, 0.2f, 0.3f, 0.9f));
 }
 
 /*
@@ -88,6 +84,7 @@ xui_method_explain(xui_propedit_slider, on_spinctrlgetfocus,	void				)( xui_comp
 {
 	xui_scrollthumb* thumb = m_spinctrl->get_thumb();
 	thumb->set_sidestyle(SIDESTYLE_S);
+	thumb->set_sidecolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 }
 xui_method_explain(xui_propedit_slider, on_spinctrlnonfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {

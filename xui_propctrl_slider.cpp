@@ -89,7 +89,7 @@ xui_method_explain(xui_propctrl_slider, on_perform,			void			)( xui_method_args&
 	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - spinctrl->get_renderh()/2;
 	spinctrl->on_perform_pt(pt);
-	spinctrl->on_perform_w (rt.get_sz().w/2 - textctrl->get_renderw());
+	spinctrl->on_perform_w (rt.get_w()/2 - textctrl->get_renderw());
 	//namectrl
 	s32 indent = get_indent();
 	namectrl->on_perform_w (rt.get_w()/2);

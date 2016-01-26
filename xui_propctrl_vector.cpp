@@ -26,8 +26,6 @@ xui_create_explain(xui_propctrl_vector)( xui_propdata* propdata )
 	m_subxedit = new xui_propedit_number(this, datavector->get_interval());
 	m_subyedit = new xui_propedit_number(this, datavector->get_interval());
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
-	xui_method_ptrcall(m_namectrl,	set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(m_namectrl,	set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 
@@ -123,30 +121,31 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	xui_control* subxedit = m_subxedit->get_editctrl();
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
 	xui_control* subyedit = m_subyedit->get_editctrl();
-	s32 editwidth = (rt.get_w()/2 - 18 - subxname->get_renderw() - subyname->get_renderw()) / 2;
+	s32 namewidth = xui_max(subxname->get_renderw(), subyname->get_renderw());
+	s32 editwidth = (rt.get_w()/2 - 12 - 2*namewidth) / 2;
 	//subxname
 	pt.x = rt.get_w()/2;
 	pt.y = 0;
-	sz.w = subxname->get_renderw();
+	sz.w = namewidth;
 	sz.h = rt.get_h();
 	subxname->on_perform_pt(pt);
 	subxname->on_perform_sz(sz);
 	//subxedit
-	pt.x = pt.x + subxname->get_renderw() + 6;
+	pt.x = pt.x + subxname->get_renderw() + 4;
 	pt.y = rt.get_h()/2 - subxedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subxedit->get_renderh();
 	subxedit->on_perform_pt(pt);
 	subxedit->on_perform_sz(sz);
 	//subyname
-	pt.x = pt.x + subxedit->get_renderw() + 6;
+	pt.x = pt.x + subxedit->get_renderw() + 4;
 	pt.y = 0;
-	sz.w = subyname->get_renderw();
+	sz.w = namewidth;
 	sz.h = rt.get_h();
 	subyname->on_perform_pt(pt);
 	subyname->on_perform_sz(sz);
 	//subyedit
-	pt.x = pt.x + subyname->get_renderw() + 6;
+	pt.x = pt.x + subyname->get_renderw() + 4;
 	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subyedit->get_renderh();
@@ -180,13 +179,16 @@ xui_create_explain(xui_propctrl_vector_button)( xui_propdata* propdata )
 
 	m_zeroctrl = new xui_button(xui_vector<s32>(24, 16), this);
 	m_zeroctrl->xm_click += new xui_method_member<xui_method_args, xui_propctrl_vector_button>(this, &xui_propctrl_vector_button::on_zeroctrlclick);
-	xui_method_ptrcall(m_zeroctrl,	set_corner		)(5);
+	xui_method_ptrcall(m_zeroctrl,	set_corner		)(3);
+	xui_method_ptrcall(m_zeroctrl,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_zeroctrl,	set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(m_zeroctrl,	set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(m_zeroctrl,	set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(m_zeroctrl,	set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_zeroctrl,	set_textalign	)(TA_CC);
 	m_widgetvec.push_back(m_zeroctrl);
+
+	xui_drawer*  subxname = m_subxedit->get_namectrl();
+	xui_drawer*  subyname = m_subyedit->get_namectrl();
+	xui_method_ptrcall(subxname,	set_textalign	)(TA_CC);
+	xui_method_ptrcall(subyname,	set_textalign	)(TA_CC);
 }
 
 /*
@@ -217,28 +219,28 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 	xui_control* subxedit = m_subxedit->get_editctrl();
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
 	xui_control* subyedit = m_subyedit->get_editctrl();
-	s32 editwidth = (rt.get_w() - indent - 24 - m_zeroctrl->get_renderw() - subxname->get_renderw() - subyname->get_renderw()) / 2;
+	s32 editwidth = (rt.get_w() - indent - m_zeroctrl->get_renderw() - 2*16) / 2;
 	//subxedit
-	pt.x = pt.x + m_zeroctrl->get_renderw() + 6;
+	pt.x = pt.x + m_zeroctrl->get_renderw();
 	pt.y = 0;
-	sz.w = subxname->get_renderw();
+	sz.w = 16;
 	sz.h = rt.get_h();
 	subxname->on_perform_pt(pt);
 	subxname->on_perform_sz(sz);
-	pt.x = pt.x +   subxname->get_renderw() + 6;
+	pt.x = pt.x +   subxname->get_renderw();
 	pt.y = rt.get_h()/2 - subxedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subxedit->get_renderh();
 	subxedit->on_perform_pt(pt);
 	subxedit->on_perform_sz(sz);
 	//subyedit
-	pt.x = pt.x + editwidth + 6;
+	pt.x = pt.x + editwidth;
 	pt.y = 0;
-	sz.w = subyname->get_renderw();
+	sz.w = 16;
 	sz.h = rt.get_h();
 	subyname->on_perform_pt(pt);
 	subyname->on_perform_sz(sz);
-	pt.x = pt.x +   subyname->get_renderw() + 6;
+	pt.x = pt.x +   subyname->get_renderw();
 	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subyedit->get_renderh();

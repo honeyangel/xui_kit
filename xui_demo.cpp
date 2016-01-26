@@ -269,7 +269,7 @@ void xui_demo::test_propview( xui_window* window )
 	showmap[TA_LT].push_back(1);
 	showmap[TA_LC].push_back(2);
 	showmap[TA_LB].push_back(3);
-	xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, false, showmap, editmap);
+	xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, true, showmap, editmap);
 	propkind->add_propdata(dataexpand);
 
 	propview->set_proproot(proproot);

@@ -21,18 +21,13 @@ xui_method_explain(xui_propctrl_expand,			create,				xui_propctrl*	)( xui_propda
 xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_border   = xui_rect2d<s32>(0, 6, 0, 6);
-
 	//plus
-	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, this);
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true, this);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_expand>(this, &xui_propctrl_expand::on_propexpand);
 	m_widgetvec.push_back(m_propplus);
 
 	//name
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
-	xui_method_ptrcall(m_namectrl, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(m_namectrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(m_namectrl, set_textcolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 
@@ -142,10 +137,9 @@ xui_method_explain(xui_propctrl_expand,			on_perform,			void			)( xui_method_arg
 	m_namectrl->on_perform_w (rt.get_w());
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 	//plus
-	pt.x = (indent-16);
-	pt.y = rt.ay + (height-12)/2;
+	pt.x = (indent-m_propplus->get_renderw());
+	pt.y = rt.ay + (height-m_propplus->get_renderh())/2;
 	m_propplus->on_perform_pt(pt);
-	m_propplus->on_perform_sz(12, 12);
 	if (m_propplus->was_expanded())
 	{
 		pt.x = 0;
@@ -284,8 +278,8 @@ xui_method_explain(xui_propctrl_expand_bool,	on_perform,			void			)( xui_method_
 	boolctrl->on_perform_pt(pt);
 	//namectrl
 	s32 indent = get_indent();
-	namectrl->on_perform_y(rt.ay);
-	namectrl->on_perform_w(rt.get_w()/2);
+	namectrl->on_perform_y (rt.ay);
+	namectrl->on_perform_w (rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
