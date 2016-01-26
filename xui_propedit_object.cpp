@@ -10,17 +10,17 @@
 xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* icon )
 : xui_propedit_base(propctrl)
 {
-	xui_drawer* textctrl = new xui_drawer(xui_vector<s32>(32, 18), NULL);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(1));
-	xui_method_ptrcall(textctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_drawer* textctrl = new xui_drawer(xui_vector<s32>(48, 18), NULL);
+	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(textctrl, set_icon		)(icon);
-	xui_method_ptrcall(textctrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(textctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_method_ptrcall(textctrl, set_iconsize	)(xui_vector<s32>(12));
 	xui_method_ptrcall(textctrl, set_iconalign	)(IMAGE_FRONT_TEXT);
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
 	xui_method_ptrcall(textctrl, set_iconoffset )(xui_vector<s32>(2, 0));
-	xui_method_ptrcall(textctrl, set_textoffset )((icon == NULL) ? xui_vector<s32>(18, 0) : xui_vector<s32>(2, 0));
+	xui_method_ptrcall(textctrl, set_textoffset )(xui_vector<s32>(2, 0));
 	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlnonfocus);
 	textctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlgetfocus);
 
@@ -59,17 +59,15 @@ xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_componen
 }
 xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_component* sender, xui_method_args&  args )
 {
-	xui_rect2d<s32> rt = m_pickctrl->get_renderrtabs();
-	rt.oft_x( 3);
-	rt.oft_y( 3);
-	rt.set_w(10);
-	rt.set_h(10);
-	xui_convas::get_ins()->draw_round(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f), 5);
-	xui_vector<s32> p1;
-	xui_vector<s32> p2;
-	p1.x = rt.ax+rt.get_w()/2-1;
-	p1.y = rt.ay+rt.get_h()/2;
-	p2.x = p1.x+1;
-	p2.y = p1.y;
-	xui_convas::get_ins()->draw_line(p1, p2, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_rect2d<s32> rt     = m_pickctrl->get_renderrtabs();
+	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+	xui_convas::get_ins()->draw_circle(center, 5, m_pickctrl->get_sidecolor(), 0, 360);
+	//TODO
+	//xui_vector<s32> p1;
+	//xui_vector<s32> p2;
+	//p1.x = rt.ax+rt.get_w()/2-1;
+	//p1.y = rt.ay+rt.get_h()/2;
+	//p2.x = p1.x+1;
+	//p2.y = p1.y;
+	//xui_convas::get_ins()->draw_line(p1, p2, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 }

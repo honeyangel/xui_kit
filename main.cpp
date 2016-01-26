@@ -38,55 +38,6 @@
 #include "xui_desktop.h"
 #include "xui_demo.h"
 
-//class test_pickwnd : public xui_pickwnd
-//{
-//public:
-//	static xui_pickwnd* create( xui_propctrl* propctrl )
-//	{
-//		return new test_pickwnd(propctrl);
-//	}
-//
-//	test_pickwnd(xui_propctrl* propctrl)
-//	: xui_pickwnd(propctrl)
-//	{
-//		xui_button* button = new xui_button(xui_vector<s32>(50), this);
-//		button->set_icon(xui_bitmap::create("button.png"));
-//		button->set_text(L"accept");
-//		button->set_textfont(xui_family("Arial", 16, false));
-//		button->set_corner(5);
-//		button->set_sidestyle(SIDESTYLE_S);
-//		button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
-//		button->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
-//		button->set_textoffset(xui_vector<s32>( 30, 0));
-//		button->set_iconoffset(xui_vector<s32>(-10, 0));
-//		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
-//		m_childctrl.push_back(button);
-//	}
-//
-//	virtual void* get_value( void )
-//	{
-//		if (stdvec_value.size() > 0)
-//			return (void*)stdvec_value.back();
-//
-//		return NULL;
-//	}
-//	virtual void  set_value( void* value )
-//	{
-//
-//	}
-//};
-
-static void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
-{
-	xui_treeview* treeview = (xui_treeview*)sender;
-	std::vector<xui_treenode*> selectednode = treeview->get_selectednode();
-	if (selectednode.size() > 0)
-	{
-		args.type = "xui_treenode";
-		args.data = selectednode.front();
-	}
-}
-
 void MouseFunc(int mouse, int state, int x, int y)
 {
 	xui_method_mouse args;
@@ -475,7 +426,7 @@ int main(int argc, char** argv)
 			}
 		}
 	}
-	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
+	//treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
 	//window->add_child(treeview);
 
 	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(50), NULL);

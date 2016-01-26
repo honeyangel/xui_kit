@@ -22,8 +22,6 @@ xui_create_explain(xui_propctrl_simple)( xui_propdata* propdata )
 {
 	//name
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
-	xui_method_ptrcall(m_namectrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(m_namectrl, set_textcolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 

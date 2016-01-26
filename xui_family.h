@@ -35,7 +35,7 @@ public:
 	*/
 	xui_family( void )
 	{
-		face = "System";
+		face = "Courier";
 		size = 14;
 		bold = false;
 		horz = 0;
@@ -43,7 +43,7 @@ public:
 	}
 	xui_family( s32 _size, bool _bold = false )
 	{
-		face = "System";
+		face = "Courier";
 		size = _size;
 		bold = _bold;
 		horz = 0;

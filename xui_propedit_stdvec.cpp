@@ -9,12 +9,11 @@
 xui_create_explain(xui_propedit_stdvec)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(32, 18), NULL);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(1));
-	xui_method_ptrcall(textctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18), NULL);
+	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(textctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_stdvec>(this, &xui_propedit_stdvec::on_editctrlnonfocus);

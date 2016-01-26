@@ -146,7 +146,7 @@ xui_create_explain(xui_propedit_enum)( xui_propctrl* propctrl, const xui_propenu
 	xui_dropbox* enumctrl = new xui_dropbox(xui_vector<s32>(128, 18), NULL);
 	xui_method_ptrcall(enumctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(enumctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(enumctrl, set_borderrt	)(xui_rect2d<s32>(2, 2, 0, 2));
+	xui_method_ptrcall(enumctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 0, 2));
 	xui_method_ptrcall(enumctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(enumctrl, set_corner		)(3);
 	xui_method_ptrcall(enumctrl, set_readonly	)(true);
@@ -208,7 +208,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
 	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18), NULL);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
@@ -286,7 +286,7 @@ xui_create_explain(xui_propedit_string)( xui_propctrl* propctrl )
 	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(64, 18), NULL);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
