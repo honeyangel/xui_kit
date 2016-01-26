@@ -9,18 +9,22 @@ xui_implement_rtti(xui_plusctrl, xui_button);
 xui_create_explain(xui_plusctrl)( u08 drawmode, xui_component* parent )
 : xui_button(xui_vector<s32>(16), parent)
 {
+	m_backcolor = xui_colour::white;
+	m_movecolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+	m_downcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 	m_visible	= false;
 	m_expanded	= false;
+	m_onlyside  = false;
 }
 
 /*
 //method
 */
-xui_method_explain(xui_plusctrl, was_expanded,	bool)( void ) const
+xui_method_explain(xui_plusctrl, was_expanded,		bool		)( void ) const
 {
 	return m_expanded;
 }
-xui_method_explain(xui_plusctrl, set_expanded,	void)( bool flag )
+xui_method_explain(xui_plusctrl, set_expanded,		void		)( bool flag )
 {
 	if (m_expanded != flag)
 	{
@@ -30,16 +34,32 @@ xui_method_explain(xui_plusctrl, set_expanded,	void)( bool flag )
 		xm_expand(this, args);
 	}
 }
+xui_method_explain(xui_plusctrl, set_onlyside,		void		)( bool flag )
+{
+	m_onlyside = flag;
+}
+
+/*
+//virtual
+*/
+xui_method_explain(xui_plusctrl, get_rendercolor,	xui_colour	)( void ) const
+{
+	if (m_onlyside)
+		return m_backcolor;
+
+	return xui_button::get_rendercolor();
+}
 
 /*
 //callback
 */
-xui_method_explain(xui_plusctrl, on_mouseclick,	void)( xui_method_mouse& args )
+xui_method_explain(xui_plusctrl, on_mousedown,		void		)( xui_method_mouse& args )
 {
-	xui_button::on_mouseclick(args);
-	set_expanded(!m_expanded);
+	xui_button::on_mousedown(args);
+	if (args.mouse == MB_L)
+		set_expanded(!m_expanded);
 }
-xui_method_explain(xui_plusctrl, on_renderself, void)( xui_method_args&  args )
+xui_method_explain(xui_plusctrl, on_renderself,		void		)( xui_method_args&  args )
 {
 	xui_button::on_renderself(args);
 
@@ -63,7 +83,15 @@ xui_method_explain(xui_plusctrl, on_renderself, void)( xui_method_args&  args )
 	}
 	else
 	{
-		if (m_expanded) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN,  color);
-		else			xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
+		if (m_onlyside && was_hover())
+		{
+			if (m_expanded) xui_convas::get_ins()->draw_triangle(center, 3, TRIANGLE_DOWN,  color);
+			else			xui_convas::get_ins()->draw_triangle(center, 3, TRIANGLE_RIGHT, color);
+		}
+		else
+		{
+			if (m_expanded) xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN,  color);
+			else			xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
+		}
 	}
 }

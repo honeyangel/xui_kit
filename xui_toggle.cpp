@@ -108,8 +108,8 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 	case TOGGLE_CIRCLE:
 		{
 			if (was_hover() || m_push)
-			xui_convas::get_ins()->fill_circle(center, 6,	 color*get_rendercolor(),	0, 360);
-			xui_convas::get_ins()->draw_circle(center, 6,	 color*m_sidecolor,			0, 360);
+			xui_convas::get_ins()->fill_circle(center, 5,	 color*get_rendercolor(),	0, 360);
+			xui_convas::get_ins()->draw_circle(center, 5,	 color*m_sidecolor,			0, 360);
 		}
 		break;
 	case TOGGLE_NORMAL:

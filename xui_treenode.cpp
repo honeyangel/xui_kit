@@ -94,6 +94,7 @@ xui_method_explain(xui_treenode, was_selected,		bool								)( void ) const
 xui_method_explain(xui_treenode, set_selected,		void								)( bool flag )
 {
 	m_selected = flag;
+	m_treeplus->set_onlyside(m_selected);
 }
 
 xui_method_explain(xui_treenode, was_expanded,		bool								)( void ) const
@@ -333,44 +334,6 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 			drawer->set_iconoffset(xui_vector<s32>(indent+m_treeplus->get_renderw(), 0));
 		}
 	}
-}
-xui_method_explain(xui_treenode, on_topdraw,		void								)( xui_method_args&		args )
-{
-	//TODO
-	//xui_control::on_topdraw(args);
-	//xui_component* hoverctrl = g_desktop->get_hoverctrl();
-	//if (hoverctrl != this && hoverctrl)
-	//{
-	//	if (hoverctrl->get_parent() == m_parent && xui_issub_kindof(xui_treenode, hoverctrl))
-	//	{
-	//		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-	//		xui_vector<s32> pt = g_desktop->get_mousecurr() - hoverctrl->get_screenpt();
-	//		xui_rect2d<s32> rt = hoverctrl->get_renderrtabs().get_inter(treeview->get_renderrtins()+treeview->get_screenpt());
-	//		xui_vector<s32> p1;
-	//		xui_vector<s32> p2;
-	//		if (pt.y < get_renderh()/3)
-	//		{
-	//			p1 = xui_vector<s32>(rt.ax, rt.ay);
-	//			p2 = xui_vector<s32>(rt.bx, rt.ay);
-	//		}
-	//		if (pt.y > get_renderh()*2/3)
-	//		{
-	//			p1 = xui_vector<s32>(rt.ax, rt.by-2);
-	//			p2 = xui_vector<s32>(rt.bx, rt.by-2);
-	//		}
-
-	//		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+2), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//		xui_vector<s32> path[3];
-	//		path[0] = xui_vector<s32>(p1.x,   p1.y-4);
-	//		path[1] = xui_vector<s32>(p1.x+5, p1.y  );
-	//		path[2] = xui_vector<s32>(p1.x,   p1.y+6);
-	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//		path[0] = xui_vector<s32>(p2.x,   p1.y-4);
-	//		path[1] = xui_vector<s32>(p2.x-5, p1.y  );
-	//		path[2] = xui_vector<s32>(p2.x,   p1.y+6);
-	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//	}
-	//}
 }
 xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&		args )
 {

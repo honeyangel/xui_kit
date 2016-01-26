@@ -64,7 +64,6 @@ protected:
 	virtual void						on_keybddown		( xui_method_keybd&    args );
 	virtual void						on_perform			( xui_method_args&     args );
 	virtual void						on_updateself		( xui_method_args&     args );
-	virtual void						on_topdraw			( xui_method_args&     args );
 
 	/*
 	//method

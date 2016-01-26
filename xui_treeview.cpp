@@ -670,7 +670,7 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 		xui_vector<s32> pt = g_desktop->get_mousecurr();
 
 		s32 scroll_value =  0;
-		if (pt.y < rt.ay && pt.y < rt.ay+m_lineheight/2)
+		if (pt.y > rt.ay && pt.y < rt.ay+m_lineheight/2)
 			scroll_value = -5;
 		if (pt.y < rt.by && pt.y > rt.by-m_lineheight/2)
 			scroll_value =  5;
@@ -706,49 +706,38 @@ xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args
 }
 xui_method_explain(xui_treeview, on_topdraw,			void								)( xui_method_args&  args )
 {
-	//TODO
-	//xui_container::on_topdraw(args);
-	//if (m_allowplace != TREEDROP_NOTALLOW)
-	//{
-	//	xui_vector<s32> pt = g_desktop->get_mousecurr() - m_mousehover->get_screenpt();
-	//	xui_rect2d<s32> rt = m_mousehover->get_renderrtabs().get_inter(get_renderrtins()+get_screenpt());
-	//	xui_vector<s32> p1;
-	//	xui_vector<s32> p2;
-	//	switch (m_allowplace)
-	//	{
-	//	case TREEDROP_FRONT:
-	//		p1 = xui_vector<s32>(rt.ax, rt.ay-1);
-	//		p2 = xui_vector<s32>(rt.bx, rt.ay-1);
-	//		break;
-	//	case TREEDROP_AFTER:
-	//		p1 = xui_vector<s32>(rt.ax, rt.by-1);
-	//		p2 = xui_vector<s32>(rt.bx, rt.by-1);
-	//		break;
-	//	}
+	xui_container::on_topdraw(args);
+	if (m_allowplace != TREEDROP_NOTALLOW)
+	{
+		xui_rect2d<s32> rt = m_mousehover->get_renderrtabs().get_inter(get_renderrtins()+get_screenpt());
+		if (m_allowplace == TREEDROP_INNER)
+		{
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour::black, 2);
+		}
+		else
+		{
+			xui_vector<s32> p1;
+			xui_vector<s32> p2;
+			switch (m_allowplace)
+			{
+			case TREEDROP_FRONT:
+				p1 = xui_vector<s32>(rt.ax, rt.ay);
+				p2 = xui_vector<s32>(rt.bx, rt.ay);
+				break;
+			case TREEDROP_AFTER:
+				p1 = xui_vector<s32>(rt.ax, rt.ay+m_lineheight);
+				p2 = xui_vector<s32>(rt.bx, rt.ay+m_lineheight);
+				break;
+			}
 
-	//	if (m_allowplace == TREEDROP_INNER)
-	//	{
-	//		xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//		rt.ax += 1;
-	//		rt.ay += 1;
-	//		rt.bx -= 1;
-	//		rt.by -= 1;
-	//		xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//	}
-	//	else
-	//	{
-	//		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(p1.x, p1.y, p2.x, p1.y+3), xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//		xui_vector<s32> path[3];
-	//		path[0] = xui_vector<s32>(p1.x,   p1.y-4);
-	//		path[1] = xui_vector<s32>(p1.x+5, p1.y  );
-	//		path[2] = xui_vector<s32>(p1.x,   p1.y+6);
-	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//		path[0] = xui_vector<s32>(p2.x,   p1.y-4);
-	//		path[1] = xui_vector<s32>(p2.x-5, p1.y  );
-	//		path[2] = xui_vector<s32>(p2.x,   p1.y+6);
-	//		xui_convas::get_ins()->fill_poly(path, 3, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-	//	}
-	//}
+			rt  = xui_rect2d<s32>(p1.x+1, p1.y-1, p2.x-1, p1.y+1);
+			xui_convas::get_ins()->fill_rectangle(rt, xui_colour::black);
+			p1 += xui_vector<s32>(4, 0);
+			xui_convas::get_ins()->fill_triangle(p1, 3, TRIANGLE_RIGHT, xui_colour::black);
+			p2 -= xui_vector<s32>(3, 0);
+			xui_convas::get_ins()->fill_triangle(p2, 3, TRIANGLE_LEFT,  xui_colour::black);
+		}
+	}
 }
 xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse& args )
 {

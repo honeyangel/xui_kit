@@ -24,6 +24,12 @@ public:
 	*/
 	bool						was_expanded	( void ) const;
 	void						set_expanded	( bool flag );
+	void						set_onlyside	( bool flag );
+
+	/*
+	//virtual
+	*/
+	virtual xui_colour			get_rendercolor	( void ) const;
 
 	/*
 	//method
@@ -34,12 +40,13 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void				on_mouseclick	( xui_method_mouse& args );
+	virtual void				on_mousedown	( xui_method_mouse& args );
 	virtual void				on_renderself	( xui_method_args&  args );
 
 	/*
 	//member
 	*/
+	bool						m_onlyside;
 	u08							m_drawmode;
 	bool						m_expanded;
 };
