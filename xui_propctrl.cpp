@@ -13,7 +13,7 @@ xui_implement_rtti(xui_propctrl, xui_control);
 //constructor
 */
 xui_create_explain(xui_propctrl)( void )
-: xui_control(xui_vector<s32>(100, xui_propview::LINE_HEIGHT), NULL)
+: xui_control(xui_vector<s32>(0, xui_propview::LINE_HEIGHT), NULL)
 {
 	m_propdata	= NULL;
 }
@@ -186,8 +186,8 @@ xui_method_explain(xui_propctrl_bool,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - boolctrl->get_renderh()/2;
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - boolctrl->get_renderh()/2;
 	boolctrl->on_perform_pt(pt);
 }
 
@@ -218,8 +218,8 @@ xui_method_explain(xui_propctrl_enum,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - enumctrl->get_renderh()/2;
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - enumctrl->get_renderh()/2;
 	enumctrl->on_perform_pt(pt);
 	enumctrl->on_perform_w (rt.get_w()/2);
 }
@@ -251,8 +251,8 @@ xui_method_explain(xui_propctrl_number, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w()/2);
 }
@@ -284,8 +284,8 @@ xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_sz().w/2;
-	pt.y = rt.get_sz().h/2 - textctrl->get_renderh()/2;
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w()/2);
 }

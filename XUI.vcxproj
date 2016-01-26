@@ -95,7 +95,6 @@
     <ClInclude Include="xui_propedit_object.h" />
     <ClInclude Include="xui_propedit_slider.h" />
     <ClInclude Include="xui_propedit_stdvec.h" />
-    <ClInclude Include="xui_propplus.h" />
     <ClInclude Include="xui_kindctrl.h" />
     <ClInclude Include="xui_propedit.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -270,7 +269,6 @@
     <ClCompile Include="xui_propdata.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="xui_propplus.cpp" />
     <ClCompile Include="xui_proproot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

@@ -12,6 +12,15 @@ xui_implement_rtti(xui_propview, xui_container);
 const s32 xui_propview::NODE_INDENT = 16;
 const s32 xui_propview::LINE_HEIGHT = 20;
 
+xui_method_explain(xui_propview, create,			xui_propview*			)( void )
+{
+	xui_propview* propview = new xui_propview(xui_vector<s32>(280, 400));
+	xui_method_ptrcall(propview, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(propview, set_borderrt	)(4);
+	xui_method_ptrcall(propview, set_corner		)(3);
+	return propview;
+}
+
 /*
 //constructor
 */
@@ -106,6 +115,33 @@ xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_v
 }
 
 /*
+//virtual
+*/
+xui_method_explain(xui_propview, render_else,		void					)( void )
+{
+	xui_colour vertexcolor = get_vertexcolor();
+	xui_rect2d<s32>     rt = get_renderrtabs();
+	rt.ay += m_corner;
+	rt.by -= m_corner;
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
+	{
+		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
+		if (kindctrl->was_visible() == false)
+			continue;
+
+		s32 y = kindctrl->get_renderrtabs().by;
+		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	y);
+		xui_vector<s32> p2 = xui_vector<s32>(rt.bx, y);
+		xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
+
+	xui_container::render_else();
+}
+
+/*
 //override
 */
 xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args )
@@ -128,8 +164,8 @@ xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args 
 		sz.h += kindctrl->get_renderh();
 	}
 
-	sz.w = xui_max(sz.w, rt.get_sz().w);
-	sz.h = xui_max(sz.h, rt.get_sz().h);
+	sz.w = xui_max(sz.w, rt.get_w());
+	sz.h = xui_max(sz.h, rt.get_h());
 
 	if (get_clientsz() != sz)
 	{
@@ -157,23 +193,6 @@ xui_method_explain(xui_propview, on_perform,		void					)( xui_method_args& args 
 		kindctrl->on_perform_pt(pt);
 		kindctrl->on_perform_w (rt.get_w());
 		pt.y += kindctrl->get_renderh();
-	}
-}
-xui_method_explain(xui_propview, on_renderself,		void					)( xui_method_args& args )
-{
-	xui_container::on_renderself(args);
-	xui_rect2d<s32> rt    = get_renderrtabs();
-	xui_colour      color = get_vertexcolor() * xui_colour(1.0f, 0.7f, 0.7f, 0.7f);
-	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
-	{
-		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
-		if (kindctrl->was_visible() == false)
-			continue;
-
-		s32 y = kindctrl->get_renderrtabs().by;
-		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	y);
-		xui_vector<s32> p2 = xui_vector<s32>(rt.bx, y);
-		xui_convas::get_ins()->draw_line(p1, p2, color);
 	}
 }
 

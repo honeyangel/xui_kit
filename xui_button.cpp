@@ -8,8 +8,7 @@ xui_implement_rtti(xui_button, xui_drawer);
 //static
 */
 const xui_colour xui_button::default_backcolor = xui_colour(1.0f,  90.0f/255.0f);
-const xui_colour xui_button::default_sidecolor = xui_colour(1.0f, 160.0f/255.0f);
-const xui_colour xui_button::default_movecolor = xui_colour(1.0f, 160.0f/255.0f);
+const xui_colour xui_button::default_movecolor = xui_colour(1.0f, 127.0f/255.0f);
 const xui_colour xui_button::default_downcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
 xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon )
@@ -45,7 +44,6 @@ xui_create_explain(xui_button)( const xui_vector<s32>& size, xui_component* pare
 : xui_drawer(size, parent)
 {
 	m_backcolor = default_backcolor;
-	m_sidecolor = default_sidecolor;
 	m_movecolor = default_movecolor;
 	m_downcolor = default_downcolor;
 }

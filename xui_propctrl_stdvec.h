@@ -1,6 +1,7 @@
 #ifndef __xui_propctrl_stdvec_h__
 #define __xui_propctrl_stdvec_h__
 
+#include "xui_plusctrl.h"
 #include "xui_propctrl.h"
 #include "xui_propedit_stdvec.h"
 
@@ -59,13 +60,14 @@ protected:
 	void					on_sortctrlmousedown	( xui_component* sender, xui_method_mouse& args );
 	void					on_sortctrlmousemove	( xui_component* sender, xui_method_mouse& args );
 	void					on_sortctrlmouserise	( xui_component* sender, xui_method_mouse& args );
+	void					on_propexpand			( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//member
 	*/
 	xui_drawer*				m_namectrl;
 	xui_propedit_stdvec*	m_propedit;
-	xui_propplus*			m_propplus;
+	xui_plusctrl*			m_propplus;
 	u32						m_dragelem;
 	u32						m_dropelem;
 	xui_propctrl_vec		m_ctrlpool;

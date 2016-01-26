@@ -46,9 +46,9 @@ public:
 	/*
 	//event
 	*/
-	void					on_editctrlnonfocus		( xui_component* sender, xui_method_args& args );
-	void					on_editctrlgetfocus		( xui_component* sender, xui_method_args& args );
-	void					on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
+	virtual void			on_editctrlnonfocus		( xui_component* sender, xui_method_args& args );
+	virtual void			on_editctrlgetfocus		( xui_component* sender, xui_method_args& args );
+	virtual void			on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*
@@ -80,6 +80,8 @@ public:
 	/*
 	//event
 	*/
+	virtual void			on_editctrlnonfocus		( xui_component* sender, xui_method_args&  args );
+	virtual void			on_editctrlgetfocus		( xui_component* sender, xui_method_args&  args );
 	void					on_boolctrlclick		( xui_component* sender, xui_method_args&  args );
 };
 

@@ -12,7 +12,6 @@ public:
 	//static
 	*/
 	static const xui_colour default_backcolor;
-	static const xui_colour default_sidecolor;
 	static const xui_colour default_movecolor;
 	static const xui_colour default_downcolor;
 

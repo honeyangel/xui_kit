@@ -10,7 +10,6 @@ xui_method_explain(xui_linebox, create,			xui_linebox*	)( void )
 {
 	xui_linebox* linebox = new xui_linebox(xui_vector<s32>(0, 24));
 	xui_method_ptrcall(linebox, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(linebox, set_sidecolor	)(xui_colour(1.0f, 160.0f/255.0f));
 	xui_method_ptrcall(linebox, set_corner		)(3);
 	return linebox;
 }

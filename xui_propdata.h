@@ -873,6 +873,30 @@ protected:
 };
 
 /*
+//colour
+*/
+class xui_propdata_colour : public xui_propdata
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_propdata_colour( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_colour* ptr );
+
+	/*
+	//virtual
+	*/
+	virtual const xui_colour&	get_value		( void ) const;
+	virtual void				set_value		( const xui_colour& value );
+
+protected:
+	/*
+	//member
+	*/
+	xui_colour*					m_ptr;
+};
+
+/*
 //object
 */
 class xui_propdata_object : public xui_propdata

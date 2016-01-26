@@ -74,8 +74,9 @@ xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style, xui_comp
 xui_method_explain(xui_scroll, ini_scroll,		void			)( s32 range, s32 value )
 {
 	m_range = range;
-	m_value = xui_max(value, 0);
-	m_value = xui_min(value, range);
+	m_value = value;
+	m_value = xui_max(m_value, 0);
+	m_value = xui_min(m_value, range);
 	resize_thumb();
 	update_thumb();
 }

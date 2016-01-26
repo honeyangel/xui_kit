@@ -155,6 +155,34 @@ xui_delete_explain(xui_propdata_stdvec)( void )
 }
 
 //////////////////////////////////////////////////////////////////////////
+//propdata_colour
+//////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(xui_propdata_colour)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_colour* ptr )
+: xui_propdata(kind, name, func)
+{
+	m_ptr = ptr;
+}
+
+/*
+//virtual
+*/
+xui_method_explain(xui_propdata_colour,	get_value,			const xui_colour&	)( void ) const
+{
+	return (*m_ptr);
+}
+xui_method_explain(xui_propdata_colour,	set_value,			void				)( const xui_colour& value )
+{
+	if ((*m_ptr) != value)
+	{
+		(*m_ptr)  = value;
+		on_valuechanged();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 //propdata_object
 //////////////////////////////////////////////////////////////////////////
 /*

@@ -312,9 +312,6 @@
     <ClInclude Include="xui_kindctrl.h">
       <Filter>LibGUI\propview</Filter>
     </ClInclude>
-    <ClInclude Include="xui_propplus.h">
-      <Filter>LibGUI\propview</Filter>
-    </ClInclude>
     <ClInclude Include="xui_propctrl.h">
       <Filter>LibGUI\propview\ctrl</Filter>
     </ClInclude>
@@ -602,9 +599,6 @@
       <Filter>LibGUI\propview</Filter>
     </ClCompile>
     <ClCompile Include="xui_kindctrl.cpp">
-      <Filter>LibGUI\propview</Filter>
-    </ClCompile>
-    <ClCompile Include="xui_propplus.cpp">
       <Filter>LibGUI\propview</Filter>
     </ClCompile>
     <ClCompile Include="xui_propctrl.cpp">

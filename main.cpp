@@ -38,68 +38,43 @@
 #include "xui_desktop.h"
 #include "xui_demo.h"
 
-static s32  prop_value = 0;
-static bool bool_value = false;
-static u08  enum_value = TA_LB;
-static std::wstring string_value = L"abc";
-static xui_propenum_map enum_map;
-static xui_vector<s32> vector_value(0);
-static xui_rect2d<s32> rect2d_value(0);
-static std::vector<xui_treenode*> stdvec_value;
-static xui_treenode* object_value = NULL;
-
-class test_pickwnd : public xui_pickwnd
-{
-public:
-	static xui_pickwnd* create( xui_propctrl* propctrl )
-	{
-		return new test_pickwnd(propctrl);
-	}
-
-	test_pickwnd(xui_propctrl* propctrl)
-	: xui_pickwnd(propctrl)
-	{
-		xui_button* button = new xui_button(xui_vector<s32>(50), this);
-		button->set_icon(xui_bitmap::create("button.png"));
-		button->set_text(L"accept");
-		button->set_textfont(xui_family("Arial", 16, false));
-		button->set_corner(5);
-		button->set_sidestyle(SIDESTYLE_S);
-		button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
-		button->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
-		button->set_textoffset(xui_vector<s32>( 30, 0));
-		button->set_iconoffset(xui_vector<s32>(-10, 0));
-		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
-		m_childctrl.push_back(button);
-	}
-
-	virtual void* get_value( void )
-	{
-		if (stdvec_value.size() > 0)
-			return (void*)stdvec_value.back();
-
-		return NULL;
-	}
-	virtual void  set_value( void* value )
-	{
-
-	}
-};
-static xui_bitmap* treenode_geticon( xui_propdata* propdata)
-{
-	return NULL;
-}
-static std::wstring treenode_getname(xui_propdata* propdata)
-{
-	xui_propdata_object* dataobject = (xui_propdata_object*)propdata;
-	xui_treenode* node = (xui_treenode*)dataobject->get_value();
-	return node->get_linkdata()->get_text(2);
-}
-
-static xui_propdata* stdvec_newprop(void* ptr, xui_propkind* kind)
-{
-	return new xui_propdata_object_impl<xui_treenode>(kind, L"", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, (xui_treenode**)ptr);
-}
+//class test_pickwnd : public xui_pickwnd
+//{
+//public:
+//	static xui_pickwnd* create( xui_propctrl* propctrl )
+//	{
+//		return new test_pickwnd(propctrl);
+//	}
+//
+//	test_pickwnd(xui_propctrl* propctrl)
+//	: xui_pickwnd(propctrl)
+//	{
+//		xui_button* button = new xui_button(xui_vector<s32>(50), this);
+//		button->set_icon(xui_bitmap::create("button.png"));
+//		button->set_text(L"accept");
+//		button->set_textfont(xui_family("Arial", 16, false));
+//		button->set_corner(5);
+//		button->set_sidestyle(SIDESTYLE_S);
+//		button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
+//		button->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
+//		button->set_textoffset(xui_vector<s32>( 30, 0));
+//		button->set_iconoffset(xui_vector<s32>(-10, 0));
+//		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
+//		m_childctrl.push_back(button);
+//	}
+//
+//	virtual void* get_value( void )
+//	{
+//		if (stdvec_value.size() > 0)
+//			return (void*)stdvec_value.back();
+//
+//		return NULL;
+//	}
+//	virtual void  set_value( void* value )
+//	{
+//
+//	}
+//};
 
 static void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
 {
@@ -550,54 +525,6 @@ int main(int argc, char** argv)
 	}
 
 	//window->add_child(timeview);
-	/*
-	xui_proproot* proproot = new xui_proproot();
-	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", xui_kindctrl::create, NULL, true, xui_family("Arial", 16, true), xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"P", xui_propctrl_vector_button::create, &vector_value, 1));
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"S", xui_propctrl_vector_button::create, &vector_value, 1, xui_vector<s32>(1)));
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"R", xui_propctrl_vector_button::create, &vector_value, 1));
-	headkind->add_propdata(new xui_propdata_stdvec_impl<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, &stdvec_value));
-	headkind->add_propdata(new xui_propdata_rect2d_impl<s32>(headkind, L"rect2d", xui_propctrl_rect2d::create, &rect2d_value, 1));
-	headkind->add_propdata(new xui_propdata_object_impl<xui_treenode>(headkind, L"object", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, &object_value));
-	proproot->add_propkind(headkind);
-
-	xui_propkind* propkind = new xui_propkind(proproot, L"test", xui_kindctrl::create, NULL, true, xui_family("Arial", 16, true), xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	proproot->add_propkind(propkind);
-	xui_propdata* propdata = new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_number::create, &prop_value);
-	propkind->add_propdata(propdata);
-	propkind->add_propdata(new xui_propdata_bool(propkind, L"bool", xui_propctrl_bool::create, &bool_value));
-	propkind->add_propdata(new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
-	enum_map[TA_LT] = L"LeftTop";
-	enum_map[TA_LC] = L"LeftCenter";
-	enum_map[TA_LB] = L"LeftBottom";
-	propkind->add_propdata(new xui_propdata_enum_impl<u08>(propkind, L"enum", xui_propctrl_enum::create, enum_map, &enum_value));
-	propkind->add_propdata(new xui_propdata_string(propkind, L"string", xui_propctrl_string::create, &string_value));
-
-	xui_propdata_vec subprop;
-	subprop.push_back(new xui_propdata_bool(propkind, L"sub_bool", xui_propctrl_bool::create, &bool_value));
-	subprop.push_back(new xui_propdata_number_impl<s32>(propkind, L"sub_s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
-	subprop.push_back(new xui_propdata_enum_impl<u08>(propkind, L"sub_enum", xui_propctrl_enum::create, enum_map, &enum_value));
-	subprop.push_back(new xui_propdata_string(propkind, L"sub_string", xui_propctrl_string::create, &string_value));
-	std::map<u08, std::vector<u32>> showmap;
-	std::map<u08, std::vector<u32>> editmap;
-	showmap[TA_LT].push_back(0);
-	showmap[TA_LT].push_back(1);
-	showmap[TA_LC].push_back(2);
-	showmap[TA_LB].push_back(3);
-	//xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, false, showmap, editmap);
-	xui_propdata_expand* dataexpand = new xui_propdata_expand(propkind, L"simple", xui_propctrl_simple::create, subprop);
-	propkind->add_propdata(dataexpand);
-	xui_propview* propview = new xui_propview(xui_vector<s32>(400, 400), NULL);
-	propview->set_backcolor(xui_colour(1.0f, 0.3f, 0.3f, 0.3f));
-	propview->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	propview->set_sidestyle(SIDESTYLE_S);
-	propview->set_borderrt(xui_rect2d<s32>(6));
-	//window->add_child(propview);
-
-	propview->set_renderpt(xui_vector<s32>(50));
-	propview->set_drawcolor(true);
-	propview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
-	propview->set_proproot(proproot);*/
 
 	xui_demo::test_button(window);
 	xui_demo::test_toggle(window);
@@ -610,6 +537,8 @@ int main(int argc, char** argv)
 	xui_demo::test_listview(window);
 	xui_demo::test_dropbox(window);
 	xui_demo::test_treeview(window);
+	xui_demo::test_timeview(window);
+	xui_demo::test_propview(window);
 
 	g_desktop->add_child(window);
 

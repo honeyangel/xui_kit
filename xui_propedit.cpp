@@ -27,8 +27,6 @@ xui_create_explain(xui_propedit_base)( xui_propctrl* propctrl )
 : xui_propedit(propctrl)
 {
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), NULL);
-	xui_method_ptrcall(m_namectrl, set_textfont	)(xui_family("Consolas", 16, false));
-	xui_method_ptrcall(m_namectrl, set_textcolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlnonfocus);
 	m_namectrl->xm_getfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlgetfocus);
@@ -52,8 +50,8 @@ xui_method_explain(xui_propedit_base,	get_editctrl,			xui_control*		)( void ) co
 */
 xui_method_explain(xui_propedit_base,	reset,					void				)( void )
 {
-	m_namectrl->set_textcolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	m_editctrl->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	m_namectrl->set_textcolor(xui_colour(1.0f, 0.8f));
+	m_editctrl->set_sidecolor(xui_control::default_sidecolor);
 }
 
 /*
@@ -61,14 +59,14 @@ xui_method_explain(xui_propedit_base,	reset,					void				)( void )
 */
 xui_method_explain(xui_propedit_base,	on_editctrlnonfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
-	m_namectrl->set_textcolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	m_editctrl->set_sidecolor(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	m_namectrl->set_textcolor(xui_colour(1.0f, 0.8f));
+	m_editctrl->set_sidecolor(xui_control::default_sidecolor);
 }
 xui_method_explain(xui_propedit_base,	on_editctrlgetfocus,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	m_propctrl->on_linkpropdata();
-	m_namectrl->set_textcolor(xui_colour(1.0f, 0.2f, 0.3f, 0.9f));
-	m_editctrl->set_sidecolor(xui_colour(1.0f, 0.2f, 0.3f, 0.9f));
+	m_namectrl->set_textcolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
+	m_editctrl->set_sidecolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 }
 xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_component* sender, xui_method_args&  args )
 {
@@ -86,9 +84,10 @@ xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_com
 xui_create_explain(xui_propedit_bool)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
-	xui_toggle* boolctrl = new xui_toggle(xui_vector<s32>(16, 16), TOGGLE_NORMAL);
-	xui_method_ptrcall(boolctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(boolctrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_toggle* boolctrl = new xui_toggle(xui_vector<s32>(16), TOGGLE_NORMAL);
+	xui_method_ptrcall(boolctrl, set_corner		)(3);
+	xui_method_ptrcall(boolctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(boolctrl, set_backcolor	)(xui_colour::darkgray);
 	boolctrl->xm_nonfocus	+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlnonfocus);
 	boolctrl->xm_getfocus	+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlgetfocus);
 	boolctrl->xm_click		+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_boolctrlclick);
@@ -113,12 +112,23 @@ xui_method_explain(xui_propedit_bool, reset,					void				)( void )
 {
 	xui_propedit_base::reset();
 	xui_toggle* boolctrl = xui_dynamic_cast(xui_toggle, m_editctrl);
+	boolctrl->set_sidestyle(SIDESTYLE_N);
 	boolctrl->ini_toggle(false);
 }
 
 /*
 //event
 */
+xui_method_explain(xui_propedit_bool, on_editctrlnonfocus,		void				)( xui_component* sender, xui_method_args& args )
+{
+	xui_propedit_base::on_editctrlnonfocus(sender, args);
+	m_editctrl->set_sidestyle(SIDESTYLE_N);
+}
+xui_method_explain(xui_propedit_bool, on_editctrlgetfocus,		void				)( xui_component* sender, xui_method_args& args )
+{
+	xui_propedit_base::on_editctrlgetfocus(sender, args);
+	m_editctrl->set_sidestyle(SIDESTYLE_S);
+}
 xui_method_explain(xui_propedit_bool, on_boolctrlclick,			void				)( xui_component* sender, xui_method_args& args )
 {
 	m_propctrl->on_editvalue(this);
@@ -133,13 +143,12 @@ xui_method_explain(xui_propedit_bool, on_boolctrlclick,			void				)( xui_compone
 xui_create_explain(xui_propedit_enum)( xui_propctrl* propctrl, const xui_propenum_map& textmap )
 : xui_propedit_base(propctrl)
 {
-	xui_dropbox* enumctrl = new xui_dropbox(xui_vector<s32>(64, 18), NULL);
-	xui_method_ptrcall(enumctrl, set_borderrt	)(xui_rect2d<s32>(1));
+	xui_dropbox* enumctrl = new xui_dropbox(xui_vector<s32>(128, 18), NULL);
+	xui_method_ptrcall(enumctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(enumctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(enumctrl, set_borderrt	)(xui_rect2d<s32>(2, 2, 0, 2));
 	xui_method_ptrcall(enumctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(enumctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(enumctrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(enumctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(enumctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(enumctrl, set_corner		)(3);
 	xui_method_ptrcall(enumctrl, set_readonly	)(true);
 	enumctrl->xm_nonfocus	+= new xui_method_member<xui_method_args, xui_propedit_enum>(this, &xui_propedit_enum::on_editctrlnonfocus);
 	enumctrl->xm_getfocus	+= new xui_method_member<xui_method_args, xui_propedit_enum>(this, &xui_propedit_enum::on_editctrlgetfocus);
@@ -196,12 +205,11 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
 	m_namectrl->set_cursor(CURSOR_WE);
 	m_namectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_namectrlmousemove);
 
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(64, 18), NULL);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(1));
-	xui_method_ptrcall(textctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18), NULL);
+	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(textctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);
@@ -276,12 +284,12 @@ xui_create_explain(xui_propedit_string)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
 	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(64, 18), NULL);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(1));
-	xui_method_ptrcall(textctrl, set_sidecolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textfont	)(xui_family("Arial", 16, false));
-	xui_method_ptrcall(textctrl, set_textcolor	)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
 	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlgetfocus);
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_textctrltextchanged);

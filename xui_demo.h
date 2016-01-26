@@ -16,6 +16,20 @@
 #include "xui_treedata.h"
 #include "xui_treenode.h"
 #include "xui_treeview.h"
+#include "xui_proproot.h"
+#include "xui_propkind.h"
+#include "xui_propdata.h"
+#include "xui_propctrl.h"
+#include "xui_propkind.h"
+#include "xui_propctrl_slider.h"
+#include "xui_propctrl_expand.h"
+#include "xui_propctrl_vector.h"
+#include "xui_propctrl_stdvec.h"
+#include "xui_propctrl_rect2d.h"
+#include "xui_propctrl_object.h"
+#include "xui_propctrl_simple.h"
+#include "xui_propview.h"
+#include "xui_kindctrl.h"
 
 class xui_demo
 {
@@ -31,6 +45,8 @@ public:
 	static void test_listview	( xui_window* window );
 	static void test_dropbox	( xui_window* window );
 	static void test_treeview	( xui_window* window );
+	static void test_timeview	( xui_window* window );
+	static void test_propview	( xui_window* window );
 };
 
 #endif//__xui_demo_h__

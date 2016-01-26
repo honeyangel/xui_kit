@@ -14,13 +14,14 @@ public:
 	/*
 	//static
 	*/
-	static const s32 LINE_HEIGHT;
-	static const s32 NODE_INDENT;
+	static const s32		LINE_HEIGHT;
+	static const s32		NODE_INDENT;
+	static xui_propview*	create			( void );
 
 	/*
 	//constructor
 	*/
-	xui_propview( const xui_vector<s32>& size, xui_component* parent );
+	xui_propview( const xui_vector<s32>& size, xui_component* parent = NULL );
 
 	/*
 	//destructor
@@ -34,13 +35,17 @@ public:
 	void					set_proproot	( xui_proproot* proproot );
 	void					set_proproot	( const xui_proproot_vec& proproot );
 
+	/*
+	//virtual
+	*/
+	virtual void			render_else		( void );
+
 protected:
 	/*
 	//override
 	*/
 	virtual void			on_invalid		( xui_method_args& args );
 	virtual void			on_perform		( xui_method_args& args );
-	virtual void			on_renderself	( xui_method_args& args );
 
 	/*
 	//method

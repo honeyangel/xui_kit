@@ -22,6 +22,11 @@ class xui_control : public xui_component
 
 public:
 	/*
+	//static
+	*/
+	static const xui_colour default_sidecolor;
+
+	/*
 	//constructor
 	*/
 	xui_control( const xui_vector<s32>& size, xui_component* parent = NULL );

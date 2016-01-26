@@ -33,16 +33,16 @@ public:
 	xui_family_render( void )
 	{
 		renderstyle = 0;
-		normalcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
+		normalcolor = xui_colour(1.0f, 0.8f);
 		strokewidth = 1;
-		strokecolor = xui_colour(1.0f, 0.0f, 0.0f, 0.0f);
+		strokecolor = xui_colour(1.0f, 0.0f);
 	}
 	xui_family_render( const xui_colour& _normalcolor )
 	{
 		renderstyle = TEXTDRAW_NORMAL;
 		normalcolor = _normalcolor;
 		strokewidth = 1;
-		strokecolor = xui_colour(1.0f, 0.0f, 0.0f, 0.0f);
+		strokecolor = xui_colour(1.0f, 0.0f);
 	}
 	xui_family_render( u08 _renderstyle, const xui_colour& _normalcolor, u08 _strokewidth, const xui_colour& _strokecolor )
 	{

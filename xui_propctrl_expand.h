@@ -1,6 +1,7 @@
 #ifndef __xui_propctrl_expand_h__
 #define __xui_propctrl_expand_h__
 
+#include "xui_plusctrl.h"
 #include "xui_propctrl.h"
 
 class xui_propctrl_expand : public xui_propctrl
@@ -38,6 +39,11 @@ protected:
 	virtual void			on_perform		( xui_method_args& args );
 
 	/*
+	//event
+	*/
+	void					on_propexpand	( xui_component* sender, xui_method_args& args );
+
+	/*
 	//method
 	*/
 	xui_propdata_vec		get_propdataall	( u32 index );
@@ -46,7 +52,7 @@ protected:
 	//member
 	*/
 	xui_drawer*				m_namectrl;
-	xui_propplus*			m_propplus;
+	xui_plusctrl*			m_propplus;
 	xui_propctrl_vec		m_propctrlvec;
 };
 

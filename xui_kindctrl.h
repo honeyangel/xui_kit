@@ -1,10 +1,10 @@
 #ifndef __xui_kindctrl_h__
 #define __xui_kindctrl_h__
 
+#include "xui_plusctrl.h"
 #include "xui_propkind.h"
 #include "xui_propdata.h"
 #include "xui_propctrl.h"
-#include "xui_propplus.h"
 #include "xui_control.h"
 
 class xui_kindctrl : public xui_control
@@ -15,6 +15,7 @@ public:
 	/*
 	//create
 	*/
+	static const s32		KIND_HEIGHT;
 	static xui_kindctrl*	create					( xui_propkind* propkind );
 
 	/*
@@ -47,6 +48,7 @@ protected:
 	*/
 	void					on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
 	void					on_flagctrlclick		( xui_component* sender, xui_method_args& args );
+	void					on_kindexpand			( xui_component* sender, xui_method_args& args );
 
 	/*
 	//method
@@ -59,7 +61,7 @@ protected:
 	xui_drawer*				m_iconctrl;
 	xui_textbox*			m_namectrl;
 	xui_toggle*				m_flagctrl;
-	xui_propplus*			m_kindplus;
+	xui_plusctrl*			m_kindplus;
 	xui_propkind*			m_propkind;
 	xui_propkind_vec		m_propkindvec;
 	xui_propctrl_vec		m_propctrlvec;

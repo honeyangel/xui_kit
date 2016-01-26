@@ -1,6 +1,5 @@
 #include "xui_convas.h"
 #include "xui_drawer.h"
-#include "xui_propplus.h"
 #include "xui_propview.h"
 #include "xui_propctrl_expand.h"
 
@@ -11,7 +10,7 @@ xui_implement_rtti(xui_propctrl_expand, xui_propctrl);
 /*
 //create
 */
-xui_method_explain(xui_propctrl_expand,		 create,			xui_propctrl*	)( xui_propdata* propdata )
+xui_method_explain(xui_propctrl_expand,			create,				xui_propctrl*	)( xui_propdata* propdata )
 {
 	return new xui_propctrl_expand(propdata);
 }
@@ -25,7 +24,8 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 	m_border   = xui_rect2d<s32>(0, 6, 0, 6);
 
 	//plus
-	m_propplus = new xui_propplus(this);
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, this);
+	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_expand>(this, &xui_propctrl_expand::on_propexpand);
 	m_widgetvec.push_back(m_propplus);
 
 	//name
@@ -53,13 +53,13 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 /*
 //method
 */
-xui_method_explain(xui_propctrl_expand,		 was_expanded,		bool			)( void ) const
+xui_method_explain(xui_propctrl_expand,			was_expanded,		bool			)( void ) const
 {
 	return m_propplus->was_expanded();
 }
-xui_method_explain(xui_propctrl_expand,		 set_expanded,		void			)( bool flag )
+xui_method_explain(xui_propctrl_expand,			set_expanded,		void			)( bool flag )
 {
-	xui_propdata_expand* dataexpand = dynamic_cast<xui_propdata_expand*>(m_propdata);
+	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
 	if (dataexpand->can_subfold())
 	{
 		m_propplus->set_expanded(flag);
@@ -69,10 +69,10 @@ xui_method_explain(xui_propctrl_expand,		 set_expanded,		void			)( bool flag )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_expand,		 on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_expand,			on_linkpropdata,	void			)( void )
 {
-	xui_propdata_expand* dataexpand = dynamic_cast<xui_propdata_expand*>(m_propdata);
-	xui_method_ptrcall(m_namectrl, set_text		)(dataexpand->get_name());
+	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
+	xui_method_ptrcall(m_namectrl, set_text		)(m_propdata->get_name());
 	xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
 
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
@@ -87,13 +87,13 @@ xui_method_explain(xui_propctrl_expand,		 on_linkpropdata,	void			)( void )
 		}
 	}
 }
-xui_method_explain(xui_propctrl_expand,		 on_editvalue,		void			)( xui_propedit* sender )
+xui_method_explain(xui_propctrl_expand,			on_editvalue,		void			)( xui_propedit* sender )
 {}
 
 /*
 //override
 */
-xui_method_explain(xui_propctrl_expand,		 on_invalid,		void			)( xui_method_args& args )
+xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_args& args )
 {
 	xui_propctrl::on_invalid(args);
 
@@ -130,7 +130,7 @@ xui_method_explain(xui_propctrl_expand,		 on_invalid,		void			)( xui_method_args
 		perform();
 	}
 }
-xui_method_explain(xui_propctrl_expand,		 on_perform,		void			)( xui_method_args& args )
+xui_method_explain(xui_propctrl_expand,			on_perform,			void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
 	s32 height = xui_propview::LINE_HEIGHT;
@@ -164,9 +164,17 @@ xui_method_explain(xui_propctrl_expand,		 on_perform,		void			)( xui_method_args
 }
 
 /*
+//event
+*/
+xui_method_explain(xui_propctrl_expand,			on_propexpand,		void			)( xui_component* sender, xui_method_args& args )
+{
+	invalid();
+}
+
+/*
 //method
 */
-xui_method_explain(xui_propctrl_expand,		 get_propdataall,	xui_propdata_vec)( u32 index )
+xui_method_explain(xui_propctrl_expand,			get_propdataall,	xui_propdata_vec)( u32 index )
 {
 	xui_propdata_vec result;
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
@@ -186,7 +194,7 @@ xui_implement_rtti(xui_propctrl_expand_bool, xui_propctrl_expand);
 /*
 //create
 */
-xui_method_explain(xui_propctrl_expand_bool, create,			xui_propctrl*	)( xui_propdata* propdata )
+xui_method_explain(xui_propctrl_expand_bool,	create,				xui_propctrl*	)( xui_propdata* propdata )
 {
 	return new xui_propctrl_expand_bool(propdata);
 }
@@ -221,7 +229,7 @@ xui_delete_explain(xui_propctrl_expand_bool)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_expand_bool, on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_expand_bool,	on_linkpropdata,	void			)( void )
 {
 	xui_propctrl_expand::on_linkpropdata();
 	m_propedit->reset();
@@ -246,7 +254,7 @@ xui_method_explain(xui_propctrl_expand_bool, on_linkpropdata,	void			)( void )
 		m_propedit->set_value(value);
 	}
 }
-xui_method_explain(xui_propctrl_expand_bool, on_editvalue,		void			)( xui_propedit* sender )
+xui_method_explain(xui_propctrl_expand_bool,	on_editvalue,		void			)( xui_propedit* sender )
 {
 	bool value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
@@ -261,7 +269,7 @@ xui_method_explain(xui_propctrl_expand_bool, on_editvalue,		void			)( xui_proped
 /*
 //override
 */
-xui_method_explain(xui_propctrl_expand_bool, on_perform,		void			)( xui_method_args& args )
+xui_method_explain(xui_propctrl_expand_bool,	on_perform,			void			)( xui_method_args& args )
 {
 	xui_propctrl_expand::on_perform(args);
 	s32 height = xui_propview::LINE_HEIGHT;
@@ -288,7 +296,7 @@ xui_implement_rtti(xui_propctrl_expand_enum, xui_propctrl_expand);
 /*
 //create
 */
-xui_method_explain(xui_propctrl_expand_enum, create,			xui_propctrl*	)( xui_propdata* propdata )
+xui_method_explain(xui_propctrl_expand_enum,	create,				xui_propctrl*	)( xui_propdata* propdata )
 {
 	return new xui_propctrl_expand_enum(propdata);
 }
@@ -324,7 +332,7 @@ xui_delete_explain(xui_propctrl_expand_enum)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_expand_enum, on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_expand_enum,	on_linkpropdata,	void			)( void )
 {
 	xui_propctrl_expand::on_linkpropdata();
 	m_propedit->reset();
@@ -349,7 +357,7 @@ xui_method_explain(xui_propctrl_expand_enum, on_linkpropdata,	void			)( void )
 		m_propedit->set_value(value);
 	}
 }
-xui_method_explain(xui_propctrl_expand_enum, on_editvalue,		void			)( xui_propedit* sender )
+xui_method_explain(xui_propctrl_expand_enum,	on_editvalue,		void			)( xui_propedit* sender )
 {
 	u32 value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
@@ -364,7 +372,7 @@ xui_method_explain(xui_propctrl_expand_enum, on_editvalue,		void			)( xui_proped
 /*
 //override
 */
-xui_method_explain(xui_propctrl_expand_enum, on_perform,		void			)( xui_method_args& args )
+xui_method_explain(xui_propctrl_expand_enum,	on_perform,			void			)( xui_method_args& args )
 {
 	xui_propctrl_expand::on_perform(args);
 	s32 height = xui_propview::LINE_HEIGHT;

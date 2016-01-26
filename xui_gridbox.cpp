@@ -12,7 +12,6 @@ xui_method_explain(xui_gridbox, create, xui_gridbox*)( u32 row, u32 col, s32 tit
 	xui_method_ptrcall(gridbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
 	xui_method_ptrcall(gridbox, set_drawcolor	)(true);
 	xui_method_ptrcall(gridbox, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(gridbox, set_sidecolor	)(xui_colour(1.0f, 160.0f/255.0f));
 	xui_method_ptrcall(gridbox, set_corner		)(3);
 	xui_method_ptrcall(gridbox, set_colpixel	)(0, titlewidth);
 

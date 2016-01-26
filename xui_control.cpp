@@ -7,6 +7,11 @@
 xui_implement_rtti(xui_control, xui_component);
 
 /*
+//static
+*/
+const xui_colour xui_control::default_sidecolor = xui_colour(1.0f, 160.0f/255.0f);
+
+/*
 //constructor
 */
 xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
@@ -18,7 +23,7 @@ xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* par
 	m_corner	= 0;
 	m_drawcolor = false;
 	m_sidestyle = 0;
-	m_sidecolor = xui_colour::lightgray;
+	m_sidecolor = default_sidecolor;
 }
 
 /*
