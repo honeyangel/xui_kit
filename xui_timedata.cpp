@@ -3,13 +3,8 @@
 /*
 //constructor
 */
-xui_create_explain(xui_timedata)( void )
-: xui_treedata()
-{
-	m_line     = NULL;
-}
-xui_create_explain(xui_timedata)( const std::wstring& text, const std::map<s32, u08>& keyframe )
-: xui_treedata(text)
+xui_create_explain(xui_timedata)( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe )
+: xui_treedata(text, icon)
 {
 	m_line     = NULL;
 	m_keyframe = keyframe;

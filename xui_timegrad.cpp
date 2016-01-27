@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
+#include "xui_scroll.h"
 #include "xui_timeview.h"
 #include "xui_timegrad.h"
 
@@ -9,11 +10,9 @@ xui_implement_rtti(xui_timegrad, xui_drawer);
 //constructor
 */
 xui_create_explain(xui_timegrad)( xui_component* parent )
-: xui_drawer(xui_vector<s32>(0), parent)
+: xui_drawer(xui_vector<s32>(0, 40), parent)
 {
-	m_border	= xui_rect2d<s32>(5, 0, 0, 0);
-	m_textfont	= xui_family("Arial", 12, false);
-	m_textdraw	= xui_family_render();
+	m_border = xui_rect2d<s32>(5, 0, 0, 0);
 }
 
 /*
@@ -24,8 +23,12 @@ xui_method_explain(xui_timegrad, on_mousedown,	void)( xui_method_mouse& args )
 	xui_drawer::on_mousedown(args);
 	if (args.mouse == MB_L)
 	{
+		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+		s32 value = timeview->get_hscroll() ? timeview->get_hscroll()->get_value() : 0;
+
 		xui_vector<s32> pt = args.point - get_screenpt();
 		pt.x -= m_border.ax;
+		pt.x += value;
 		set_curframe(pt.x);
 	}
 }
@@ -34,8 +37,12 @@ xui_method_explain(xui_timegrad, on_mousemove,	void)( xui_method_mouse& args )
 	xui_drawer::on_mousemove(args);
 	if (has_catch())
 	{
+		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+		s32 value = timeview->get_hscroll() ? timeview->get_hscroll()->get_value() : 0;
+
 		xui_vector<s32> pt = args.point - get_screenpt();
 		pt.x -= m_border.ax;
+		pt.x += value;
 		set_curframe(pt.x);
 	}
 }
@@ -50,22 +57,23 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 	xui_colour      color = get_vertexcolor();
 	xui_vector<s32> pt    = get_screenpt();
 
-	s32 start = (m_scroll.x-m_border.ax) / space;
+	s32 value = timeview->get_hscroll() ? timeview->get_hscroll()->get_value() : 0;
+	s32 start = (value-m_border.ax) / space;
 	s32 final = start + (get_renderw()-m_border.ax) / space + 1;
-	for (s32 i = xui_max(start, 0); i <= final; ++i)
+	for (s32 i = xui_max(0, start); i <= final; ++i)
 	{
 		xui_vector<s32> p1;
 		xui_vector<s32> p2;
 		if (i%large == 0 || i == timeview->get_curframe())
 		{
-			p1 = pt + xui_vector<s32>(m_border.ax + i*space, 24);
-			p2 = pt + xui_vector<s32>(m_border.ax + i*space, get_renderh());
+			p1 = pt + xui_vector<s32>(m_border.ax + i*space - value, 24);
+			p2 = pt + xui_vector<s32>(m_border.ax + i*space - value, get_renderh());
 
 			std::wstringstream text;
 			text << i;
 			xui_rect2d<s32> rt;
-			rt.ax = m_border.ax + i*space-50;
-			rt.bx = m_border.ax + i*space+50;
+			rt.ax = m_border.ax + i*space-50 - value;
+			rt.bx = m_border.ax + i*space+50 - value;
 			rt.ay =  2;
 			rt.by = 24;
 			rt    = xui_convas::get_ins()->calc_draw(text.str(), m_textfont, rt, TA_CT, true);
@@ -89,8 +97,8 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 		else
 		if (i%small == 0 && large != small)
 		{
-			p1 = pt + xui_vector<s32>(m_border.ax + i*space, 32);
-			p2 = pt + xui_vector<s32>(m_border.ax + i*space, get_renderh());
+			p1 = pt + xui_vector<s32>(m_border.ax + i*space - value, 32);
+			p2 = pt + xui_vector<s32>(m_border.ax + i*space - value, get_renderh());
 			xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
 		}
 	}

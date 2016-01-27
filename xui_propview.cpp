@@ -14,7 +14,7 @@ const s32 xui_propview::LINE_HEIGHT = 20;
 
 xui_method_explain(xui_propview, create,			xui_propview*			)( void )
 {
-	xui_propview* propview = new xui_propview(xui_vector<s32>(280, 400));
+	xui_propview* propview = new xui_propview(xui_vector<s32>(480, 380));
 	xui_method_ptrcall(propview, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(propview, set_borderrt	)(4);
 	xui_method_ptrcall(propview, set_corner		)(3);
@@ -125,16 +125,20 @@ xui_method_explain(xui_propview, render_else,		void					)( void )
 	rt.by -= m_corner;
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
-	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
+	if (m_ascrollitem.size() > 1)
 	{
-		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
-		if (kindctrl->was_visible() == false)
-			continue;
+		xui_vector<s32> p1 = get_screenpt();
+		xui_vector<s32> p2 = p1 + xui_vector<s32>(get_renderrtins().bx, 0);
+		for (u32 i = 0; i < m_ascrollitem.size()-1; ++i)
+		{
+			xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
+			if (kindctrl->was_visible() == false)
+				continue;
 
-		s32 y = kindctrl->get_renderrtabs().by;
-		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	y);
-		xui_vector<s32> p2 = xui_vector<s32>(rt.bx, y);
-		xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+			p1.y = kindctrl->get_renderrtabs().by;
+			p2.y = kindctrl->get_renderrtabs().by;
+			xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+		}
 	}
 	xui_convas::get_ins()->set_cliprect(cliprect);
 

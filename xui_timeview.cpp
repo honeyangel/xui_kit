@@ -25,18 +25,30 @@ const s32 GRAD_LAYOUT[7][3] =
 xui_implement_rtti(xui_timeview, xui_container);
 
 /*
+//static
+*/
+xui_method_explain(xui_timeview, create, xui_timeview*)( s32 width, const std::vector<xui_treecolumn>& columninfo )
+{
+	xui_timeview* timeview = new xui_timeview(xui_vector<s32>(width, 300), columninfo);
+	xui_method_ptrcall(timeview, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(timeview, set_borderrt	)(xui_rect2d<s32>(4));
+	return timeview;
+}
+
+/*
 //constructor
 */
-xui_create_explain(xui_timeview)( const xui_vector<s32>& size, xui_component* parent, s32 treesize, s32 lineheight, u32 lineflag )
+xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, xui_component* parent )
 : xui_container(size, parent)
 {
-	m_keyspace = 15;
-	m_keylarge =  5;
-	m_keysmall =  1;
-	m_curframe = -1;
-	m_dragmode =  0;
-	m_droptime = -1;
-	m_dragtime = -1;
+	m_hscrollshow	= true;
+	m_keyspace		= 15;
+	m_keylarge		=  5;
+	m_keysmall		=  1;
+	m_curframe		= -1;
+	m_dragmode		=  0;
+	m_droptime		= -1;
+	m_dragtime		= -1;
 
 	m_timetool = new xui_timetool(this);
 	m_timegrad = new xui_timegrad(this);
@@ -44,28 +56,25 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, xui_component* pa
 	m_widgetvec.push_back(m_timetool);
 	m_widgetvec.push_back(m_timegrad);
 
-	std::vector<xui_treecolumn> columninfo;
-	for (u32 i = 0; i < lineflag; ++i)
-	{
-		xui_treecolumn info(TREECOLUMN_MAIN, 16, L"", NULL);
-		info.minsize = 16;
-		info.maxsize = 16;
-		columninfo.push_back(info);
-	}
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, treesize-16*lineflag, L""));
+	m_ksslider = new xui_slider(xui_vector<s32>(150, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS, this);
+	m_ksslider->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_kssliderscroll);
+	xui_method_ptrcall(m_ksslider, set_backcolor)(xui_colour::darkgray);
+	xui_method_ptrcall(m_ksslider, set_sidestyle)(SIDESTYLE_S);
+	xui_method_ptrcall(m_ksslider, set_corner	)(3);
+	xui_method_ptrcall(m_ksslider, set_borderrt	)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(m_ksslider, ini_scroll	)(100, 15);
+	m_widgetvec.push_back(m_ksslider);
+
+	s32 treesize = 0;
+	for (u32 i = 0; i < columninfo.size(); ++i)
+		treesize += columninfo[i].size;
 
 	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, false, this);
+	xui_method_ptrcall(m_timetree, set_drawcolor)(false);
+	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(0, 0, 8, 0));
 	m_timetree->xm_setclientsz	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
 	m_timetree->xm_invalid		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
 	m_widgetvec.push_back(m_timetree);
-
-	m_ksslider = xui_slider::create(FLOWSTYLE_H);//new xui_slider  (xui_vector<s32>(150, 10), this, FLOWSTYLE_H, true);
-	m_ksslider->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_kssliderscroll);
-	xui_method_ptrcall(m_ksslider, ini_component)(ALIGNHORZ_L, ALIGNVERT_B, 0);
-	xui_method_ptrcall(m_ksslider, set_sidestyle)(SIDESTYLE_S);
-	xui_method_ptrcall(m_ksslider, set_sidecolor)(xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-	xui_method_ptrcall(m_ksslider, ini_scroll	)(100, 15);
-	m_widgetvec.push_back(m_ksslider);
 
 	m_timerect = new xui_timerect(this);
 	m_timehead = new xui_timehead(this);
@@ -456,8 +465,6 @@ xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 }
 xui_method_explain(xui_timeview, render_else,				void						)( void )
 {
-	xui_control::render_else();
-
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
@@ -466,9 +473,19 @@ xui_method_explain(xui_timeview, render_else,				void						)( void )
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 		timeline->render();
 	}
-	m_timehead->render();
-	m_timerect->render();
+	if (m_timehead->was_visible())
+		m_timehead->render();
+	if (m_timerect->was_visible())
+		m_timerect->render();
+	xui_rect2d<s32> temprt = xui_container::get_renderrtins() + get_screenpt();
+	temprt.ay += m_timegrad->get_renderh();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprt));
+	m_timetree->render();
 	xui_convas::get_ins()->set_cliprect(cliprect);
+
+	m_timetree->ini_component(true, false);
+	xui_control::render_else();
+	m_timetree->ini_component(true, true );
 }
 
 /*
@@ -492,8 +509,8 @@ xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& ar
 	xui_vector<s32> sz;
 	xui_rect2d<s32> rt = get_renderrtins();
 	s32 finalframe = m_allframe.empty() ? 0 : (*m_allframe.rbegin()).first;
-	sz.w = xui_max(m_keyspace*finalframe+10,	rt.get_sz().w);
-	sz.h = xui_max(m_timetree->get_renderh(),	rt.get_sz().h);
+	sz.w = xui_max(m_keyspace*finalframe+10,	rt.get_w());
+	sz.h = xui_max(m_timetree->get_renderh(),	rt.get_h());
 
 	if (get_clientsz() != sz)
 	{
@@ -502,6 +519,7 @@ xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& ar
 	else
 	{
 		perform();
+		update_scroll();
 	}
 }
 xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& args )
@@ -509,6 +527,9 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 	xui_container::on_perform(args);
 	xui_vector<s32> pt(0);
 	xui_vector<s32> sz(0);
+	pt.x = m_border.ax;
+	pt.y = m_border.ay;
+	m_timetool->on_perform_pt(pt);
 
 	pt.x = m_border.ax;
 	pt.y = m_border.ay + m_timetool->get_renderh();
@@ -519,12 +540,13 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 
 	pt.x = m_border.ax + m_timetree->get_renderw();
 	pt.y = m_border.ay;
-	s32 finalframe = m_allframe.empty() ? 0 : (*m_allframe.rbegin()).first;
-	sz.w = xui_max(get_renderrtins().get_sz().w, m_keyspace*finalframe+10);
+	sz.w = get_renderrtins().get_w();
 	sz.h = m_timegrad->get_renderh();
 	m_timegrad->on_perform_pt(pt);
 	m_timegrad->on_perform_sz(sz);
+
 	pt.y = m_border.ay + m_timegrad->get_renderh();
+	sz.w = get_clientw();
 	sz.h = m_timetree->get_lineheight();
 	m_timehead->on_perform_pt(pt);
 	m_timehead->on_perform_sz(sz);
@@ -538,11 +560,10 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 		timeline->on_perform_pt(pt);
 		timeline->on_perform_sz(sz);
 	}
-}
-xui_method_explain(xui_timeview, on_horzvalue,				void						)( xui_method_args& args )
-{
-	xui_container::on_horzvalue(args);
-	m_timegrad->set_scrollx(m_hscroll->get_value());
+
+	pt.x = m_border.ax;
+	pt.y = get_renderh() - m_border.by - m_ksslider->get_renderh();
+	m_ksslider->on_perform_pt(pt);
 }
 xui_method_explain(xui_timeview, on_vertvalue,				void						)( xui_method_args& args )
 {
@@ -560,30 +581,37 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 	rt.set_w(m_timetree->get_renderw() + m_timegrad->get_renderw());
 	rt.set_h(m_timetree->get_lineheight() - 1);
 
+	xui_rect2d<s32> temprt = xui_container::get_renderrtins() + get_screenpt();
+	temprt.ay += m_timegrad->get_renderh();
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprt));
 	s32 line_start = (m_vscroll == NULL) ? 0 : m_vscroll->get_value()/m_timetree->get_lineheight();
-	s32 line_final = line_start + get_renderrtins().get_h() / m_timetree->get_lineheight();
+	s32 line_final = line_start + get_renderrtins().get_h() / m_timetree->get_lineheight() + 1;
 	for (s32 i = line_start; i <= line_final; ++i)
 	{
 		rt.set_pt(xui_vector<s32>(pt.x, pt.y+i*m_timetree->get_lineheight()+1));
 		xui_colour finalcolor = (i == 0)
-			? color * xui_colour(1.0f, 0.4f, 0.6f, 0.6f)
-			: color * xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
+			? color * xui_colour(1.0f, 100.0f/255.0f)
+			: color * xui_colour(1.0f,  80.0f/255.0f);
 
 		xui_convas::get_ins()->fill_rectangle(rt, finalcolor);
 	}
 
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	pt = m_timegrad->get_screenpt() + xui_vector<s32>(m_timegrad->get_borderrt().ax, m_timegrad->get_renderh());
-	s32 grad_start = (m_hscroll == NULL) ? 0 : m_hscroll->get_value() / m_keyspace;
+	s32 value = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+	s32 grad_start = value / m_keyspace;
 	s32 grad_final = grad_start + m_timegrad->get_renderw() / m_keyspace + 1;
-	for (s32 i = grad_start; i <= grad_final; ++i)
+	for (s32 i = xui_max(0, grad_start); i <= grad_final; ++i)
 	{
 		if (i%m_keylarge == 0 || i == m_curframe)
 		{
-			xui_vector<s32> p1 = pt + xui_vector<s32>(i*m_keyspace, 0);
+			xui_vector<s32> p1 = pt + xui_vector<s32>(i*m_keyspace-value, 0);
 			xui_vector<s32> p2 = p1 + xui_vector<s32>(0, get_renderrtins().get_h());
 			xui_colour finalcolor = (i == m_curframe)
 				? color * xui_colour(1.0f, 0.0f, 1.0f, 1.0f)
-				: color * xui_colour(1.0f, 0.2f, 0.2f, 0.2f);
+				: color * m_backcolor;
 
 			xui_convas::get_ins()->draw_line(p1, p2, finalcolor);
 		}
@@ -593,10 +621,12 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 	{
 		xui_keyframe_map::reverse_iterator itor = m_allframe.rbegin();
 		s32 grad = (*itor).first;
-		xui_vector<s32> p1 = pt + xui_vector<s32>(grad*m_keyspace, 0);
+		xui_vector<s32> p1 = pt + xui_vector<s32>(grad*m_keyspace-value, 0);
 		xui_vector<s32> p2 = p1 + xui_vector<s32>(0, get_renderrtins().get_h());
 		xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 	}
+
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 
 /*
@@ -604,7 +634,7 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 */
 xui_method_explain(xui_timeview, create_line,				xui_timeline*				)( xui_treenode* node, xui_timedata* data )
 {
-	xui_timeline* line = new xui_timeline(this, data);
+	xui_timeline* line = new xui_timeline(data, this);
 	line->xm_updateself += new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
 	line->xm_updateself += new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
 	node->set_data(line);
@@ -655,7 +685,7 @@ xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_component
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 	xui_vector<s32> sz(width, m_timetree->get_lineheight() * nodes.size());
 	xui_rect2d<s32> rt = m_timetree->get_renderrtins();
-	sz.w = xui_max(sz.w, rt.get_sz().w);
+	sz.w = xui_max(sz.w, rt.get_w());
 
 	if (m_timetree->get_clientsz() != sz)
 	{

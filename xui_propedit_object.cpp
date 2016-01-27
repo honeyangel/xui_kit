@@ -62,12 +62,9 @@ xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_comp
 	xui_rect2d<s32> rt     = m_pickctrl->get_renderrtabs();
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 	xui_convas::get_ins()->draw_circle(center, 5, m_pickctrl->get_sidecolor(), 0, 360);
-	//TODO
-	//xui_vector<s32> p1;
-	//xui_vector<s32> p2;
-	//p1.x = rt.ax+rt.get_w()/2-1;
-	//p1.y = rt.ay+rt.get_h()/2;
-	//p2.x = p1.x+1;
-	//p2.y = p1.y;
-	//xui_convas::get_ins()->draw_line(p1, p2, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
+	rt.ax = center.x-1;
+	rt.ay = center.y-1;
+	rt.bx = center.x+2;
+	rt.by = center.y+2;
+	xui_convas::get_ins()->fill_rectangle(rt, m_pickctrl->get_sidecolor());
 }

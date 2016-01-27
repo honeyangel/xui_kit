@@ -24,17 +24,24 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
-		xui_drawer* drawer = (columninfo.type == TREECOLUMN_BOOL) 
-			? new xui_toggle(xui_vector<s32>(0), TOGGLE_CIRCLE, this) 
-			: new xui_drawer(xui_vector<s32>(0), this);
-
-		xui_method_ptrcall(drawer, set_borderrt		)(columninfo.borderrt);
-		xui_method_ptrcall(drawer, set_textfont		)(columninfo.textfont);
-		xui_method_ptrcall(drawer, set_textdraw		)(columninfo.textdraw);
-		xui_method_ptrcall(drawer, set_iconsize		)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(16)   : xui_vector<s32>(0));
-		xui_method_ptrcall(drawer, set_iconalign	)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT		 : columninfo.iconalign);
-		xui_method_ptrcall(drawer, set_textalign	)(columninfo.type == TREECOLUMN_MAIN ? TA_LC				 : columninfo.textalign);
-		xui_method_ptrcall(drawer, set_textoffset	)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(2, 0) : xui_vector<s32>(0));
+		xui_drawer* drawer = NULL;
+		if (columninfo.type == TREECOLUMN_BOOL)
+		{
+			if (columninfo.boolmode == TOGGLE_CIRCLE)	drawer = xui_toggle::circle();
+			else										drawer = xui_toggle::create();
+			xui_method_ptrcall(drawer, set_parent		)(this);
+		}
+		else
+		{
+			drawer = new xui_drawer(xui_vector<s32>(0), this);
+			xui_method_ptrcall(drawer, set_borderrt		)(columninfo.borderrt);
+			xui_method_ptrcall(drawer, set_textfont		)(columninfo.textfont);
+			xui_method_ptrcall(drawer, set_textdraw		)(columninfo.textdraw);
+			xui_method_ptrcall(drawer, set_iconsize		)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(16)   : xui_vector<s32>(0));
+			xui_method_ptrcall(drawer, set_iconalign	)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT		 : columninfo.iconalign);
+			xui_method_ptrcall(drawer, set_textalign	)(columninfo.type == TREECOLUMN_MAIN ? TA_LC				 : columninfo.textalign);
+			xui_method_ptrcall(drawer, set_textoffset	)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(2, 0) : xui_vector<s32>(0));
+		}
 		m_widgetvec.push_back(drawer);
 	}
 
@@ -94,7 +101,8 @@ xui_method_explain(xui_treenode, was_selected,		bool								)( void ) const
 xui_method_explain(xui_treenode, set_selected,		void								)( bool flag )
 {
 	m_selected = flag;
-	m_treeplus->set_onlyside(m_selected);
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+	m_treeplus->set_onlyside(treeview->was_lighttrace() && m_selected);
 }
 
 xui_method_explain(xui_treenode, was_expanded,		bool								)( void ) const
@@ -312,15 +320,22 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 	xui_control::on_perform(args);
 
 	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-	xui_vector<s32> pt(0);
-	xui_vector<s32> sz(0, treeview->get_lineheight());
+	s32 x = 0;
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
-		sz.w  = columninfo.size;
-		m_widgetvec[i]->on_perform_pt(pt);
-		m_widgetvec[i]->on_perform_sz(sz);
-		pt.x += columninfo.size;
+		if (columninfo.type == TREECOLUMN_BOOL)
+		{
+			m_widgetvec[i]->on_perform_x(x+columninfo.size/2-m_widgetvec[i]->get_renderw()/2);
+			m_widgetvec[i]->on_perform_y(treeview->get_lineheight()/2-m_widgetvec[i]->get_renderh()/2);
+		}
+		else
+		{
+			m_widgetvec[i]->on_perform_x(x);
+			m_widgetvec[i]->on_perform_w(columninfo.size);
+			m_widgetvec[i]->on_perform_h(treeview->get_lineheight());
+		}
+		x += columninfo.size;
 
 		if (columninfo.type == TREECOLUMN_MAIN)
 		{

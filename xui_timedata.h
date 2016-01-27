@@ -20,8 +20,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timedata( void );
-	xui_timedata( const std::wstring& text, const std::map<s32, u08>& keyframe );
+	xui_timedata( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe );
 
 	/*
 	//method

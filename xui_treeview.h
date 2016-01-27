@@ -2,7 +2,7 @@
 #define __xui_treeview_h__
 
 #include "xui_convas.h"
-#include "xui_drawer.h"
+#include "xui_toggle.h"
 #include "xui_plusctrl.h"
 #include "xui_container.h"
 
@@ -74,6 +74,7 @@ public:
 	xui_rect2d<s32>				borderrt;
 	xui_family					textfont;
 	xui_family_render			textdraw;
+	u08							boolmode;
 	u08							textalign;
 	u08							iconalign;
 
@@ -87,6 +88,7 @@ public:
 		xui_bitmap*				 _icon		= NULL, 
 		u08						 _sort		= 1,
 		bool					 _editable	= false,
+		u08						 _boolmode  = TOGGLE_CIRCLE,
 		u08                      _iconalign = IMAGE_FRONT_TEXT,
 		u08                      _textalign = TA_LC )
 	{
@@ -98,6 +100,7 @@ public:
 		minsize		= _size;
 		maxsize		= _size;
 		editable	= _editable;
+		boolmode	= _boolmode;
 		borderrt	= xui_rect2d<s32>(2);
 		textalign	= _textalign;
 		iconalign	= _iconalign;

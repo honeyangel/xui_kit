@@ -35,7 +35,7 @@ public:
 	*/
 	xui_family( void )
 	{
-		face = "Courier";
+		face = "Euphemia";
 		size = 14;
 		bold = false;
 		horz = 0;
@@ -43,7 +43,7 @@ public:
 	}
 	xui_family( s32 _size, bool _bold = false )
 	{
-		face = "Courier";
+		face = "Euphemia";
 		size = _size;
 		bold = _bold;
 		horz = 0;

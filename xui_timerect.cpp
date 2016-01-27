@@ -14,6 +14,8 @@ xui_create_explain(xui_timerect)( xui_component* parent )
 {
 	m_cursor		= CURSOR_HAND;
 	m_visible		= false;
+	m_backcolor		= xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+	m_drawcolor		= true;
 	m_sidestyle		= SIDESTYLE_S;
 	m_sidecolor		= xui_colour(1.0f, 0.0f, 0.9f, 0.9f);
 	m_downrela		= xui_vector<s32>(0);

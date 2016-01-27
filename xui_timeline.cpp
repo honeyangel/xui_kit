@@ -11,7 +11,7 @@ xui_implement_rtti(xui_timeline, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_timeline)( xui_component* parent, xui_timedata* linkdata )
+xui_create_explain(xui_timeline)( xui_timedata* linkdata, xui_component* parent )
 : xui_control(xui_vector<s32>(0), parent)
 {
 	m_border	= xui_rect2d<s32>(5, 2, 0, 2);
@@ -367,13 +367,13 @@ xui_method_explain(xui_timeline, on_renderself,		void						)( xui_method_args&  
 			xui_convas::get_ins()->draw_arc(temp, linecolor, -180, 90, 1);
 			p1.x += 6;
 			p2.x -= 6;
-			xui_convas::get_ins()->draw_line(p1, p2, linecolor);
+			xui_convas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
 			temp.set_pt(xui_vector<s32>(p2.x-6, p2.y-12));
 			xui_convas::get_ins()->draw_arc(temp, linecolor,    0, 90, 1);
 		}
 		else
 		{
-			xui_convas::get_ins()->draw_line(p1, p2, linecolor);
+			xui_convas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
 		}
 	}
 }

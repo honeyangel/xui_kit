@@ -88,8 +88,9 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		else
 		{
 			std::wstring text;
-			text += L"None ";
+			text += L"None(";
 			text += xui_system::utf8_to_unicode(dataobject->get_droptype());
+			text += L")";
 			textctrl->set_text(text);
 		}
 	}
@@ -168,7 +169,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
-		textctrl->set_backcolor(xui_colour(1.0f, 0.4f, 0.5f, 0.7f));
+		textctrl->set_backcolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
 			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
@@ -184,7 +185,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_comp
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
-		textctrl->set_backcolor(xui_colour(0.0f));
+		textctrl->set_backcolor(xui_colour::darkgray);
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
 			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
@@ -208,7 +209,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_compo
 	if (dataobject->get_droptype() == args.type)
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
-		textctrl->set_backcolor(xui_colour(0.0f));
+		textctrl->set_backcolor(xui_colour::darkgray);
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
 			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);

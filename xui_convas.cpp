@@ -841,8 +841,9 @@ xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
-	glDisable(GL_TEXTURE_2D);
+
 	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_LINE_STRIP);
 	glColor4fv(color.value);
 

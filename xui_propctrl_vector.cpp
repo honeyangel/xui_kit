@@ -147,7 +147,7 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	//subyedit
 	pt.x = pt.x + subyname->get_renderw() + 4;
 	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
-	sz.w = editwidth;
+	sz.w = rt.get_w()-pt.x;
 	sz.h = subyedit->get_renderh();
 	subyedit->on_perform_pt(pt);
 	subyedit->on_perform_sz(sz);
@@ -242,7 +242,7 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 	subyname->on_perform_sz(sz);
 	pt.x = pt.x +   subyname->get_renderw();
 	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
-	sz.w = editwidth;
+	sz.w = rt.get_w()-pt.x;
 	sz.h = subyedit->get_renderh();
 	subyedit->on_perform_pt(pt);
 	subyedit->on_perform_sz(sz);

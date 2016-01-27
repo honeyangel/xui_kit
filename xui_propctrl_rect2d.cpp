@@ -204,7 +204,7 @@ xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& ar
 	pt.x = pt.x + subyname->get_renderw() + 4;
 	pt.y = rt.get_h()/4 - subyedit->get_renderh()/2;
 	subyedit->on_perform_pt(pt);
-	subyedit->on_perform_w (xyeditwidth);
+	subyedit->on_perform_w (rt.get_w()-pt.x);
 
 	s32 wheditwidth = (rt.get_w()/2 - 12 - xwnamewidth - yhnamewidth) / 2;
 	//subwname
@@ -213,22 +213,22 @@ xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& ar
 	subwname->on_perform_pt(pt);
 	subwname->on_perform_w (xwnamewidth);
 	subwname->on_perform_h (rt.get_h()/2);
-	//subxedit
+	//subwedit
 	pt.x = pt.x + subwname->get_renderw() + 4;
 	pt.y = rt.get_h()/2 + rt.get_h()/4 - subwedit->get_renderh()/2;
 	subwedit->on_perform_pt(pt);
 	subwedit->on_perform_w (wheditwidth);
-	//subyname
+	//subhname
 	pt.x = pt.x + subwedit->get_renderw() + 4;
 	pt.y = rt.get_h()/2;
 	subhname->on_perform_pt(pt);
 	subhname->on_perform_w (yhnamewidth);
 	subhname->on_perform_h (rt.get_h()/2);
-	//subyedit
+	//subhedit
 	pt.x = pt.x + subhname->get_renderw() + 4;
 	pt.y = rt.get_h()/2 + rt.get_h()/4 - subhedit->get_renderh()/2;
 	subhedit->on_perform_pt(pt);
-	subhedit->on_perform_w (wheditwidth);
+	subhedit->on_perform_w (rt.get_w()-pt.x);
 
 	//namectrl
 	m_namectrl->on_perform_w(rt.get_w()/2);

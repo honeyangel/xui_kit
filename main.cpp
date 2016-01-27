@@ -215,6 +215,8 @@ void Resize(int w, int h)
 	glLoadMatrixf(m);
 
 	g_convas->set_viewport(xui_rect2d<s32>(0, 0, w, h));
+	if (g_desktop)
+		g_desktop->set_rendersz(xui_vector<s32>(w, h));
 }
 
 void Render()
@@ -263,7 +265,7 @@ int main(int argc, char** argv)
 {
 
 	glutInit(&argc, argv);
-	glutInitWindowSize(800, 600);
+	glutInitWindowSize(1024, 768);
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
 	glutCreateWindow("Test");
 	glutReshapeFunc(Resize);
@@ -277,7 +279,7 @@ int main(int argc, char** argv)
 	glutSpecialUpFunc(SpecialUpFunc);
 	glutIdleFunc(Idle);
 	glEnable(GL_BLEND);
-	glutReshapeWindow(800, 600);
+	glutReshapeWindow(1024, 768);
 	//glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	//glEnable(GL_LINE_SMOOTH);
@@ -440,40 +442,6 @@ int main(int argc, char** argv)
 	dropbox->add_item(L"chris");
 	//window->add_child(dropbox);
 
-	xui_timeview* timeview = new xui_timeview(xui_vector<s32>(450, 250), NULL, 300, 24);
-	timeview->set_backcolor(xui_colour(1.0f, 0.2f, 0.2f, 0.2f));
-	timeview->set_borderrt(xui_rect2d<s32>(1));
-
-	std::map<s32, u08> keyframe;
-	keyframe[ 0] = 0;
-	keyframe[ 5] = 0;
-	keyframe[ 8] = 1;
-	keyframe[15] = 1;
-	keyframe[24] = 2;
-	keyframe[35] = 1;
-	keyframe[50] = 1;
-	keyframe[80] = 2;
-	for (int i = 0; i < 2; ++i)
-	{
-		std::wstringstream text;
-		text << L"test";
-		text << i;
-		xui_timedata* data = new xui_timedata(text.str(), keyframe);
-		xui_timeline* line = timeview->add_timeline(i, data);
-
-		if (i % 2 == 0)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				std::wstringstream childtext;
-				childtext << L"child";
-				childtext << j;
-
-				xui_timedata* childdata = new xui_timedata(childtext.str(), keyframe);
-				xui_timeline* childline = line->add_timeline(j, childdata);
-			}
-		}
-	}
 
 	//window->add_child(timeview);
 

@@ -156,14 +156,28 @@ void xui_demo::test_dropbox( xui_window* window )
 	dropbox->add_item(L"ImageC");
 	dropbox->ini_dropbox(0);
 }
+
+//test treenode drag
+void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
+{
+	xui_treeview* treeview = (xui_treeview*)sender;
+	std::vector<xui_treenode*> selectednode = treeview->get_selectednode();
+	if (selectednode.size() > 0)
+	{
+		args.type = "xui_treenode";
+		args.data = selectednode.front();
+	}
+}
+
 void xui_demo::test_treeview( xui_window* window )
 {
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, IMAGE_C));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_CIRCLE, IMAGE_C));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc"));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"main", NULL, 0, true));
 	xui_treeview* treeview = xui_treeview::create(columninfo);
 	treeview->set_renderpt(xui_vector<s32>(250, 180));
+	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
 	window->add_child(treeview);
 
 	for (int i = 0; i < 10; ++i)
@@ -190,7 +204,44 @@ void xui_demo::test_treeview( xui_window* window )
 }
 void xui_demo::test_timeview( xui_window* window )
 {
+	std::vector<xui_treecolumn> columninfo;
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 250, L"Total", NULL, 0, false));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL, IMAGE_C));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL, IMAGE_C));
+	xui_timeview* timeview = xui_timeview::create(960, columninfo);
+	timeview->set_renderpt(xui_vector<s32>(10, 420));
+	window->add_child(timeview);
 
+	std::map<s32, u08> keyframe;
+	keyframe[ 0] = 0;
+	keyframe[ 5] = 0;
+	keyframe[ 8] = 1;
+	keyframe[15] = 1;
+	keyframe[24] = 2;
+	keyframe[35] = 1;
+	keyframe[50] = 1;
+	keyframe[80] = 2;
+	for (int i = 0; i < 4; ++i)
+	{
+		std::wstringstream text;
+		text << L"test";
+		text << i;
+		xui_timedata* data = new xui_timedata(text.str(), xui_bitmap::create("icon/edit.png"), keyframe);
+		xui_timeline* line = timeview->add_timeline(i, data);
+
+		if (i % 2 == 0)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				std::wstringstream childtext;
+				childtext << L"child";
+				childtext << j;
+
+				xui_timedata* childdata = new xui_timedata(childtext.str(), xui_bitmap::create("icon/edit.png"), keyframe);
+				xui_timeline* childline = line->add_timeline(j, childdata);
+			}
+		}
+	}
 }
 
 //test propview prop
@@ -216,18 +267,15 @@ public:
 	test_pickwnd(xui_propctrl* propctrl)
 	: xui_pickwnd(propctrl)
 	{
-		xui_button* button = new xui_button(xui_vector<s32>(50), this);
-		button->set_icon(xui_bitmap::create("button.png"));
-		button->set_text(L"accept");
-		button->set_textfont(xui_family("Arial", 16, false));
-		button->set_corner(5);
-		button->set_sidestyle(SIDESTYLE_S);
-		button->set_sidecolor(xui_colour(1.0f, 1.00f, 1.00f, 1.00f));
-		button->set_backcolor(xui_colour(1.0f, 0.40f, 0.40f, 0.40f));
-		button->set_textoffset(xui_vector<s32>( 30, 0));
-		button->set_iconoffset(xui_vector<s32>(-10, 0));
+		m_render	= xui_rect2d<s32>(0, 0, 280, 160);
+		m_sidestyle	= SIDESTYLE_S;
+		m_alignhorz = ALIGNHORZ_C;
+		m_alignvert = ALIGNVERT_C;
+
+		xui_button* button = xui_button::create(NULL, L"Accept", 100);
+		button->ini_component(ALIGNHORZ_C, ALIGNVERT_C, 0);
 		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
-		m_childctrl.push_back(button);
+		add_child(button);
 	}
 
 	virtual void* get_value( void )
@@ -243,21 +291,10 @@ public:
 	}
 };
 
-static void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
-{
-	xui_treeview* treeview = (xui_treeview*)sender;
-	std::vector<xui_treenode*> selectednode = treeview->get_selectednode();
-	if (selectednode.size() > 0)
-	{
-		args.type = "xui_treenode";
-		args.data = selectednode.front();
-	}
-}
-
 //test propview func
 xui_bitmap* treenode_geticon( xui_propdata* propdata)
 {
-	return NULL;
+	return xui_bitmap::create("icon/edit.png");
 }
 std::wstring treenode_getname(xui_propdata* propdata)
 {

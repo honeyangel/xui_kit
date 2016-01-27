@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timeline( xui_component* parent, xui_timedata* linkdata );
+	xui_timeline( xui_timedata* linkdata, xui_component* parent );
 
 	/*
 	//method

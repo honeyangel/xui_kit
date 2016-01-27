@@ -562,12 +562,16 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	xui_control::render_else();
-	xui_vector<s32> pt = get_screenpt();
-	p1.x = pt.x;
-	p1.y = pt.y + m_border.ay + m_lineheight - 1;
-	p2.x = pt.x + get_renderw();
-	p2.y = pt.y + m_border.ay + m_lineheight - 1;
-	xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+
+	if (m_rendergrid)
+	{
+		xui_vector<s32> pt = get_screenpt();
+		p1.x = pt.x;
+		p1.y = pt.y + m_border.ay + m_lineheight - 1;
+		p2.x = pt.x + get_renderw();
+		p2.y = pt.y + m_border.ay + m_lineheight - 1;
+		xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+	}
 }
 
 /*

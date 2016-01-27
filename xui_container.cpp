@@ -214,11 +214,13 @@ xui_method_explain(xui_container, on_horzvalue,		void			)( xui_method_args&  arg
 */
 xui_method_explain(xui_container, update_scroll,	void			)( void )
 {
-	xui_rect2d<s32> clientrt = get_clientrt();
-	xui_rect2d<s32> renderrt = xui_control::get_renderrtins();
+	xui_rect2d<s32>  clientrt = get_clientrt();
+	xui_rect2d<s32>  renderrt = get_renderrtins();
 
-	bool needvscroll = false;
-	bool needhscroll = false;
+	if (m_hscroll)   renderrt.by += xui_scroll::default_size;
+	if (m_vscroll)   renderrt.bx += xui_scroll::default_size;
+	bool needvscroll = m_vscrollshow;
+	bool needhscroll = m_hscrollshow;
 	if (clientrt.get_h() > renderrt.get_h()) needvscroll = true;
 	if (clientrt.get_w() > renderrt.get_w()) needhscroll = true;
 	if (needvscroll) renderrt.bx -= xui_scroll::default_size;

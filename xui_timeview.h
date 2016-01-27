@@ -2,7 +2,7 @@
 #define __xui_timeview_h__
 
 #include "xui_family_render.h"
-#include "xui_container.h"
+#include "xui_treeview.h"
 
 enum 
 {
@@ -20,9 +20,14 @@ class xui_timeview : public xui_container
 
 public:
 	/*
+	//static
+	*/
+	static xui_timeview*		create					( s32 width, const std::vector<xui_treecolumn>& columninfo );
+
+	/*
 	//constructor
 	*/
-	xui_timeview( const xui_vector<s32>& size, xui_component* parent, s32 treesize, s32 lineheight, u32 lineflag = 0 );
+	xui_timeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 24, xui_component* parent = NULL );
 
 	/*
 	//control
@@ -113,7 +118,6 @@ protected:
 	*/
 	virtual void				on_invalid				( xui_method_args& args );
 	virtual void				on_perform				( xui_method_args& args );
-	virtual void				on_horzvalue			( xui_method_args& args );
 	virtual void				on_vertvalue			( xui_method_args& args );
 	virtual void				on_renderself			( xui_method_args& args );
 
