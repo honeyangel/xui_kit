@@ -12,7 +12,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_listitem( xui_component* parent, const xui_rect2d<s32>& border, bool drawtick );
+	xui_listitem( const xui_rect2d<s32>& border, bool drawtick );
 
 	/*
 	//method

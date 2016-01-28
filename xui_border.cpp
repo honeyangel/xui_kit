@@ -8,8 +8,8 @@ xui_implement_rtti(xui_border, xui_component);
 /*
 //constructor
 */
-xui_create_explain(xui_border)( const xui_vector<s32>& size, xui_component* parent, u08 resize )
-: xui_component(size, parent)
+xui_create_explain(xui_border)( const xui_vector<s32>& size, u08 resize )
+: xui_component(size)
 {
 	m_resize	= resize;
 	m_downpt	= xui_vector<s32>(0);

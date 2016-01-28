@@ -959,7 +959,7 @@ public:
 		xui_prop_newpick	pickfunc, 
 		xui_prop_geticon	iconfunc,
 		xui_prop_getname	namefunc,
-		T**					ptr )
+		T*					ptr )
 	: xui_propdata_object(kind, name, func, droptype, pickfunc, iconfunc, namefunc)
 	{
 		m_ptr = ptr;
@@ -975,10 +975,10 @@ public:
 	}
 	virtual void				set_value	( void* value )
 	{
-		if ((*m_ptr) != (T*)value)
+		if ((*m_ptr) != (T)value)
 		{
 			  m_old   = (*m_ptr);
-			(*m_ptr)  = (T*)value;
+			(*m_ptr)  = (T)value;
 			on_valuechanged();
 		}
 	}
@@ -999,8 +999,8 @@ protected:
 	/*
 	//member
 	*/
-	T*							m_old;
-	T**							m_ptr;
+	T							m_old;
+	T*							m_ptr;
 };
 
 #endif//__xui_propdata_h__

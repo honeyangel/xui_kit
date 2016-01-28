@@ -13,7 +13,7 @@ xui_implement_rtti(xui_propctrl, xui_control);
 //constructor
 */
 xui_create_explain(xui_propctrl)( void )
-: xui_control(xui_vector<s32>(0, xui_propview::LINE_HEIGHT), NULL)
+: xui_control(xui_vector<s32>(0, xui_propview::LINE_HEIGHT))
 {
 	m_propdata	= NULL;
 }
@@ -43,6 +43,7 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 
 xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* component )
 {
+	component->set_parent(this);
 	m_widgetvec.insert(m_widgetvec.begin(), component);
 }
 xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )

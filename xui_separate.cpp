@@ -7,8 +7,8 @@ xui_implement_rtti(xui_separate, xui_component);
 /*
 //constructor
 */
-xui_create_explain(xui_separate)( const xui_vector<s32>& size, xui_component* parent )
-: xui_component(size, parent)
+xui_create_explain(xui_separate)( const xui_vector<s32>& size )
+: xui_component(size)
 {}
 
 /*

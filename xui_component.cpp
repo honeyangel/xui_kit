@@ -8,11 +8,11 @@ xui_implement_root(xui_component);
 /*
 //constructor
 */
-xui_create_explain(xui_component)( const xui_vector<s32>& size, xui_component* parent )
+xui_create_explain(xui_component)( const xui_vector<s32>& size )
 {
 	m_data		= NULL;
 	m_cursor	= CURSOR_DEFAULT;
-	m_parent	= parent;
+	m_parent	= NULL;
 	m_render	= xui_rect2d<s32>(xui_vector<s32>(0), size);
 	m_enable	= true;
 	m_visible	= true;

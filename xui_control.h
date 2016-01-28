@@ -29,7 +29,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_control( const xui_vector<s32>& size, xui_component* parent = NULL );
+	xui_control( const xui_vector<s32>& size );
 
 	/*
 	//destructor

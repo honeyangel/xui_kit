@@ -9,8 +9,8 @@ xui_implement_rtti(xui_listitem, xui_drawer);
 /*
 //constructor
 */
-xui_create_explain(xui_listitem)( xui_component* parent, const xui_rect2d<s32>& border, bool drawtick )
-: xui_drawer(xui_vector<s32>(0), parent)
+xui_create_explain(xui_listitem)( const xui_rect2d<s32>& border, bool drawtick )
+: xui_drawer(xui_vector<s32>(0))
 {
 	m_drawcolor = true;
 	m_border	= border;

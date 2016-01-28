@@ -9,9 +9,10 @@ xui_implement_rtti(xui_timegrad, xui_drawer);
 /*
 //constructor
 */
-xui_create_explain(xui_timegrad)( xui_component* parent )
-: xui_drawer(xui_vector<s32>(0, 40), parent)
+xui_create_explain(xui_timegrad)( xui_timeview* timeview )
+: xui_drawer(xui_vector<s32>(0, 40))
 {
+	m_parent = timeview;
 	m_border = xui_rect2d<s32>(5, 0, 0, 0);
 }
 

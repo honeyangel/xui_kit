@@ -9,7 +9,7 @@
 xui_create_explain(xui_propedit_stdvec)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18), NULL);
+	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18));
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4));

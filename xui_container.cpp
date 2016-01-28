@@ -7,8 +7,8 @@ xui_implement_rtti(xui_container, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_container)( const xui_vector<s32>& size, xui_component* parent )
-: xui_control(size, parent)
+xui_create_explain(xui_container)( const xui_vector<s32>& size )
+: xui_control(size)
 {
 	m_drawcolor		= true;
 	m_backcolor		= xui_colour(1.0f, 0.25f);

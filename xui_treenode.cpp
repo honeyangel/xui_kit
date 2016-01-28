@@ -10,9 +10,10 @@ xui_implement_rtti(xui_treenode, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent )
-: xui_control(xui_vector<s32>(0), parent)
+xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_treeview* treeview )
+: xui_control(xui_vector<s32>(0))
 {
+	m_parent	= treeview;
 	m_drawcolor = true;
 	m_selected	= false;
 	m_rootnode	= NULL;
@@ -20,7 +21,6 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 	m_linkdata	= linkdata;
 	m_linkdata->set_node(this);
 
-	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, parent);
 	for (u32 i = 0; i < treeview->get_columninfocount(); ++i)
 	{
 		const xui_treecolumn& columninfo = treeview->get_columninfo(i);
@@ -33,7 +33,8 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 		}
 		else
 		{
-			drawer = new xui_drawer(xui_vector<s32>(0), this);
+			drawer = new xui_drawer(xui_vector<s32>(0));
+			xui_method_ptrcall(drawer, set_parent		)(this);
 			xui_method_ptrcall(drawer, set_borderrt		)(columninfo.borderrt);
 			xui_method_ptrcall(drawer, set_textfont		)(columninfo.textfont);
 			xui_method_ptrcall(drawer, set_textdraw		)(columninfo.textdraw);
@@ -45,8 +46,9 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 		m_widgetvec.push_back(drawer);
 	}
 
-	m_edittext = new xui_textbox(xui_vector<s32>(0), this);
+	m_edittext = new xui_textbox(xui_vector<s32>(0));
 	xui_method_ptrcall(m_edittext, ini_component)(true, false);
+	xui_method_ptrcall(m_edittext, set_parent	)(this);
 	xui_method_ptrcall(m_edittext, set_backcolor)(xui_colour(1.0f, 0.2f));
 	xui_method_ptrcall(m_edittext, set_drawcolor)(true);
 	xui_method_ptrcall(m_edittext, set_sidestyle)(SIDESTYLE_S);
@@ -55,8 +57,9 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_component* parent 
 	m_edittext->xm_keybddown += new xui_method_member<xui_method_keybd, xui_treenode>(this, &xui_treenode::on_textkeybddown);
 	m_widgetvec.push_back(m_edittext);
 
-	m_treeplus = new xui_plusctrl(treeview->get_plusrender(), false, this);
-	m_treeplus->xm_expand	+= new xui_method_member<xui_method_args,	xui_treenode>(this, &xui_treenode::on_nodeexpand);
+	m_treeplus = new xui_plusctrl(treeview->get_plusrender(), false);
+	xui_method_ptrcall(m_treeplus, set_parent	)(this);
+	m_treeplus->xm_expand	 += new xui_method_member<xui_method_args,	xui_treenode>(this, &xui_treenode::on_nodeexpand);
 	m_widgetvec.push_back(m_treeplus);
 
 	use_linkdata();

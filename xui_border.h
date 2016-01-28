@@ -19,7 +19,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_border( const xui_vector<s32>& size, xui_component* parent, u08 resize );
+	xui_border( const xui_vector<s32>& size, u08 resize );
 
 	/*
 	//flag

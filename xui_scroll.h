@@ -25,7 +25,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_scroll( const xui_vector<s32>& size, u08 style, xui_component* parent = NULL );
+	xui_scroll( const xui_vector<s32>& size, u08 style );
 
 	/*
 	//init

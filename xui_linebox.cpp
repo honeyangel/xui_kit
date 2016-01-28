@@ -17,8 +17,8 @@ xui_method_explain(xui_linebox, create,			xui_linebox*	)( void )
 /*
 //constructor
 */
-xui_create_explain(xui_linebox)( const xui_vector<s32>& size, u08 flow, xui_component* parent )
-: xui_control(size, parent)
+xui_create_explain(xui_linebox)( const xui_vector<s32>& size, u08 flow )
+: xui_control(size)
 {
 	m_flow = flow;
 }

@@ -26,7 +26,7 @@ xui_create_explain(xui_propedit)( xui_propctrl* propctrl )
 xui_create_explain(xui_propedit_base)( xui_propctrl* propctrl )
 : xui_propedit(propctrl)
 {
-	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), NULL);
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlnonfocus);
 	m_namectrl->xm_getfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlgetfocus);
@@ -205,7 +205,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
 	m_namectrl->set_cursor(CURSOR_WE);
 	m_namectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_namectrlmousemove);
 
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18), NULL);
+	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18));
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
@@ -283,7 +283,7 @@ xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_com
 xui_create_explain(xui_propedit_string)( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(64, 18), NULL);
+	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(64, 18));
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));

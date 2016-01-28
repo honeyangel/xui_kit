@@ -32,8 +32,8 @@ xui_method_explain(xui_slider, create,			xui_slider*	)( u08 style, u08 arrowdraw
 /*
 //constructor
 */
-xui_create_explain(xui_slider)( const xui_vector<s32>& size, u08 style, u08 arrowdraw, xui_component* parent )
-: xui_scroll(size, style, parent)
+xui_create_explain(xui_slider)( const xui_vector<s32>& size, u08 style, u08 arrowdraw )
+: xui_scroll(size, style)
 {
 	if (arrowdraw == ARROWDRAW_NONE)
 	{

@@ -11,7 +11,7 @@ xui_implement_instance_method(xui_desktop);
 //constructor
 */
 xui_create_explain(xui_desktop)( void )
-: xui_panel(xui_vector<s32>(800, 600), NULL)
+: xui_panel(xui_vector<s32>(800, 600))
 {
 	m_catchctrl = NULL;
 	m_focusctrl = NULL;

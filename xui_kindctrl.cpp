@@ -21,25 +21,28 @@ xui_method_explain(xui_kindctrl, create,					xui_kindctrl*	)( xui_propkind* prop
 //constructor
 */
 xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
-: xui_control(xui_vector<s32>(256, KIND_HEIGHT), NULL)
+: xui_control(xui_vector<s32>(256, KIND_HEIGHT))
 {
 	m_border	= xui_rect2d<s32>(2);
 	m_propkind	= NULL;
 
 	//icon
-	m_iconctrl	= new xui_drawer  (xui_vector<s32>(16), this);
+	m_iconctrl	= new xui_drawer  (xui_vector<s32>(16));
+	xui_method_ptrcall(m_iconctrl, set_parent		)(this);
 	m_widgetvec.push_back(m_iconctrl);
 
 	//name
-	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 20), this);
+	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 20));
 	m_namectrl->xm_textchanged	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrltextchanged);
+	xui_method_ptrcall(m_namectrl, set_parent		)(this);
 	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(m_namectrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_namectrl, set_textalign	)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 
 	//flag
-	m_flagctrl	= new xui_toggle  (xui_vector<s32>(16), TOGGLE_NORMAL, this);
+	m_flagctrl	= new xui_toggle  (xui_vector<s32>(16), TOGGLE_NORMAL);
+	xui_method_ptrcall(m_flagctrl, set_parent		)(this);
 	xui_method_ptrcall(m_flagctrl, set_corner		)(3);
 	xui_method_ptrcall(m_flagctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(m_flagctrl, set_backcolor	)(xui_colour::darkgray);
@@ -47,7 +50,8 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_widgetvec.push_back(m_flagctrl);
 
 	//plus
-	m_kindplus	= new xui_plusctrl(PLUSRENDER_NORMAL, true, this);
+	m_kindplus	= new xui_plusctrl(PLUSRENDER_NORMAL, true);
+	xui_method_ptrcall(m_kindplus, set_parent		)(this);
 	m_kindplus->xm_expand		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_kindexpand);
 	m_widgetvec.push_back(m_kindplus);
 

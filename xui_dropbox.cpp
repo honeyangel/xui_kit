@@ -41,16 +41,17 @@ xui_method_explain(xui_dropbox, create,					xui_dropbox*	)( s32 width, xui_bitma
 /*
 //constructor
 */
-xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon, xui_component* parent )
-: xui_textbox(size, parent)
+xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
+: xui_textbox(size)
 {
 	m_maxdrop	= 8;
 	m_selitem   = NULL;
-	m_droptog   = new xui_toggle	(xui_vector<s32>(24), TOGGLE_BUTTON, this);
+	m_droptog   = new xui_toggle	(xui_vector<s32>(24), TOGGLE_BUTTON);
 	m_droptog->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_droptogmousedown);
 	m_droptog->xm_renderself	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droptogrenderself);
 	m_droptog->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
-	xui_method_ptrcall(m_droptog, ini_component)(0, 0, DOCKSTYLE_R);
+	xui_method_ptrcall(m_droptog, set_parent	)(this);
+	xui_method_ptrcall(m_droptog, ini_component	)(0, 0, DOCKSTYLE_R);
 	m_widgetvec.push_back(m_droptog);
 
 	m_droplst   = new xui_listview	(xui_vector<s32>(0), false);

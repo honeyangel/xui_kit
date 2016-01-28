@@ -7,7 +7,7 @@ xui_implement_rtti(xui_window, xui_panel);
 //constructor
 */
 xui_create_explain(xui_window)( const xui_vector<s32>& size )
-: xui_panel(size, NULL)
+: xui_panel(size)
 {
 	m_modal = false;
 }

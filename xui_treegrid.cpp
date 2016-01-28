@@ -7,11 +7,12 @@ xui_implement_rtti(xui_treegrid, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_treegrid)( u32 index, xui_component* parent )
-: xui_control(xui_vector<s32>(0), parent)
+xui_create_explain(xui_treegrid)( u32 index, xui_treeview* treeview )
+: xui_control(xui_vector<s32>(0))
 {
 	m_index	 = index;
 	m_cursor = CURSOR_WE;
+	m_parent = treeview;
 }
 
 /*

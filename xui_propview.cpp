@@ -24,8 +24,8 @@ xui_method_explain(xui_propview, create,			xui_propview*			)( void )
 /*
 //constructor
 */
-xui_create_explain(xui_propview)( const xui_vector<s32>& size, xui_component* parent )
-: xui_container(size, parent)
+xui_create_explain(xui_propview)( const xui_vector<s32>& size )
+: xui_container(size)
 {
 	m_proproot = NULL;
 }

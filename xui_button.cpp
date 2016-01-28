@@ -40,8 +40,8 @@ xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon, const std
 /*
 //constructor
 */
-xui_create_explain(xui_button)( const xui_vector<s32>& size, xui_component* parent )
-: xui_drawer(size, parent)
+xui_create_explain(xui_button)( const xui_vector<s32>& size )
+: xui_drawer(size)
 {
 	m_backcolor = default_backcolor;
 	m_movecolor = default_movecolor;

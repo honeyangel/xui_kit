@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timehead( xui_component* parent );
+	xui_timehead( xui_timeview* timeview );
 
 protected:
 	/*

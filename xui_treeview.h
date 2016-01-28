@@ -101,7 +101,7 @@ public:
 		maxsize		= _size;
 		editable	= _editable;
 		boolmode	= _boolmode;
-		borderrt	= xui_rect2d<s32>(2);
+		borderrt	=  xui_rect2d<s32>(2);
 		textalign	= _textalign;
 		iconalign	= _iconalign;
 	}
@@ -123,7 +123,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true, xui_component* parent = NULL );
+	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
 
 	/*
 	//destructor

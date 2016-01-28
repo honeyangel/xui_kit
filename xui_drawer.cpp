@@ -27,8 +27,8 @@ xui_method_explain(xui_drawer, create,				xui_drawer*				)( const std::wstring& 
 /*
 //constructor
 */
-xui_create_explain(xui_drawer)( const xui_vector<s32>& size, xui_component* parent )
-: xui_control(size, parent)
+xui_create_explain(xui_drawer)( const xui_vector<s32>& size )
+: xui_control(size)
 {
 	m_icon			= NULL;
 	m_iconsize		= xui_vector<s32>(0);

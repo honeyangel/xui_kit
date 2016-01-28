@@ -26,7 +26,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_toggle( const xui_vector<s32>& size, u08 drawstyle = TOGGLE_CIRCLE, xui_component* parent = NULL );
+	xui_toggle( const xui_vector<s32>& size, u08 drawstyle = TOGGLE_CIRCLE );
 
 	/*
 	//init

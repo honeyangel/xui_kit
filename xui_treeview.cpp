@@ -30,8 +30,8 @@ xui_method_explain(xui_treeview, create,				xui_treeview*						)( const std::vec
 /*
 //constructor
 */
-xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, u08 plusrender, bool rendergrid, bool lighttrace, xui_component* parent )
-: xui_container(size, parent)
+xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, u08 plusrender, bool rendergrid, bool lighttrace )
+: xui_container(size)
 {
 	m_columninfo = columninfo;
 	m_plusrender = plusrender;
@@ -49,9 +49,10 @@ xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector
 
 	for (u32 i = 0; i < m_columninfo.size();   ++i)
 	{
-		xui_drawer* drawer = new xui_drawer(xui_vector<s32>(0), this);
+		xui_drawer* drawer = new xui_drawer(xui_vector<s32>(0));
 		drawer->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_treeview>(this, &xui_treeview::on_headclick);
 		drawer->xm_renderself += new xui_method_member<xui_method_args,  xui_treeview>(this, &xui_treeview::on_headrenderself);
+		xui_method_ptrcall(drawer, set_parent	)(this);
 		xui_method_ptrcall(drawer, set_borderrt	)(m_columninfo[i].borderrt);
 		xui_method_ptrcall(drawer, set_icon		)(m_columninfo[i].icon);
 		xui_method_ptrcall(drawer, set_text		)(m_columninfo[i].name);

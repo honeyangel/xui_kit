@@ -326,7 +326,7 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(button2);
 	//window->add_child(linebox);
 
-	xui_textbox* textbox = new xui_textbox(xui_vector<s32>(150, 100), NULL);
+	xui_textbox* textbox = new xui_textbox(xui_vector<s32>(150, 100));
 	textbox->set_backcolor(xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
 	textbox->set_sidecolor(xui_colour(1.0f, 1.0f, 1.0f, 1.0f));
 	textbox->set_sidestyle(SIDESTYLE_S);
@@ -340,7 +340,7 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(textbox);
 	gridbox->set_gridctrl(1, 1, textbox);
 
-	xui_button* button = new xui_button(xui_vector<s32>(50), NULL);
+	xui_button* button = new xui_button(xui_vector<s32>(50));
 	button->set_icon(xui_bitmap::create("button.png"));
 	button->set_text(L"button");
 	button->set_textfont(xui_family("Arial", 16, false));
@@ -371,9 +371,9 @@ int main(int argc, char** argv)
 	//linebox->add_linectrl(toggle);
 	//gridbox->set_gridctrl(1, 2, toggle);
 
-	xui_separate* separate = new xui_separate(xui_vector<s32>(20), NULL);
+	xui_separate* separate = new xui_separate(xui_vector<s32>(20));
 
-	xui_toolbar* toolbar = new xui_toolbar(xui_vector<s32>(200), NULL);
+	xui_toolbar* toolbar = new xui_toolbar(xui_vector<s32>(200));
 	toolbar->set_backcolor(xui_colour(0.0f, 0.0f, 0.0f, 0.0f));
 	//toolbar->add_item(textbox);
 	//toolbar->add_item(button);
@@ -391,7 +391,7 @@ int main(int argc, char** argv)
 
 	//u08 widgettype[LIW_COUNT] = {255, LIW_ICON, LIW_TEXT};
 	//s32 widgetsize[LIW_COUNT] = {0,   20,       60};
-	xui_listview* listview = new xui_listview(xui_vector<s32>(250, 200), NULL, false);
+	xui_listview* listview = new xui_listview(xui_vector<s32>(250, 200), false);
 	listview->set_backcolor(xui_colour(1.0f, 0.4f, 0.4f, 0.4f));
 	listview->set_allowmulti(true);
 	for (int i = 0; i < 20; ++i)

@@ -10,9 +10,10 @@ xui_implement_rtti(xui_timehead, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_timehead)( xui_component* parent )
-: xui_control(xui_vector<s32>(0), parent)
+xui_create_explain(xui_timehead)( xui_timeview* timeview )
+: xui_control(xui_vector<s32>(0))
 {
+	m_parent	= timeview;
 	m_border	= xui_rect2d<s32>(5, 2, 0, 2);
 	m_downrela  = xui_vector<s32>(0);
 	m_currrela  = xui_vector<s32>(0);

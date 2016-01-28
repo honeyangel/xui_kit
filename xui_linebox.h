@@ -16,7 +16,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_linebox( const xui_vector<s32>& size, u08 flow = FLOWSTYLE_H, xui_component* parent = NULL );
+	xui_linebox( const xui_vector<s32>& size, u08 flow = FLOWSTYLE_H );
 
 	/*
 	//flow

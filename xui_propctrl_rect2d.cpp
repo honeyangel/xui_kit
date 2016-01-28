@@ -26,7 +26,8 @@ xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 	m_subyedit = new xui_propedit_number(this, datarect2d->get_interval());
 	m_subwedit = new xui_propedit_number(this, datarect2d->get_interval());
 	m_subhedit = new xui_propedit_number(this, datarect2d->get_interval());
-	m_namectrl = new xui_drawer(xui_vector<s32>(100, 20), this);
+	m_namectrl = new xui_drawer(xui_vector<s32>(100, 20));
+	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 

@@ -20,7 +20,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_listview( const xui_vector<s32>& size, bool drawtick, xui_component* parent = NULL );
+	xui_listview( const xui_vector<s32>& size, bool drawtick );
 
 	/*
 	//multi select

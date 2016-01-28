@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timetool( xui_component* parent );
+	xui_timetool( xui_timeview* timeview );
 
 	/*
 	//destructor

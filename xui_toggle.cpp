@@ -52,8 +52,8 @@ xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon, cons
 /*
 //constructor
 */
-xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle, xui_component* parent )
-: xui_button(size, parent)
+xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle )
+: xui_button(size)
 {
 	m_push		= false;
 	m_drawstyle = drawstyle;

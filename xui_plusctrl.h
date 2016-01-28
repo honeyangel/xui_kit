@@ -17,7 +17,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_plusctrl( u08 drawmode, bool expanded, xui_component* parent );
+	xui_plusctrl( u08 drawmode, bool expanded );
 
 	/*
 	//method

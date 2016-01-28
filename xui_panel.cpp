@@ -9,8 +9,8 @@ xui_implement_rtti(xui_panel, xui_container);
 /*
 //constructor
 */
-xui_create_explain(xui_panel)( const xui_vector<s32>& size, xui_component* parent )
-: xui_container(size, parent)
+xui_create_explain(xui_panel)( const xui_vector<s32>& size )
+: xui_container(size)
 {
 	m_backcolor = xui_colour(1.0f, 0.15f);
 	//m_resizevec.push_back(new xui_border(xui_vector<s32>(5), this, RESIZEFLAG_L));

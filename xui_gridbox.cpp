@@ -21,8 +21,8 @@ xui_method_explain(xui_gridbox, create, xui_gridbox*)( u32 row, u32 col, s32 tit
 /*
 //constructor
 */
-xui_create_explain(xui_gridbox)( u32 row, u32 col, xui_component* parent )
-: xui_control(xui_vector<s32>(0), parent)
+xui_create_explain(xui_gridbox)( u32 row, u32 col )
+: xui_control(xui_vector<s32>(0))
 {
 	m_rowcount = row;
 	m_colcount = col;

@@ -13,7 +13,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treenode( xui_treedata* linkdata, xui_component* parent );
+	xui_treenode( xui_treedata* linkdata, xui_treeview* treeview );
 
 	/*
 	//static compare

@@ -16,7 +16,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_slider( const xui_vector<s32>& size, u08 style, u08 arrowdraw, xui_component* parent = NULL );
+	xui_slider( const xui_vector<s32>& size, u08 style, u08 arrowdraw );
 
 protected:
 	/*

@@ -17,7 +17,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_dropbox( const xui_vector<s32>& size, bool itemicon = false, xui_component* parent = NULL );
+	xui_dropbox( const xui_vector<s32>& size, bool itemicon = false );
 
 	/*
 	//destructor

@@ -21,7 +21,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_button( const xui_vector<s32>& size, xui_component* parent = NULL );
+	xui_button( const xui_vector<s32>& size );
 
 	/*
 	//color

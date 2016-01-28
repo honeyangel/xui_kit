@@ -25,8 +25,8 @@ xui_method_explain(xui_textbox, create, xui_textbox*)( s32 width )
 /*
 //constructor
 */
-xui_create_explain(xui_textbox)( const xui_vector<s32>& size, xui_component* parent )
-: xui_drawer(size, parent)
+xui_create_explain(xui_textbox)( const xui_vector<s32>& size )
+: xui_drawer(size)
 {
 	m_cursor		 = CURSOR_TEXT;
 	m_password		 = false;

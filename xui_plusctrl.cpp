@@ -6,8 +6,8 @@ xui_implement_rtti(xui_plusctrl, xui_button);
 /*
 //constructor
 */
-xui_create_explain(xui_plusctrl)( u08 drawmode, bool expanded, xui_component* parent )
-: xui_button(xui_vector<s32>(16), parent)
+xui_create_explain(xui_plusctrl)( u08 drawmode, bool expanded )
+: xui_button(xui_vector<s32>(16))
 {
 	m_backcolor	= xui_colour(1.0f,   0.8f);
 	m_movecolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);

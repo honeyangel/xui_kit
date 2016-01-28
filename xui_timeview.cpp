@@ -38,8 +38,8 @@ xui_method_explain(xui_timeview, create, xui_timeview*)( s32 width, const std::v
 /*
 //constructor
 */
-xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, xui_component* parent )
-: xui_container(size, parent)
+xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight )
+: xui_container(size)
 {
 	m_hscrollshow	= true;
 	m_keyspace		= 15;
@@ -56,8 +56,9 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_widgetvec.push_back(m_timetool);
 	m_widgetvec.push_back(m_timegrad);
 
-	m_ksslider = new xui_slider(xui_vector<s32>(150, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS, this);
+	m_ksslider = new xui_slider(xui_vector<s32>(150, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS);
 	m_ksslider->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_kssliderscroll);
+	xui_method_ptrcall(m_ksslider, set_parent	)(this);
 	xui_method_ptrcall(m_ksslider, set_backcolor)(xui_colour::darkgray);
 	xui_method_ptrcall(m_ksslider, set_sidestyle)(SIDESTYLE_S);
 	xui_method_ptrcall(m_ksslider, set_corner	)(3);
@@ -69,7 +70,8 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	for (u32 i = 0; i < columninfo.size(); ++i)
 		treesize += columninfo[i].size;
 
-	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, false, this);
+	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, false);
+	xui_method_ptrcall(m_timetree, set_parent	)(this);
 	xui_method_ptrcall(m_timetree, set_drawcolor)(false);
 	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(0, 0, 8, 0));
 	m_timetree->xm_setclientsz	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);

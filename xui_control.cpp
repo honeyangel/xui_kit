@@ -14,8 +14,8 @@ const xui_colour xui_control::default_sidecolor = xui_colour(1.0f, 160.0f/255.0f
 /*
 //constructor
 */
-xui_create_explain(xui_control)( const xui_vector<s32>& size, xui_component* parent )
-: xui_component(size, parent)
+xui_create_explain(xui_control)( const xui_vector<s32>& size )
+: xui_component(size)
 {
 	m_client	= m_render;
 	m_border	= xui_rect2d<s32>(0);

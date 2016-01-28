@@ -10,7 +10,7 @@
 xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* icon )
 : xui_propedit_base(propctrl)
 {
-	xui_drawer* textctrl = new xui_drawer(xui_vector<s32>(48, 18), NULL);
+	xui_drawer* textctrl = new xui_drawer(xui_vector<s32>(48, 18));
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
@@ -24,7 +24,7 @@ xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* ico
 	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlnonfocus);
 	textctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlgetfocus);
 
-	xui_drawer* pickctrl = new xui_drawer(xui_vector<s32>(16, 16), NULL);
+	xui_drawer* pickctrl = new xui_drawer(xui_vector<s32>(16, 16));
 	pickctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_object>(this, &xui_propedit_object::on_pickctrlclick);
 	pickctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_pickctrlrenderself);
 

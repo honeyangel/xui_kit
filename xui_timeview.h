@@ -27,7 +27,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_timeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 24, xui_component* parent = NULL );
+	xui_timeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 24 );
 
 	/*
 	//control

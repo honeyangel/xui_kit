@@ -22,12 +22,14 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 : xui_propctrl()
 {
 	//plus
-	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true, this);
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true);
+	xui_method_ptrcall(m_propplus, set_parent	)(this);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_expand>(this, &xui_propctrl_expand::on_propexpand);
 	m_widgetvec.push_back(m_propplus);
 
 	//name
-	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20), this);
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
+	xui_method_ptrcall(m_namectrl, set_parent	)(this);
 	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
 	m_widgetvec.push_back(m_namectrl);
 

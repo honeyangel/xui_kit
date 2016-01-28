@@ -9,9 +9,10 @@ xui_implement_rtti(xui_timerect, xui_control);
 /*
 //constructor
 */
-xui_create_explain(xui_timerect)( xui_component* parent )
-: xui_control(xui_vector<s32>(0), parent)
+xui_create_explain(xui_timerect)( xui_timeview* timeview )
+: xui_control(xui_vector<s32>(0))
 {
+	m_parent		= timeview;
 	m_cursor		= CURSOR_HAND;
 	m_visible		= false;
 	m_backcolor		= xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);

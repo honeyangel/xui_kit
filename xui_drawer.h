@@ -36,7 +36,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_drawer( const xui_vector<s32>& size, xui_component* parent = NULL );
+	xui_drawer( const xui_vector<s32>& size );
 
 	/*
 	//init

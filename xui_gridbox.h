@@ -16,7 +16,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_gridbox( u32 row = 2, u32 col = 2, xui_component* parent = NULL );
+	xui_gridbox( u32 row = 2, u32 col = 2 );
 
 	/*
 	//count

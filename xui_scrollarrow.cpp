@@ -7,8 +7,8 @@ xui_implement_rtti(xui_scrollarrow, xui_button);
 /*
 //constructor
 */
-xui_create_explain(xui_scrollarrow)( const xui_vector<s32>& size, u08 flowstyle, s32 direction, u08 arrowdraw, xui_component* parent )
-: xui_button(size, parent)
+xui_create_explain(xui_scrollarrow)( const xui_vector<s32>& size, u08 flowstyle, s32 direction, u08 arrowdraw )
+: xui_button(size)
 {
 	m_flowstyle	= flowstyle;
 	m_arrowdraw = arrowdraw;

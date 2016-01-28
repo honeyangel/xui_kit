@@ -25,8 +25,8 @@ xui_method_explain(xui_listview, create,				xui_listview*				)( const xui_vector
 /*
 //constructor
 */
-xui_create_explain(xui_listview)( const xui_vector<s32>& size, bool drawtick, xui_component* parent )
-: xui_container(size, parent)
+xui_create_explain(xui_listview)( const xui_vector<s32>& size, bool drawtick )
+: xui_container(size)
 {
 	m_drawtick		= drawtick;
 	m_iconsize		= xui_vector<s32>(0);
@@ -337,14 +337,15 @@ xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wst
 }
 xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text, xui_bitmap* icon )
 {
-	xui_listitem* item = new xui_listitem(this, m_itemborder, m_drawtick);
-	m_ascrollitem.push_back(item);
+	xui_listitem* item = new xui_listitem(m_itemborder, m_drawtick);
 	xui_method_ptrcall(item, ini_drawer		)(icon, m_iconsize);
 	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, m_textdraw);
+	xui_method_ptrcall(item, set_parent		)(this);
 	xui_method_ptrcall(item, set_iconalign	)(m_iconalign);
 	xui_method_ptrcall(item, set_textalign	)(m_textalign);
 	xui_method_ptrcall(item, set_iconoffset	)(m_iconoffset);
 	xui_method_ptrcall(item, set_textoffset	)(m_textoffset);
+	m_ascrollitem.push_back(item);
 
 	xui_vector<s32> pt;
 	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();

@@ -32,8 +32,8 @@ xui_method_explain(xui_scroll, create,			xui_scroll*		)( u08 style )
 /*
 //constructor
 */
-xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style, xui_component* parent )
-: xui_control(size, parent)
+xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style )
+: xui_control(size)
 {
 	m_smallchange   = 1;
 	m_largechange	= 10;
@@ -43,14 +43,17 @@ xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style, xui_comp
 	m_value			= 0;
 
 	//thumb
-	m_thumb	= new xui_scrollthumb(xui_vector<s32>(12), style, this);
+	m_thumb	= new xui_scrollthumb(xui_vector<s32>(12), style);
+	xui_method_ptrcall(m_thumb, set_parent		)(this);
 	xui_method_ptrcall(m_thumb, set_drawcolor	)(true);
 	xui_method_ptrcall(m_thumb, set_corner		)(5);
 	m_widgetvec.push_back(m_thumb);
 
 	//arrow
-	m_arrow[ARROW_INC] = new xui_scrollarrow(xui_vector<s32>(12), style,  1, ARROWDRAW_TRIANGLE, this);
-	m_arrow[ARROW_DEC] = new xui_scrollarrow(xui_vector<s32>(12), style, -1, ARROWDRAW_TRIANGLE, this);
+	m_arrow[ARROW_INC] = new xui_scrollarrow(xui_vector<s32>(12), style,  1, ARROWDRAW_TRIANGLE);
+	m_arrow[ARROW_DEC] = new xui_scrollarrow(xui_vector<s32>(12), style, -1, ARROWDRAW_TRIANGLE);
+	m_arrow[ARROW_INC]->set_parent(this);
+	m_arrow[ARROW_DEC]->set_parent(this);
 	m_widgetvec.push_back(m_arrow[ARROW_DEC]);
 	m_widgetvec.push_back(m_arrow[ARROW_INC]);
 	switch(m_style)
