@@ -171,23 +171,23 @@ xui_method_explain(xui_component, set_visible,			void					)( bool flag )
 */
 xui_method_explain(xui_component, has_focus,			bool					)( void ) const
 {
-	return g_desktop->get_focusctrl() == this;
+	return xui_desktop::get_ins()->get_focusctrl() == this;
 }
 xui_method_explain(xui_component, req_focus,			void					)( void )
 {
-	g_desktop->post_message(xui_message(this, XM_GETFOCUS, 0, 0));
+	xui_desktop::get_ins()->post_message(xui_message(this, XM_GETFOCUS, 0, 0));
 }
 xui_method_explain(xui_component, has_catch,			bool					)( void ) const
 {
-	return g_desktop->get_catchctrl() == this;
+	return xui_desktop::get_ins()->get_catchctrl() == this;
 }
 xui_method_explain(xui_component, req_catch,			void					)( void )
 {
-	g_desktop->post_message(xui_message(this, XM_GETCATCH, 0, 0));
+	xui_desktop::get_ins()->post_message(xui_message(this, XM_GETCATCH, 0, 0));
 }
 xui_method_explain(xui_component, was_hover,			bool					)( void ) const
 {
-	return g_desktop->get_hoverctrl() == this;
+	return xui_desktop::get_ins()->get_hoverctrl() == this;
 }
 
 /*
@@ -561,7 +561,7 @@ xui_method_explain(xui_component, on_mousedown,			void					)( xui_method_mouse&	
 xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&		args )
 {
 	if (args.mouse == MB_L && 
-		g_desktop->get_hoverctrl() == this)
+		xui_desktop::get_ins()->get_hoverctrl() == this)
 	{
 		on_mouseclick(      args);
 		xm_mouseclick(this, args);

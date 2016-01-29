@@ -168,7 +168,7 @@ xui_method_explain(xui_panel, del_child,		void								)( xui_control* child, boo
 
 	//Ïú»Ù¿Ø¼þ
 	if (destroy)
-		g_desktop->move_recycle(this);
+		xui_desktop::get_ins()->move_recycle(this);
 }
 xui_method_explain(xui_panel, del_children,		void								)( void )
 {

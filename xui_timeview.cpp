@@ -700,17 +700,16 @@ xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_component
 }
 xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_component* catchctrl = g_desktop->get_catchctrl();
-	if (catchctrl == sender)
+	if (sender->has_catch())
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 
 		s32 scroll_value =  0;
 		if (pt.x > rt.ax && pt.x < rt.ax+10)
-			scroll_value = -2;
+			scroll_value = -m_keyspace;
 		if (pt.x < rt.bx && pt.x > rt.bx-10)
-			scroll_value =  2;
+			scroll_value =  m_keyspace;
 
 		if (m_hscroll && scroll_value != 0)
 		{
@@ -719,23 +718,22 @@ xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componen
 			xui_method_mouse args;
 			args.mouse = MB_L;
 			args.point = pt;
-			g_desktop->os_mousemove(args);
+			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
 xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_component* catchctrl = g_desktop->get_catchctrl();
-	if (catchctrl == sender)
+	if (sender->has_catch())
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 
 		s32 scroll_value =  0;
 		if (pt.y > rt.ay && pt.y < rt.ay+10)
-			scroll_value = -2;
+			scroll_value = -m_timetree->get_lineheight()/2;
 		if (pt.y < rt.by && pt.y > rt.by-10)
-			scroll_value =  2;
+			scroll_value =  m_timetree->get_lineheight()/2;
 
 		if (m_vscroll && scroll_value != 0)
 		{
@@ -744,23 +742,22 @@ xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componen
 			xui_method_mouse args;
 			args.mouse = MB_L;
 			args.point = pt;
-			g_desktop->os_mousemove(args);
+			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
 xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_component* sender, xui_method_args& args )
 {
-	xui_component* catchctrl = g_desktop->get_catchctrl();
-	if (catchctrl == m_timerect)
+	if (sender->has_catch())
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 
 		s32 scroll_value =  0;
 		if (pt.x > rt.ax && pt.x < rt.ax+10)
-			scroll_value = -2;
+			scroll_value = -m_keyspace;
 		if (pt.x < rt.bx && pt.x > rt.bx-10)
-			scroll_value =  2;
+			scroll_value =  m_keyspace;
 
 		if (m_hscroll && scroll_value != 0)
 		{
@@ -769,7 +766,7 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componen
 			xui_method_mouse args;
 			args.mouse = MB_L;
 			args.point = pt;
-			g_desktop->os_mousemove(args);
+			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }

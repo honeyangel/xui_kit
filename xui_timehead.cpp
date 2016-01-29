@@ -216,7 +216,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 	s32 hoverframe = -1;
 	if (was_hover())
 	{
-		xui_vector<s32> pt = g_desktop->get_mousecurr() - get_screenpt();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr() - get_screenpt();
 		pt.x -= m_border.ax;
 		s32 frame = hit_frame(pt.x);
 		s32 inner = xui_abs(pt.x - frame*timeview->get_keyspace());

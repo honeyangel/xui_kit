@@ -194,7 +194,7 @@ xui_method_explain(xui_textbox, update,				void					)( f32 delta )
 	//catch
 	if (has_catch())
 	{
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 		xui_rect2d<s32> rt = get_renderrtabs();
 		if (pt.x < rt.ax)
 		{
@@ -518,7 +518,7 @@ xui_method_explain(xui_textbox, do_copy,			void					)( void )
 		return;
 
 	std::wstring temp = get_selecttext();
-	g_desktop->set_pastetext(temp);
+	xui_desktop::get_ins()->set_pastetext(temp);
 }
 xui_method_explain(xui_textbox, do_cut,				void					)( void )
 {
@@ -533,7 +533,7 @@ xui_method_explain(xui_textbox, do_paste,			void					)( void )
 	if (m_readonly)
 		return;
 
-	std::wstring temp = g_desktop->get_pastetext();
+	std::wstring temp = xui_desktop::get_ins()->get_pastetext();
 	xui_method_keybd args;
 	for (u32 i = 0; i < temp.length(); ++i)
 	{

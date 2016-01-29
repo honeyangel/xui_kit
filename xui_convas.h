@@ -198,9 +198,4 @@ protected:
 	xui_rect2d<s32>			m_cliprect;
 };
 
-/*
-//global
-*/
-#define g_convas xui_convas::get_ins()
-
 #endif//__xui_convas_h__

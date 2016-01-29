@@ -672,13 +672,13 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 	if (has_catch())
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 
 		s32 scroll_value =  0;
 		if (pt.y > rt.ay && pt.y < rt.ay+m_lineheight/2)
-			scroll_value = -5;
+			scroll_value = -m_lineheight/2;
 		if (pt.y < rt.by && pt.y > rt.by-m_lineheight/2)
-			scroll_value =  5;
+			scroll_value =  m_lineheight/2;
 
 		if (m_vscroll && scroll_value != 0)
 		{
@@ -687,7 +687,7 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 			xui_method_mouse args;
 			args.mouse = MB_L;
 			args.point = pt;
-			g_desktop->os_mousemove(args);
+			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
@@ -698,7 +698,7 @@ xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args
 	{
 		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
-		xui_vector<s32> pt = get_renderpt(g_desktop->get_mousecurr());
+		xui_vector<s32> pt = get_renderpt(xui_desktop::get_ins()->get_mousecurr());
 		xui_treenode* hovernode = choose_node(pt);
 		if (hovernode && hovernode->was_selected() == false)
 		{
@@ -811,7 +811,7 @@ xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse
 			m_mousehover != m_mousecatch)
 		{
 			xui_method_treedragdrop tree_args;
-			xui_vector<s32> pt = g_desktop->get_mousecurr() - m_mousehover->get_screenpt();
+			xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr() - m_mousehover->get_screenpt();
 			tree_args.dragnode = m_mousecatch;
 			tree_args.dropnode = m_mousehover;
 			if (pt.y < m_lineheight/3  ) tree_args.allowplace = TREEDROP_FRONT;

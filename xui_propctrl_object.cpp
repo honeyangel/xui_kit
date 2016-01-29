@@ -108,7 +108,7 @@ xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* 
 		xui_pickwnd* wnd = pickfunc(this);
 		wnd->set_value(dataobject->get_value());
 		wnd->set_modal(true);
-		g_desktop->add_child(wnd);
+		xui_desktop::get_ins()->add_child(wnd);
 	}
 }
 

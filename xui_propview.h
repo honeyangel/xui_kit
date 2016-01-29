@@ -14,8 +14,8 @@ public:
 	/*
 	//static
 	*/
-	static const s32		LINE_HEIGHT;
-	static const s32		NODE_INDENT;
+	static const s32		default_lineheight;
+	static const s32		default_nodeindent;
 	static xui_propview*	create			( void );
 
 	/*

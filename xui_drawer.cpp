@@ -285,7 +285,7 @@ xui_method_explain(xui_drawer, get_rendertextrt,	xui_rect2d<s32>			)( void ) con
 	rt.ay += m_textoffset.y;
 	if (text.length() > 0)
 	{
-		rt = g_convas->calc_draw(
+		rt = xui_convas::get_ins()->calc_draw(
 			text, 
 			m_textfont, 
 			rt, 

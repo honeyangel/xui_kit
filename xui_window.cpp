@@ -27,8 +27,8 @@ xui_method_explain(xui_window, set_modal,		void)( bool flag )
 
 		if (m_visible)
 		{
-			if (m_modal)	g_desktop->add_modalwnd(this);
-			else			g_desktop->del_modalwnd(this);
+			if (m_modal)	xui_desktop::get_ins()->add_modalwnd(this);
+			else			xui_desktop::get_ins()->del_modalwnd(this);
 		}
 	}
 }
@@ -41,14 +41,14 @@ xui_method_explain(xui_window, on_show,			void)( xui_method_args&	 args )
 	xui_panel::on_show(args);
 
 	if (m_modal)
-		g_desktop->add_modalwnd(this);
+		xui_desktop::get_ins()->add_modalwnd(this);
 }
 xui_method_explain(xui_window, on_hide,			void)( xui_method_args&	 args )
 {
 	xui_panel::on_hide(args);
 
 	if (m_modal)
-		g_desktop->del_modalwnd(this);
+		xui_desktop::get_ins()->del_modalwnd(this);
 }
 xui_method_explain(xui_window, on_keybddown,	void)( xui_method_keybd& args )
 {

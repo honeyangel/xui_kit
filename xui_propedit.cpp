@@ -262,9 +262,9 @@ xui_method_explain(xui_propedit_number, on_textctrltextchanged, void				)( xui_c
 }
 xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_component* sender, xui_method_mouse& args )
 {
-	if (g_desktop->get_catchctrl() == sender)
-	{
-		s32 delta = args.point.x - g_desktop->get_mouselast().x;
+	if (sender->has_catch())
+{
+		s32 delta = args.point.x - xui_desktop::get_ins()->get_mouselast().x;
 		f64 value = get_value() + (f64)delta * m_interval;
 
 		std::wstringstream tmp;

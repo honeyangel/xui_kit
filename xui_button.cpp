@@ -122,8 +122,8 @@ xui_method_explain(xui_button, on_renderself,	void				)( xui_method_args&  args 
 */
 xui_method_explain(xui_button, get_rendercolor, xui_colour			)( void ) const
 {
-	if		(g_desktop->get_catchctrl() == this) return m_downcolor;
-	else if (g_desktop->get_hoverctrl() == this) return m_movecolor;
-	else										 return m_backcolor;
+	if		(has_catch())	return m_downcolor;
+	else if (was_hover())	return m_movecolor;
+	else					return m_backcolor;
 }
 

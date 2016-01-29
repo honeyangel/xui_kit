@@ -48,15 +48,15 @@ void MouseFunc(int mouse, int state, int x, int y)
 
 	switch (mouse)
 	{
-	case GLUT_LEFT_BUTTON:	 args.mouse = MB_L;				break;
-	case GLUT_RIGHT_BUTTON:	 args.mouse = MB_R;				break;
-	case GLUT_MIDDLE_BUTTON: args.mouse = MB_M;				break;
+	case GLUT_LEFT_BUTTON:	 args.mouse = MB_L;							break;
+	case GLUT_RIGHT_BUTTON:	 args.mouse = MB_R;							break;
+	case GLUT_MIDDLE_BUTTON: args.mouse = MB_M;							break;
 	}
 
 	switch (state)
 	{
-	case GLUT_DOWN:			g_desktop->os_mousedown(args);	break;
-	case GLUT_UP:			g_desktop->os_mouserise(args);	break;
+	case GLUT_DOWN:			xui_desktop::get_ins()->os_mousedown(args);	break;
+	case GLUT_UP:			xui_desktop::get_ins()->os_mouserise(args);	break;
 	}
 
 	glutPostRedisplay();
@@ -134,10 +134,10 @@ void KeyboardFunc(unsigned char c, int x, int y )
 	args.ctrl  = (glutGetModifiers() & GLUT_ACTIVE_CTRL ) != 0;
 	args.shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) != 0;
 	args.kcode = NormalToKey(c, args.ctrl);
-	g_desktop->os_keybddown(args);
+	xui_desktop::get_ins()->os_keybddown(args);
 
 	if (args.ctrl == false)
-		g_desktop->os_keybdchar(c);
+		xui_desktop::get_ins()->os_keybdchar(c);
 
 	glutPostRedisplay();
 }
@@ -149,7 +149,7 @@ void SpecialFunc(int c, int x, int y )
 	args.ctrl  = (glutGetModifiers() & GLUT_ACTIVE_CTRL ) != 0;
 	args.shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) != 0;
 	args.kcode = SystemToKey(c);
-	g_desktop->os_keybddown(args);
+	xui_desktop::get_ins()->os_keybddown(args);
 
 	glutPostRedisplay();
 }
@@ -161,7 +161,7 @@ void KeyboardUpFunc(unsigned char c, int x, int y)
 	args.ctrl  = (glutGetModifiers() & GLUT_ACTIVE_CTRL ) != 0;
 	args.shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) != 0;
 	args.kcode = NormalToKey(c, args.ctrl);
-	g_desktop->os_keybdrise(args);
+	xui_desktop::get_ins()->os_keybdrise(args);
 
 	glutPostRedisplay();
 }
@@ -173,7 +173,7 @@ void SpecialUpFunc(int c, int x, int y)
 	args.ctrl  = (glutGetModifiers() & GLUT_ACTIVE_CTRL ) != 0;
 	args.shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) != 0;
 	args.kcode = SystemToKey(c);
-	g_desktop->os_keybdrise(args);
+	xui_desktop::get_ins()->os_keybdrise(args);
 
 	glutPostRedisplay();
 }
@@ -182,7 +182,7 @@ void MouseMove(int x, int y)
 {
 	xui_method_mouse args;
 	args.point = xui_vector<s32>(x, y);
-	g_desktop->os_mousemove(args);
+	xui_desktop::get_ins()->os_mousemove(args);
 
 	glutPostRedisplay();
 }
@@ -214,17 +214,17 @@ void Resize(int w, int h)
 	m[15] =  1.0f;
 	glLoadMatrixf(m);
 
-	g_convas->set_viewport(xui_rect2d<s32>(0, 0, w, h));
-	if (g_desktop)
-		g_desktop->set_rendersz(xui_vector<s32>(w, h));
+	xui_convas::get_ins()->set_viewport(xui_rect2d<s32>(0, 0, w, h));
+	if (xui_desktop::get_ins())
+		xui_desktop::get_ins()->set_rendersz(xui_vector<s32>(w, h));
 }
 
 void Render()
 {
 	xui_timermgr::get_ins()->update(0.016f);
-	g_desktop->update(0.016f);
+	xui_desktop::get_ins()->update(0.016f);
 
-	g_convas->set_cliprect(g_convas->get_viewport());
+	xui_convas::get_ins()->set_cliprect(xui_convas::get_ins()->get_viewport());
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//g_convas->draw_circle(xui_vector<s32>(100, 10), 10, xui_colour(1.0f), 0, 360);
@@ -247,7 +247,7 @@ void Render()
 	//g_convas->draw_text(text.str(), xui_family("Arial", 30, false), xui_vector<s32>(0, 120), textdraw);
 
 	//xui_vector<s32> pt(0, 150);
-	g_desktop->render();
+	xui_desktop::get_ins()->render();
 	glutSwapBuffers();
 }
 
@@ -459,7 +459,7 @@ int main(int argc, char** argv)
 	xui_demo::test_timeview(window);
 	xui_demo::test_propview(window);
 
-	g_desktop->add_child(window);
+	xui_desktop::get_ins()->add_child(window);
 
 	glutMainLoop();
 	return 0;

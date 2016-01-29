@@ -151,7 +151,7 @@ xui_method_explain(xui_propctrl_stdvec, on_invalid,				void			)( xui_method_args
 
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
-	sz.h = xui_propview::LINE_HEIGHT + m_border.ay + m_border.by;
+	sz.h = xui_propview::default_lineheight + m_border.ay + m_border.by;
 
 	bool expand = m_propplus->was_expanded();
 	xui_drawer*  namectrl = m_propedit->get_namectrl();
@@ -166,7 +166,7 @@ xui_method_explain(xui_propctrl_stdvec, on_invalid,				void			)( xui_method_args
 
 	if (m_propdata && expand)
 	{
-		sz.h += xui_propview::LINE_HEIGHT;
+		sz.h += xui_propview::default_lineheight;
 		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 		{
 			xui_propctrl* propctrl = m_propctrlvec[i];
@@ -186,7 +186,7 @@ xui_method_explain(xui_propctrl_stdvec, on_invalid,				void			)( xui_method_args
 xui_method_explain(xui_propctrl_stdvec, on_perform,				void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
-	s32 height = xui_propview::LINE_HEIGHT;
+	s32 height = xui_propview::default_lineheight;
 	s32 indent = get_indent();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
@@ -205,7 +205,7 @@ xui_method_explain(xui_propctrl_stdvec, on_perform,				void			)( xui_method_args
 		//size
 		namectrl->on_perform_y (rt.ay + height);
 		namectrl->on_perform_w (rt.get_w()/2);
-		namectrl->set_textoffset(xui_vector<s32>(indent+xui_propview::NODE_INDENT, 0));
+		namectrl->set_textoffset(xui_vector<s32>(indent+xui_propview::default_nodeindent, 0));
 		pt.x = rt.get_w()/2;
 		pt.y = rt.ay + height + height/2 - editctrl->get_renderh()/2;
 		editctrl->on_perform_pt(pt);
@@ -252,7 +252,7 @@ xui_method_explain(xui_propctrl_stdvec, add_propctrl,			void			)( xui_propdata* 
 		xui_vector<s32> pt;
 		xui_rect2d<s32> rt = propctrl->get_borderrt();
 		pt.x = get_indent();
-		pt.y = rt.ay + xui_propview::LINE_HEIGHT/2 - sortctrl->get_renderh()/2;
+		pt.y = rt.ay + xui_propview::default_lineheight/2 - sortctrl->get_renderh()/2;
 		sortctrl->on_perform_pt(pt);
 	}
 
@@ -291,18 +291,17 @@ xui_method_explain(xui_propctrl_stdvec, get_propdataall,		xui_propdata_vec)( u32
 */
 xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_component* sender, xui_method_args&  args )
 {
-	xui_component* catchctrl = g_desktop->get_catchctrl();
-	if (catchctrl == sender)
+	if (sender->has_catch())
 	{
 		xui_propview* propview = get_propview();
 		xui_rect2d<s32> rt = propview->get_renderrtins() + propview->get_screenpt();
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 
 		s32 scroll_value =  0;
-		if (pt.y > rt.ay && pt.y < rt.ay+xui_propview::LINE_HEIGHT/2)
-			scroll_value = -5;
-		if (pt.y < rt.by && pt.y > rt.by-xui_propview::LINE_HEIGHT/2)
-			scroll_value =  5;
+		if (pt.y > rt.ay && pt.y < rt.ay+xui_propview::default_lineheight/2)
+			scroll_value = -xui_propview::default_lineheight/2;
+		if (pt.y < rt.by && pt.y > rt.by-xui_propview::default_lineheight/2)
+			scroll_value =  xui_propview::default_lineheight/2;
 
 		xui_scroll* vscroll = propview->get_vscroll();
 		if (scroll_value != 0 && vscroll)
@@ -312,7 +311,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_com
 			xui_method_mouse args;
 			args.mouse = MB_L;
 			args.point = pt;
-			g_desktop->os_mousemove(args);
+			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
@@ -339,7 +338,7 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrltopdraw,		void			)( xui_compo
 		if (m_dropelem < m_dragelem || m_dropelem > m_dragelem+1)
 		{
 			xui_vector<s32> pt = get_screenpt();
-			s32 y = pt.y + m_border.ay + 2*xui_propview::LINE_HEIGHT;
+			s32 y = pt.y + m_border.ay + 2*xui_propview::default_lineheight;
 			for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 			{
 				if (i == m_dropelem)

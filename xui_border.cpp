@@ -90,7 +90,7 @@ xui_method_explain(xui_border, on_topdraw,		void)( xui_method_args&  args )
 	xui_component::on_topdraw(args);
 	if (m_parent)
 	{
-		xui_vector<s32> pt = g_desktop->get_mousecurr();
+		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 		xui_rect2d<s32> rt = get_renderrtabs();
 		switch (m_resize)
 		{

@@ -38,6 +38,7 @@ public:
 	const xui_vector<s32>&		get_mousedown	( void ) const;
 	const xui_vector<s32>&		get_mouselast	( void ) const;
 	const xui_vector<s32>&		get_mousecurr	( void ) const;
+	xui_vector<s32>				get_mousemove	( void ) const;
 
 	/*
 	//paste
@@ -112,7 +113,5 @@ protected:
 	std::vector<xui_message>	m_messagevec;
 	std::vector<xui_component*>	m_recyclebin;
 };
-
-#define g_desktop xui_desktop::get_ins()
 
 #endif//__xui_desktop_h__

@@ -369,11 +369,11 @@ xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* 
 {
 	xui_vector<s32> sz = m_droplst->get_rendersz();
 	xui_vector<s32> pt;
-	pt.x  = g_desktop->get_renderw() - get_screenpt().x - sz.w ;
+	pt.x  = xui_desktop::get_ins()->get_renderw() - get_screenpt().x - sz.w ;
 	pt.x  = xui_min(pt.x, 0);
 	pt.y  = get_renderh();
 
-	if (get_renderrtabs().by + m_droplst->get_renderh() < g_desktop->get_renderh())
+	if (get_renderrtabs().by + m_droplst->get_renderh() < xui_desktop::get_ins()->get_renderh())
 		pt.y = get_renderh();
 	else
 		pt.y = -m_droplst->get_renderh();
@@ -427,12 +427,12 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 	xui_method_ptrcall(m_droplst, set_visible	)(true);
 	xui_method_ptrcall(m_droplst, refresh		)();
 
-	g_desktop->set_floatctrl(m_droplst);
+	xui_desktop::get_ins()->set_floatctrl(m_droplst);
 }
 xui_method_explain(xui_dropbox, set_droplisthide,		void			)( void )
 {
 	xui_method_ptrcall(m_droptog, set_push		)(false);
 	xui_method_ptrcall(m_droplst, set_visible	)(false);
 
-	g_desktop->set_floatctrl(NULL);
+	xui_desktop::get_ins()->set_floatctrl(NULL);
 }

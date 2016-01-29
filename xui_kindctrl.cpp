@@ -182,7 +182,7 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
-	s32 indent = xui_propview::NODE_INDENT;
+	s32 indent = xui_propview::default_nodeindent;
 	s32 height = KIND_HEIGHT;
 
 	xui_rect2d<s32> rt = get_renderrtins();

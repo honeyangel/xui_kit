@@ -39,7 +39,6 @@ xui_method_explain(xui_desktop, get_catchctrl,	xui_component*			)( void )
 {
 	return m_catchctrl;
 }
-
 xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* component )
 {
 	if (m_catchctrl != component)
@@ -68,12 +67,10 @@ xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* compon
 			set_focusctrl(m_catchctrl);
 	}
 }
-
 xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
 {
 	return m_focusctrl;
 }
-
 xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* component )
 {
 	if (m_focusctrl != component)
@@ -102,12 +99,10 @@ xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* compon
 		}
 	}
 }
-
 xui_method_explain(xui_desktop, get_hoverctrl,	xui_component*			)( void )
 {
 	return m_hoverctrl;
 }
-
 xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* component )
 {
 	if (m_hoverctrl != component)
@@ -172,15 +167,17 @@ xui_method_explain(xui_desktop, get_mousedown,	const xui_vector<s32>&	)( void ) 
 {
 	return m_mousedown;
 }
-
 xui_method_explain(xui_desktop, get_mouselast,	const xui_vector<s32>&	)( void ) const
 {
 	return m_mouselast;
 }
-
 xui_method_explain(xui_desktop, get_mousecurr,	const xui_vector<s32>&	)( void ) const
 {
 	return m_mousecurr;
+}
+xui_method_explain(xui_desktop, get_mousemove,	xui_vector<s32>			)( void ) const
+{
+	return m_mousecurr-m_mouselast;
 }
 
 /*
@@ -190,7 +187,6 @@ xui_method_explain(xui_desktop, get_pastetext, const std::wstring&		)( void ) co
 {
 	return m_pastetext;
 }
-
 xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& text )
 {
 	m_pastetext = text;
@@ -203,13 +199,11 @@ xui_method_explain(xui_desktop, get_modaltop,	xui_window*				)( void )
 {
 	return m_modalpool.empty() ? NULL : m_modalpool.back();
 }
-
 xui_method_explain(xui_desktop, add_modalwnd,	void					)( xui_window* window )
 {
 	del_modalwnd(window);
 	m_modalpool.push_back(window);
 }
-
 xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 {
 	for (u32 i = 0; i < m_modalpool.size(); ++i)
@@ -256,7 +250,6 @@ xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* compone
 
 	m_recyclebin.push_back(component);
 }
-
 xui_method_explain(xui_desktop, send_message,	void					)( const xui_message& message )
 {
 	switch(message.msgidx)
@@ -278,7 +271,6 @@ xui_method_explain(xui_desktop, send_message,	void					)( const xui_message& mes
 		break;
 	}
 }
-
 xui_method_explain(xui_desktop, post_message,	void					)( const xui_message& message )
 {
 	m_messagevec.push_back(message);
@@ -294,7 +286,6 @@ xui_method_explain(xui_desktop, update,			void					)( f32 delta )
 	proc_recycle();
 	proc_settext();
 }
-
 xui_method_explain(xui_desktop, render,			void					)( void )
 {
 	xui_convas::get_ins()->set_cliprect(m_render);
@@ -393,7 +384,6 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 		component->xm_mousedown(m_catchctrl, args);
 	}
 }
-
 xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args )
 {
 	xui_component* component = NULL;
@@ -438,7 +428,6 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 		component->xm_mouserise(component, args);
 	}
 }
-
 xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args )
 {
 	m_mouselast = m_mousecurr;
@@ -493,7 +482,6 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 		m_hoverctrl->xm_mousemove(m_hoverctrl, args);
 	}
 }
-
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )
 {
 	if (m_focusctrl)
@@ -502,7 +490,6 @@ xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args
 		m_focusctrl->xm_keybddown(m_focusctrl, args);
 	}
 }
-
 xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args )
 {
 	if (m_focusctrl)
@@ -511,12 +498,10 @@ xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args
 		m_focusctrl->xm_keybdrise(m_focusctrl, args);
 	}
 }
-
 xui_method_explain(xui_desktop, os_keybdchar,	void					)( u08 c )
 {
 	m_inputtext.append(1, c);
 }
-
 xui_method_explain(xui_desktop, os_setcursor,	void					)( u32 cursor )
 {
 	switch (cursor)
@@ -545,7 +530,6 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 			add_modalwnd(window);
 	}
 }
-
 xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 {
 	xui_panel::on_delchild(args);
@@ -569,7 +553,6 @@ xui_method_explain(xui_desktop, proc_message,	void					)( void )
 
 	m_messagevec.clear();
 }
-
 xui_method_explain(xui_desktop, proc_recycle,	void					)( void )
 {
 	for (u32 i = 0; i < m_recyclebin.size(); ++i)
@@ -577,7 +560,6 @@ xui_method_explain(xui_desktop, proc_recycle,	void					)( void )
 
 	m_recyclebin.clear();
 }
-
 xui_method_explain(xui_desktop, proc_settext,	void					)( void )
 {
 	if (m_focusctrl)

@@ -100,7 +100,7 @@ xui_method_explain(xui_propctrl_simple, on_invalid,			void				)( xui_method_args
 	xui_propview* propview = get_propview();
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
-	sz.h = xui_propview::LINE_HEIGHT * (s32)m_propeditvec.size();
+	sz.h = xui_propview::default_lineheight * (s32)m_propeditvec.size();
 
 	if (get_rendersz() != sz)
 	{
@@ -115,7 +115,7 @@ xui_method_explain(xui_propctrl_simple, on_invalid,			void				)( xui_method_args
 xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
-	s32 height = xui_propview::LINE_HEIGHT;
+	s32 height = xui_propview::default_lineheight;
 	s32 indent = get_indent();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;

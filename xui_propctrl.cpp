@@ -13,7 +13,7 @@ xui_implement_rtti(xui_propctrl, xui_control);
 //constructor
 */
 xui_create_explain(xui_propctrl)( void )
-: xui_control(xui_vector<s32>(0, xui_propview::LINE_HEIGHT))
+: xui_control(xui_vector<s32>(0, xui_propview::default_lineheight))
 {
 	m_propdata	= NULL;
 }
@@ -72,7 +72,7 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 		root = root->get_parent();
 	}
 
-	return depth * xui_propview::NODE_INDENT;
+	return depth * xui_propview::default_nodeindent;
 }
 
 //////////////////////////////////////////////////////////////////////////

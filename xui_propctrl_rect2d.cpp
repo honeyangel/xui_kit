@@ -19,7 +19,7 @@ xui_method_explain(xui_propctrl_rect2d, create, xui_propctrl*)( xui_propdata* pr
 xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_render   = xui_rect2d<s32>(0, 0, 200, xui_propview::LINE_HEIGHT*2);
+	m_render   = xui_rect2d<s32>(0, 0, 200, xui_propview::default_lineheight*2);
 
 	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(propdata);
 	m_subxedit = new xui_propedit_number(this, datarect2d->get_interval());

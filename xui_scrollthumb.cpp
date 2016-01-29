@@ -28,7 +28,7 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 		case FLOWSTYLE_H:
 			{
 				//限制滚轮的位置
-				s32 x = get_renderx() + args.point.x - g_desktop->get_mouselast().x;
+				s32 x = get_renderx() + args.point.x - xui_desktop::get_ins()->get_mouselast().x;
 				if (x < rt.ax)
 					x = rt.ax;
 				if (x > rt.bx-get_renderw())
@@ -40,7 +40,7 @@ xui_method_explain(xui_scrollthumb, on_mousemove,	void )( xui_method_mouse& args
 		case FLOWSTYLE_V:
 			{
 				//限制滚轮的位置
-				s32 y = get_rendery() + args.point.y - g_desktop->get_mouselast().y;
+				s32 y = get_rendery() + args.point.y - xui_desktop::get_ins()->get_mouselast().y;
 				if (y < rt.ay)
 					y = rt.ay;
 				if (y > rt.by-get_renderh())

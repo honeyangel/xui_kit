@@ -100,7 +100,7 @@ xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_arg
 	xui_propview* propview = get_propview();
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
-	sz.h = xui_propview::LINE_HEIGHT + m_border.ay + m_border.by;
+	sz.h = xui_propview::default_lineheight + m_border.ay + m_border.by;
 
 	if (m_propdata && m_propplus->was_expanded())
 	{
@@ -130,7 +130,7 @@ xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_arg
 xui_method_explain(xui_propctrl_expand,			on_perform,			void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
-	s32 height = xui_propview::LINE_HEIGHT;
+	s32 height = xui_propview::default_lineheight;
 	s32 indent = get_indent();
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
@@ -268,7 +268,7 @@ xui_method_explain(xui_propctrl_expand_bool,	on_editvalue,		void			)( xui_proped
 xui_method_explain(xui_propctrl_expand_bool,	on_perform,			void			)( xui_method_args& args )
 {
 	xui_propctrl_expand::on_perform(args);
-	s32 height = xui_propview::LINE_HEIGHT;
+	s32 height = xui_propview::default_lineheight;
 
 	xui_drawer*  namectrl = m_propedit->get_namectrl();
 	xui_control* boolctrl = m_propedit->get_editctrl();
@@ -371,7 +371,7 @@ xui_method_explain(xui_propctrl_expand_enum,	on_editvalue,		void			)( xui_proped
 xui_method_explain(xui_propctrl_expand_enum,	on_perform,			void			)( xui_method_args& args )
 {
 	xui_propctrl_expand::on_perform(args);
-	s32 height = xui_propview::LINE_HEIGHT;
+	s32 height = xui_propview::default_lineheight;
 
 	xui_drawer*  namectrl = m_propedit->get_namectrl();
 	xui_control* enumctrl = m_propedit->get_editctrl();

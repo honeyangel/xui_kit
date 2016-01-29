@@ -23,9 +23,8 @@ xui_method_explain(xui_treegrid, on_mousemove,	void)( xui_method_mouse& args )
 	xui_component::on_mousemove(args);
 	if (has_catch())
 	{
-		s32 delta = g_desktop->get_mousecurr().x - g_desktop->get_mouselast().x;
-
+		xui_vector<s32> delta = xui_desktop::get_ins()->get_mousemove();
 		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-		treeview->set_columnsize(m_index, treeview->get_columninfo(m_index).size+delta);
+		treeview->set_columnsize(m_index, treeview->get_columninfo(m_index).size+delta.x);
 	}
 }

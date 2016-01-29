@@ -9,8 +9,8 @@ xui_implement_rtti(xui_propview, xui_container);
 /*
 //static
 */
-const s32 xui_propview::NODE_INDENT = 16;
-const s32 xui_propview::LINE_HEIGHT = 20;
+const s32 xui_propview::default_nodeindent = 16;
+const s32 xui_propview::default_lineheight = 20;
 
 xui_method_explain(xui_propview, create,			xui_propview*			)( void )
 {

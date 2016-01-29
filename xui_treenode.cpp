@@ -359,8 +359,8 @@ xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&
 	if (has_focus() && m_holdtime >= 0)
 	{
 		++m_holdtime;
-		xui_vector<s32> down = g_desktop->get_mousedown();
-		xui_vector<s32> curr = g_desktop->get_mousecurr();
+		xui_vector<s32> down = xui_desktop::get_ins()->get_mousedown();
+		xui_vector<s32> curr = xui_desktop::get_ins()->get_mousecurr();
 		if ((xui_abs(curr.x-down.x) > 8) ||
 			(xui_abs(curr.y-down.y) > 8))
 			m_holdtime = -1;
