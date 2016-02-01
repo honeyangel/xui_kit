@@ -744,6 +744,18 @@ xui_method_explain(xui_treeview, on_topdraw,			void								)( xui_method_args&  
 		}
 	}
 }
+xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_mouse& args )
+{
+	xui_container::on_mousedoubleclick(args);
+	if (args.mouse == MB_L)
+	{
+		xui_treenode* node = choose_node(get_renderpt(args.point));
+		if (node)
+		{
+			node->set_expanded(!node->was_expanded());
+		}
+	}
+}
 xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse& args )
 {
 	xui_container::on_mousedown(args);

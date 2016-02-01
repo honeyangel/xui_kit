@@ -89,7 +89,8 @@ public:
 		u08						 _sort		= 1,
 		bool					 _editable	= false,
 		u08						 _boolmode  = TOGGLE_CIRCLE,
-		u08                      _iconalign = IMAGE_FRONT_TEXT,
+		const xui_rect2d<s32>&	 _borderrt  = xui_rect2d<s32>(2),
+		u08                      _iconalign = IMAGE_C,
 		u08                      _textalign = TA_LC )
 	{
 		type		= _type;
@@ -101,7 +102,7 @@ public:
 		maxsize		= _size;
 		editable	= _editable;
 		boolmode	= _boolmode;
-		borderrt	=  xui_rect2d<s32>(2);
+		borderrt	= _borderrt;
 		textalign	= _textalign;
 		iconalign	= _iconalign;
 	}
@@ -213,6 +214,7 @@ protected:
 	/*
 	//callback
 	*/
+	virtual void						on_mousedoubleclick	( xui_method_mouse& args );
 	virtual void						on_mousedown		( xui_method_mouse& args );
 	virtual void						on_mousemove		( xui_method_mouse& args );
 	virtual void						on_mouserise		( xui_method_mouse& args );

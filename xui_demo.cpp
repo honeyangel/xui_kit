@@ -172,8 +172,8 @@ void treeview_dragitem(xui_component* sender, xui_method_dragdrop& args )
 void xui_demo::test_treeview( xui_window* window )
 {
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_CIRCLE, IMAGE_C));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc"));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_CIRCLE));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc", NULL, 0, false, 0, xui_rect2d<s32>(2), IMAGE_FRONT_TEXT));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"main", NULL, 0, true));
 	xui_treeview* treeview = xui_treeview::create(columninfo);
 	treeview->set_renderpt(xui_vector<s32>(250, 180));
@@ -206,8 +206,8 @@ void xui_demo::test_timeview( xui_window* window )
 {
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 250, L"Total", NULL, 0, false));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL, IMAGE_C));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL, IMAGE_C));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",      xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_NORMAL));
 	xui_timeview* timeview = xui_timeview::create(960, columninfo);
 	timeview->set_renderpt(xui_vector<s32>(10, 420));
 	window->add_child(timeview);

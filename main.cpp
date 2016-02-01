@@ -64,17 +64,44 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	{
 	case WM_DROPFILES:
 		break;
+	case WM_MOUSEWHEEL:
+		{
+			xui_method_mouse args;
+			args.wheel = (s32)(s16)HIWORD(wParam);
+			xui_desktop::get_ins()->os_mousewheel(args);
+		}
+		break;
+	case WM_LBUTTONDBLCLK:
+	case WM_RBUTTONDBLCLK:
+	case WM_MBUTTONDBLCLK:
+		{
+			xui_method_mouse args;
+			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+
+			switch (message)
+			{
+			case WM_LBUTTONDBLCLK:	args.mouse = MB_L;	break;
+			case WM_RBUTTONDBLCLK:	args.mouse = MB_R;	break;
+			case WM_MBUTTONDBLCLK:	args.mouse = MB_M;	break;
+			}
+
+			xui_desktop::get_ins()->os_mousedclick(args);
+		}
+		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{
-			::GetCapture();
+			::SetCapture(hWnd);
 
 			xui_method_mouse args;
 			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
-			args.ctrl  = ::GetKeyState(VK_LCONTROL) > 0;
-			args.shift = ::GetKeyState(VK_LSHIFT)   > 0;
-			args.alt   = ::GetKeyState(VK_LMENU)    > 0;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
 			
 			switch (message)
 			{
@@ -99,9 +126,9 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 		{
 			xui_method_mouse args;
 			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
-			args.ctrl  = ::GetKeyState(VK_LCONTROL) > 0;
-			args.shift = ::GetKeyState(VK_LSHIFT)   > 0;
-			args.alt   = ::GetKeyState(VK_LMENU)    > 0;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
 
 			switch (message)
 			{
@@ -116,9 +143,9 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_KEYDOWN:
 		{
 			xui_method_keybd args;
-			args.ctrl  = ::GetKeyState(VK_LCONTROL) > 0;
-			args.shift = ::GetKeyState(VK_LSHIFT)   > 0;
-			args.alt   = ::GetKeyState(VK_LMENU)    > 0;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
 			args.kcode = VKToKey(wParam);
 			xui_desktop::get_ins()->os_keybddown(args);
 		}
@@ -126,9 +153,9 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_KEYUP:
 		{
 			xui_method_keybd args;
-			args.ctrl  = ::GetKeyState(VK_LCONTROL) > 0;
-			args.shift = ::GetKeyState(VK_LSHIFT)   > 0;
-			args.alt   = ::GetKeyState(VK_LMENU)    > 0;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
 			args.kcode = VKToKey(wParam);
 			xui_desktop::get_ins()->os_keybdrise(args);
 		}
@@ -185,7 +212,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	wc.lpfnWndProc		= WndProc;
 	wc.lpszClassName	= L"XUI";
 	wc.lpszMenuName		= NULL;
-	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
+	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC | CS_DBLCLKS;
 
 	if (!RegisterClass(&wc))
 		return 0;
@@ -194,6 +221,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	if (hWnd == NULL)
 		return 0;
 
+	SetCapture(hWnd);
 	DragAcceptFiles(hWnd, TRUE);
 	ShowWindow(hWnd, SW_NORMAL);
 	UpdateWindow(hWnd);

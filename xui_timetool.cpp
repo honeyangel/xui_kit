@@ -39,10 +39,10 @@ xui_create_explain(xui_timetool)( xui_timeview* timeview )
 
 
 	//play
-	m_back = new xui_toggle(xui_vector<s32>(24));
+	m_back = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
 	m_back->xm_click		+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
 	m_back->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
-	m_play = new xui_toggle(xui_vector<s32>(24));
+	m_play = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
 	m_play->xm_click		+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
 	m_play->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
 

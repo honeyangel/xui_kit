@@ -1,3 +1,4 @@
+#include "xui_component.h"
 #include "xui_system.h"
 
 xui_method_explain(xui_system, unicode_to_utf8, std::string	)( const std::wstring& src )
@@ -78,4 +79,17 @@ xui_method_explain(xui_system, utf8_to_unicode, std::wstring)( const std::string
 	}
 
 	return result;
+}
+xui_method_explain(xui_system, set_cursor,		void		)( u32 cursor )
+{
+	switch (cursor)
+	{
+	case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
+	case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
+	case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
+	case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
+	case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+	case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+	case CURSOR_DRAGBAN:	::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
+	}
 }

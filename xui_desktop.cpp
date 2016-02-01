@@ -1,3 +1,4 @@
+#include "xui_system.h"
 #include "xui_convas.h"
 #include "xui_window.h"
 #include "xui_desktop.h"
@@ -146,7 +147,7 @@ xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* compon
 				xui_method_mouse args;
 				curr->on_mouseenter(      args);
 				curr->xm_mouseenter(curr, args);
-				os_setcursor(curr->get_cursor());
+				xui_system::set_cursor(curr->get_cursor());
 			}
 		}
 	}
@@ -358,6 +359,33 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 /*
 //os
 */
+xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& args )
+{
+	if (m_hoverctrl)
+	{
+		m_hoverctrl->on_mousewheel(args);
+	}
+}
+xui_method_explain(xui_desktop, os_mousedclick,	void					)( xui_method_mouse& args )
+{
+	xui_component* component = NULL;
+
+	if (m_floatctrl)
+		component = m_floatctrl->choose(args.point);
+	if (component == NULL)
+	{
+		if (get_modaltop())
+			component = get_modaltop()->choose(args.point);
+		else
+			component = choose(args.point);
+	}
+
+	if (component)
+	{
+		component->on_mousedoubleclick(			  args);
+		component->xm_mousedoubleclick(component, args);
+	}
+}
 xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args )
 {
 	xui_component* component = NULL;
@@ -405,6 +433,7 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 			}
 
 			set_catchctrl(NULL);
+			xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 			m_allowdrag = false;
 			m_catchdata = NULL;
 		}
@@ -460,6 +489,7 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 			m_catchdata = other_args.data;
 			m_catchtype = other_args.type;
 			m_allowdrag = other_args.data != NULL;
+			xui_system::set_cursor(m_allowdrag ? CURSOR_DRAG : CURSOR_DRAGBAN);
 		}
 		if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_catchdata)
 		{
@@ -470,6 +500,7 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 			m_hoverctrl->on_mousedragover(             other_args);
 			m_hoverctrl->xm_mousedragover(m_hoverctrl, other_args);
 			m_allowdrag = other_args.allow;
+			xui_system::set_cursor(m_allowdrag ? CURSOR_DRAG : CURSOR_DRAGBAN);
 		}
 
 		m_catchctrl->on_mousemove(             args);
@@ -501,18 +532,6 @@ xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args
 xui_method_explain(xui_desktop, os_keybdchar,	void					)( u16 c )
 {
 	m_inputtext.append(1, c);
-}
-xui_method_explain(xui_desktop, os_setcursor,	void					)( u32 cursor )
-{
-	//switch (cursor)
-	//{
-	//case CURSOR_DEFAULT:	glutSetCursor(GLUT_CURSOR_RIGHT_ARROW); break;
-	//case CURSOR_NS:			glutSetCursor(GLUT_CURSOR_UP_DOWN);		break;
-	//case CURSOR_WE:			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);	break;
-	//case CURSOR_TEXT:		glutSetCursor(GLUT_CURSOR_TEXT);		break;
-	//case CURSOR_MOVE:		glutSetCursor(GLUT_CURSOR_CROSSHAIR);	break;
-	//case CURSOR_DRAGBAN:	glutSetCursor(GLUT_CURSOR_WAIT);		break;
-	//}
 }
 
 /*

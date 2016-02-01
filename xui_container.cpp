@@ -167,13 +167,13 @@ xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& arg
 	xui_control::on_mousewheel(args);
 	if (m_vscroll)
 	{
-		m_vscroll->set_value(m_vscroll->get_value()+args.wheel);
+		m_vscroll->set_value(m_vscroll->get_value()-args.wheel);
 		args.handle = true;
 	}
 	else
 	if (m_hscroll)
 	{
-		m_hscroll->set_value(m_hscroll->get_value()+args.wheel);
+		m_hscroll->set_value(m_hscroll->get_value()-args.wheel);
 		args.handle = true;
 	}
 }
