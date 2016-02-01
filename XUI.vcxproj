@@ -58,7 +58,7 @@
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
@@ -75,7 +75,7 @@
       <AdditionalIncludeDirectories>libzip/inc/;libpng/inc/;libogl/inc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -116,6 +116,7 @@
     <ClInclude Include="xui_propview.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="xui_render_window.h" />
     <ClInclude Include="xui_system.h" />
     <ClInclude Include="xui_timehead.h" />
     <ClInclude Include="xui_timeline.h">
@@ -277,6 +278,7 @@
     <ClCompile Include="xui_propview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xui_render_window.cpp" />
     <ClCompile Include="xui_system.cpp" />
     <ClCompile Include="xui_timehead.cpp" />
     <ClCompile Include="xui_timeline.cpp">

@@ -74,7 +74,7 @@ public:
 	void						os_mousemove	( xui_method_mouse& args );
 	void						os_keybddown	( xui_method_keybd& args );
 	void						os_keybdrise	( xui_method_keybd& args );
-	void						os_keybdchar	( u08 c );
+	void						os_keybdchar	( u16 c );
 	void						os_setcursor	( u32 cursor );
 
 protected:
@@ -102,7 +102,7 @@ protected:
 	u08							m_allowdrag;
 	void*						m_catchdata;
 	std::string					m_catchtype;
-	std::string					m_inputtext;
+	std::wstring				m_inputtext;
 	std::wstring				m_pastetext;
 
 	xui_vector<s32>				m_mousedown;

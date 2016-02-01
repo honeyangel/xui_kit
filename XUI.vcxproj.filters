@@ -367,6 +367,9 @@
     <ClInclude Include="xui_plusctrl.h">
       <Filter>LibGUI\widget</Filter>
     </ClInclude>
+    <ClInclude Include="xui_render_window.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -661,6 +664,9 @@
     <ClCompile Include="xui_demo.cpp" />
     <ClCompile Include="xui_plusctrl.cpp">
       <Filter>LibGUI\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_render_window.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

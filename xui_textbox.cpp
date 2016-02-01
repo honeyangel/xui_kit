@@ -54,8 +54,8 @@ xui_delete_explain(xui_textbox)( void )
 xui_method_explain(xui_textbox, ini_textbox,		void					)( const std::wstring& text )
 {
 	m_text = text;
-	non_selecttext( );
-	set_caretindex(0);
+	non_selecttext();
+	set_caretindex(m_text.length());
 }
 
 /*

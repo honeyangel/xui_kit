@@ -498,21 +498,21 @@ xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args
 		m_focusctrl->xm_keybdrise(m_focusctrl, args);
 	}
 }
-xui_method_explain(xui_desktop, os_keybdchar,	void					)( u08 c )
+xui_method_explain(xui_desktop, os_keybdchar,	void					)( u16 c )
 {
 	m_inputtext.append(1, c);
 }
 xui_method_explain(xui_desktop, os_setcursor,	void					)( u32 cursor )
 {
-	switch (cursor)
-	{
-	case CURSOR_DEFAULT:	glutSetCursor(GLUT_CURSOR_RIGHT_ARROW); break;
-	case CURSOR_NS:			glutSetCursor(GLUT_CURSOR_UP_DOWN);		break;
-	case CURSOR_WE:			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);	break;
-	case CURSOR_TEXT:		glutSetCursor(GLUT_CURSOR_TEXT);		break;
-	case CURSOR_MOVE:		glutSetCursor(GLUT_CURSOR_CROSSHAIR);	break;
-	case CURSOR_DRAGBAN:	glutSetCursor(GLUT_CURSOR_WAIT);		break;
-	}
+	//switch (cursor)
+	//{
+	//case CURSOR_DEFAULT:	glutSetCursor(GLUT_CURSOR_RIGHT_ARROW); break;
+	//case CURSOR_NS:			glutSetCursor(GLUT_CURSOR_UP_DOWN);		break;
+	//case CURSOR_WE:			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);	break;
+	//case CURSOR_TEXT:		glutSetCursor(GLUT_CURSOR_TEXT);		break;
+	//case CURSOR_MOVE:		glutSetCursor(GLUT_CURSOR_CROSSHAIR);	break;
+	//case CURSOR_DRAGBAN:	glutSetCursor(GLUT_CURSOR_WAIT);		break;
+	//}
 }
 
 /*
@@ -564,13 +564,10 @@ xui_method_explain(xui_desktop, proc_settext,	void					)( void )
 {
 	if (m_focusctrl)
 	{
-		wchar_t buffer[128];
-		MultiByteToWideChar(CP_ACP, 0, m_inputtext.c_str(), -1, buffer, 128);
-
 		xui_method_keybd args;
-		for (u32 i = 0; i < wcslen(buffer); ++i)
+		for (u32 i = 0; i < m_inputtext.length(); ++i)
 		{
-			args.wchar = buffer[i];
+			args.wchar = m_inputtext[i];
 			m_focusctrl->on_keybdchar(args);
 		}
 	}
