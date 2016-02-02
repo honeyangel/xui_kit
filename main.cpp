@@ -1,8 +1,10 @@
+#include <Shlobj.h>
 #include "xui_family_create_win.h"
 #include "xui_timermgr.h"
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_render_window.h"
+#include "xui_system.h"
 #include "xui_demo.h"
 
 u08 VKToKey(WPARAM wParam)
@@ -58,11 +60,29 @@ u08 VKToKey(WPARAM wParam)
 	}
 }
 
+#define WM_USER_FWATCHNOTIFY WM_USER+0x1000
+typedef struct
+{
+	DWORD dwItem1;  // dwItem1 contains the previous PIDL or name of the folder. 
+	DWORD dwItem2;  // dwItem2 contains the new PIDL or name of the folder. 
+}SHNotifyInfo;
+
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	switch (message)
 	{
 	case WM_DROPFILES:
+		break;
+	case WM_USER_FWATCHNOTIFY:
+		{
+			SHNotifyInfo* pShellInfo = (SHNotifyInfo*)wParam;
+			wchar_t buffer[512];
+			SHGetPathFromIDList((struct _ITEMIDLIST *)pShellInfo->dwItem1, buffer);
+			if (wcslen(buffer) > 0)
+			{
+
+			}
+		}
 		break;
 	case WM_MOUSEWHEEL:
 		{
@@ -225,6 +245,10 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	DragAcceptFiles(hWnd, TRUE);
 	ShowWindow(hWnd, SW_NORMAL);
 	UpdateWindow(hWnd);
+
+	wchar_t buffer[512];
+	GetCurrentDirectory(512, buffer);
+	xui_system::set_fwatchbegin(buffer, hWnd);
 
 	xui_render_window* render_window = new xui_render_window(hWnd);
 

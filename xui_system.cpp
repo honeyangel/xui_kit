@@ -1,7 +1,10 @@
 #include "xui_component.h"
 #include "xui_system.h"
 
-xui_method_explain(xui_system, unicode_to_utf8, std::string	)( const std::wstring& src )
+/*
+//string
+*/
+xui_method_explain(xui_system, unicode_to_utf8, std::string					)( const std::wstring& src )
 {
 	std::string result;
 
@@ -28,7 +31,7 @@ xui_method_explain(xui_system, unicode_to_utf8, std::string	)( const std::wstrin
 
 	return result;
 }
-xui_method_explain(xui_system, utf8_to_unicode, std::wstring)( const std::string&  src )
+xui_method_explain(xui_system, utf8_to_unicode, std::wstring				)( const std::string&  src )
 {
 	std::wstring result;
 
@@ -80,7 +83,11 @@ xui_method_explain(xui_system, utf8_to_unicode, std::wstring)( const std::string
 
 	return result;
 }
-xui_method_explain(xui_system, set_cursor,		void		)( u32 cursor )
+
+/*
+//cursor
+*/
+xui_method_explain(xui_system, set_cursor,		void						)( u32 cursor )
 {
 	switch (cursor)
 	{
@@ -92,4 +99,42 @@ xui_method_explain(xui_system, set_cursor,		void		)( u32 cursor )
 	case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
 	case CURSOR_DRAGBAN:	::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
 	}
+}
+
+/*
+//screen
+*/
+HDC screen_hdc = NULL;
+xui_method_explain(xui_system, set_screenbegin,	void						)( void )
+{
+	screen_hdc = ::GetDC(NULL);
+}
+xui_method_explain(xui_system, get_screencolor,	xui_colour					)( const xui_vector<s32>& pt )
+{
+	COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
+	BYTE r = GetRValue(color);
+	BYTE g = GetGValue(color);
+	BYTE b = GetBValue(color);
+	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
+}
+xui_method_explain(xui_system, set_screenclose,	void						)( void )
+{
+	::ReleaseDC(NULL, screen_hdc);
+	screen_hdc = NULL;
+}
+
+#include <Shlobj.h>
+/*
+//modify
+*/
+xui_method_explain(xui_system, set_fwatchbegin,	void						)( const std::wstring& path, HWND hwnd )
+{
+	ITEMIDLIST* pidlist;
+	//SFGAOF aog;
+	SHParseDisplayName(path.c_str(), NULL, &pidlist, SFGAO_CANCOPY, NULL);
+
+	SHChangeNotifyEntry shEntry;
+	shEntry.fRecursive = TRUE;
+	shEntry.pidl = pidlist;
+	SHChangeNotifyRegister(hwnd, SHCNRF_InterruptLevel|SHCNRF_ShellLevel, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
 }
