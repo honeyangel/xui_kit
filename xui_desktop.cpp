@@ -1,4 +1,4 @@
-#include "xui_system.h"
+#include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_window.h"
 #include "xui_desktop.h"
@@ -147,7 +147,7 @@ xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* compon
 				xui_method_mouse args;
 				curr->on_mouseenter(      args);
 				curr->xm_mouseenter(curr, args);
-				xui_system::set_cursor(curr->get_cursor());
+				xui_global::set_cursor(curr->get_cursor());
 			}
 		}
 	}
@@ -426,7 +426,7 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 		component->xm_mouserise(component, args);
 	}
 
-	xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
+	xui_global::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 }
 xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args )
 {
@@ -484,11 +484,11 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 
 	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
 	{
-		xui_system::set_cursor(m_allowdrag         ? CURSOR_DRAG    : CURSOR_DRAGBAN);
+		xui_global::set_cursor(m_allowdrag         ? CURSOR_DRAG    : CURSOR_DRAGBAN);
 	}
 	else
 	{
-		xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
+		xui_global::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 	}
 }
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )

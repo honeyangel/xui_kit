@@ -1,4 +1,4 @@
-#include "xui_system.h"
+#include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_button.h"
 #include "xui_desktop.h"
@@ -89,7 +89,7 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		{
 			std::wstring text;
 			text += L"None(";
-			text += xui_system::utf8_to_unicode(dataobject->get_droptype());
+			text += xui_global::utf8_to_unicode(dataobject->get_droptype());
 			text += L")";
 			textctrl->set_text(text);
 		}

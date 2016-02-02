@@ -1,11 +1,19 @@
-#ifndef __xui_system_h__
-#define __xui_system_h__
+#ifndef __xui_global_h__
+#define __xui_global_h__
 
 #include "xui_header.h"
+#include "xui_vector.h"
+#include "xui_colour.h"
+#include "xui_method.h"
 
-class xui_system
+class xui_global
 {
 public:
+	/*
+	//method
+	*/
+	static xui_method<std::wstring>		xm_changenotify;
+
 	/*
 	//string
 	*/
@@ -20,19 +28,20 @@ public:
 	/*
 	//screen
 	*/
-	static void							set_screenbegin ( void );
-	static xui_colour					get_screencolor	( const xui_vector<s32>& pt );
-	static void							set_screenclose	( void );
+	static void							set_scolorstart ( void );
+	static xui_colour					get_scolor		( const xui_vector<s32>& pt );
+	static void							set_scolorclose	( void );
 
 	/*
 	//modify
 	*/
-	static void							set_fwatchbegin	( const std::wstring& path, HWND hwnd );
+	static void							set_fwatchstart	( const std::wstring& path, void* hwnd );
 	static void							set_fwatchclose	( void );
 
 	/*
 	//file
 	*/
+	static std::wstring					get_workpath	( void );
 	static std::vector<std::wstring>	get_path		( const std::wstring& path );
 	static std::vector<std::wstring>	get_file		( const std::wstring& path );
 	static void							del_path		( const std::wstring& path );
@@ -43,4 +52,4 @@ public:
 	static void							cpy_file		( const std::wstring& src, const std::wstring& dst );
 };
 
-#endif//__xui_system_h__
+#endif//__xui_global_h__

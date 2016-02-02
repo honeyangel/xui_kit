@@ -33,9 +33,10 @@ typedef          double f64;
 #define xui_delete_explain(class_name)					 class_name::~class_name
 #define xui_method_explain(class_name, name, type)	type class_name::name
 
-#define xui_method_ptrcall(ptr, method)					 ptr->method
-#define xui_method_refcall(ref, method)					 ref.method
-#define xui_method_inscall(ins, method)
+#define xui_method_ptrcall(ptr,  method)				 ptr->method
+#define xui_method_refcall(ref,  method)				 ref.method
+#define xui_method_inscall(type, method)				 type::get_ins()->method
+#define xui_static_inscall(type, method)				 type::method
 
 #define xui_lstptr_addloop(type, name)	for(std::list<type*>::iterator itor = name.begin(); itor != name.end(); ++itor)
 #define xui_lstptr_delloop(type, name)	for(std::list<type*>::reverse_iterator itor = name.rbegin(); itor != name.rend(); ++itor)

@@ -25,6 +25,11 @@ public:
 	xui_convas( void );
 
 	/*
+	//clear
+	*/
+	void					clear				( const xui_colour& color );
+
+	/*
 	//cliprect
 	//viewport
 	*/

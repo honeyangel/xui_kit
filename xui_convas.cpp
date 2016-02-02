@@ -16,6 +16,16 @@ xui_convas::xui_convas( void )
 }
 
 /*
+//clear
+*/
+xui_method_explain(xui_convas, clear,				void					)( const xui_colour& color )
+{
+	set_cliprect(m_viewport);
+	glClearColor(color.r, color.g, color.b, color.a);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+/*
 //cliprect
 //viewport
 */

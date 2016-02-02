@@ -1,10 +1,15 @@
 #include "xui_component.h"
-#include "xui_system.h"
+#include "xui_global.h"
+
+/*
+//method
+*/
+xui_method<std::wstring> xui_global::xm_changenotify;
 
 /*
 //string
 */
-xui_method_explain(xui_system, unicode_to_utf8, std::string					)( const std::wstring& src )
+xui_method_explain(xui_global, unicode_to_utf8, std::string					)( const std::wstring& src )
 {
 	std::string result;
 
@@ -31,7 +36,7 @@ xui_method_explain(xui_system, unicode_to_utf8, std::string					)( const std::ws
 
 	return result;
 }
-xui_method_explain(xui_system, utf8_to_unicode, std::wstring				)( const std::string&  src )
+xui_method_explain(xui_global, utf8_to_unicode, std::wstring				)( const std::string&  src )
 {
 	std::wstring result;
 
@@ -87,7 +92,7 @@ xui_method_explain(xui_system, utf8_to_unicode, std::wstring				)( const std::st
 /*
 //cursor
 */
-xui_method_explain(xui_system, set_cursor,		void						)( u32 cursor )
+xui_method_explain(xui_global, set_cursor,		void						)( u32 cursor )
 {
 	switch (cursor)
 	{
@@ -105,11 +110,11 @@ xui_method_explain(xui_system, set_cursor,		void						)( u32 cursor )
 //screen
 */
 HDC screen_hdc = NULL;
-xui_method_explain(xui_system, set_screenbegin,	void						)( void )
+xui_method_explain(xui_global, set_scolorstart,	void						)( void )
 {
 	screen_hdc = ::GetDC(NULL);
 }
-xui_method_explain(xui_system, get_screencolor,	xui_colour					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_global, get_scolor,		xui_colour					)( const xui_vector<s32>& pt )
 {
 	COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
 	BYTE r = GetRValue(color);
@@ -117,7 +122,7 @@ xui_method_explain(xui_system, get_screencolor,	xui_colour					)( const xui_vect
 	BYTE b = GetBValue(color);
 	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
 }
-xui_method_explain(xui_system, set_screenclose,	void						)( void )
+xui_method_explain(xui_global, set_scolorclose,	void						)( void )
 {
 	::ReleaseDC(NULL, screen_hdc);
 	screen_hdc = NULL;
@@ -127,14 +132,29 @@ xui_method_explain(xui_system, set_screenclose,	void						)( void )
 /*
 //modify
 */
-xui_method_explain(xui_system, set_fwatchbegin,	void						)( const std::wstring& path, HWND hwnd )
+ULONG notify_id = 0;
+xui_method_explain(xui_global, set_fwatchstart,	void						)( const std::wstring& path, void* hwnd )
 {
 	ITEMIDLIST* pidlist;
-	//SFGAOF aog;
 	SHParseDisplayName(path.c_str(), NULL, &pidlist, SFGAO_CANCOPY, NULL);
 
 	SHChangeNotifyEntry shEntry;
 	shEntry.fRecursive = TRUE;
 	shEntry.pidl = pidlist;
-	SHChangeNotifyRegister(hwnd, SHCNRF_InterruptLevel|SHCNRF_ShellLevel, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
+	notify_id = SHChangeNotifyRegister((HWND)hwnd, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
+}
+xui_method_explain(xui_global, set_fwatchclose,	void						)( void )
+{
+	SHChangeNotifyDeregister(notify_id);
+	notify_id = 0;
+}
+
+/*
+//file
+*/
+xui_method_explain(xui_global, get_workpath,	std::wstring				)( void )
+{
+	wchar_t buffer[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, buffer);
+	return std::wstring(buffer);
 }

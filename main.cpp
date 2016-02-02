@@ -4,7 +4,7 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_render_window.h"
-#include "xui_system.h"
+#include "xui_global.h"
 #include "xui_demo.h"
 
 u08 VKToKey(WPARAM wParam)
@@ -61,27 +61,22 @@ u08 VKToKey(WPARAM wParam)
 }
 
 #define WM_USER_FWATCHNOTIFY WM_USER+0x1000
-typedef struct
+struct SHNotifyInfo
 {
-	DWORD dwItem1;  // dwItem1 contains the previous PIDL or name of the folder. 
-	DWORD dwItem2;  // dwItem2 contains the new PIDL or name of the folder. 
-}SHNotifyInfo;
+	DWORD dwItem1;
+	DWORD dwItem2;
+};
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	switch (message)
 	{
-	case WM_DROPFILES:
-		break;
 	case WM_USER_FWATCHNOTIFY:
 		{
-			SHNotifyInfo* pShellInfo = (SHNotifyInfo*)wParam;
-			wchar_t buffer[512];
-			SHGetPathFromIDList((struct _ITEMIDLIST *)pShellInfo->dwItem1, buffer);
-			if (wcslen(buffer) > 0)
-			{
-
-			}
+			SHNotifyInfo* notifyInfo = (SHNotifyInfo*)wParam;
+			wchar_t buffer[MAX_PATH];
+			SHGetPathFromIDList((PCIDLIST_ABSOLUTE)notifyInfo->dwItem1, buffer);
+			xui_global::xm_changenotify(NULL, std::wstring(buffer));
 		}
 		break;
 	case WM_MOUSEWHEEL:
@@ -208,9 +203,10 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			glLoadMatrixf(m);
 			
 			if (xui_convas::get_ins())
-				xui_convas::get_ins()->set_viewport(xui_rect2d<s32>(0, 0, w, h));
-			if (xui_desktop::get_ins())
-				xui_desktop::get_ins()->set_rendersz(xui_vector<s32>(w, h));
+			{
+				xui_method_inscall(xui_convas,  set_viewport)(xui_rect2d<s32>(0, 0, w, h));
+				xui_method_inscall(xui_desktop, set_rendersz)(xui_vector<s32>(w, h));
+			}
 		}
 		break;
 	default:
@@ -238,32 +234,22 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		return 0;
 
 	HWND hWnd = CreateWindow(L"XUI", L"XUI", WS_OVERLAPPEDWINDOW , 0, 0, 1024, 768, NULL, NULL, hInstance, NULL);
-	if (hWnd == NULL)
-		return 0;
-
 	SetCapture(hWnd);
-	DragAcceptFiles(hWnd, TRUE);
 	ShowWindow(hWnd, SW_NORMAL);
 	UpdateWindow(hWnd);
 
-	wchar_t buffer[512];
-	GetCurrentDirectory(512, buffer);
-	xui_system::set_fwatchbegin(buffer, hWnd);
-
 	xui_render_window* render_window = new xui_render_window(hWnd);
-
 	g_family_create = new xui_family_create_win();
-	xui_timermgr::init();
-	xui_desktop::init();
-	xui_convas::init();
+	xui_static_inscall(xui_timermgr,	init)();
+	xui_static_inscall(xui_desktop,		init)();
+	xui_static_inscall(xui_convas,		init)();
 
 	RECT rect;
-	::GetClientRect(hWnd, &rect);
-	::MoveWindow(hWnd, 0, 0, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
+	GetClientRect(hWnd, &rect);
+	MoveWindow(hWnd, 0, 0, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
 
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500));
 	window->ini_component(0, 0, DOCKSTYLE_F);
-
 	xui_demo::test_button	(window);
 	xui_demo::test_toggle	(window);
 	xui_demo::test_textbox	(window);
@@ -278,33 +264,30 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_demo::test_timeview	(window);
 	xui_demo::test_propview	(window);
 	xui_desktop::get_ins()->add_child(window);
+	xui_global::set_fwatchstart(xui_global::get_workpath(), (void*)hWnd);
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));
-
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			DispatchMessage (&msg);
 		}
 		else
 		{
-			int lastTime = timeGetTime();
+			int time  = timeGetTime();
 
-			xui_convas::get_ins()->set_cliprect(xui_convas::get_ins()->get_viewport());
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			xui_timermgr::get_ins()->update(0.016f);
-			xui_desktop::get_ins()->update(0.016f);
-			xui_desktop::get_ins()->render();
+			xui_method_inscall(xui_convas,		clear	)(xui_colour(1.0f, 0.1f, 0.1f, 0.1f));
+			xui_method_inscall(xui_timermgr,	update	)(0.016f);
+			xui_method_inscall(xui_desktop,		update	)(0.016f);
+			xui_method_inscall(xui_desktop,		render	)();
 			render_window->present();
 
-			int currTime = timeGetTime();
-			int deltaTime = currTime - lastTime;
-			if (deltaTime < 16)
-				Sleep(16 - deltaTime);
+			int delta = timeGetTime() - time;
+			if (delta < 16)
+				Sleep(16-delta);
 		}
 	}
 
