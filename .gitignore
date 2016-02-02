@@ -8,3 +8,5 @@
 /*.sdf
 /*.opensdf
 /Debug/*.lastbuildstate
+/Release/*.obj
+/Release/*.tlog

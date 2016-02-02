@@ -585,17 +585,7 @@ xui_method_explain(xui_component, on_mouseclick,		void					)( xui_method_mouse&	
 }
 xui_method_explain(xui_component, on_mousewheel,		void					)( xui_method_mouse&		args )
 {
-	xm_mousewheel(this, args);
 
-	xui_component* root = m_parent;
-	while (root && args.handle == false)
-	{
-		root->on_mousewheel(args);
-		if (xui_issub_kindof(xui_container, root))
-			break;
-
-		root = root->get_parent();
-	}
 }
 xui_method_explain(xui_component, on_mousedoubleclick,	void					)( xui_method_mouse&		args )
 {

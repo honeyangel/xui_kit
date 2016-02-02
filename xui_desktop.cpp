@@ -315,45 +315,6 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 		m_catchctrl->on_topdraw(             args);
 		m_catchctrl->xm_topdraw(m_catchctrl, args);
 	}
-	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
-	{
-		if (m_allowdrag)
-		{
-			xui_rect2d<s32> rt;
-			rt.ax = m_mousecurr.x;
-			rt.ay = m_mousecurr.y+16;
-			rt.set_w(16);
-			rt.set_h( 8);
-			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-			rt.oft_x( 1);
-			rt.oft_y( 1);
-			rt.set_w(14);
-			rt.set_h( 6);
-			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 0.7f, 0.7f, 0.7f));
-		}
-		else
-		{
-			xui_rect2d<s32> rt;
-			rt.ax = m_mousecurr.x;
-			rt.ay = m_mousecurr.y+16;
-			rt.set_w(16);
-			rt.set_h(16);
-			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax,   rt.ay),   xui_vector<s32>(rt.bx,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax,   rt.ay+1), xui_vector<s32>(rt.bx-1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax+1, rt.ay),   xui_vector<s32>(rt.bx,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx,   rt.ay),   xui_vector<s32>(rt.ax,   rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx,   rt.ay+1), xui_vector<s32>(rt.ax+1, rt.by),   xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-			xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx-1, rt.ay),   xui_vector<s32>(rt.ax,   rt.by-1), xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-
-			rt.oft_x( 1);
-			rt.oft_y( 1);
-			rt.set_w(14);
-			rt.set_h(14);
-			xui_convas::get_ins()->draw_rectangle(rt, xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
-		}
-	}
 }
 
 /*
@@ -363,7 +324,16 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 {
 	if (m_hoverctrl)
 	{
-		m_hoverctrl->on_mousewheel(args);
+		xui_component* root = m_hoverctrl;
+		while (root && args.handle == false)
+		{
+			root->on_mousewheel(			 args);
+			root->xm_mousewheel(m_hoverctrl, args);
+			if (xui_issub_kindof(xui_container, root))
+				break;
+
+			root = root->get_parent();
+		}
 	}
 }
 xui_method_explain(xui_desktop, os_mousedclick,	void					)( xui_method_mouse& args )
@@ -433,7 +403,6 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 			}
 
 			set_catchctrl(NULL);
-			xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 			m_allowdrag = false;
 			m_catchdata = NULL;
 		}
@@ -456,6 +425,8 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 		component->on_mouserise(           args);
 		component->xm_mouserise(component, args);
 	}
+
+	xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 }
 xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args )
 {
@@ -489,7 +460,6 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 			m_catchdata = other_args.data;
 			m_catchtype = other_args.type;
 			m_allowdrag = other_args.data != NULL;
-			xui_system::set_cursor(m_allowdrag ? CURSOR_DRAG : CURSOR_DRAGBAN);
 		}
 		if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_catchdata)
 		{
@@ -500,7 +470,6 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 			m_hoverctrl->on_mousedragover(             other_args);
 			m_hoverctrl->xm_mousedragover(m_hoverctrl, other_args);
 			m_allowdrag = other_args.allow;
-			xui_system::set_cursor(m_allowdrag ? CURSOR_DRAG : CURSOR_DRAGBAN);
 		}
 
 		m_catchctrl->on_mousemove(             args);
@@ -511,6 +480,15 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	{
 		m_hoverctrl->on_mousemove(             args);
 		m_hoverctrl->xm_mousemove(m_hoverctrl, args);
+	}
+
+	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
+	{
+		xui_system::set_cursor(m_allowdrag         ? CURSOR_DRAG    : CURSOR_DRAGBAN);
+	}
+	else
+	{
+		xui_system::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 	}
 }
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )
