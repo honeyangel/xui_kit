@@ -1,3 +1,4 @@
+#include "xui_global.h"
 #include "xui_demo.h"
 
 void xui_demo::test_button( xui_window* window )
@@ -180,26 +181,24 @@ void xui_demo::test_treeview( xui_window* window )
 	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
 	window->add_child(treeview);
 
-	for (int i = 0; i < 10; ++i)
+	std::vector<std::wstring> pathvec = xui_global::get_path(xui_global::get_workpath());
+	for (u32 i = 0; i < pathvec.size(); ++i)
 	{
-		std::wstringstream text;
-		text << L"test";
-		text << i+5;
-		xui_treedata* data = new xui_treedata(text.str(), xui_bitmap::create("icon/edit.png"));
+		xui_treedata* data = new xui_treedata(pathvec[i], xui_bitmap::create("icon/edit.png"));
 		xui_treenode* node = treeview->add_upmostnode(i, data);
 
-		if (i % 2 == 0)
+		std::vector<std::wstring> filevec = xui_global::get_file(pathvec[i]);
+		for (u32 j = 0; j < filevec.size(); ++j)
 		{
-			for (int j = 0; j < 3; ++j)
-			{
-				std::wstringstream childtext;
-				childtext << L"child";
-				childtext << j;
-
-				xui_treedata* childdata = new xui_treedata(childtext.str());
-				xui_treenode* childnode = node->add_leafnode(j, childdata);
-			}
+			xui_treedata* childdata = new xui_treedata(filevec[j]);
+			xui_treenode* childnode = node->add_leafnode(j, childdata);
 		}
+	}
+	std::vector<std::wstring> filevec = xui_global::get_file(xui_global::get_workpath());
+	for (u32 i = 0; i < filevec.size(); ++i)
+	{
+		xui_treedata* data = new xui_treedata(filevec[i]);
+		xui_treenode* node = treeview->add_upmostnode(pathvec.size()+i, data);
 	}
 }
 void xui_demo::test_timeview( xui_window* window )

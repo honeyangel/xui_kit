@@ -16,8 +16,32 @@ xui_convas::xui_convas( void )
 }
 
 /*
+//begin
 //clear
 */
+xui_method_explain(xui_convas, begin,				void					)( void )
+{
+	int w = m_viewport.get_w();
+	int h = m_viewport.get_h();
+	glMatrixMode(GL_PROJECTION);
+
+	f32 m[16];
+	memset(m, 0, sizeof(f32) * 16);
+	m[0]  =  2.0f / (f32)w;
+	m[5]  = -2.0f / (f32)h;
+	m[10] =  1.0f / 1000.0f;
+	m[12] = -1.0f;
+	m[13] =  1.0f;
+	m[14] =  1.0f / 1000.0f;
+	m[15] =  1.0f;
+	glLoadMatrixf(m);
+
+	glViewport(
+		m_viewport.ax,
+		m_viewport.ay,
+		m_viewport.get_w(),
+		m_viewport.get_h());
+}
 xui_method_explain(xui_convas, clear,				void					)( const xui_colour& color )
 {
 	set_cliprect(m_viewport);
@@ -62,15 +86,7 @@ xui_method_explain(xui_convas, get_viewport,		const xui_rect2d<s32>&	)( void ) c
 }
 xui_method_explain(xui_convas, set_viewport,		void					)( const xui_rect2d<s32> rt )
 {
-	if (m_viewport != rt)
-	{
-		m_viewport  = rt;
-		glViewport(
-			m_viewport.ax,
-			m_viewport.ay,
-			m_viewport.get_w(),
-			m_viewport.get_h());
-	}
+	m_viewport = rt;
 }
 
 /*

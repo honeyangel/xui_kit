@@ -2,14 +2,9 @@
 #include "xui_global.h"
 
 /*
-//method
-*/
-xui_method<std::wstring> xui_global::xm_changenotify;
-
-/*
 //string
 */
-xui_method_explain(xui_global, unicode_to_utf8, std::string					)( const std::wstring& src )
+xui_method_explain(xui_global, unicode_to_utf8, std::string						)( const std::wstring& src )
 {
 	std::string result;
 
@@ -36,7 +31,7 @@ xui_method_explain(xui_global, unicode_to_utf8, std::string					)( const std::ws
 
 	return result;
 }
-xui_method_explain(xui_global, utf8_to_unicode, std::wstring				)( const std::string&  src )
+xui_method_explain(xui_global, utf8_to_unicode, std::wstring					)( const std::string&  src )
 {
 	std::wstring result;
 
@@ -92,7 +87,7 @@ xui_method_explain(xui_global, utf8_to_unicode, std::wstring				)( const std::st
 /*
 //cursor
 */
-xui_method_explain(xui_global, set_cursor,		void						)( u32 cursor )
+xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 {
 	switch (cursor)
 	{
@@ -110,11 +105,11 @@ xui_method_explain(xui_global, set_cursor,		void						)( u32 cursor )
 //screen
 */
 HDC screen_hdc = NULL;
-xui_method_explain(xui_global, set_scolorstart,	void						)( void )
+xui_method_explain(xui_global, set_scolorstart,	void							)( void )
 {
 	screen_hdc = ::GetDC(NULL);
 }
-xui_method_explain(xui_global, get_scolor,		xui_colour					)( const xui_vector<s32>& pt )
+xui_method_explain(xui_global, get_scolor,		xui_colour						)( const xui_vector<s32>& pt )
 {
 	COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
 	BYTE r = GetRValue(color);
@@ -122,18 +117,21 @@ xui_method_explain(xui_global, get_scolor,		xui_colour					)( const xui_vector<s
 	BYTE b = GetBValue(color);
 	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
 }
-xui_method_explain(xui_global, set_scolorclose,	void						)( void )
+xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 {
 	::ReleaseDC(NULL, screen_hdc);
 	screen_hdc = NULL;
 }
 
-#include <Shlobj.h>
 /*
 //modify
 */
-ULONG notify_id = 0;
-xui_method_explain(xui_global, set_fwatchstart,	void						)( const std::wstring& path, void* hwnd )
+#include <Shlobj.h>
+
+extern HWND gHWND;
+std::vector<std::wstring>	modify_path;
+ULONG						notify_id = 0;
+xui_method_explain(xui_global, set_fwatchstart,	void							)( const std::wstring& path )
 {
 	ITEMIDLIST* pidlist;
 	SHParseDisplayName(path.c_str(), NULL, &pidlist, SFGAO_CANCOPY, NULL);
@@ -141,20 +139,98 @@ xui_method_explain(xui_global, set_fwatchstart,	void						)( const std::wstring&
 	SHChangeNotifyEntry shEntry;
 	shEntry.fRecursive = TRUE;
 	shEntry.pidl = pidlist;
-	notify_id = SHChangeNotifyRegister((HWND)hwnd, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
+	notify_id = SHChangeNotifyRegister(gHWND, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
 }
-xui_method_explain(xui_global, set_fwatchclose,	void						)( void )
+xui_method_explain(xui_global, set_fwatchclose,	void							)( void )
 {
 	SHChangeNotifyDeregister(notify_id);
 	notify_id = 0;
+}
+xui_method_explain(xui_global, add_fwatch,		void							)( const std::wstring& path )
+{
+	for (u32 i = 0; i < modify_path.size(); ++i)
+	{
+		if (modify_path[i] == path)
+			return;
+	}
+
+	modify_path.push_back(path);
+}
+xui_method_explain(xui_global, del_fwatch,		void							)( void )
+{
+	modify_path.clear();
+}
+xui_method_explain(xui_global, get_fwatch,		const std::vector<std::wstring>&)( void )
+{
+	return modify_path;
 }
 
 /*
 //file
 */
-xui_method_explain(xui_global, get_workpath,	std::wstring				)( void )
+xui_method_explain(xui_global, get_workpath,	std::wstring					)( void )
 {
 	wchar_t buffer[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, buffer);
 	return std::wstring(buffer);
+}
+xui_method_explain(xui_global, set_workpath,	void							)( const std::wstring& path )
+{
+	SetCurrentDirectory(path.c_str());
+}
+xui_method_explain(xui_global, get_path,		std::vector<std::wstring>		)( const std::wstring& path )
+{
+	std::vector<std::wstring> result;
+
+	WIN32_FIND_DATAW findData;
+	std::wstring temp = path+L"/*.*";
+	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
+	if (handle != INVALID_HANDLE_VALUE)
+	{
+		if ((findData.cFileName[0] != L'.') &&
+			(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 &&
+			(findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    == 0)
+			result.push_back(std::wstring(findData.cFileName));
+
+		while (FindNextFile(handle, &findData))
+		{
+			if ((findData.cFileName[0] != L'.') &&
+				(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 &&
+				(findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    == 0)
+				result.push_back(std::wstring(findData.cFileName));
+		}
+
+		FindClose(handle);
+	}
+
+	return result;
+}
+xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const std::wstring& path )
+{
+	std::vector<std::wstring> result;
+
+	WIN32_FIND_DATAW findData;
+	std::wstring temp = path+L"/*.*";
+	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
+	if (handle != INVALID_HANDLE_VALUE)
+	{
+		if ((findData.cFileName[0] != L'.') &&
+			(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 &&
+			(findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    == 0 &&
+			(findData.dwFileAttributes & FILE_ATTRIBUTE_DEVICE)	   == 0)
+			result.push_back(std::wstring(findData.cFileName));
+
+		while (FindNextFile(handle, &findData))
+		{
+			if ((findData.cFileName[0] != L'.') &&
+				(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 &&
+				(findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    == 0 &&
+				(findData.dwFileAttributes & FILE_ATTRIBUTE_DEVICE)	   == 0)
+				result.push_back(std::wstring(findData.cFileName));
+		}
+
+		FindClose(handle);
+	}
+
+	return result;
 }

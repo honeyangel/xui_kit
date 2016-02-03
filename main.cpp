@@ -7,6 +7,8 @@
 #include "xui_global.h"
 #include "xui_demo.h"
 
+HWND gHWND = NULL;
+
 u08 VKToKey(WPARAM wParam)
 {
 	switch (wParam)
@@ -76,7 +78,8 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			SHNotifyInfo* notifyInfo = (SHNotifyInfo*)wParam;
 			wchar_t buffer[MAX_PATH];
 			SHGetPathFromIDList((PCIDLIST_ABSOLUTE)notifyInfo->dwItem1, buffer);
-			xui_global::xm_changenotify(NULL, std::wstring(buffer));
+			if (wcslen(buffer) > 0)
+				xui_global::add_fwatch(std::wstring(buffer));
 		}
 		break;
 	case WM_MOUSEWHEEL:
@@ -181,27 +184,16 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 		}
 		break;
 	case WM_CLOSE:
-		PostQuitMessage(0);
+		{
+			PostQuitMessage(0);
+		}
 		break;
 	case WM_SIZE:
 		{
 			RECT rect;
-			::GetClientRect(hWnd, &rect);
+			GetClientRect(hWnd, &rect);
 			int w = rect.right-rect.left;
 			int h = rect.bottom-rect.top;
-			glMatrixMode(GL_PROJECTION);
-				
-			f32 m[16];
-			memset(m, 0, sizeof(f32) * 16);
-			m[0]  =  2.0f / (f32)w;
-			m[5]  = -2.0f / (f32)h;
-			m[10] =  1.0f / 1000.0f;
-			m[12] = -1.0f;
-			m[13] =  1.0f;
-			m[14] =  1.0f / 1000.0f;
-			m[15] =  1.0f;
-			glLoadMatrixf(m);
-			
 			if (xui_convas::get_ins())
 			{
 				xui_method_inscall(xui_convas,  set_viewport)(xui_rect2d<s32>(0, 0, w, h));
@@ -233,20 +225,20 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	if (!RegisterClass(&wc))
 		return 0;
 
-	HWND hWnd = CreateWindow(L"XUI", L"XUI", WS_OVERLAPPEDWINDOW , 0, 0, 1024, 768, NULL, NULL, hInstance, NULL);
-	SetCapture(hWnd);
-	ShowWindow(hWnd, SW_NORMAL);
-	UpdateWindow(hWnd);
+	gHWND = CreateWindow(L"XUI", L"XUI", WS_OVERLAPPEDWINDOW , 0, 0, 1024, 768, NULL, NULL, hInstance, NULL);
+	SetCapture   (gHWND);
+	ShowWindow   (gHWND, SW_NORMAL);
+	UpdateWindow (gHWND);
 
-	xui_render_window* render_window = new xui_render_window(hWnd);
+	xui_render_window* render_window = new xui_render_window(gHWND);
 	g_family_create = new xui_family_create_win();
 	xui_static_inscall(xui_timermgr,	init)();
 	xui_static_inscall(xui_desktop,		init)();
 	xui_static_inscall(xui_convas,		init)();
 
 	RECT rect;
-	GetClientRect(hWnd, &rect);
-	MoveWindow(hWnd, 0, 0, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
+	GetClientRect(gHWND, &rect);
+	MoveWindow   (gHWND, 0, 0, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
 
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500));
 	window->ini_component(0, 0, DOCKSTYLE_F);
@@ -264,7 +256,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_demo::test_timeview	(window);
 	xui_demo::test_propview	(window);
 	xui_desktop::get_ins()->add_child(window);
-	xui_global::set_fwatchstart(xui_global::get_workpath(), (void*)hWnd);
+	xui_global::set_fwatchstart(xui_global::get_workpath());
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));
@@ -280,6 +272,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 			int time  = timeGetTime();
 
 			xui_method_inscall(xui_convas,		clear	)(xui_colour(1.0f, 0.1f, 0.1f, 0.1f));
+			xui_method_inscall(xui_convas,		begin	)();
 			xui_method_inscall(xui_timermgr,	update	)(0.016f);
 			xui_method_inscall(xui_desktop,		update	)(0.016f);
 			xui_method_inscall(xui_desktop,		render	)();

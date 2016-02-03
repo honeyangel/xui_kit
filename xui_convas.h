@@ -25,8 +25,10 @@ public:
 	xui_convas( void );
 
 	/*
+	//begin
 	//clear
 	*/
+	void					begin				( void );
 	void					clear				( const xui_colour& color );
 
 	/*
