@@ -1,5 +1,7 @@
+#include "xui_desktop.h"
 #include "xui_convas.h"
 #include "xui_scroll.h"
+#include "xui_menu.h"
 #include "xui_container.h"
 
 xui_implement_rtti(xui_container, xui_control);
@@ -18,6 +20,7 @@ xui_create_explain(xui_container)( const xui_vector<s32>& size )
 	m_hscrollshow	= false;
 	m_vscrollauto	= true;
 	m_hscrollauto	= true;
+	m_contextmenu	= NULL;
 	update_scroll();
 }
 
@@ -26,6 +29,7 @@ xui_create_explain(xui_container)( const xui_vector<s32>& size )
 */
 xui_delete_explain(xui_container)( void )
 {
+	delete m_contextmenu;
 	xui_vecptr_addloop(m_ascrollitem)
 	{
 		delete m_ascrollitem[i];
@@ -69,6 +73,18 @@ xui_method_explain(xui_container, set_hscrollshow,	void			)( bool flag )
 }
 
 /*
+//menu
+*/
+xui_method_explain(xui_container, get_contextmenu,	xui_menu*		)( void )
+{
+	return m_contextmenu;
+}
+xui_method_explain(xui_container, set_contextmenu,	void			)( xui_menu* menu )
+{
+	m_contextmenu = menu;
+}
+
+/*
 //rectangle
 */
 xui_method_explain(xui_container, get_renderrtins,	xui_rect2d<s32>	)( void ) const
@@ -88,10 +104,10 @@ xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vect
 	xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 	if (component == NULL && rt.was_inside(pt))
 	{
-		xui_vector<s32> screenpt;
-		screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
-		screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
-		xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
+		xui_vector<s32> scrollpt;
+		scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+		scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+		xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
 		xui_vecptr_addloop(m_ascrollitem)
 		{
 			if (component = m_ascrollitem[i]->choose(relative))
@@ -109,6 +125,8 @@ xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 		if (m_ascrollitem[i]->was_enable())
 			m_ascrollitem[i]->update(delta);
 	}
+	if (m_contextmenu)
+		m_contextmenu->update(delta);
 }
 xui_method_explain(xui_container, render_else,		void			)( void )
 {
@@ -161,6 +179,17 @@ xui_method_explain(xui_container, on_setborderrt,	void			)( xui_method_args&  ar
 {
 	xui_control::on_setborderrt(args);
 	update_scroll();
+}
+xui_method_explain(xui_container, on_mousedown,		void			)( xui_method_mouse& args )
+{
+	xui_control::on_mousedown(args);
+	if (args.mouse == MB_R && m_contextmenu)
+	{
+		m_contextmenu->set_showsubmenu(NULL);
+		m_contextmenu->set_renderpt(args.point);
+		m_contextmenu->req_focus();
+		xui_desktop::get_ins()->set_floatctrl(m_contextmenu);
+	}
 }
 xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& args )
 {

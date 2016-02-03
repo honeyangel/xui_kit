@@ -65,7 +65,6 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 	xui_method_ptrcall(m_droplst, set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_droplst, set_corner	)(3);
 	xui_method_ptrcall(m_droplst, set_iconsize	)(itemicon ? xui_vector<s32>(16) : xui_vector<s32>(0));
-	xui_method_ptrcall(m_droplst, ini_component	)(true, false);
 
 	refresh();
 }
@@ -423,16 +422,12 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 			m_droplst->set_selecteditem(item, true);
 	}
 
-	xui_method_ptrcall(m_droptog, set_push		)(true);
-	xui_method_ptrcall(m_droplst, set_visible	)(true);
-	xui_method_ptrcall(m_droplst, refresh		)();
-
+	m_droptog->set_push(true);
+	m_droplst->refresh();
 	xui_desktop::get_ins()->set_floatctrl(m_droplst);
 }
 xui_method_explain(xui_dropbox, set_droplisthide,		void			)( void )
 {
-	xui_method_ptrcall(m_droptog, set_push		)(false);
-	xui_method_ptrcall(m_droplst, set_visible	)(false);
-
+	m_droptog->set_push(false);
 	xui_desktop::get_ins()->set_floatctrl(NULL);
 }

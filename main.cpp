@@ -255,6 +255,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_demo::test_treeview	(window);
 	xui_demo::test_timeview	(window);
 	xui_demo::test_propview	(window);
+	xui_demo::test_menu		(window);
 	xui_desktop::get_ins()->add_child(window);
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 

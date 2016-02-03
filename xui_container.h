@@ -29,6 +29,12 @@ public:
 	void						set_hscrollshow	( bool flag );
 
 	/*
+	//menu
+	*/
+	xui_menu*					get_contextmenu	( void );
+	void						set_contextmenu	( xui_menu* menu );
+
+	/*
 	//rectangle
 	*/
 	virtual xui_rect2d<s32>		get_renderrtins	( void ) const;
@@ -54,6 +60,7 @@ protected:
 	virtual void				on_setrendersz	( xui_method_args&  args );
 	virtual void				on_setclientsz	( xui_method_args&  args );
 	virtual void				on_setborderrt	( xui_method_args&  args );
+	virtual void				on_mousedown	( xui_method_mouse& args );
 	virtual void				on_mousewheel	( xui_method_mouse& args );
 
 	/*
@@ -80,6 +87,7 @@ protected:
 	bool						m_vscrollauto;
 	bool						m_hscrollauto;
 	std::vector<xui_control*>	m_ascrollitem;
+	xui_menu*					m_contextmenu;
 };
 
 #endif//__xui_container_h__

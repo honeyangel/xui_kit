@@ -183,7 +183,7 @@ xui_method_explain(xui_global, get_path,		std::vector<std::wstring>		)( const st
 	std::vector<std::wstring> result;
 
 	WIN32_FIND_DATAW findData;
-	std::wstring temp = path+L"/*.*";
+	std::wstring temp = (path.length() == 0) ? L"*.*" : path+L"/*.*";
 	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
 	if (handle != INVALID_HANDLE_VALUE)
 	{
@@ -210,7 +210,7 @@ xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const st
 	std::vector<std::wstring> result;
 
 	WIN32_FIND_DATAW findData;
-	std::wstring temp = path+L"/*.*";
+	std::wstring temp = (path.length() == 0) ? L"*.*" : path+L"/*.*";
 	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
 	if (handle != INVALID_HANDLE_VALUE)
 	{

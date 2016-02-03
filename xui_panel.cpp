@@ -227,10 +227,10 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 		if (rt.was_inside(pt))
 		{
-			xui_vector<s32> screenpt;
-			screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
-			screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
-			xui_vector<s32> relative = pt - m_render.get_pt() + screenpt;
+			xui_vector<s32> scrollpt;
+			scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+			scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+			xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
 			xui_vecptr_addloop(m_childctrl)
 			{
 				if (component = m_childctrl[i]->choose(relative))

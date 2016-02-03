@@ -181,7 +181,7 @@ void xui_demo::test_treeview( xui_window* window )
 	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
 	window->add_child(treeview);
 
-	std::vector<std::wstring> pathvec = xui_global::get_path(xui_global::get_workpath());
+	std::vector<std::wstring> pathvec = xui_global::get_path(L"");
 	for (u32 i = 0; i < pathvec.size(); ++i)
 	{
 		xui_treedata* data = new xui_treedata(pathvec[i], xui_bitmap::create("icon/edit.png"));
@@ -194,7 +194,7 @@ void xui_demo::test_treeview( xui_window* window )
 			xui_treenode* childnode = node->add_leafnode(j, childdata);
 		}
 	}
-	std::vector<std::wstring> filevec = xui_global::get_file(xui_global::get_workpath());
+	std::vector<std::wstring> filevec = xui_global::get_file(L"");
 	for (u32 i = 0; i < filevec.size(); ++i)
 	{
 		xui_treedata* data = new xui_treedata(filevec[i]);
@@ -359,4 +359,20 @@ void xui_demo::test_propview( xui_window* window )
 	propkind->add_propdata(dataexpand);
 
 	propview->set_proproot(proproot);
+}
+
+void xui_demo::test_menu( xui_window* window )
+{
+	xui_menu* menu = xui_menu::create();
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Copy");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Cut");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Paste");
+	menu->add_separate();
+	xui_menuitem* item = menu->add_item(xui_bitmap::create("icon/edit.png"), L"Select");
+	xui_menu* submenu = xui_menu::create();
+	submenu->add_item(NULL, L"Select One");
+	submenu->add_item(NULL, L"Select All");
+	item->set_submenu(submenu);
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Delete");
+	window->set_contextmenu(menu);
 }

@@ -74,8 +74,11 @@ xui_method_explain(xui_button, set_downcolor,	void				)( const xui_colour& color
 xui_method_explain(xui_button, on_mouseclick,	void				)( xui_method_mouse& args )
 {
 	xui_drawer::on_mouseclick(args);
-	xui_method_args other_args;
-	xm_click(this,  other_args);
+	if (args.mouse == MB_L)
+	{
+		xui_method_args other_args;
+		xm_click(this,  other_args);
+	}
 }
 xui_method_explain(xui_button, on_renderself,	void				)( xui_method_args&  args )
 {

@@ -94,6 +94,12 @@
     <Filter Include="LibGUI\component">
       <UniqueIdentifier>{2ed3bd4d-637c-4c8e-a214-6c59df419a1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LibGUI\menu">
+      <UniqueIdentifier>{3ba7a8e6-1797-48c6-94a0-0e1e8b3b9acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibGUI\tab">
+      <UniqueIdentifier>{0de00ee7-3a54-472a-a0b7-2a9562ec2346}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xui_colour.h">
@@ -366,6 +372,12 @@
     </ClInclude>
     <ClInclude Include="xui_global.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_menu.h">
+      <Filter>LibGUI\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_menuitem.h">
+      <Filter>LibGUI\menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -661,6 +673,12 @@
     </ClCompile>
     <ClCompile Include="xui_global.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_menu.cpp">
+      <Filter>LibGUI\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_menuitem.cpp">
+      <Filter>LibGUI\menu</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -56,7 +56,7 @@ xui_method_explain(xui_toolbar, set_grap,		void		)( s32 grap )
 */
 xui_method_explain(xui_toolbar, add_separate,	void		)( void )
 {
-	add_item(new xui_separate(xui_vector<s32>(8)));
+	add_item(new xui_separate(xui_vector<s32>(8), m_flow));
 }
 xui_method_explain(xui_toolbar, add_item,		void		)( xui_component* component )
 {

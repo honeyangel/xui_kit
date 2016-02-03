@@ -11,14 +11,18 @@ public:
 	/*
 	//constructor
 	*/
-	xui_separate( const xui_vector<s32>& size );
+	xui_separate( const xui_vector<s32>& size, u08 flow );
 
 protected:
 	/*
 	//callback
 	*/
 	virtual void	on_renderback	( xui_method_args& args );
-	u08				get_flow		( void );
+
+	/*
+	//member
+	*/
+	u08				m_flow;
 };
 
 #endif//__xui_separate_h__
