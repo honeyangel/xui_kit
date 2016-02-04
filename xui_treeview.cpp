@@ -552,7 +552,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	xui_vector<s32> p2;
 	if (m_rendergrid)
 	{
-		rt = get_renderrtins();
+		rt = (m_vscroll == NULL) ? get_renderrt() : get_renderrtins();
 		xui_vecptr_addloop(m_columngrid)
 		{
 			p1 = m_columngrid[i]->get_screenpt();
@@ -694,7 +694,7 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args&  args )
 {
 	xui_container::on_renderself(args);
-	if (m_lighttrace)
+	if (m_lighttrace && was_hover())
 	{
 		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));

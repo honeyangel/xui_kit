@@ -379,6 +379,9 @@
     <ClInclude Include="xui_menuitem.h">
       <Filter>LibGUI\menu</Filter>
     </ClInclude>
+    <ClInclude Include="xui_dialog.h">
+      <Filter>LibGUI\window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -679,6 +682,9 @@
     </ClCompile>
     <ClCompile Include="xui_menuitem.cpp">
       <Filter>LibGUI\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_dialog.cpp">
+      <Filter>LibGUI\window</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

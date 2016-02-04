@@ -1,5 +1,6 @@
 #include "xui_desktop.h"
 #include "xui_separate.h"
+#include "xui_toggle.h"
 #include "xui_menuitem.h"
 #include "xui_menu.h"
 
@@ -24,6 +25,7 @@ xui_method_explain(xui_menu, create,			xui_menu*		)( void )
 xui_create_explain(xui_menu)( const xui_vector<s32>& size )
 : xui_control(size)
 {
+	m_ownertoggle = NULL;
 	m_showsubmenu = NULL;
 }
 
@@ -45,6 +47,14 @@ xui_method_explain(xui_menu, was_series,		bool			)( xui_component* comp )
 		return true;
 
 	return false;
+}
+xui_method_explain(xui_menu, get_ownertoggle,	xui_toggle*		)( void )
+{
+	return m_ownertoggle;
+}
+xui_method_explain(xui_menu, set_ownertoggle,	void			)( xui_toggle* toggle )
+{
+	m_ownertoggle = toggle;
 }
 xui_method_explain(xui_menu, get_showsubmenu,	xui_menu*		)( void )
 {
@@ -153,6 +163,9 @@ xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
 	if (focusctrl == NULL || menu == NULL || menu->was_series(focusctrl) == false)
 	{
 		xui_desktop::get_ins()->set_floatctrl(NULL);
+		xui_toggle* toggle = menu->get_ownertoggle();
+		if (toggle)
+			toggle->ini_toggle(false);
 	}
 }
 xui_method_explain(xui_menu, on_invalid,		void			)( xui_method_args& args )

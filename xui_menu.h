@@ -22,6 +22,8 @@ public:
 	//method
 	*/
 	bool						was_series		( xui_component* comp );
+	xui_toggle*					get_ownertoggle	( void );
+	void						set_ownertoggle	( xui_toggle* toggle );
 	xui_menu*					get_showsubmenu	( void );
 	void						set_showsubmenu	( xui_menu* submenu );
 
@@ -51,6 +53,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_toggle*					m_ownertoggle;
 	xui_menu*					m_showsubmenu;
 };
 

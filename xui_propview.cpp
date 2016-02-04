@@ -127,8 +127,9 @@ xui_method_explain(xui_propview, render_else,		void					)( void )
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
 	if (m_ascrollitem.size() > 1)
 	{
+		s32 bx = (m_vscroll == NULL) ? rt.bx : get_renderrtins().bx;
 		xui_vector<s32> p1 = get_screenpt();
-		xui_vector<s32> p2 = p1 + xui_vector<s32>(get_renderrtins().bx, 0);
+		xui_vector<s32> p2 = p1 + xui_vector<s32>(bx, 0);
 		for (u32 i = 0; i < m_ascrollitem.size()-1; ++i)
 		{
 			xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);

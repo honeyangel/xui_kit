@@ -85,6 +85,7 @@
     <ClInclude Include="xui_demo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_menu.h" />
     <ClInclude Include="xui_menuitem.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="xui_demo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xui_dialog.cpp" />
     <ClCompile Include="xui_family.cpp" />
     <ClCompile Include="xui_family_render.cpp" />
     <ClCompile Include="xui_kindctrl.cpp" />

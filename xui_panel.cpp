@@ -168,7 +168,7 @@ xui_method_explain(xui_panel, del_child,		void								)( xui_control* child, boo
 
 	//Ïú»Ù¿Ø¼þ
 	if (destroy)
-		xui_desktop::get_ins()->move_recycle(this);
+		xui_desktop::get_ins()->move_recycle(child);
 }
 xui_method_explain(xui_panel, del_children,		void								)( void )
 {
@@ -286,12 +286,7 @@ xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args 
 			vec.push_back(m_childctrl[i]);
 		}
 
-		xui_rect2d<s32> rt = get_clientrt();
-		rt.ax += m_border.ax;
-		rt.bx -= m_border.bx;
-		rt.ay += m_border.ay;
-		rt.by -= m_border.by;
-
+		xui_rect2d<s32> rt = xui_rect2d<s32>(xui_vector<s32>(m_border.ax, m_border.ay), get_clientsz());
 		perform_alignhorz(rt, vec);
 		perform_alignvert(rt, vec);
 		perform_dockstyle(rt, vec);

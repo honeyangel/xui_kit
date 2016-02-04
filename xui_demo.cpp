@@ -14,9 +14,15 @@ void xui_demo::test_button( xui_window* window )
 
 void xui_demo::test_toggle( xui_window* window )
 {
+	xui_menu* menu = xui_menu::create();
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Copy", L"Ctrl+C");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Cut", L"Ctrl+X");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Paste", L"Ctrl+V");
+
 	xui_toggle* toggle = NULL;
 	toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"));
 	toggle->set_renderpt(xui_vector<s32>(10,  40));
+	toggle->set_menu(menu);
 	window->add_child(toggle);
 	toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"), L"Translate", 110);
 	toggle->set_renderpt(xui_vector<s32>(50,  40));

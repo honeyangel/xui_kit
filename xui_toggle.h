@@ -29,6 +29,11 @@ public:
 	xui_toggle( const xui_vector<s32>& size, u08 drawstyle = TOGGLE_CIRCLE );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_toggle( void );
+
+	/*
 	//init
 	*/
 	void						ini_toggle		( bool push );
@@ -40,9 +45,16 @@ public:
 	void						set_push		( bool push );
 
 	/*
+	//menu
+	*/
+	xui_menu*					get_menu		( void );
+	void						set_menu		( xui_menu* menu );
+
+	/*
 	//virtual
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
+	virtual void				update_else		( f32 delta );
 
 	/*
 	//method
@@ -59,6 +71,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_menu*					m_menu;
 	bool						m_push;
 	u08							m_drawstyle;
 };

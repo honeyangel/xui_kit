@@ -66,9 +66,9 @@ xui_method_explain(xui_window, on_keybddown,	void)( xui_method_keybd& args )
 }
 xui_method_explain(xui_window, on_accept,		void)( xui_component* sender, xui_method_args& args )
 {
-
+	xm_accept(sender, args);
 }
 xui_method_explain(xui_window, on_cancel,		void)( xui_component* sender, xui_method_args& args )
 {
-
+	xm_cancel(sender, args);
 }

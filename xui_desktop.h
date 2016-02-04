@@ -59,6 +59,7 @@ public:
 	void						move_recycle	( xui_component* component );
 	void						send_message	( const xui_message& message );
 	void						post_message	( const xui_message& message );
+	xui_window*					show_message	( const std::wstring& text, s32 num_button );
 
 	/*
 	//virtual

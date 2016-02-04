@@ -1,6 +1,7 @@
 #include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_window.h"
+#include "xui_dialog.h"
 #include "xui_desktop.h"
 
 xui_implement_rtti(xui_desktop, xui_panel);
@@ -275,6 +276,12 @@ xui_method_explain(xui_desktop, send_message,	void					)( const xui_message& mes
 xui_method_explain(xui_desktop, post_message,	void					)( const xui_message& message )
 {
 	m_messagevec.push_back(message);
+}
+xui_method_explain(xui_desktop, show_message,	xui_window*				)( const std::wstring& text, s32 num_button )
+{
+	xui_window* dialog = new xui_dialog(text, num_button);
+	add_child(dialog);
+	return dialog;
 }
 
 /*

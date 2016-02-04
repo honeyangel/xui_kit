@@ -1,6 +1,7 @@
 #include "xui_convas.h"
 #include "xui_bitmap.h"
 #include "xui_desktop.h"
+#include "xui_menu.h"
 #include "xui_toggle.h"
 
 xui_implement_rtti(xui_toggle, xui_button);
@@ -55,8 +56,17 @@ xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon, cons
 xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle )
 : xui_button(size)
 {
+	m_menu		= NULL;
 	m_push		= false;
 	m_drawstyle = drawstyle;
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(xui_toggle)( void )
+{
+	delete m_menu;
 }
 
 /*
@@ -82,7 +92,38 @@ xui_method_explain(xui_toggle, set_push,			void			)( bool push )
 
 		xui_method_args args;
 		xm_click(this,  args);
+
+		if (m_menu)
+		{
+			if (m_push)
+			{
+				xui_vector<s32> pt = get_screenpt() + xui_vector<s32>(0, get_renderh());
+				xui_method_ptrcall(m_menu, set_renderpt		)(pt);
+				xui_method_ptrcall(m_menu, set_showsubmenu	)(NULL);
+				xui_method_ptrcall(m_menu, req_focus		)();
+				xui_desktop::get_ins()->set_floatctrl(m_menu);
+			}
+			else
+			{
+				xui_desktop::get_ins()->set_floatctrl(NULL);
+			}
+		}
 	}
+}
+
+/*
+//menu
+*/
+xui_method_explain(xui_toggle, get_menu,			xui_menu*		)( void )
+{
+	return m_menu;
+}
+xui_method_explain(xui_toggle, set_menu,			void			)( xui_menu* menu )
+{
+	m_menu = menu;
+
+	if (m_menu)
+		m_menu->set_ownertoggle(this);
 }
 
 /*
@@ -155,4 +196,10 @@ xui_method_explain(xui_toggle, get_rendercolor,		xui_colour		)( void ) const
 		else
 			return xui_button::get_rendercolor();
 	}
+}
+xui_method_explain(xui_toggle, update_else,			void			)( f32 delta )
+{
+	xui_button::update_else(delta);
+	if (m_menu)
+		m_menu->update(delta);
 }

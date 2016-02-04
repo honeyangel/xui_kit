@@ -1,6 +1,6 @@
 #include "xui_bitmap.h"
 #include "xui_convas.h"
-#include "xui_button.h"
+#include "xui_toggle.h"
 #include "xui_desktop.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
@@ -93,6 +93,10 @@ xui_method_explain(xui_menuitem, on_nonfocus,		void					)( xui_method_args&  arg
 	xui_component* focusctrl = (xui_component*)args.wparam;
 	if (focusctrl == NULL || menu == NULL || menu->was_series(focusctrl) == false)
 	{
+		xui_toggle* toggle = menu->get_ownertoggle();
+		if (toggle)
+			toggle->ini_toggle(false);
+
 		xui_desktop::get_ins()->set_floatctrl(NULL);
 	}
 }

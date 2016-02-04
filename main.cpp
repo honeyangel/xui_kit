@@ -272,6 +272,8 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_desktop::get_ins()->add_child(window);
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 
+	xui_desktop::get_ins()->show_message(L"ErrorWwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww!!!!", 1);
+
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));
 	while (msg.message != WM_QUIT)
