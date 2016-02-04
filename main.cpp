@@ -74,10 +74,23 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &lEvent);
 			if (hNotifyLock)
 			{
+				std::wstring path;
+				std::wstring misc;
+
 				wchar_t buffer[MAX_PATH];
-				SHGetPathFromIDList(rgpidl[0], buffer);
-				if (wcslen(buffer) > 0)
-					xui_global::add_fwatch(std::wstring(buffer));
+				if (rgpidl[0])
+				{
+					SHGetPathFromIDList(rgpidl[0], buffer);
+					path = buffer;
+				}
+				if (rgpidl[1])
+				{
+					SHGetPathFromIDList(rgpidl[1], buffer);
+					misc = buffer;
+				}
+
+				if (path.length() > 0)
+					xui_global::add_fwatch(path, misc);
 			}
 			SHChangeNotification_Unlock(hNotifyLock);
 		}

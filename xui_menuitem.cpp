@@ -11,7 +11,7 @@ xui_implement_rtti(xui_menuitem, xui_drawer);
 //constructor
 */
 xui_create_explain(xui_menuitem)( void )
-: xui_drawer(xui_vector<s32>(0, 24))
+: xui_drawer(xui_vector<s32>(0, 20))
 {
 	m_submenu = NULL;
 }
@@ -27,9 +27,9 @@ xui_delete_explain(xui_menuitem)( void )
 /*
 //method
 */
-xui_method_explain(xui_menuitem, get_maxwidth,		s32					)( void )
+xui_method_explain(xui_menuitem, get_maxwidth,		s32						)( void )
 {
-	s32 width = 12;
+	s32 width = 72;
 	width += m_border.ax;
 	width += m_border.bx;
 	width += m_iconoffset.x;
@@ -42,19 +42,39 @@ xui_method_explain(xui_menuitem, get_maxwidth,		s32					)( void )
 
 	return width;
 }
-xui_method_explain(xui_menuitem, get_submenu,		xui_menu*			)( void )
+xui_method_explain(xui_menuitem, get_submenu,		xui_menu*				)( void )
 {
 	return m_submenu;
 }
-xui_method_explain(xui_menuitem, set_submenu,		void				)( xui_menu* submenu )
+xui_method_explain(xui_menuitem, set_submenu,		void					)( xui_menu* submenu )
 {
 	m_submenu = submenu;
 }
 
 /*
+//hottext
+*/
+xui_method_explain(xui_menuitem, get_hint,			const std::wstring&		)( void ) const
+{
+	return m_hint;
+}
+xui_method_explain(xui_menuitem, set_hint,			void					)( const std::wstring& hint )
+{
+	m_hint = hint;
+}
+xui_method_explain(xui_menuitem, get_draw,			const xui_family_render&)( void ) const
+{
+	return m_draw;
+}
+xui_method_explain(xui_menuitem, set_draw,			void					)( const xui_family_render& draw )
+{
+	m_draw = draw;
+}
+
+/*
 //override
 */
-xui_method_explain(xui_menuitem, get_rendercolor,	xui_colour			)( void ) const
+xui_method_explain(xui_menuitem, get_rendercolor,	xui_colour				)( void ) const
 {
 	xui_menu* menu = xui_dynamic_cast(xui_menu, m_parent);
 	if (was_hover() || (m_submenu && menu->get_showsubmenu() == m_submenu))
@@ -66,7 +86,7 @@ xui_method_explain(xui_menuitem, get_rendercolor,	xui_colour			)( void ) const
 /*
 //callback
 */
-xui_method_explain(xui_menuitem, on_nonfocus,		void				)( xui_method_args&  args )
+xui_method_explain(xui_menuitem, on_nonfocus,		void					)( xui_method_args&  args )
 {
 	xui_drawer::on_nonfocus(args);
 	xui_menu* menu = xui_dynamic_cast(xui_menu, xui_desktop::get_ins()->get_floatctrl());
@@ -76,9 +96,17 @@ xui_method_explain(xui_menuitem, on_nonfocus,		void				)( xui_method_args&  args
 		xui_desktop::get_ins()->set_floatctrl(NULL);
 	}
 }
-xui_method_explain(xui_menuitem, on_renderself,		void				)( xui_method_args&  args )
+xui_method_explain(xui_menuitem, on_renderself,		void					)( xui_method_args&  args )
 {
 	xui_drawer::on_renderself(args);
+	if (m_hint.length() > 0)
+	{
+		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
+		rt.ax = rt.bx-72;
+		rt    = xui_convas::get_ins()->calc_draw(m_hint, m_textfont, rt, TA_LC, true);
+		xui_convas::get_ins()->draw_text(m_hint, m_textfont, rt.get_pt(), m_draw);
+	}
+
 	if (m_submenu)
 	{
 		xui_menu* menu = xui_dynamic_cast(xui_menu, m_parent);
@@ -89,7 +117,7 @@ xui_method_explain(xui_menuitem, on_renderself,		void				)( xui_method_args&  ar
 		xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, get_vertexcolor()*color);
 	}
 }
-xui_method_explain(xui_menuitem, on_mouseclick,		void				)( xui_method_mouse& args )
+xui_method_explain(xui_menuitem, on_mouseclick,		void					)( xui_method_mouse& args )
 {
 	xui_drawer::on_mouseclick(args);
 	if (args.mouse == MB_L && m_submenu == NULL)
@@ -100,7 +128,7 @@ xui_method_explain(xui_menuitem, on_mouseclick,		void				)( xui_method_mouse& ar
 		xui_desktop::get_ins()->set_focusctrl(NULL);
 	}
 }
-xui_method_explain(xui_menuitem, on_mouseenter,		void				)( xui_method_mouse& args )
+xui_method_explain(xui_menuitem, on_mouseenter,		void					)( xui_method_mouse& args )
 {
 	xui_drawer::on_mouseenter(args);
 	xui_menu* menu = xui_dynamic_cast(xui_menu, m_parent);
@@ -108,6 +136,12 @@ xui_method_explain(xui_menuitem, on_mouseenter,		void				)( xui_method_mouse& ar
 	if (m_submenu)
 	{
 		xui_rect2d<s32> rt = get_renderrtabs();
-		m_submenu->set_renderpt(xui_vector<s32>(rt.bx, rt.ay));
+		xui_vector<s32> pt = xui_vector<s32>(rt.bx, rt.ay);
+		if (pt.x + m_submenu->get_renderw() > xui_desktop::get_ins()->get_renderw())
+			pt.x = rt.ax - m_submenu->get_renderw();
+		if (pt.y + m_submenu->get_renderh() > xui_desktop::get_ins()->get_renderh())
+			pt.y = xui_desktop::get_ins()->get_renderh() - m_submenu->get_renderh();
+
+		m_submenu->set_renderpt(pt);
 	}
 }

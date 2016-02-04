@@ -129,7 +129,7 @@ xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 #include <Shlobj.h>
 
 extern HWND gHWND;
-std::vector<std::wstring>	modify_path;
+notify_change_map			modify_map;
 ULONG						notify_id = 0;
 xui_method_explain(xui_global, set_fwatchstart,	void							)( const std::wstring& path )
 {
@@ -139,30 +139,25 @@ xui_method_explain(xui_global, set_fwatchstart,	void							)( const std::wstring
 	SHChangeNotifyEntry shEntry;
 	shEntry.fRecursive = TRUE;
 	shEntry.pidl = pidlist;
-	notify_id = SHChangeNotifyRegister(gHWND, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt|SHCNRF_NewDelivery, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
+	LONG lEvent = SHCNE_CREATE|SHCNE_DELETE|SHCNE_MKDIR|SHCNE_RENAMEFOLDER|SHCNE_RENAMEITEM|SHCNE_RMDIR|SHCNE_UPDATEITEM;
+	notify_id = SHChangeNotifyRegister(gHWND, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt|SHCNRF_NewDelivery, lEvent, WM_USER+0x1000, 1, &shEntry);
 }
 xui_method_explain(xui_global, set_fwatchclose,	void							)( void )
 {
 	SHChangeNotifyDeregister(notify_id);
 	notify_id = 0;
 }
-xui_method_explain(xui_global, add_fwatch,		void							)( const std::wstring& path )
+xui_method_explain(xui_global, add_fwatch,		void							)( const std::wstring& path, const std::wstring& misc )
 {
-	for (u32 i = 0; i < modify_path.size(); ++i)
-	{
-		if (modify_path[i] == path)
-			return;
-	}
-
-	modify_path.push_back(path);
+	modify_map[path] = misc;
 }
 xui_method_explain(xui_global, del_fwatch,		void							)( void )
 {
-	modify_path.clear();
+	modify_map.clear();
 }
-xui_method_explain(xui_global, get_fwatch,		const std::vector<std::wstring>&)( void )
+xui_method_explain(xui_global, get_fwatch,		const notify_change_map&		)( void )
 {
-	return modify_path;
+	return modify_map;
 }
 
 /*

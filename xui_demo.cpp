@@ -364,14 +364,14 @@ void xui_demo::test_propview( xui_window* window )
 void xui_demo::test_menu( xui_window* window )
 {
 	xui_menu* menu = xui_menu::create();
-	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Copy");
-	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Cut");
-	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Paste");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Copy", L"Ctrl+C");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Cut", L"Ctrl+X");
+	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Paste", L"Ctrl+V");
 	menu->add_separate();
 	xui_menuitem* item = menu->add_item(xui_bitmap::create("icon/edit.png"), L"Select");
 	xui_menu* submenu = xui_menu::create();
-	submenu->add_item(NULL, L"Select One");
-	submenu->add_item(NULL, L"Select All");
+	submenu->add_item(NULL, L"Select_One");
+	submenu->add_item(NULL, L"Select_All");
 	item->set_submenu(submenu);
 	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Delete");
 	window->set_contextmenu(menu);

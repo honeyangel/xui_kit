@@ -72,11 +72,13 @@ xui_method_explain(xui_menu, add_separate,		xui_component*	)( void )
 
 	return separate;
 }
-xui_method_explain(xui_menu, add_item,			xui_menuitem*	)( xui_bitmap* icon, const std::wstring& text )
+xui_method_explain(xui_menu, add_item,			xui_menuitem*	)( xui_bitmap* icon, const std::wstring& text, const std::wstring& hint, const xui_family_render& draw )
 {
 	xui_menuitem* item = new xui_menuitem();
-	item->ini_drawer(icon);
-	item->ini_drawer(text);
+	xui_method_ptrcall(item, ini_drawer	)(icon);
+	xui_method_ptrcall(item, ini_drawer	)(text);
+	xui_method_ptrcall(item, set_hint	)(hint);
+	xui_method_ptrcall(item, set_draw	)(draw);
 	add_item(item);
 
 	return item;
@@ -87,12 +89,12 @@ xui_method_explain(xui_menu, add_item,			void			)( xui_menuitem* item )
 		return;
 
 	xui_method_ptrcall(item, set_drawcolor	)(true);
-	xui_method_ptrcall(item, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(item, set_borderrt	)(xui_rect2d<s32>(4, 2, 4, 2));
 	xui_method_ptrcall(item, set_iconsize	)(xui_vector<s32>(16));
 	xui_method_ptrcall(item, set_iconalign	)(IMAGE_FRONT_TEXT);
 	xui_method_ptrcall(item, set_textalign	)(TA_LC);
 	xui_method_ptrcall(item, set_textoffset	)(xui_vector<s32>(8, 0));
-	xui_method_ptrcall(item, set_renderh	)(24);
+	xui_method_ptrcall(item, set_renderh	)(20);
 	xui_method_ptrcall(item, set_parent		)(this);
 	m_widgetvec.push_back(item);
 	invalid();
@@ -143,11 +145,6 @@ xui_method_explain(xui_menu, render,			void			)( void )
 /*
 //callback
 */
-xui_method_explain(xui_menu, on_getfocus,		void			)( xui_method_args& args )
-{
-	xui_control::on_getfocus(args);
-	m_showsubmenu = NULL;
-}
 xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
 {
 	xui_control::on_nonfocus(args);

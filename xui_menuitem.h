@@ -26,6 +26,14 @@ public:
 	void						set_submenu		( xui_menu* submenu );
 
 	/*
+	//hottext
+	*/
+	const std::wstring&			get_hint		( void ) const;
+	void						set_hint		( const std::wstring&      hint );
+	const xui_family_render&	get_draw		( void ) const;
+	void						set_draw		( const xui_family_render& draw );
+
+	/*
 	//override
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
@@ -47,6 +55,8 @@ protected:
 	/*
 	//member
 	*/
+	std::wstring				m_hint;
+	xui_family_render			m_draw;
 	xui_menu*					m_submenu;
 };
 

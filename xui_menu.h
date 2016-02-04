@@ -29,7 +29,7 @@ public:
 	//item
 	*/
 	xui_component*				add_separate	( void );
-	xui_menuitem*				add_item		( xui_bitmap* icon, const std::wstring& text );
+	xui_menuitem*				add_item		( xui_bitmap* icon, const std::wstring& text, const std::wstring& hint = L"", const xui_family_render& draw = xui_family_render::default );
 	void						add_item		( xui_menuitem* item );
 	void						del_item		( xui_menuitem* item );
 
@@ -44,7 +44,6 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void				on_getfocus		( xui_method_args& args );
 	virtual void				on_nonfocus		( xui_method_args& args );
 	virtual void				on_invalid		( xui_method_args& args );
 	virtual void				on_perform		( xui_method_args& args );
