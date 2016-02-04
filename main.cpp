@@ -63,23 +63,23 @@ u08 VKToKey(WPARAM wParam)
 }
 
 #define WM_USER_FWATCHNOTIFY WM_USER+0x1000
-struct SHNotifyInfo
-{
-	DWORD dwItem1;
-	DWORD dwItem2;
-};
-
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	switch (message)
 	{
 	case WM_USER_FWATCHNOTIFY:
 		{
-			SHNotifyInfo* notifyInfo = (SHNotifyInfo*)wParam;
-			wchar_t buffer[MAX_PATH];
-			SHGetPathFromIDList((PCIDLIST_ABSOLUTE)notifyInfo->dwItem1, buffer);
-			if (wcslen(buffer) > 0)
-				xui_global::add_fwatch(std::wstring(buffer));
+			long lEvent;
+			PIDLIST_ABSOLUTE *rgpidl;
+			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &lEvent);
+			if (hNotifyLock)
+			{
+				wchar_t buffer[MAX_PATH];
+				SHGetPathFromIDList(rgpidl[0], buffer);
+				if (wcslen(buffer) > 0)
+					xui_global::add_fwatch(std::wstring(buffer));
+			}
+			SHChangeNotification_Unlock(hNotifyLock);
 		}
 		break;
 	case WM_MOUSEWHEEL:

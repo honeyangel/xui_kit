@@ -44,6 +44,7 @@ protected:
 	/*
 	//callback
 	*/
+	virtual void				on_getfocus		( xui_method_args& args );
 	virtual void				on_nonfocus		( xui_method_args& args );
 	virtual void				on_invalid		( xui_method_args& args );
 	virtual void				on_perform		( xui_method_args& args );

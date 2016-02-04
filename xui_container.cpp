@@ -185,7 +185,7 @@ xui_method_explain(xui_container, on_mousedown,		void			)( xui_method_mouse& arg
 	xui_control::on_mousedown(args);
 	if (args.mouse == MB_R && m_contextmenu)
 	{
-		m_contextmenu->set_showsubmenu(NULL);
+		//m_contextmenu->set_showsubmenu(NULL);
 		m_contextmenu->set_renderpt(args.point);
 		m_contextmenu->req_focus();
 		xui_desktop::get_ins()->set_floatctrl(m_contextmenu);

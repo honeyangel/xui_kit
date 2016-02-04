@@ -143,6 +143,11 @@ xui_method_explain(xui_menu, render,			void			)( void )
 /*
 //callback
 */
+xui_method_explain(xui_menu, on_getfocus,		void			)( xui_method_args& args )
+{
+	xui_control::on_getfocus(args);
+	m_showsubmenu = NULL;
+}
 xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
 {
 	xui_control::on_nonfocus(args);

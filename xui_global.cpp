@@ -139,7 +139,7 @@ xui_method_explain(xui_global, set_fwatchstart,	void							)( const std::wstring
 	SHChangeNotifyEntry shEntry;
 	shEntry.fRecursive = TRUE;
 	shEntry.pidl = pidlist;
-	notify_id = SHChangeNotifyRegister(gHWND, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
+	notify_id = SHChangeNotifyRegister(gHWND, SHCNRF_InterruptLevel|SHCNRF_ShellLevel|SHCNRF_RecursiveInterrupt|SHCNRF_NewDelivery, SHCNE_ALLEVENTS, WM_USER+0x1000, 1, &shEntry);
 }
 xui_method_explain(xui_global, set_fwatchclose,	void							)( void )
 {
