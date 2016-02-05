@@ -96,6 +96,8 @@ class   xui_propplus;
 class   xui_propview;
 class   xui_menu;
 class   xui_menuitem;
+class   xui_dockpage;
+class   xui_dockview;
 
 /*
 //rtti
