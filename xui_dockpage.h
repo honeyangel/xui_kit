@@ -1,9 +1,9 @@
 #ifndef __xui_dockpage_h__
 #define __xui_dockpage_h__
 
-#include "xui_panel.h"
+#include "xui_control.h"
 
-class xui_dockpage : public xui_panel
+class xui_dockpage : public xui_control
 {
 	xui_declare_rtti
 

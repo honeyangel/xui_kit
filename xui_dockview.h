@@ -1,9 +1,9 @@
 #ifndef __xui_dockview_h__
 #define __xui_dockview_h__
 
-#include "xui_container.h"
+#include "xui_control.h"
 
-class xui_dockview : public xui_container
+class xui_dockview : public xui_control
 {
 	xui_declare_rtti
 
