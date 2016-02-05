@@ -127,6 +127,7 @@ xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 //modify
 */
 #include <Shlobj.h>
+#include <shellapi.h>
 
 extern HWND gHWND;
 notify_change_map			modify_map;
@@ -228,4 +229,55 @@ xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const st
 	}
 
 	return result;
+}
+xui_method_explain(xui_global, del_file,		bool							)( const std::wstring& path )
+{
+	std::wstring temp = path+L'\0';
+	SHFILEOPSTRUCTW fileOP;
+	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
+	fileOP.hwnd		= gHWND;
+	fileOP.wFunc	= FO_DELETE;
+	fileOP.pFrom	= temp.c_str();
+	fileOP.pTo		= NULL;
+	fileOP.fFlags	= FOF_ALLOWUNDO|FOF_NOCONFIRMATION;
+	return SHFileOperation(&fileOP) == 0;
+}
+xui_method_explain(xui_global, mov_file,		bool							)( const std::wstring& src, const std::wstring& dst )
+{
+	std::wstring tempsrc = src+L'\0';
+	std::wstring tempdst = dst+L'\0';
+	SHFILEOPSTRUCTW fileOP;
+	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
+	fileOP.hwnd		= gHWND;
+	fileOP.wFunc	= FO_MOVE;
+	fileOP.pFrom	= tempsrc.c_str();
+	fileOP.pTo		= tempdst.c_str();
+	fileOP.fFlags	= FOF_NOCONFIRMATION|FOF_NOCONFIRMMKDIR;
+	return SHFileOperation(&fileOP) == 0;
+}
+xui_method_explain(xui_global, cpy_file,		bool							)( const std::wstring& src, const std::wstring& dst )
+{
+	std::wstring tempsrc = src+L'\0';
+	std::wstring tempdst = dst+L'\0';
+	SHFILEOPSTRUCTW fileOP;
+	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
+	fileOP.hwnd		= gHWND;
+	fileOP.wFunc	= FO_COPY;
+	fileOP.pFrom	= tempsrc.c_str();
+	fileOP.pTo		= tempdst.c_str();
+	fileOP.fFlags	= FOF_NOCONFIRMATION|FOF_NOCONFIRMMKDIR;
+	return SHFileOperation(&fileOP) == 0;
+}
+xui_method_explain(xui_global, rna_file,		bool							)( const std::wstring& src, const std::wstring& dst )
+{
+	std::wstring tempsrc = src+L'\0';
+	std::wstring tempdst = dst+L'\0';
+	SHFILEOPSTRUCTW fileOP;
+	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
+	fileOP.hwnd		= gHWND;
+	fileOP.wFunc	= FO_RENAME;
+	fileOP.pFrom	= tempsrc.c_str();
+	fileOP.pTo		= tempdst.c_str();
+	fileOP.fFlags	= FOF_NOCONFIRMATION;
+	return SHFileOperation(&fileOP) == 0;
 }

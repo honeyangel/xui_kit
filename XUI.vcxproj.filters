@@ -97,7 +97,7 @@
     <Filter Include="LibGUI\menu">
       <UniqueIdentifier>{3ba7a8e6-1797-48c6-94a0-0e1e8b3b9acc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LibGUI\tab">
+    <Filter Include="LibGUI\dockview">
       <UniqueIdentifier>{0de00ee7-3a54-472a-a0b7-2a9562ec2346}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -381,6 +381,12 @@
     </ClInclude>
     <ClInclude Include="xui_dialog.h">
       <Filter>LibGUI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_dockview.h">
+      <Filter>LibGUI\dockview</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_dockpage.h">
+      <Filter>LibGUI\dockview</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +691,12 @@
     </ClCompile>
     <ClCompile Include="xui_dialog.cpp">
       <Filter>LibGUI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_dockview.cpp">
+      <Filter>LibGUI\dockview</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_dockpage.cpp">
+      <Filter>LibGUI\dockview</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

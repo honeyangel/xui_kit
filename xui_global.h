@@ -44,12 +44,10 @@ public:
 	static void								set_workpath	( const std::wstring& path );
 	static std::vector<std::wstring>		get_path		( const std::wstring& path );
 	static std::vector<std::wstring>		get_file		( const std::wstring& path );
-	static void								del_path		( const std::wstring& path );
-	static void								del_file		( const std::wstring& file );
-	static void								mov_path		( const std::wstring& src, const std::wstring& dst );
-	static void								mov_file		( const std::wstring& src, const std::wstring& dst );
-	static void								cpy_path		( const std::wstring& src, const std::wstring& dst );
-	static void								cpy_file		( const std::wstring& src, const std::wstring& dst );
+	static bool								del_file		( const std::wstring& file );
+	static bool								mov_file		( const std::wstring& src, const std::wstring& dst );
+	static bool								cpy_file		( const std::wstring& src, const std::wstring& dst );
+	static bool								rna_file		( const std::wstring& src, const std::wstring& dst );
 };
 
 #endif//__xui_global_h__
