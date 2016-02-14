@@ -255,24 +255,24 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500));
 	window->ini_component(0, 0, DOCKSTYLE_F);
-	xui_demo::test_button	(window);
-	xui_demo::test_toggle	(window);
-	xui_demo::test_textbox	(window);
-	xui_demo::test_linebox	(window);
-	xui_demo::test_gridbox	(window);
-	xui_demo::test_toolbar	(window);
-	xui_demo::test_scroll	(window);
-	xui_demo::test_slider	(window);
-	xui_demo::test_listview	(window);
-	xui_demo::test_dropbox	(window);
-	xui_demo::test_treeview	(window);
-	xui_demo::test_timeview	(window);
-	xui_demo::test_propview	(window);
-	xui_demo::test_menu		(window);
+	window->set_borderrt(xui_rect2d<s32>(8));
+	//xui_demo::test_button	(window);
+	//xui_demo::test_toggle	(window);
+	//xui_demo::test_textbox	(window);
+	//xui_demo::test_linebox	(window);
+	//xui_demo::test_gridbox	(window);
+	//xui_demo::test_toolbar	(window);
+	//xui_demo::test_scroll	(window);
+	//xui_demo::test_slider	(window);
+	//xui_demo::test_listview	(window);
+	//xui_demo::test_dropbox	(window);
+	//xui_demo::test_treeview	(window);
+	//xui_demo::test_timeview	(window);
+	//xui_demo::test_propview	(window);
+	//xui_demo::test_menu		(window);
+	xui_demo::test_dockview(window);
 	xui_desktop::get_ins()->add_child(window);
 	xui_global::set_fwatchstart(xui_global::get_workpath());
-
-	xui_desktop::get_ins()->show_message(L"ErrorWwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww!!!!", 1);
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));

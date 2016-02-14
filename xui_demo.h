@@ -35,6 +35,8 @@
 #include "xui_kindctrl.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "xui_dockpage.h"
+#include "xui_dockview.h"
 
 class xui_demo
 {
@@ -53,6 +55,7 @@ public:
 	static void test_timeview	( xui_window* window );
 	static void test_propview	( xui_window* window );
 	static void test_menu		( xui_window* window );
+	static void test_dockview	( xui_window* window );
 };
 
 #endif//__xui_demo_h__

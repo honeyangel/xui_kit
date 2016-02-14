@@ -408,10 +408,6 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 				m_hoverctrl->on_mousedragdrop(             other_args);
 				m_hoverctrl->xm_mousedragdrop(m_hoverctrl, other_args);
 			}
-
-			set_catchctrl(NULL);
-			m_allowdrag = false;
-			m_catchdata = NULL;
 		}
 	}
 	else
@@ -431,6 +427,13 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 	{
 		component->on_mouserise(           args);
 		component->xm_mouserise(component, args);
+	}
+
+	if (args.mouse == MB_L)
+	{
+		set_catchctrl(NULL);
+		m_allowdrag = false;
+		m_catchdata = NULL;
 	}
 
 	xui_global::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());

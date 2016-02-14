@@ -382,3 +382,16 @@ void xui_demo::test_menu( xui_window* window )
 	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Delete");
 	window->set_contextmenu(menu);
 }
+
+void xui_demo::test_dockview( xui_window* window )
+{
+	xui_dockview* dockview = xui_dockview::create();
+	xui_dockpage* dockpage = NULL;
+	dockpage = new xui_dockpage();
+	dockpage->ini_namectrl(NULL, L"Game");
+	dockview->add_dockpage(dockpage, DOCKSTYLE_F);
+	dockpage = new xui_dockpage();
+	dockpage->ini_namectrl(NULL, L"Scene");
+	dockview->add_dockpage(dockpage, DOCKSTYLE_F);
+	window->add_child(dockview);
+}

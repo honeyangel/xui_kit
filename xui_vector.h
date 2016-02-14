@@ -67,11 +67,11 @@ public:
 	{
 		return xui_vector<T>(x/other.x, y/other.y);
 	}
-	xui_vector<T>  operator * ( f32 s ) const
+	xui_vector<T>  operator * ( T s ) const
 	{
 		return xui_vector<T>(x*s, y*s);
 	}
-	xui_vector<T>  operator / ( f32 s ) const
+	xui_vector<T>  operator / ( T s ) const
 	{
 		return xui_vector<T>(x/s, y/s);
 	}
@@ -108,13 +108,13 @@ public:
 		y /= other.y;
 		return (*this);
 	}
-	xui_vector<T>& operator *=( f32 s )
+	xui_vector<T>& operator *=( T s )
 	{
 		x *= s;
 		y *= s;
 		return (*this);
 	}
-	xui_vector<T>& operator /=( f32 s )
+	xui_vector<T>& operator /=( T s )
 	{
 		x /= s;
 		y /= s;
