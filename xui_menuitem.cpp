@@ -94,7 +94,7 @@ xui_method_explain(xui_menuitem, on_nonfocus,		void					)( xui_method_args&  arg
 	if (focusctrl == NULL || menu == NULL || menu->was_series(focusctrl) == false)
 	{
 		xui_toggle* toggle = menu->get_ownertoggle();
-		if (toggle)
+		if (toggle && focusctrl != toggle)
 			toggle->ini_toggle(false);
 
 		xui_desktop::get_ins()->set_floatctrl(NULL);

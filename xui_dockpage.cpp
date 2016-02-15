@@ -212,19 +212,22 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void				)( xui_component* s
 			u08 dockstyle = cal_dockinfo(dockview, xui_desktop::get_ins()->get_mousecurr());
 			if (dockstyle == DOCKSTYLE_F)
 			{
-				xui_rect2d<s32> rt = dockview->get_namerect() + dockview->get_screenpt();
+				xui_rect2d<s32> rt = dockview->get_namerect() + dockview->get_screenpt() + dockview->get_freerect().get_pt();
 				rt.ax = rt.bx+ 6;
 				rt.bx = rt.ax+ 2;
 				rt.by = rt.ay+20;
 				xui_convas::get_ins()->fill_rectangle(rt, xui_colour::white);
 				xui_convas::get_ins()->fill_triangle (xui_vector<s32>(rt.ax+1, rt.by), 3, TRIANGLE_DOWN, xui_colour::white);
 			}
-			else
+
 			if (dockstyle != DOCKSTYLE_N)
 			{
 				xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
 				rt.ax += m_border.ax;
 				rt.ay += m_border.ay;
+				rt.bx -= m_border.bx;
+				rt.by -= m_border.by;
+				rt.ay += 24;
 
 				xui_colour fill_color = xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 				xui_colour side_color = xui_colour(1.0f,          0.0f,          0.9f,          0.9f);
@@ -236,7 +239,6 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void				)( xui_component* s
 				case DOCKSTYLE_B: rt.ay  = rt.by - rt.get_h()/3; break;
 				}
 
-				rt.ay += 24;
 				rt.bx -=  1;
 				rt.by -=  1;
 				xui_convas::get_ins()->fill_rectangle(rt, fill_color);
@@ -292,6 +294,8 @@ xui_method_explain(xui_dockpage, cal_dockinfo,			u08					)( xui_dockview* dockvi
 	xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
 	rt.ax += m_border.ax;
 	rt.ay += m_border.ay;
+	rt.bx -= m_border.bx;
+	rt.by -= m_border.by;
 
 	if (pt.y < rt.ay+24)
 	{

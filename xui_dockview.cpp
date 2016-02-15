@@ -1,4 +1,8 @@
+#include "xui_convas.h"
+#include "xui_menu.h"
+#include "xui_toggle.h"
 #include "xui_desktop.h"
+#include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
 
@@ -9,18 +13,48 @@ xui_implement_rtti(xui_dockview, xui_control);
 */
 xui_method_explain(xui_dockview, create,				xui_dockview*	)( void )
 {
-	xui_dockview* dockview = new xui_dockview(xui_vector<s32>(0));
-	dockview->ini_component(0, 0, DOCKSTYLE_F);
+	xui_dockview* dockview = new xui_dockview(xui_vector<s32>(0), DOCKSTYLE_F);
 	return dockview;
 }
 
 /*
 //constructor
 */
-xui_create_explain(xui_dockview)( const xui_vector<s32>& size )
+xui_create_explain(xui_dockview)( const xui_vector<s32>& size, u08 dockstyle )
 : xui_control(size)
 {
-	m_showpage = NULL;
+	m_dockstyle = dockstyle;
+	m_showpage	= NULL;
+	m_viewmenu	= xui_menu::create(80);
+	xui_menuitem* menuitem = m_viewmenu->add_item(NULL, L"Close");
+	menuitem->xm_click			+= new xui_method_member<xui_method_args,  xui_dockview>(this, &xui_dockview::on_viewmenucloseclick);
+
+	m_menuctrl = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_menuctrl, set_parent	)(this);
+	xui_method_ptrcall(m_menuctrl, set_menu		)(m_viewmenu);
+	xui_method_ptrcall(m_menuctrl, ini_component)(true, false);
+	m_menuctrl->xm_renderself	+= new xui_method_member<xui_method_args,  xui_dockview>(this, &xui_dockview::on_menuctrlrenderself);
+	m_widgetvec.push_back(m_menuctrl);
+
+	u08 cursor = CURSOR_DEFAULT;
+	switch (dockstyle)
+	{
+	case DOCKSTYLE_L:
+	case DOCKSTYLE_R:
+		cursor = CURSOR_WE;
+		break;
+	case DOCKSTYLE_T:
+	case DOCKSTYLE_B:
+		cursor = CURSOR_NS;
+		break;
+	}
+	m_sizectrl	= new xui_component(xui_vector<s32>(6));
+	xui_method_ptrcall(m_sizectrl, set_parent	)(this);
+	xui_method_ptrcall(m_sizectrl, set_cursor	)(cursor);
+	xui_method_ptrcall(m_sizectrl, ini_component)(true, dockstyle != DOCKSTYLE_F);
+	m_sizectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_dockview>(this, &xui_dockview::on_sizectrlmousemove);
+	m_sizectrl->xm_topdraw		+= new xui_method_member<xui_method_args,  xui_dockview>(this, &xui_dockview::on_sizectrltopdraw);
+	m_widgetvec.push_back(m_sizectrl);
 }
 
 /*
@@ -80,13 +114,17 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 
 		add_dockctrl(page);
 		m_pagelist.push_back(page);
+		m_menuctrl->set_visible(m_pagelist.size() > 0);
 	}
 	else
 	{
 		xui_rect2d<s32> rt = get_freerect();
-		xui_dockview* view = new xui_dockview(xui_vector<s32>(rt.get_sz()/3));
-		xui_method_ptrcall(view, ini_component	)(0, 0, dockstyle);
-		xui_method_ptrcall(view, add_dockpage	)(page, DOCKSTYLE_F);
+		xui_rect2d<s32> bd = page->get_borderrt();
+		xui_vector<s32> sz;
+		sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
+		sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
+		xui_dockview* view = new xui_dockview(sz, dockstyle);
+		xui_method_ptrcall(view, add_dockpage)(page, DOCKSTYLE_F);
 		add_dockctrl(view);
 		m_viewlist.push_back(view);
 	}
@@ -108,14 +146,8 @@ xui_method_explain(xui_dockview, del_dockpage,			void			)( xui_dockpage* page )
 	if (m_showpage == page)
 		m_showpage  = m_pagelist.size() > 0 ? m_pagelist.front() : NULL;
 
+	m_menuctrl->set_visible(m_pagelist.size() > 0);
 	invalid();
-
-	if (m_pagelist.empty() && m_viewlist.empty())
-	{
-		xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
-		if (view)
-			view->del_dockview(this);
-	}
 }
 xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
 {
@@ -131,13 +163,28 @@ xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
 	xui_desktop::get_ins()->move_recycle(view);
 
 	invalid();
-
-	if (m_pagelist.empty() && m_viewlist.empty())
+}
+xui_method_explain(xui_dockview, mov_dockview,			void			)( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview )
+{
+	xui_vecptr_addloop(viewlist)
 	{
-		xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
-		if (view)
-			view->del_dockview(this);
+		xui_dockview* view = viewlist[i];
+		xui_method_ptrcall(view, set_parent		)(this);
+		xui_method_ptrcall(view, ini_component	)(0, 0, rootview->get_dockstyle());
+		m_viewlist.push_back(view);
+
+		for (u32 i = m_widgetvec.size()-1; i >= 0; --i)
+		{
+			if (m_widgetvec[i] == rootview)
+			{
+				m_widgetvec.insert(m_widgetvec.begin()+i, view);
+				break;
+			}
+		}
 	}
+
+	viewlist.clear();
+	invalid();
 }
 
 /*
@@ -146,37 +193,48 @@ xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
 xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 {
 	xui_control::on_invalid(args);
-	if (m_pagelist.empty() && m_viewlist.size() > 0)
+
+	if (m_pagelist.empty())
 	{
-		if (m_dockstyle == DOCKSTYLE_L ||
-			m_dockstyle == DOCKSTYLE_R)
+		xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
+		if (view)
 		{
-			s32 w = 0;
-			xui_vecptr_addloop(m_viewlist)
-			{
-				w += m_viewlist[i]->get_renderw();
-			}
-			set_renderw(w);
-		}
-		if (m_dockstyle == DOCKSTYLE_T ||
-			m_dockstyle == DOCKSTYLE_B)
-		{
-			s32 h = 0;
-			xui_vecptr_addloop(m_viewlist)
-			{
-				h += m_viewlist[i]->get_renderh();
-			}
-			set_renderh(h);
+			view->mov_dockview(m_viewlist, this);
+			m_widgetvec.clear();
+			m_widgetvec.push_back(m_sizectrl);
+			m_widgetvec.push_back(m_menuctrl);
+			view->del_dockview(this);
 		}
 	}
 }
 xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
+	xui_rect2d<s32> rt = get_renderrt();
+	switch (m_dockstyle)
+	{
+	case DOCKSTYLE_L:
+		m_sizectrl->on_perform_x(rt.bx-m_sizectrl->get_renderw());
+		m_sizectrl->on_perform_h(rt.get_h());
+		break;
+	case DOCKSTYLE_R:
+		m_sizectrl->on_perform_h(rt.get_h());
+		break;
+	case DOCKSTYLE_T:
+		m_sizectrl->on_perform_y(rt.by-m_sizectrl->get_renderh());
+		m_sizectrl->on_perform_w(rt.get_w());
+		break;
+	case DOCKSTYLE_B:
+		m_sizectrl->on_perform_w(rt.get_w());
+		break;
+	}
+
+	xui_rect2d<s32> freert = get_freerect();
+	m_menuctrl->on_perform_x(freert.bx-2-m_menuctrl->get_renderw());
+	m_menuctrl->on_perform_y(freert.ay+2);
 
 	if (m_pagelist.size() > 0)
 	{
-		xui_rect2d<s32> freert = get_freerect();
 		xui_rect2d<s32> namert = get_namerect();
 		s32 x = namert.get_x();
 		s32 y = namert.get_y();
@@ -197,13 +255,42 @@ xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 */
 xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
 {
+	if (m_sizectrl->has_catch())
+	{
+		xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
+		xui_vector<s32> size = get_rendersz();
+		switch (m_dockstyle)
+		{
+		case DOCKSTYLE_L: size.w += move.x; break;
+		case DOCKSTYLE_R: size.w -= move.x; break;
+		case DOCKSTYLE_T: size.h += move.y; break;
+		case DOCKSTYLE_B: size.h -= move.y; break;
+		}
 
+		set_rendersz(size);
+	}
 }
 xui_method_explain(xui_dockview, on_sizectrltopdraw,	void			)( xui_component* sender, xui_method_args& args )
 {
-
+	//xui_rect2d<s32> rt = sender->get_renderrtabs();
+	//xui_convas::get_ins()->fill_rectangle(rt, xui_colour(0.5f, 0.0f));
 }
 xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component* sender, xui_method_args& args )
+{
+	xui_rect2d<s32> rt     = sender->get_renderrtabs();
+	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_button::default_backcolor;
+	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+	rt.ax = center.x - 6;
+	rt.ay = center.y - 4;
+	rt.bx = center.x + 6;
+	rt.by = center.y - 2;
+	xui_convas::get_ins()->fill_rectangle(rt, color);
+	rt.oft_y(3);
+	xui_convas::get_ins()->fill_rectangle(rt, color);
+	rt.oft_y(3);
+	xui_convas::get_ins()->fill_rectangle(rt, color);
+}
+xui_method_explain(xui_dockview, on_viewmenucloseclick,	void			)( xui_component* sender, xui_method_args& args )
 {
 
 }

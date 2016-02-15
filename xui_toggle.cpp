@@ -93,20 +93,16 @@ xui_method_explain(xui_toggle, set_push,			void			)( bool push )
 		xui_method_args args;
 		xm_click(this,  args);
 
-		if (m_menu)
+		if (m_menu && m_push)
 		{
-			if (m_push)
-			{
-				xui_vector<s32> pt = get_screenpt() + xui_vector<s32>(0, get_renderh());
-				xui_method_ptrcall(m_menu, set_renderpt		)(pt);
-				xui_method_ptrcall(m_menu, set_showsubmenu	)(NULL);
-				xui_method_ptrcall(m_menu, req_focus		)();
-				xui_desktop::get_ins()->set_floatctrl(m_menu);
-			}
-			else
-			{
-				xui_desktop::get_ins()->set_floatctrl(NULL);
-			}
+			xui_vector<s32> pt = get_screenpt() + xui_vector<s32>(0, get_renderh());
+			if (pt.x + m_menu->get_renderw() > xui_desktop::get_ins()->get_renderw())
+				pt.x = xui_desktop::get_ins()->get_renderw() - m_menu->get_renderw();
+
+			xui_method_ptrcall(m_menu, set_renderpt		)(pt);
+			xui_method_ptrcall(m_menu, set_showsubmenu	)(NULL);
+			xui_method_ptrcall(m_menu, req_focus		)();
+			xui_desktop::get_ins()->set_floatctrl(m_menu);
 		}
 	}
 }

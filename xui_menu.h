@@ -11,7 +11,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_menu*			create			( void );
+	static xui_menu*			create			( s32 width = 256 );
 
 	/*
 	//constructor

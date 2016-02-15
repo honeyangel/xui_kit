@@ -13,11 +13,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_dockview( const xui_vector<s32>& size );
+	xui_dockview( const xui_vector<s32>& size, u08 dockstyle );
 
 	/*
 	//method
 	*/
+	xui_menu*					get_viewmenu			( void );
 	xui_dockpage*				get_showpage			( void );
 	void						set_showpage			( xui_dockpage* page );
 	xui_rect2d<s32>				get_freerect			( void ) const;
@@ -29,6 +30,7 @@ public:
 	void						add_dockpage			( xui_dockpage* page, u08 dockstyle );
 	void						del_dockpage			( xui_dockpage* page );
 	void						del_dockview			( xui_dockview* view );
+	void						mov_dockview			( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview );
 
 protected:
 	/*
@@ -43,6 +45,7 @@ protected:
 	void						on_sizectrlmousemove	( xui_component* sender, xui_method_mouse& args );
 	void						on_sizectrltopdraw		( xui_component* sender, xui_method_args&  args );
 	void						on_menuctrlrenderself	( xui_component* sender, xui_method_args&  args );
+	void						on_viewmenucloseclick	( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//method
@@ -58,6 +61,7 @@ protected:
 	std::vector<xui_dockview*>	m_viewlist;
 	xui_component*				m_sizectrl;
 	xui_toggle*					m_menuctrl;
+	xui_menu*					m_viewmenu;
 };
 
 #endif//__xui_dockview_h__

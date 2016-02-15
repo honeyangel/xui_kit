@@ -9,9 +9,9 @@ xui_implement_rtti(xui_menu, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_menu, create,			xui_menu*		)( void )
+xui_method_explain(xui_menu, create,			xui_menu*		)( s32 width )
 {
-	xui_menu* menu = new xui_menu(xui_vector<s32>(256, 0));
+	xui_menu* menu = new xui_menu(xui_vector<s32>(width, 0));
 	xui_method_ptrcall(menu, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(menu, set_drawcolor	)(true);
 	xui_method_ptrcall(menu, set_sidestyle	)(SIDESTYLE_S);
@@ -164,7 +164,7 @@ xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
 	{
 		xui_desktop::get_ins()->set_floatctrl(NULL);
 		xui_toggle* toggle = menu->get_ownertoggle();
-		if (toggle)
+		if (toggle && focusctrl != toggle)
 			toggle->ini_toggle(false);
 	}
 }
