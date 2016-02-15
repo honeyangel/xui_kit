@@ -18,7 +18,7 @@ public:
 	*/
 	const std::wstring&		get_pagename		( void ) const;
 	void					ini_namectrl		( xui_bitmap* icon, const std::wstring& text );
-	void					mov_namectrl		( s32 x, s32 w );
+	void					mov_namectrl		( s32 x, s32 y, s32 w );
 	void					add_pagectrl		( xui_component* ctrl );
 	void					del_pagectrl		( xui_component* ctrl );
 

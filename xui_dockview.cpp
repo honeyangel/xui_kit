@@ -7,7 +7,7 @@ xui_implement_rtti(xui_dockview, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_dockview, create,		xui_dockview*	)( void )
+xui_method_explain(xui_dockview, create,				xui_dockview*	)( void )
 {
 	xui_dockview* dockview = new xui_dockview(xui_vector<s32>(0));
 	dockview->ini_component(0, 0, DOCKSTYLE_F);
@@ -26,15 +26,15 @@ xui_create_explain(xui_dockview)( const xui_vector<s32>& size )
 /*
 //method
 */
-xui_method_explain(xui_dockview, get_showpage,	xui_dockpage*	)( void )
+xui_method_explain(xui_dockview, get_showpage,			xui_dockpage*	)( void )
 {
 	return m_showpage;
 }
-xui_method_explain(xui_dockview, set_showpage,	void			)( xui_dockpage* page )
+xui_method_explain(xui_dockview, set_showpage,			void			)( xui_dockpage* page )
 {
 	m_showpage = page;
 }
-xui_method_explain(xui_dockview, get_freerect,	xui_rect2d<s32>	)( void ) const
+xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>	)( void ) const
 {
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vecptr_addloop(m_viewlist)
@@ -50,12 +50,15 @@ xui_method_explain(xui_dockview, get_freerect,	xui_rect2d<s32>	)( void ) const
 
 	return rt;
 }
-xui_method_explain(xui_dockview, get_namerect,	xui_rect2d<s32>	)( void ) const
+xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>	)( void ) const
 {
-	xui_rect2d<s32> rt = get_freerect();
+	xui_rect2d<s32> rt(0);
 	if (m_pagelist.size() > 0)
 	{
-		s32 w = xui_min(80, (rt.get_w()-32)/m_pagelist.size());
+		s32 w = xui_min(80, (get_freerect().get_w()-32)/m_pagelist.size());
+		rt.set_x(2);
+		rt.set_y(2);
+		rt.set_h(24);
 		rt.set_w(w*m_pagelist.size());
 	}
 
@@ -65,7 +68,7 @@ xui_method_explain(xui_dockview, get_namerect,	xui_rect2d<s32>	)( void ) const
 /*
 //page
 */
-xui_method_explain(xui_dockview, add_dockpage,	void			)( xui_dockpage* page, u08 dockstyle )
+xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u08 dockstyle )
 {
 	if (page->get_parent())
 		return;
@@ -90,7 +93,7 @@ xui_method_explain(xui_dockview, add_dockpage,	void			)( xui_dockpage* page, u08
 
 	invalid();
 }
-xui_method_explain(xui_dockview, del_dockpage,	void			)( xui_dockpage* page )
+xui_method_explain(xui_dockview, del_dockpage,			void			)( xui_dockpage* page )
 {
 	del_dockctrl(page);
 	xui_vecptr_addloop(m_pagelist)
@@ -114,7 +117,7 @@ xui_method_explain(xui_dockview, del_dockpage,	void			)( xui_dockpage* page )
 			view->del_dockview(this);
 	}
 }
-xui_method_explain(xui_dockview, del_dockview,	void			)( xui_dockview* view )
+xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
 {
 	del_dockctrl(view);
 	xui_vecptr_addloop(m_viewlist)
@@ -140,7 +143,7 @@ xui_method_explain(xui_dockview, del_dockview,	void			)( xui_dockview* view )
 /*
 //callback
 */
-xui_method_explain(xui_dockview, on_invalid,	void			)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 {
 	xui_control::on_invalid(args);
 	if (m_pagelist.empty() && m_viewlist.size() > 0)
@@ -167,35 +170,53 @@ xui_method_explain(xui_dockview, on_invalid,	void			)( xui_method_args& args )
 		}
 	}
 }
-xui_method_explain(xui_dockview, on_perform,	void			)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
 
 	if (m_pagelist.size() > 0)
 	{
-		xui_rect2d<s32> rt = get_freerect();
-		s32 x = 0;
-		s32 w = get_namerect().get_w() / m_pagelist.size();
+		xui_rect2d<s32> freert = get_freerect();
+		xui_rect2d<s32> namert = get_namerect();
+		s32 x = namert.get_x();
+		s32 y = namert.get_y();
+		s32 w = namert.get_w() / m_pagelist.size();
 		xui_vecptr_addloop(m_pagelist)
 		{
 			xui_dockpage* page = m_pagelist[i];
-			xui_method_ptrcall(page, on_perform_pt	)(rt.get_pt());
-			xui_method_ptrcall(page, on_perform_sz	)(rt.get_sz());
-			xui_method_ptrcall(page, mov_namectrl	)(x, w);
+			xui_method_ptrcall(page, on_perform_pt	)(freert.get_pt());
+			xui_method_ptrcall(page, on_perform_sz	)(freert.get_sz());
+			xui_method_ptrcall(page, mov_namectrl	)(x, y, w);
 			x += w;
 		}
 	}
 }
 
 /*
+//event
+*/
+xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
+{
+
+}
+xui_method_explain(xui_dockview, on_sizectrltopdraw,	void			)( xui_component* sender, xui_method_args& args )
+{
+
+}
+xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component* sender, xui_method_args& args )
+{
+
+}
+
+/*
 //method
 */
-xui_method_explain(xui_dockview, add_dockctrl,	void			)( xui_component* comp )
+xui_method_explain(xui_dockview, add_dockctrl,			void			)( xui_component* comp )
 {
 	comp->set_parent(this);
 	m_widgetvec.push_back(comp);
 }
-xui_method_explain(xui_dockview, del_dockctrl,	void			)( xui_component* comp )
+xui_method_explain(xui_dockview, del_dockctrl,			void			)( xui_component* comp )
 {
 	comp->set_parent(NULL);
 	xui_vecptr_addloop(m_widgetvec)

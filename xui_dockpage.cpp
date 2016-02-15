@@ -12,7 +12,8 @@ xui_implement_rtti(xui_dockpage, xui_control);
 xui_create_explain(xui_dockpage)( void )
 : xui_control(xui_vector<s32>(0))
 {
-	m_namectrl = xui_drawer::create(L"");
+	m_border	= xui_rect2d<s32>(2);
+	m_namectrl	= xui_drawer::create(L"");
 	xui_method_ptrcall(m_namectrl, set_parent)(this);
 	m_namectrl->xm_topdraw	 += new xui_method_member<xui_method_args,  xui_dockpage>(this, &xui_dockpage::on_namectrltopdraw  );
 	m_namectrl->xm_mousedown += new xui_method_member<xui_method_mouse, xui_dockpage>(this, &xui_dockpage::on_namectrlmousedown);
@@ -66,9 +67,10 @@ xui_method_explain(xui_dockpage, del_pagectrl,			void				)( xui_component* ctrl 
 	delete ctrl;
 	invalid();
 }
-xui_method_explain(xui_dockpage, mov_namectrl,			void				)( s32 x, s32 w )
+xui_method_explain(xui_dockpage, mov_namectrl,			void				)( s32 x, s32 y, s32 w )
 {
 	m_namectrl->on_perform_x(x);
+	m_namectrl->on_perform_y(y);
 	m_namectrl->on_perform_w(w);
 }
 
@@ -221,6 +223,9 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void				)( xui_component* s
 			if (dockstyle != DOCKSTYLE_N)
 			{
 				xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
+				rt.ax += m_border.ax;
+				rt.ay += m_border.ay;
+
 				xui_colour fill_color = xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 				xui_colour side_color = xui_colour(1.0f,          0.0f,          0.9f,          0.9f);
 				switch (dockstyle)
@@ -285,6 +290,9 @@ xui_method_explain(xui_dockpage, cal_dockinfo,			u08					)( xui_dockview* dockvi
 	u08 dockstyle = DOCKSTYLE_N;
 
 	xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
+	rt.ax += m_border.ax;
+	rt.ay += m_border.ay;
+
 	if (pt.y < rt.ay+24)
 	{
 		if (dockview != m_parent)
