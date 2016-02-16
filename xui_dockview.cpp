@@ -243,11 +243,7 @@ xui_method_explain(xui_dockview, on_setrendersz,		void			)( xui_method_args& arg
 {
 	xui_control::on_setrendersz(args);
 	xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
-	if (view)
-	{
-		cal_portions();
-	}
-	else
+	if (view == NULL)
 	{
 		use_portions();
 	}
@@ -348,7 +344,10 @@ xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* 
 		}
 
 		if (delta.w != 0 || delta.h != 0)
+		{
 			set_rendersz(get_rendersz()+delta);
+			cal_portions();
+		}
 	}
 }
 xui_method_explain(xui_dockview, on_sizectrltopdraw,	void			)( xui_component* sender, xui_method_args& args )
