@@ -126,7 +126,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{
-			::SetCapture(hWnd);
+			//::SetCapture(hWnd);
 
 			xui_method_mouse args;
 			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
@@ -239,7 +239,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		return 0;
 
 	gHWND = CreateWindow(L"XUI", L"XUI", WS_OVERLAPPEDWINDOW , 0, 0, 1024, 768, NULL, NULL, hInstance, NULL);
-	SetCapture   (gHWND);
+	//SetCapture   (gHWND);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 

@@ -23,6 +23,9 @@ public:
 	void						set_showpage			( xui_dockpage* page );
 	xui_rect2d<s32>				get_freerect			( void ) const;
 	xui_rect2d<s32>				get_namerect			( void ) const;
+	f32							get_portions			( void ) const;
+	void						cal_portions			( void );
+	void						use_portions			( void );
 
 	/*
 	//page
@@ -38,6 +41,7 @@ protected:
 	*/
 	virtual void				on_invalid				( xui_method_args& args );
 	virtual void				on_perform				( xui_method_args& args );
+	virtual void				on_setrendersz			( xui_method_args& args );
 
 	/*
 	//event
@@ -62,6 +66,7 @@ protected:
 	xui_component*				m_sizectrl;
 	xui_toggle*					m_menuctrl;
 	xui_menu*					m_viewmenu;
+	f32							m_portions;
 };
 
 #endif//__xui_dockview_h__

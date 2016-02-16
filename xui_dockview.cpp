@@ -24,6 +24,7 @@ xui_create_explain(xui_dockview)( const xui_vector<s32>& size, u08 dockstyle )
 : xui_control(size)
 {
 	m_dockstyle = dockstyle;
+	m_portions	= 0.0f;
 	m_showpage	= NULL;
 	m_viewmenu	= xui_menu::create(80);
 	xui_menuitem* menuitem = m_viewmenu->add_item(NULL, L"Close");
@@ -98,6 +99,38 @@ xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>	)( void ) const
 
 	return rt;
 }
+xui_method_explain(xui_dockview, get_portions,			f32				)( void ) const
+{
+	return m_portions;
+}
+xui_method_explain(xui_dockview, cal_portions,			void			)( void )
+{
+	if (m_parent)
+	{
+		switch (m_dockstyle)
+		{
+		case DOCKSTYLE_L:
+		case DOCKSTYLE_R:
+			m_portions = (f32)get_renderw() / (f32)m_parent->get_renderw();
+			break;
+		case DOCKSTYLE_T:
+		case DOCKSTYLE_B:
+			m_portions = (f32)get_renderh() / (f32)m_parent->get_renderh();
+			break;
+		}
+	}
+}
+xui_method_explain(xui_dockview, use_portions,			void			)( void )
+{
+	f32 portions = m_portions;
+	//TODO
+	m_portions = portions;
+
+	xui_vecptr_addloop(m_viewlist)
+	{
+		m_viewlist[i]->use_portions();
+	}
+}
 
 /*
 //page
@@ -124,8 +157,9 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 		sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
 		sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
 		xui_dockview* view = new xui_dockview(sz, dockstyle);
-		xui_method_ptrcall(view, add_dockpage)(page, DOCKSTYLE_F);
 		add_dockctrl(view);
+		xui_method_ptrcall(view, cal_portions)();
+		xui_method_ptrcall(view, add_dockpage)(page, DOCKSTYLE_F);
 		m_viewlist.push_back(view);
 	}
 
@@ -171,6 +205,7 @@ xui_method_explain(xui_dockview, mov_dockview,			void			)( std::vector<xui_dockv
 		xui_dockview* view = viewlist[i];
 		xui_method_ptrcall(view, set_parent		)(this);
 		xui_method_ptrcall(view, ini_component	)(0, 0, rootview->get_dockstyle());
+		xui_method_ptrcall(view, cal_portions	)();
 		m_viewlist.push_back(view);
 
 		for (u32 i = m_widgetvec.size()-1; i >= 0; --i)
@@ -190,14 +225,19 @@ xui_method_explain(xui_dockview, mov_dockview,			void			)( std::vector<xui_dockv
 /*
 //callback
 */
+xui_method_explain(xui_dockview, on_setrendersz,		void			)( xui_method_args& args )
+{
+	xui_control::on_setrendersz(args);
+	cal_portions();
+}
 xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 {
 	xui_control::on_invalid(args);
 
-	if (m_pagelist.empty())
+	xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
+	if (view)
 	{
-		xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
-		if (view)
+		if (m_pagelist.empty())
 		{
 			view->mov_dockview(m_viewlist, this);
 			m_widgetvec.clear();
@@ -206,10 +246,15 @@ xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 			view->del_dockview(this);
 		}
 	}
+	else
+	{
+		use_portions();
+	}
 }
 xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
+
 	xui_rect2d<s32> rt = get_renderrt();
 	switch (m_dockstyle)
 	{
