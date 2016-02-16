@@ -126,7 +126,8 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{
-			//::SetCapture(hWnd);
+			if (message == WM_LBUTTONDOWN)
+				SetCapture(hWnd);
 
 			xui_method_mouse args;
 			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
@@ -155,6 +156,9 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_RBUTTONUP:
 	case WM_MBUTTONUP:
 		{
+			if (message == WM_LBUTTONUP)
+				ReleaseCapture();
+
 			xui_method_mouse args;
 			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
 			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
