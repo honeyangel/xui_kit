@@ -147,8 +147,6 @@ xui_method_explain(xui_propctrl_stdvec, on_editvalue,			void			)( xui_propedit* 
 */
 xui_method_explain(xui_propctrl_stdvec, on_invalid,				void			)( xui_method_args& args )
 {
-	xui_propctrl::on_invalid(args);
-
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
 	sz.h = xui_propview::default_lineheight + m_border.ay + m_border.by;

@@ -92,8 +92,6 @@ xui_method_explain(xui_propctrl_expand,			on_editvalue,		void			)( xui_propedit*
 */
 xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_args& args )
 {
-	xui_propctrl::on_invalid(args);
-
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 		m_propctrlvec[i]->set_visible(false);
 

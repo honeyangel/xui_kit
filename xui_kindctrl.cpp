@@ -128,8 +128,6 @@ xui_method_explain(xui_kindctrl, set_propkind,				void			)( const xui_propkind_v
 */
 xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args )
 {
-	xui_control::on_invalid(args);
-
 	if (m_propkind)
 	{
 		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon());

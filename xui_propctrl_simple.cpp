@@ -95,8 +95,6 @@ xui_method_explain(xui_propctrl_simple, on_editvalue,		void				)( xui_propedit* 
 */
 xui_method_explain(xui_propctrl_simple, on_invalid,			void				)( xui_method_args& args )
 {
-	xui_propctrl::on_invalid(args);
-
 	xui_propview* propview = get_propview();
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
@@ -110,7 +108,6 @@ xui_method_explain(xui_propctrl_simple, on_invalid,			void				)( xui_method_args
 	{
 		perform();
 	}
-
 }
 xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args& args )
 {

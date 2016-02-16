@@ -309,13 +309,13 @@ xui_method_explain(xui_dockpage, cal_dockinfo,			u08					)( xui_dockview* dockvi
 		f32 vratio = (pt.y < (rt.ay+rt.get_h()/2)) ? ((f32)(pt.y-rt.ay)/(f32)rt.get_h()) : ((f32)(rt.by-pt.y)/(f32)rt.get_h());
 		if (hratio < vratio)
 		{
-			if		(pt.x < (rt.ax+rt.get_w()/3))	dockstyle = DOCKSTYLE_L;
-			else if (pt.x > (rt.bx-rt.get_w()/3))	dockstyle = DOCKSTYLE_R;
+			if		 (pt.x < (rt.ax+rt.get_w()/3) && rt.get_w() > 200)	dockstyle = DOCKSTYLE_L;
+			else if  (pt.x > (rt.bx-rt.get_w()/3) && rt.get_w() > 200)	dockstyle = DOCKSTYLE_R;
 		}
 		else
 		{
-			if		(pt.y < (rt.ay+rt.get_h()/3))	dockstyle = DOCKSTYLE_T;
-			else if (pt.y > (rt.by-rt.get_h()/3))	dockstyle = DOCKSTYLE_B;
+			if		 (pt.y < (rt.ay+rt.get_h()/3) && rt.get_h() > 200)	dockstyle = DOCKSTYLE_T;
+			else if  (pt.y > (rt.by-rt.get_h()/3) && rt.get_h() > 200)	dockstyle = DOCKSTYLE_B;
 		}
 	}
 

@@ -258,22 +258,40 @@ xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* 
 	if (m_sizectrl->has_catch())
 	{
 		xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
-		xui_vector<s32> size = get_rendersz();
+
+		xui_vector<s32> delta(0);
 		switch (m_dockstyle)
 		{
-		case DOCKSTYLE_L: size.w += move.x; break;
-		case DOCKSTYLE_R: size.w -= move.x; break;
-		case DOCKSTYLE_T: size.h += move.y; break;
-		case DOCKSTYLE_B: size.h -= move.y; break;
+		case DOCKSTYLE_L: delta.w += move.x; break;
+		case DOCKSTYLE_R: delta.w -= move.x; break;
+		case DOCKSTYLE_T: delta.h += move.y; break;
+		case DOCKSTYLE_B: delta.h -= move.y; break;
 		}
 
-		set_rendersz(size);
+		xui_rect2d<s32> freert = get_freerect();
+		if (delta.w < 0 && freert.get_w()+delta.w < 60)
+			delta.w = xui_min(0, 60-freert.get_w());
+		if (delta.h < 0 && freert.get_h()+delta.h < 60)
+			delta.h = xui_min(0, 60-freert.get_h());
+
+		xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
+		if (rootview)
+		{
+			freert = rootview->get_freerect();
+			if (delta.w > 0 && freert.get_w()-delta.w < 60)
+				delta.w = freert.get_w()-60;
+			if (delta.h > 0 && freert.get_h()-delta.h < 60)
+				delta.h = freert.get_h()-60;
+		}
+
+		if (delta.w != 0 || delta.h != 0)
+			set_rendersz(get_rendersz()+delta);
 	}
 }
 xui_method_explain(xui_dockview, on_sizectrltopdraw,	void			)( xui_component* sender, xui_method_args& args )
 {
 	//xui_rect2d<s32> rt = sender->get_renderrtabs();
-	//xui_convas::get_ins()->fill_rectangle(rt, xui_colour(0.5f, 0.0f));
+	//xui_convas::get_ins()->fill_rectangle(rt, xui_colour(0.8f, 0.0f));
 }
 xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component* sender, xui_method_args& args )
 {

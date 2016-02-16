@@ -151,8 +151,6 @@ xui_method_explain(xui_propview, render_else,		void					)( void )
 */
 xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args )
 {
-	xui_container::on_invalid(args);
-
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> sz(0);
 
