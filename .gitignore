@@ -11,3 +11,7 @@
 /Release/*.obj
 /Release/*.tlog
 /onity/Debug/*.tlog
+/onity/Debug/*.obj
+/Release/*.log
+/bin/*.pdb
+/onity/Debug/*.pdb
