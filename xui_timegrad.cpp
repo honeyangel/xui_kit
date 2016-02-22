@@ -51,30 +51,30 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 {
 	xui_drawer::on_renderself(args);
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
-	s32 space = timeview->get_keyspace();
-	s32 large = timeview->get_keylarge();
-	s32 small = timeview->get_keysmall();
+	s32 keyspace = timeview->get_keyspace();
+	s32 keylarge = timeview->get_keylarge();
+	s32 keysmall = timeview->get_keysmall();
 
 	xui_colour      color = get_vertexcolor();
 	xui_vector<s32> pt    = get_screenpt();
 
 	s32 value = timeview->get_hscroll() ? timeview->get_hscroll()->get_value() : 0;
-	s32 start = (value-m_border.ax) / space;
-	s32 final = start + (get_renderw()-m_border.ax) / space + 1;
+	s32 start = (value-m_border.ax) / keyspace;
+	s32 final = start + (get_renderw()-m_border.ax) / keyspace + 1;
 	for (s32 i = xui_max(0, start); i <= final; ++i)
 	{
 		xui_vector<s32> p1;
 		xui_vector<s32> p2;
-		if (i%large == 0 || i == timeview->get_curframe())
+		if (i%keylarge == 0 || i == timeview->get_curframe())
 		{
-			p1 = pt + xui_vector<s32>(m_border.ax + i*space - value, 24);
-			p2 = pt + xui_vector<s32>(m_border.ax + i*space - value, get_renderh());
+			p1 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, 24);
+			p2 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, get_renderh());
 
 			std::wstringstream text;
 			text << i;
 			xui_rect2d<s32> rt;
-			rt.ax = m_border.ax + i*space-50 - value;
-			rt.bx = m_border.ax + i*space+50 - value;
+			rt.ax = m_border.ax + i*keyspace-50 - value;
+			rt.bx = m_border.ax + i*keyspace+50 - value;
 			rt.ay =  2;
 			rt.by = 24;
 			rt    = xui_convas::get_ins()->calc_draw(text.str(), m_textfont, rt, TA_CT, true);
@@ -96,10 +96,10 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 			}
 		}
 		else
-		if (i%small == 0 && large != small)
+		if (i%keysmall == 0 && keylarge != keysmall)
 		{
-			p1 = pt + xui_vector<s32>(m_border.ax + i*space - value, 32);
-			p2 = pt + xui_vector<s32>(m_border.ax + i*space - value, get_renderh());
+			p1 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, 32);
+			p2 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, get_renderh());
 			xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
 		}
 	}

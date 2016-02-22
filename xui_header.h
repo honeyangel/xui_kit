@@ -21,7 +21,9 @@ typedef          double f64;
 #include <sstream>
 #include <algorithm>
 
-#include "freeglut_std.h"
+#include <Windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #define xui_pi				3.1415926535897932f
 #define xui_pixel_align(x)	( (f32)(s32)(( x ) + (( x ) > 0.0f ? 0.5f : -0.5f)) )

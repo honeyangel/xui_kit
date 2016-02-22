@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XUI", "XUI.vcxproj", "{E5ECC7C0-780E-481E-9AD2-96694045FF51}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onity", "..\onity\onity.vcxproj", "{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E5ECC7C0-780E-481E-9AD2-96694045FF51} = {E5ECC7C0-780E-481E-9AD2-96694045FF51}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +18,10 @@ Global
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Debug|Win32.Build.0 = Debug|Win32
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Release|Win32.ActiveCfg = Release|Win32
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Release|Win32.Build.0 = Release|Win32
+		{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}.Debug|Win32.Build.0 = Debug|Win32
+		{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}.Release|Win32.ActiveCfg = Release|Win32
+		{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
