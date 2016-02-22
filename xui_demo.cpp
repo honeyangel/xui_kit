@@ -20,7 +20,7 @@ void xui_demo::test_toggle( xui_window* window )
 	menu->add_item(xui_bitmap::create("icon/edit.png"), L"Paste", L"Ctrl+V");
 
 	xui_toggle* toggle = NULL;
-	toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"));
+	toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"), 24);
 	toggle->set_renderpt(xui_vector<s32>(10,  40));
 	toggle->set_menu(menu);
 	window->add_child(toggle);
@@ -56,7 +56,7 @@ void xui_demo::test_linebox( xui_window* window )
 
 	linebox->add_linectrl(xui_button::create(xui_bitmap::create("icon/edit.png"), L"Translate", 110));
 	linebox->add_linectrl(xui_textbox::create(80));
-	xui_toggle* toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"));
+	xui_toggle* toggle = xui_toggle::create(xui_bitmap::create("icon/edit.png"), 24);
 	toggle->set_downcolor(xui_colour::red);
 	toggle->ini_toggle(true);
 	linebox->add_linectrl(toggle);
@@ -92,7 +92,7 @@ void xui_demo::test_toolbar( xui_window* window )
 	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png")));
 	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png")));
 	toolbar->add_separate();
-	toolbar->add_item(xui_toggle::create(xui_bitmap::create("icon/edit.png")));
+	toolbar->add_item(xui_toggle::create(xui_bitmap::create("icon/edit.png"), 24));
 	toolbar->add_separate();
 
 	xui_dropbox* dropbox= xui_dropbox::create(120, xui_bitmap::create("icon/edit.png"));

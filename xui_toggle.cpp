@@ -24,9 +24,9 @@ xui_method_explain(xui_toggle, create,				xui_toggle*		)( void )
 
 	return toggle;
 }
-xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon )
+xui_method_explain(xui_toggle, create,				xui_toggle*		)( xui_bitmap* icon, s32 width )
 {
-	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
+	xui_toggle* toggle = new xui_toggle(xui_vector<s32>(width, 24), TOGGLE_BUTTON);
 	xui_method_ptrcall(toggle, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(toggle, set_corner		)(3);
 	xui_method_ptrcall(toggle, set_borderrt		)(xui_rect2d<s32>(4));

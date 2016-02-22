@@ -20,7 +20,7 @@ public:
 	*/
 	static xui_toggle*			circle			( void );
 	static xui_toggle*			create			( void );
-	static xui_toggle*			create			( xui_bitmap* icon );
+	static xui_toggle*			create			( xui_bitmap* icon, s32 width );
 	static xui_toggle*			create			( xui_bitmap* icon, const std::wstring& text, s32 width );
 
 	/*

@@ -372,7 +372,10 @@ xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component*
 }
 xui_method_explain(xui_dockview, on_viewmenucloseclick,	void			)( xui_component* sender, xui_method_args& args )
 {
-
+	if (m_showpage)
+	{
+		del_dockpage(m_showpage);
+	}
 }
 
 /*

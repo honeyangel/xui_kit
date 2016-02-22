@@ -10,3 +10,4 @@
 /Debug/*.lastbuildstate
 /Release/*.obj
 /Release/*.tlog
+/onity/Debug/*.tlog
