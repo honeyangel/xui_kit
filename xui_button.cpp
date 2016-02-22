@@ -11,9 +11,9 @@ const xui_colour xui_button::default_backcolor = xui_colour(1.0f,  90.0f/255.0f)
 const xui_colour xui_button::default_movecolor = xui_colour(1.0f, 127.0f/255.0f);
 const xui_colour xui_button::default_downcolor = xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
-xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon )
+xui_method_explain(xui_button, create, xui_button*)( xui_bitmap* icon, s32 width )
 {
-	xui_button* button = new xui_button(xui_vector<s32>(24));
+	xui_button* button = new xui_button(xui_vector<s32>(width, 24));
 	xui_method_ptrcall(button, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(button, set_corner		)(3);
 	xui_method_ptrcall(button, set_borderrt		)(xui_rect2d<s32>(4));

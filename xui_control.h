@@ -119,7 +119,7 @@ protected:
 	/*
 	//member
 	*/
-	xui_rect2d<s32>					m_client;
+	xui_vector<s32>					m_client;
 	xui_rect2d<s32>					m_border;
 	xui_vector<s32>					m_scroll;
 	s32								m_corner;

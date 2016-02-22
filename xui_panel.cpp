@@ -305,16 +305,16 @@ xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args 
 		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_L ||
 			m_childctrl[i]->get_dockstyle() == DOCKSTYLE_R ||
 			m_childctrl[i]->get_alignhorz() != ALIGNHORZ_N)
-			sz.w = xui_max(sz.w, m_childctrl[i]->get_renderx() - m_border.ax + m_childctrl[i]->get_renderw());
-		else
 			sz.w = xui_max(sz.w, m_childctrl[i]->get_renderw());
+		else
+			sz.w = xui_max(sz.w, m_childctrl[i]->get_renderx() - m_border.ax + m_childctrl[i]->get_renderw());
 
 		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_T ||
 			m_childctrl[i]->get_dockstyle() == DOCKSTYLE_B ||
 			m_childctrl[i]->get_alignvert() != ALIGNVERT_N)
-			sz.h = xui_max(sz.h, m_childctrl[i]->get_rendery() - m_border.ay + m_childctrl[i]->get_renderh());
-		else
 			sz.h = xui_max(sz.h, m_childctrl[i]->get_renderh());
+		else
+			sz.h = xui_max(sz.h, m_childctrl[i]->get_rendery() - m_border.ay + m_childctrl[i]->get_renderh());
 	}
 
 	xui_rect2d<s32> rt = get_renderrtins();

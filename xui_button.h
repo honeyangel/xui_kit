@@ -15,7 +15,7 @@ public:
 	static const xui_colour default_movecolor;
 	static const xui_colour default_downcolor;
 
-	static xui_button*			create			( xui_bitmap* icon );
+	static xui_button*			create			( xui_bitmap* icon, s32 width );
 	static xui_button*			create			( xui_bitmap* icon, const std::wstring& text, s32 width );
 
 	/*

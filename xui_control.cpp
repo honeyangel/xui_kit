@@ -17,7 +17,7 @@ const xui_colour xui_control::default_sidecolor = xui_colour(1.0f, 160.0f/255.0f
 xui_create_explain(xui_control)( const xui_vector<s32>& size )
 : xui_component(size)
 {
-	m_client	= m_render;
+	m_client	= m_render.get_sz();
 	m_border	= xui_rect2d<s32>(0);
 	m_scroll	= xui_vector<s32>(0);
 	m_corner	= 0;
@@ -40,21 +40,21 @@ xui_delete_explain(xui_control)( void )
 */
 xui_method_explain(xui_control, get_clientw,		s32						)( void ) const
 {
-	return m_client.get_sz().w;
+	return m_client.w;
 }
 xui_method_explain(xui_control, get_clienth,		s32						)( void ) const
 {
-	return m_client.get_sz().h;
+	return m_client.h;
 }
 xui_method_explain(xui_control, get_clientsz,		xui_vector<s32>			)( void ) const
 {
-	return m_client.get_sz();
+	return m_client;
 }
 xui_method_explain(xui_control, set_clientsz,		void					)( const xui_vector<s32>& sz )
 {
-	if (m_client.was_sz(sz) == false)
+	if (m_client != sz)
 	{
-		m_client.set_sz(sz);
+		m_client  = sz;
 
 		xui_method_args      args; 
 		on_setclientsz(      args); 
@@ -73,6 +73,7 @@ xui_method_explain(xui_control, set_borderrt,		void					)( const xui_rect2d<s32>
 {
 	if (m_border != rt)
 	{
+		m_client -= xui_vector<s32>(rt.ax+rt.bx-m_border.ax-m_border.bx, rt.ay+rt.by-m_border.ay-m_border.by);
 		m_border  = rt;
 
 		xui_method_args      args; 
@@ -181,7 +182,7 @@ xui_method_explain(xui_control, get_cornerrt,		xui_rect2d<s32>			)( xui_componen
 */
 xui_method_explain(xui_control, get_clientrt,		xui_rect2d<s32>			)( void ) const
 {
-	return xui_rect2d<s32>(xui_vector<s32>(0, 0), m_client.get_sz());
+	return xui_rect2d<s32>(xui_vector<s32>(0, 0), m_client);
 }
 xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>			)( void ) const
 {

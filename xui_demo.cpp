@@ -4,7 +4,7 @@
 void xui_demo::test_button( xui_window* window )
 {
 	xui_button* button = NULL;
-	button = xui_button::create(xui_bitmap::create("icon/edit.png"));
+	button = xui_button::create(xui_bitmap::create("icon/edit.png"), 24);
 	button->set_renderpt(xui_vector<s32>(10, 10));
 	window->add_child(button);
 	button = xui_button::create(xui_bitmap::create("icon/edit.png"), L"Translate", 110);
@@ -89,8 +89,8 @@ void xui_demo::test_toolbar( xui_window* window )
 	toolbar->set_renderpt(xui_vector<s32>(10, 260));
 	window->add_child(toolbar);
 
-	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png")));
-	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png")));
+	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png"), 24));
+	toolbar->add_item(xui_button::create(xui_bitmap::create("icon/edit.png"), 24));
 	toolbar->add_separate();
 	toolbar->add_item(xui_toggle::create(xui_bitmap::create("icon/edit.png"), 24));
 	toolbar->add_separate();
