@@ -78,8 +78,8 @@ xui_create_explain(onity_mainform)( void )
 	m_game			= menu->add_item(xui_bitmap::create("icon/game.png"),		L"Game");
 	m_scene			= menu->add_item(xui_bitmap::create("icon/scene.png"),		L"Scene");
 	m_animator		= menu->add_item(xui_bitmap::create("icon/animator.png"),	L"Animator");
-	xui_method_ptrcall(m_hierarchy,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy"));
-	xui_method_ptrcall(m_inspector,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/inspector.png"), L"Inspector"));
+	xui_method_ptrcall(m_hierarchy,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy", 200, AREALIMIT_L, 200));
+	xui_method_ptrcall(m_inspector,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/inspector.png"), L"Inspector", 200, AREALIMIT_R, 200));
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
@@ -177,8 +177,8 @@ xui_method_explain(onity_mainform, on_clickwndmenu,		void)( xui_component* sende
 	}
 	else
 	{
-		if		(sender == m_hierarchy)	m_mainview->add_dockpage(dockpage, DOCKSTYLE_L);
-		else if (sender == m_inspector) m_mainview->add_dockpage(dockpage, DOCKSTYLE_R);
+		if		(sender == m_hierarchy)	m_mainview->add_dockpage(dockpage, DOCKSTYLE_L, false);
+		else if (sender == m_inspector) m_mainview->add_dockpage(dockpage, DOCKSTYLE_R, false);
 		else
 		{}
 	}

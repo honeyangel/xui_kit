@@ -28,9 +28,15 @@ public:
 	void						use_portions			( void );
 
 	/*
+	//size
+	*/
+	s32							get_minpixel			( void );
+	s32							get_maxpixel			( void );
+
+	/*
 	//page
 	*/
-	void						add_dockpage			( xui_dockpage* page, u08 dockstyle );
+	void						add_dockpage			( xui_dockpage* page, u08 dockstyle, bool autosize = true );
 	void						del_dockpage			( xui_dockpage* page );
 	void						del_dockview			( xui_dockview* view );
 	void						mov_dockview			( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview );

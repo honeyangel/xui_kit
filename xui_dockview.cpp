@@ -147,15 +147,78 @@ xui_method_explain(xui_dockview, use_portions,			void			)( void )
 }
 
 /*
+//size
+*/
+xui_method_explain(xui_dockview, get_minpixel,			s32				)( void )
+{
+	s32 minpixel = 0;
+	xui_vecptr_addloop(m_pagelist)
+	{
+		minpixel = xui_max(minpixel, m_pagelist[i]->get_minpixel());
+	}
+
+	switch (m_dockstyle)
+	{
+	case DOCKSTYLE_L:
+	case DOCKSTYLE_R:
+		{
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_T ||
+					view->get_dockstyle() == DOCKSTYLE_B)
+					minpixel = xui_max(minpixel, view->get_minpixel());
+			}
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_L ||
+					view->get_dockstyle() == DOCKSTYLE_R)
+					minpixel += view->get_minpixel();
+			}
+		}
+		break;
+	case DOCKSTYLE_T:
+	case DOCKSTYLE_B:
+		{
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_L ||
+					view->get_dockstyle() == DOCKSTYLE_R)
+					minpixel = xui_max(minpixel, view->get_minpixel());
+			}
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_T ||
+					view->get_dockstyle() == DOCKSTYLE_B)
+					minpixel += view->get_minpixel();
+			}
+		}
+		break;
+	}
+
+	return minpixel;
+}
+xui_method_explain(xui_dockview, get_maxpixel,			s32				)( void )
+{
+	return 0;
+}
+
+/*
 //page
 */
-xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u08 dockstyle )
+xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u08 dockstyle, bool autosize )
 {
 	if (page->get_parent())
 		return;
 
 	if (dockstyle == DOCKSTYLE_F)
 	{
+		if (page->has_dockarea(m_dockstyle) == false)
+			return;
+
 		if (m_showpage == NULL)
 			m_showpage  = page;
 
@@ -165,6 +228,9 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 	}
 	else
 	{
+		if (page->has_dockarea(dockstyle) == false)
+			return;
+
 		xui_dockview* view = NULL;
 		xui_vecptr_addloop(m_viewlist)
 		{
@@ -178,9 +244,13 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 		{
 			xui_rect2d<s32> rt = get_freerect();
 			xui_rect2d<s32> bd = page->get_borderrt();
-			xui_vector<s32> sz;
-			sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
-			sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
+			xui_vector<s32> sz = page->get_rendersz();
+			if (autosize)
+			{
+				sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
+				sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
+			}
+
 			view = new xui_dockview(sz, dockstyle);
 			view->cal_portions();
 			add_dockctrl(view);
