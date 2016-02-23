@@ -29,15 +29,21 @@ protected:
 	/*
 	//event
 	*/
+	virtual void		on_paintdebug		( xui_component* sender, xui_method_args& args );
 	virtual void		on_clicktransform	( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickanchor		( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickcoordinate	( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickdebug		( xui_component* sender, xui_method_args& args );
-	virtual void		on_paintdebug		( xui_component* sender, xui_method_args& args );
+	virtual void		on_clickwndmenu		( xui_component* sender, xui_method_args& args );
+	virtual void		on_clicksave		( xui_component* sender, xui_method_args& args );
+	virtual void		on_clickload		( xui_component* sender, xui_method_args& args );
+	virtual void		on_clickreset		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
 	*/
+	xui_panel*			m_toolpane;
+	xui_dockview*		m_mainview;
 	xui_toggle*			m_select;
 	xui_toggle*			m_translate;
 	xui_toggle*			m_scale;

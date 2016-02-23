@@ -16,6 +16,7 @@ xui_method_explain(xui_menu, create,			xui_menu*		)( s32 width )
 	xui_method_ptrcall(menu, set_drawcolor	)(true);
 	xui_method_ptrcall(menu, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(menu, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(menu, set_corner		)(3);
 
 	return menu;
 }

@@ -137,7 +137,7 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 		return;
 
 	xui_colour      color  = get_vertexcolor();
-	xui_rect2d<s32> rt     = get_renderrtabs();
+	xui_rect2d<s32> rt     = get_renderrtins() + get_screenpt();
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 
 	switch (m_drawstyle)
@@ -152,12 +152,16 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 	case TOGGLE_NORMAL:
 		{
 			s32	half = rt.get_w()/2;
-			xui_convas::get_ins()->draw_tick  (center, half, color*xui_colour::white);
+			xui_convas::get_ins()->draw_tick  (center, half, color);
 		}
 		break;
 	case TOGGLE_BUTTON:
 		{
 			xui_button::on_renderself(args);
+			if (m_menu && m_text.length() > 0)
+			{
+				xui_convas::get_ins()->fill_triangle(xui_vector<s32>(rt.bx-6, center.y), 3, TRIANGLE_DOWN, color);
+			}
 		}
 		break;
 	}

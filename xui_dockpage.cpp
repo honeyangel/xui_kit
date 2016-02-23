@@ -7,6 +7,16 @@
 xui_implement_rtti(xui_dockpage, xui_control);
 
 /*
+//static
+*/
+xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text )
+{
+	xui_dockpage* dockpage = new xui_dockpage();
+	dockpage->ini_namectrl(icon, text);
+	return dockpage;
+}
+
+/*
 //constructor
 */
 xui_create_explain(xui_dockpage)( void )

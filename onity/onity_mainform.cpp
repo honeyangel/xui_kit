@@ -5,6 +5,8 @@
 #include "xui_toolbar.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "xui_dockpage.h"
+#include "xui_dockview.h"
 #include "onity_mainform.h"
 
 /*
@@ -14,7 +16,6 @@ xui_create_explain(onity_mainform)( void )
 : xui_window(xui_vector<s32>(0))
 {
 	m_dockstyle		= DOCKSTYLE_F;
-	m_border		= xui_rect2d<s32>(6);
 
 	m_select		= xui_toggle::create(xui_bitmap::create("icon/select.png"),		32);
 	m_translate		= xui_toggle::create(xui_bitmap::create("icon/translate.png"),	32);
@@ -69,22 +70,25 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(line_debug,		add_linectrl	)(m_step);
 
 	xui_menu* menu	= xui_menu::create(100);
-	m_hierarchy		= menu->add_item(NULL, L"Hierarchy");
-	m_inspector		= menu->add_item(NULL, L"Inspector");
-	m_project		= menu->add_item(NULL, L"Project");
-	m_console		= menu->add_item(NULL, L"Console");
-	m_timeline		= menu->add_item(NULL, L"Timeline");
-	m_game			= menu->add_item(NULL, L"Game");
-	m_scene			= menu->add_item(NULL, L"Scene");
-	m_animator		= menu->add_item(NULL, L"Animator");
+	m_hierarchy		= menu->add_item(xui_bitmap::create("icon/hierarchy.png"),	L"Hierarchy");
+	m_inspector		= menu->add_item(xui_bitmap::create("icon/inspector.png"),	L"Inspector");
+	m_project		= menu->add_item(xui_bitmap::create("icon/project.png"),	L"Project");
+	m_console		= menu->add_item(xui_bitmap::create("icon/console.png"),	L"Console");
+	m_timeline		= menu->add_item(xui_bitmap::create("icon/timeline.png"),	L"Timeline");
+	m_game			= menu->add_item(xui_bitmap::create("icon/game.png"),		L"Game");
+	m_scene			= menu->add_item(xui_bitmap::create("icon/scene.png"),		L"Scene");
+	m_animator		= menu->add_item(xui_bitmap::create("icon/animator.png"),	L"Animator");
+	xui_method_ptrcall(m_hierarchy,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy"));
+	xui_method_ptrcall(m_inspector,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/inspector.png"), L"Inspector"));
+	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
 	m_reset			= menu->add_item(NULL, L"Reset");
 
-	m_window		= xui_toggle::create(NULL, L"Window", 80);
+	m_window		= xui_toggle::create(NULL, L"Window", 100);
 	xui_method_ptrcall(m_window,		ini_drawer		)(NULL, xui_vector<s32>(0));
-	xui_method_ptrcall(m_window,		set_textalign	)(TA_CC);
 	xui_method_ptrcall(m_window,		set_menu		)(menu);
 
 	//menu
@@ -92,16 +96,17 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(tool_menu,		ini_component	)(ALIGNHORZ_R, ALIGNVERT_C, 0);
 	xui_method_ptrcall(tool_menu,		add_item		)(m_window);
 
-	//panel
-	xui_panel* top_panel = new xui_panel(xui_vector<s32>(24));
-	xui_method_ptrcall(top_panel,		ini_component	)(0, 0, DOCKSTYLE_T);
-	xui_method_ptrcall(top_panel,		set_borderrt	)(xui_rect2d<s32>(8, 0, 8, 0));
-	xui_method_ptrcall(top_panel,		add_child		)(line_transform);
-	xui_method_ptrcall(top_panel,		add_child		)(line_operator);
-	xui_method_ptrcall(top_panel,		add_child		)(line_debug);
-	xui_method_ptrcall(top_panel,		add_child		)(tool_menu);
-
-	add_child(top_panel);
+	//main
+	m_toolpane		= new xui_panel(xui_vector<s32>(40));
+	m_mainview		= xui_dockview::create();
+	xui_method_ptrcall(m_toolpane,		ini_component	)(0, 0, DOCKSTYLE_T);
+	xui_method_ptrcall(m_toolpane,		set_borderrt	)(xui_rect2d<s32>(8));
+	xui_method_ptrcall(m_toolpane,		add_child		)(line_transform);
+	xui_method_ptrcall(m_toolpane,		add_child		)(line_operator);
+	xui_method_ptrcall(m_toolpane,		add_child		)(line_debug);
+	xui_method_ptrcall(m_toolpane,		add_child		)(tool_menu);
+	add_child(m_toolpane);
+	add_child(m_mainview);
 }
 
 /*
@@ -161,6 +166,34 @@ xui_method_explain(onity_mainform, on_clickdebug,		void)( xui_component* sender,
 	{
 		m_pause->ini_toggle(false);
 	}
+}
+xui_method_explain(onity_mainform, on_clickwndmenu,		void)( xui_component* sender, xui_method_args& args )
+{
+	xui_dockpage* dockpage = (xui_dockpage*)sender->get_data();
+	xui_dockview* rootview = xui_dynamic_cast(xui_dockview, dockpage->get_parent());
+	if (rootview)
+	{
+		rootview->del_dockpage(dockpage);
+	}
+	else
+	{
+		if		(sender == m_hierarchy)	m_mainview->add_dockpage(dockpage, DOCKSTYLE_L);
+		else if (sender == m_inspector) m_mainview->add_dockpage(dockpage, DOCKSTYLE_R);
+		else
+		{}
+	}
+}
+xui_method_explain(onity_mainform, on_clicksave,		void)( xui_component* sender, xui_method_args& args )
+{
+
+}
+xui_method_explain(onity_mainform, on_clickload,		void)( xui_component* sender, xui_method_args& args )
+{
+
+}
+xui_method_explain(onity_mainform, on_clickreset,		void)( xui_component* sender, xui_method_args& args )
+{
+
 }
 xui_method_explain(onity_mainform, on_paintdebug,		void)( xui_component* sender, xui_method_args& args )
 {

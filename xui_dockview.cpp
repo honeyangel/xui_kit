@@ -90,7 +90,7 @@ xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>	)( void ) const
 	xui_rect2d<s32> rt(0);
 	if (m_pagelist.size() > 0)
 	{
-		s32 w = xui_min(80, (get_freerect().get_w()-32)/m_pagelist.size());
+		s32 w = xui_min(100, (get_freerect().get_w()-32)/m_pagelist.size());
 		rt.set_x(2);
 		rt.set_y(2);
 		rt.set_h(24);
@@ -165,16 +165,29 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 	}
 	else
 	{
-		xui_rect2d<s32> rt = get_freerect();
-		xui_rect2d<s32> bd = page->get_borderrt();
-		xui_vector<s32> sz;
-		sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
-		sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
-		xui_dockview* view = new xui_dockview(sz, dockstyle);
-		add_dockctrl(view);
-		xui_method_ptrcall(view, cal_portions)();
-		xui_method_ptrcall(view, add_dockpage)(page, DOCKSTYLE_F);
-		m_viewlist.push_back(view);
+		xui_dockview* view = NULL;
+		xui_vecptr_addloop(m_viewlist)
+		{
+			if (m_viewlist[i]->get_dockstyle() == dockstyle)
+			{
+				view = m_viewlist[i];
+				break;
+			}
+		}
+		if (view == NULL)
+		{
+			xui_rect2d<s32> rt = get_freerect();
+			xui_rect2d<s32> bd = page->get_borderrt();
+			xui_vector<s32> sz;
+			sz.w = (rt.get_w()-bd.ax-bd.bx)   /3 + bd.ax + bd.bx;
+			sz.h = (rt.get_h()-bd.ay-bd.by-24)/3 + bd.ay + bd.by + 24;
+			view = new xui_dockview(sz, dockstyle);
+			view->cal_portions();
+			add_dockctrl(view);
+			m_viewlist.push_back(view);
+		}
+
+		view->add_dockpage(page, DOCKSTYLE_F);
 	}
 
 	invalid();

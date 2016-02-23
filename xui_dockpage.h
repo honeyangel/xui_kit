@@ -9,6 +9,11 @@ class xui_dockpage : public xui_control
 
 public:
 	/*
+	//static
+	*/
+	static xui_dockpage*	create				( xui_bitmap* icon, const std::wstring& text );
+
+	/*
 	//constructor
 	*/
 	xui_dockpage( void );
