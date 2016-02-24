@@ -21,17 +21,18 @@ public:
 	/*
 	//static
 	*/
-	static xui_dockpage*	create				( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit );
+	static xui_dockpage*	create				( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit, u08 initdock );
 
 	/*
 	//constructor
 	*/
-	xui_dockpage( const xui_vector<s32>& size, u32 dockarea, s32 minlimit );
+	xui_dockpage( const xui_vector<s32>& size, u32 dockarea, s32 minlimit, u08 initdock );
 
 	/*
 	//method
 	*/
 	bool					has_dockarea		( u08 dockstyle );
+	u08						get_initdock		( void ) const;
 	s32						get_minlimit		( void ) const;
 	s32						get_namesize		( void ) const;
 	const std::wstring&		get_pagename		( void ) const;
@@ -76,6 +77,7 @@ protected:
 	//member
 	*/
 	xui_drawer*				m_namectrl;
+	u08						m_initdock;
 	u32						m_dockarea;
 	s32						m_minlimit;
 };

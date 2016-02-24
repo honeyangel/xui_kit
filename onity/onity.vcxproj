@@ -11,11 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="onity_console.h" />
+    <ClInclude Include="onity_hierarchy.h" />
+    <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_mainform.h" />
+    <ClInclude Include="onity_project.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="onity_console.cpp" />
+    <ClCompile Include="onity_hierarchy.cpp" />
+    <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
+    <ClCompile Include="onity_project.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}</ProjectGuid>

@@ -37,7 +37,7 @@ public:
 	/*
 	//page
 	*/
-	void								add_dockpage			( xui_dockpage* page, u08 dockstyle, bool autosize = true );
+	void								add_dockpage			( xui_dockpage* page, u08 dockstyle, bool autosize = true, bool merge = false );
 	void								del_dockpage			( xui_dockpage* page );
 	void								del_dockview			( xui_dockview* view );
 	void								mov_dockview			( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview );

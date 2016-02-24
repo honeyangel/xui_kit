@@ -7,6 +7,9 @@
 #include "xui_global.h"
 #include "onity_mainform.h"
 
+s32 DefaultWidth  = 1440;
+s32 DefaultHeight =  900;
+
 HWND gHWND = NULL;
 
 u08 VKToKey(WPARAM wParam)
@@ -235,14 +238,14 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance		= hInstance;
 	wc.lpfnWndProc		= WndProc;
-	wc.lpszClassName	= L"XUI";
+	wc.lpszClassName	= L"Onity";
 	wc.lpszMenuName		= NULL;
 	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC | CS_DBLCLKS;
 
 	if (!RegisterClass(&wc))
 		return 0;
 
-	gHWND = CreateWindow(L"XUI", L"XUI", WS_OVERLAPPEDWINDOW , 0, 0, 1024, 768, NULL, NULL, hInstance, NULL);
+	gHWND = CreateWindow(L"Onity", L"Onity", WS_OVERLAPPEDWINDOW , 0, 0, DefaultWidth, DefaultHeight, NULL, NULL, hInstance, NULL);
 	//SetCapture   (gHWND);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
@@ -255,7 +258,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 
 	RECT rect;
 	GetClientRect(gHWND, &rect);
-	MoveWindow   (gHWND, 0, 0, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
+	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
 
 	xui_desktop::get_ins()->add_child(new onity_mainform());
 	xui_global::set_fwatchstart(xui_global::get_workpath());

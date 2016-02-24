@@ -387,10 +387,10 @@ void xui_demo::test_dockview( xui_window* window )
 {
 	xui_dockview* dockview = xui_dockview::create();
 	xui_dockpage* dockpage = NULL;
-	dockpage = new xui_dockpage(100, AREALIMIT_A, 200);
+	dockpage = new xui_dockpage(100, AREALIMIT_A, 200, DOCKSTYLE_F);
 	dockpage->ini_namectrl(NULL, L"Game");
 	dockview->add_dockpage(dockpage, DOCKSTYLE_F);
-	dockpage = new xui_dockpage(100, AREALIMIT_A, 200);
+	dockpage = new xui_dockpage(100, AREALIMIT_A, 200, DOCKSTYLE_F);
 	dockpage->ini_namectrl(NULL, L"Scene");
 	dockview->add_dockpage(dockpage, DOCKSTYLE_F);
 	window->add_child(dockview);

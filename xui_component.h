@@ -208,6 +208,7 @@ public:
 	xui_method<xui_method_args>		xm_getcatch;
 	xui_method<xui_method_args>		xm_noncatch;
 
+	xui_method<xui_method_args>		xm_load;
 	xui_method<xui_method_args>		xm_free;
 	xui_method<xui_method_args>		xm_lock;
 	xui_method<xui_method_args>		xm_show;
@@ -250,6 +251,7 @@ protected:
 	virtual void					on_getcatch			( xui_method_args&		args );
 	virtual void					on_noncatch			( xui_method_args&		args );
 
+	virtual void					on_load				( xui_method_args&	    args );
 	virtual void					on_free				( xui_method_args&		args );
 	virtual void					on_lock				( xui_method_args&		args );
 	virtual void					on_show				( xui_method_args&		args );
@@ -294,6 +296,7 @@ protected:
 	*/
 	std::string						m_name;
 	void*							m_data;
+	bool							m_init;
 
 	u32								m_cursor;
 	xui_component*					m_parent;

@@ -19,6 +19,8 @@ enum
 
 class onity_mainform : public xui_window
 {
+	xui_declare_rtti
+
 public:
 	/*
 	//constructor
@@ -26,6 +28,11 @@ public:
 	onity_mainform( void );
 
 protected:
+	/*
+	//callback
+	*/
+	virtual void		on_load				( xui_method_args& args );
+
 	/*
 	//event
 	*/
@@ -39,6 +46,11 @@ protected:
 	virtual void		on_clickload		( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickreset		( xui_component* sender, xui_method_args& args );
 	virtual void		on_mainviewinvalid	( xui_component* sender, xui_method_args& args );
+
+	/*
+	//method
+	*/
+	void				del_allview			( void );
 
 	/*
 	//member

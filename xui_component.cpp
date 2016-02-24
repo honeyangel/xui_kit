@@ -11,6 +11,7 @@ xui_implement_root(xui_component);
 xui_create_explain(xui_component)( const xui_vector<s32>& size )
 {
 	m_data		= NULL;
+	m_init		= false;
 	m_cursor	= CURSOR_DEFAULT;
 	m_parent	= NULL;
 	m_render	= xui_rect2d<s32>(xui_vector<s32>(0), size);
@@ -23,7 +24,7 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size )
 	m_dockstyle = 0;
 	m_backalpha = 1.0f;
 	m_backcolor = xui_colour::transparent;
-	m_maskcolor = xui_colour::white;
+	m_maskcolor	= xui_colour::white;
 }
 
 /*
@@ -421,8 +422,19 @@ xui_method_explain(xui_component, perform,				void					)( void )
 */
 xui_method_explain(xui_component, update,				void					)( f32 delta )
 {
-	if (m_invalid) 
+	if (m_invalid)
+	{
 		refresh();
+	}
+
+	if (m_init == false)
+	{
+		xui_method_args args;
+		on_load(		args);
+		xm_load(this,	args);
+
+		m_init = true;
+	}
 
 	xui_method_args     args; 
 	on_updateself(      args);
@@ -523,6 +535,10 @@ xui_method_explain(xui_component, on_getcatch,			void					)( xui_method_args&			
 
 }
 xui_method_explain(xui_component, on_noncatch,			void					)( xui_method_args&			args )
+{
+
+}
+xui_method_explain(xui_component, on_load,				void					)( xui_method_args&			args )
 {
 
 }

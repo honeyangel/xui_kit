@@ -7,7 +7,13 @@
 #include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
+#include "onity_hierarchy.h"
+#include "onity_inspector.h"
+#include "onity_console.h"
+#include "onity_project.h"
 #include "onity_mainform.h"
+
+xui_implement_rtti(onity_mainform, xui_window);
 
 /*
 //constructor
@@ -78,14 +84,21 @@ xui_create_explain(onity_mainform)( void )
 	m_game			= menu->add_item(xui_bitmap::create("icon/game.png"),		L"Game");
 	m_scene			= menu->add_item(xui_bitmap::create("icon/scene.png"),		L"Scene");
 	m_animator		= menu->add_item(xui_bitmap::create("icon/animator.png"),	L"Animator");
-	xui_method_ptrcall(m_hierarchy,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy", 200, AREALIMIT_L, 200));
-	xui_method_ptrcall(m_inspector,		set_data		)(xui_dockpage::create(xui_bitmap::create("icon/inspector.png"), L"Inspector", 200, AREALIMIT_R, 200));
+	xui_method_ptrcall(m_hierarchy,		set_data		)(new onity_hierarchy);
+	xui_method_ptrcall(m_inspector,		set_data		)(new onity_inspector);
+	xui_method_ptrcall(m_project,		set_data		)(new onity_project);
+	xui_method_ptrcall(m_console,		set_data		)(new onity_console);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
 	m_reset			= menu->add_item(NULL, L"Reset");
+	xui_method_ptrcall(m_save,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicksave);
+	xui_method_ptrcall(m_load,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickload);
+	xui_method_ptrcall(m_reset,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickreset);
 
 	m_window		= xui_toggle::create(NULL, L"Window", 100);
 	xui_method_ptrcall(m_window,		ini_drawer		)(NULL, xui_vector<s32>(0));
@@ -108,6 +121,17 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_toolpane,		add_child		)(tool_menu);
 	add_child(m_toolpane);
 	add_child(m_mainview);
+}
+
+/*
+//callback
+*/
+xui_method_explain(onity_mainform, on_load,				void)( xui_method_args& args )
+{
+	xui_window::on_load(args);
+
+	//load config
+	on_clickload(NULL,  args);
 }
 
 /*
@@ -170,18 +194,19 @@ xui_method_explain(onity_mainform, on_clickdebug,		void)( xui_component* sender,
 }
 xui_method_explain(onity_mainform, on_clickwndmenu,		void)( xui_component* sender, xui_method_args& args )
 {
-	xui_dockpage* dockpage = (xui_dockpage*)sender->get_data();
-	xui_dockview* rootview = xui_dynamic_cast(xui_dockview, dockpage->get_parent());
-	if (rootview)
+	xui_dockpage* page = (xui_dockpage*)sender->get_data();
+	if (page)
 	{
-		rootview->del_dockpage(dockpage);
-	}
-	else
-	{
-		if		(sender == m_hierarchy)	m_mainview->add_dockpage(dockpage, DOCKSTYLE_L, false);
-		else if (sender == m_inspector) m_mainview->add_dockpage(dockpage, DOCKSTYLE_R, false);
+		xui_dockview* rootview = xui_dynamic_cast(xui_dockview, page->get_parent());
+		if (rootview)
+		{
+			rootview->del_dockpage(page);
+		}
 		else
-		{}
+		{
+			rootview = m_mainview;
+			rootview->add_dockpage(page, page->get_initdock(), false, true);
+		}
 	}
 }
 xui_method_explain(onity_mainform, on_clicksave,		void)( xui_component* sender, xui_method_args& args )
@@ -190,11 +215,31 @@ xui_method_explain(onity_mainform, on_clicksave,		void)( xui_component* sender, 
 }
 xui_method_explain(onity_mainform, on_clickload,		void)( xui_component* sender, xui_method_args& args )
 {
-
+	//TODO
+	on_clickreset(sender, args);
 }
 xui_method_explain(onity_mainform, on_clickreset,		void)( xui_component* sender, xui_method_args& args )
 {
+	del_allview();
+	std::vector<xui_menuitem*> menulist;
+	menulist.push_back(m_inspector);
+	menulist.push_back(m_project);
+	menulist.push_back(m_console);
+	menulist.push_back(m_timeline);
+	menulist.push_back(m_hierarchy);
+	menulist.push_back(m_scene);
+	menulist.push_back(m_game);
+	menulist.push_back(m_animator);
 
+	xui_vecptr_addloop(menulist)
+	{
+		xui_dockpage* page = (xui_dockpage*)menulist[i]->get_data();
+		if (page)
+		{
+			page->on_perform_sz(xui_vector<s32>(300));
+			m_mainview->add_dockpage(page, page->get_initdock(), false, true);
+		}
+	}
 }
 xui_method_explain(onity_mainform, on_paintdebug,		void)( xui_component* sender, xui_method_args& args )
 {
@@ -248,5 +293,32 @@ xui_method_explain(onity_mainform, on_mainviewinvalid,	void)( xui_component* sen
 	if (get_clientsz() != sz)
 	{
 		set_clientsz(sz);
+	}
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_mainform, del_allview,			void)( void )
+{
+	std::vector<xui_menuitem*> menulist;
+	menulist.push_back(m_hierarchy);
+	menulist.push_back(m_inspector);
+	menulist.push_back(m_console);
+	menulist.push_back(m_project);
+	menulist.push_back(m_timeline);
+	menulist.push_back(m_game);
+	menulist.push_back(m_scene);
+	menulist.push_back(m_animator);
+
+	xui_vecptr_addloop(menulist)
+	{
+		xui_dockpage* page = (xui_dockpage*)menulist[i]->get_data();
+		if (page)
+		{
+			xui_dockview* rootview = xui_dynamic_cast(xui_dockview, page->get_parent());
+			if (rootview)
+				rootview->del_dockpage(page);
+		}
 	}
 }

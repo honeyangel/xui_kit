@@ -9,9 +9,9 @@ xui_implement_rtti(xui_dockpage, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit )
+xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit, u08 initdock )
 {
-	xui_dockpage* dockpage = new xui_dockpage(xui_vector<s32>(size), dockarea, minlimit);
+	xui_dockpage* dockpage = new xui_dockpage(xui_vector<s32>(size), dockarea, minlimit, initdock);
 	dockpage->ini_namectrl(icon, text);
 	return dockpage;
 }
@@ -19,11 +19,12 @@ xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, 
 /*
 //constructor
 */
-xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32 minlimit )
+xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32 minlimit, u08 initdock )
 : xui_control(size)
 {
 	m_border	= xui_rect2d<s32>(2);
 	m_dockarea	= dockarea;
+	m_initdock	= initdock;
 	m_minlimit  = minlimit;
 	m_namectrl	= xui_drawer::create(L"");
 	xui_method_ptrcall(m_namectrl, set_parent)(this);
@@ -48,6 +49,10 @@ xui_method_explain(xui_dockpage, has_dockarea,			bool				)( u08 dockstyle )
 	}
 
 	return false;
+}
+xui_method_explain(xui_dockpage, get_initdock,			u08					)( void ) const
+{
+	return m_initdock;
 }
 xui_method_explain(xui_dockpage, get_minlimit,			s32					)( void ) const
 {

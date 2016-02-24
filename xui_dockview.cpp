@@ -271,7 +271,7 @@ xui_method_explain(xui_dockview, get_maxlimit,			xui_vector<s32>						)( void )
 /*
 //page
 */
-xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* page, u08 dockstyle, bool autosize )
+xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* page, u08 dockstyle, bool autosize, bool merge )
 {
 	if (page->get_parent())
 		return;
@@ -302,7 +302,7 @@ xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* pa
 				break;
 			}
 		}
-		if (view == NULL)
+		if (view == NULL || merge == false)
 		{
 			xui_rect2d<s32> rt = get_freerect();
 			xui_rect2d<s32> bd = page->get_borderrt();
@@ -340,7 +340,7 @@ xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* pa
 		m_showpage  = m_pagelist.size() > 0 ? m_pagelist.front() : NULL;
 
 	m_menuctrl->set_visible(m_pagelist.size() > 0);
-	invalid();
+	refresh();
 }
 xui_method_explain(xui_dockview, del_dockview,			void								)( xui_dockview* view )
 {
@@ -355,7 +355,7 @@ xui_method_explain(xui_dockview, del_dockview,			void								)( xui_dockview* vi
 	}
 	xui_desktop::get_ins()->move_recycle(view);
 
-	invalid();
+	refresh();
 }
 xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview )
 {
