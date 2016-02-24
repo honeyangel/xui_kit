@@ -149,61 +149,89 @@ xui_method_explain(xui_dockview, use_portions,			void			)( void )
 /*
 //size
 */
-xui_method_explain(xui_dockview, get_minpixel,			s32				)( void )
+xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>	)( void )
 {
-	s32 minpixel = 0;
-	xui_vecptr_addloop(m_pagelist)
-	{
-		minpixel = xui_max(minpixel, m_pagelist[i]->get_minpixel());
-	}
-
+	xui_vector<s32> minlimit(0);
 	switch (m_dockstyle)
 	{
 	case DOCKSTYLE_L:
 	case DOCKSTYLE_R:
 		{
+			minlimit.h = get_renderh();
+			xui_vecptr_addloop(m_pagelist)
+			{
+				minlimit.w = xui_max(minlimit.w, m_pagelist[i]->get_minlimit());
+			}
 			xui_vecptr_addloop(m_viewlist)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_T ||
 					view->get_dockstyle() == DOCKSTYLE_B)
-					minpixel = xui_max(minpixel, view->get_minpixel());
+					minlimit.w  = xui_max(minlimit.w, view->get_minlimit().w);
 			}
 			xui_vecptr_addloop(m_viewlist)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_L ||
 					view->get_dockstyle() == DOCKSTYLE_R)
-					minpixel += view->get_minpixel();
+					minlimit.w += xui_max(view->get_renderw(), view->get_minlimit().w);
 			}
 		}
 		break;
 	case DOCKSTYLE_T:
 	case DOCKSTYLE_B:
 		{
+			minlimit.w = get_renderw();
+			xui_vecptr_addloop(m_pagelist)
+			{
+				minlimit.h = xui_max(minlimit.h, m_pagelist[i]->get_minlimit());
+			}
 			xui_vecptr_addloop(m_viewlist)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_L ||
 					view->get_dockstyle() == DOCKSTYLE_R)
-					minpixel = xui_max(minpixel, view->get_minpixel());
+					minlimit.h  = xui_max(minlimit.h, view->get_minlimit().h);
 			}
 			xui_vecptr_addloop(m_viewlist)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_T ||
 					view->get_dockstyle() == DOCKSTYLE_B)
-					minpixel += view->get_minpixel();
+					minlimit.h += xui_max(view->get_renderh(), view->get_minlimit().h);
+			}
+		}
+		break;
+	case DOCKSTYLE_F:
+		{
+			xui_vecptr_addloop(m_pagelist)
+			{
+				minlimit.w = xui_max(minlimit.w, m_pagelist[i]->get_minlimit());
+				minlimit.h = xui_max(minlimit.h, m_pagelist[i]->get_minlimit());
+			}
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_L ||
+					view->get_dockstyle() == DOCKSTYLE_R)
+					minlimit.w += xui_max(view->get_renderw(), view->get_minlimit().w);
+			}
+			xui_vecptr_addloop(m_viewlist)
+			{
+				xui_dockview* view = m_viewlist[i];
+				if (view->get_dockstyle() == DOCKSTYLE_T ||
+					view->get_dockstyle() == DOCKSTYLE_B)
+					minlimit.h += xui_max(view->get_renderh(), view->get_minlimit().h);
 			}
 		}
 		break;
 	}
 
-	return minpixel;
+	return minlimit;
 }
-xui_method_explain(xui_dockview, get_maxpixel,			s32				)( void )
+xui_method_explain(xui_dockview, get_maxlimit,			xui_vector<s32>	)( void )
 {
-	return 0;
+	return xui_vector<s32>(0);
 }
 
 /*
@@ -252,9 +280,9 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 			}
 
 			view = new xui_dockview(sz, dockstyle);
-			view->cal_portions();
 			add_dockctrl(view);
 			m_viewlist.push_back(view);
+			view->cal_portions();
 		}
 
 		view->add_dockpage(page, DOCKSTYLE_F);
@@ -346,6 +374,18 @@ xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 			m_widgetvec.push_back(m_menuctrl);
 			view->del_dockview(this);
 		}
+		else
+		{
+			xui_vector<s32> sz = get_rendersz();
+			xui_vector<s32> minlimit = get_minlimit();
+			sz.w = xui_max(sz.w, minlimit.w);
+			sz.h = xui_max(sz.h, minlimit.h);
+			if (get_rendersz() != sz)
+			{
+				set_rendersz(sz);
+				cal_portions();
+			}
+		}
 	}
 }
 xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
@@ -410,25 +450,30 @@ xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* 
 		case DOCKSTYLE_B: delta.h -= move.y; break;
 		}
 
-		xui_rect2d<s32> freert = get_freerect();
-		if (delta.w < 0 && freert.get_w()+delta.w < 60)
-			delta.w = xui_min(0, 60-freert.get_w());
-		if (delta.h < 0 && freert.get_h()+delta.h < 60)
-			delta.h = xui_min(0, 60-freert.get_h());
+		xui_vector<s32> sz = get_rendersz() + delta;
+		xui_vector<s32> minlimit = get_minlimit();
+		xui_vector<s32> maxlimit = get_maxlimit();
+		sz.w = xui_max(sz.w, minlimit.w);
+		sz.h = xui_max(sz.h, minlimit.h);
+		//xui_rect2d<s32> freert = get_freerect();
+		//if (delta.w < 0 && freert.get_w()+delta.w < 60)
+		//	delta.w = xui_min(0, 60-freert.get_w());
+		//if (delta.h < 0 && freert.get_h()+delta.h < 60)
+		//	delta.h = xui_min(0, 60-freert.get_h());
 
-		xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
-		if (rootview)
-		{
-			freert = rootview->get_freerect();
-			if (delta.w > 0 && freert.get_w()-delta.w < 60)
-				delta.w = freert.get_w()-60;
-			if (delta.h > 0 && freert.get_h()-delta.h < 60)
-				delta.h = freert.get_h()-60;
-		}
+		//xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
+		//if (rootview)
+		//{
+		//	freert = rootview->get_freerect();
+		//	if (delta.w > 0 && freert.get_w()-delta.w < 60)
+		//		delta.w = freert.get_w()-60;
+		//	if (delta.h > 0 && freert.get_h()-delta.h < 60)
+		//		delta.h = freert.get_h()-60;
+		//}
 
-		if (delta.w != 0 || delta.h != 0)
+		if (get_rendersz() != sz)
 		{
-			set_rendersz(get_rendersz()+delta);
+			set_rendersz(sz);
 			cal_portions();
 		}
 	}

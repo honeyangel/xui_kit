@@ -9,9 +9,9 @@ xui_implement_rtti(xui_dockpage, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minpixel )
+xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit )
 {
-	xui_dockpage* dockpage = new xui_dockpage(xui_vector<s32>(size), dockarea, minpixel);
+	xui_dockpage* dockpage = new xui_dockpage(xui_vector<s32>(size), dockarea, minlimit);
 	dockpage->ini_namectrl(icon, text);
 	return dockpage;
 }
@@ -19,12 +19,12 @@ xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, 
 /*
 //constructor
 */
-xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32 minpixel )
+xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32 minlimit )
 : xui_control(size)
 {
 	m_border	= xui_rect2d<s32>(2);
 	m_dockarea	= dockarea;
-	m_minpixel  = minpixel;
+	m_minlimit  = minlimit;
 	m_namectrl	= xui_drawer::create(L"");
 	xui_method_ptrcall(m_namectrl, set_parent)(this);
 	m_namectrl->xm_topdraw	 += new xui_method_member<xui_method_args,  xui_dockpage>(this, &xui_dockpage::on_namectrltopdraw  );
@@ -49,9 +49,9 @@ xui_method_explain(xui_dockpage, has_dockarea,			bool				)( u08 dockstyle )
 
 	return false;
 }
-xui_method_explain(xui_dockpage, get_minpixel,			s32					)( void ) const
+xui_method_explain(xui_dockpage, get_minlimit,			s32					)( void ) const
 {
-	return m_minpixel;
+	return m_minlimit;
 }
 xui_method_explain(xui_dockpage, get_pagename,			const std::wstring&	)( void ) const
 {
@@ -334,10 +334,10 @@ xui_method_explain(xui_dockpage, cal_dockinfo,			u08					)( xui_dockview* dockvi
 	else
 	{
 		rt.ay += 24;
-		if		 (pt.x < (rt.ax+rt.get_w()/3) && rt.get_w() > 200 && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
-		else if  (pt.x > (rt.bx-rt.get_w()/3) && rt.get_w() > 200 && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
-		else if	 (pt.y < (rt.ay+rt.get_h()/3) && rt.get_h() > 200 && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
-		else if  (pt.y > (rt.by-rt.get_h()/3) && rt.get_h() > 200 && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
+		if		 (pt.x < (rt.ax+rt.get_w()/3) && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
+		else if  (pt.x > (rt.bx-rt.get_w()/3) && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
+		else if	 (pt.y < (rt.ay+rt.get_h()/3) && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
+		else if  (pt.y > (rt.by-rt.get_h()/3) && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
 		else
 		{}
 	}

@@ -30,8 +30,8 @@ public:
 	/*
 	//size
 	*/
-	s32							get_minpixel			( void );
-	s32							get_maxpixel			( void );
+	xui_vector<s32>				get_minlimit			( void );
+	xui_vector<s32>				get_maxlimit			( void );
 
 	/*
 	//page
