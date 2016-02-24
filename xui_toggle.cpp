@@ -95,6 +95,8 @@ xui_method_explain(xui_toggle, set_push,			void			)( bool push )
 
 		if (m_menu && m_push)
 		{
+			m_menu->refresh();
+
 			xui_vector<s32> pt = get_screenpt() + xui_vector<s32>(0, get_renderh());
 			if (pt.x + m_menu->get_renderw() > xui_desktop::get_ins()->get_renderw())
 				pt.x = xui_desktop::get_ins()->get_renderw() - m_menu->get_renderw();
@@ -196,10 +198,4 @@ xui_method_explain(xui_toggle, get_rendercolor,		xui_colour		)( void ) const
 		else
 			return xui_button::get_rendercolor();
 	}
-}
-xui_method_explain(xui_toggle, update_else,			void			)( f32 delta )
-{
-	xui_button::update_else(delta);
-	if (m_menu)
-		m_menu->update(delta);
 }

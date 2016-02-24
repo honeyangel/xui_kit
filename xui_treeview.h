@@ -124,7 +124,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool lighttrace = true );
+	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool renderhead = true, bool lighttrace = true );
 
 	/*
 	//destructor
@@ -246,6 +246,7 @@ protected:
 	bool								m_allowmulti;
 	bool								m_acceptdrag;
 	bool								m_rendergrid;
+	bool								m_renderhead;
 	bool								m_lighttrace;
 	std::vector<xui_treenode*>			m_upmostnode;
 	std::vector<xui_treenode*>			m_upmostback;

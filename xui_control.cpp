@@ -216,7 +216,7 @@ xui_method_explain(xui_control, choose_else,		xui_component*			)( const xui_vect
 	if (m_render.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt();
-		xui_vecptr_addloop(m_widgetvec)
+		xui_vecptr_delloop(m_widgetvec)
 		{
 			if (component = m_widgetvec[i]->choose(relative))
 				return component;

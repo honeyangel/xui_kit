@@ -22,9 +22,6 @@ xui_create_explain(xui_panel)( const xui_vector<s32>& size )
 */
 xui_delete_explain(xui_panel)( void )
 {
-	for (u32 i = 0; i < m_resizevec.size(); ++i)
-		delete m_resizevec[i];
-
 	del_children();
 }
 
@@ -208,18 +205,6 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 	xui_component* component = xui_container::choose_else(pt);
 	if (component == NULL)
 	{
-		if (m_render.was_inside(pt))
-		{
-			xui_vector<s32> relative = pt - m_render.get_pt();
-			xui_vecptr_addloop(m_resizevec)
-			{
-				if (component = m_resizevec[i]->choose(relative))
-					return component;
-			}
-		}
-	}
-	if (component == NULL)
-	{
 		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
 		if (rt.was_inside(pt))
 		{
@@ -227,7 +212,7 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 			scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 			scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 			xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
-			xui_vecptr_addloop(m_childctrl)
+			xui_vecptr_delloop(m_childctrl)
 			{
 				if (component = m_childctrl[i]->choose(relative))
 					return component;
@@ -286,12 +271,6 @@ xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args 
 		perform_alignhorz(rt, vec);
 		perform_alignvert(rt, vec);
 		perform_dockstyle(rt, vec);
-	}
-
-	if (m_resizevec.size() > 0)
-	{
-		xui_rect2d<s32> rt = get_renderrt();
-		perform_dockstyle(rt, m_resizevec);
 	}
 }
 xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args )

@@ -30,12 +30,13 @@ xui_method_explain(xui_treeview, create,				xui_treeview*						)( const std::vec
 /*
 //constructor
 */
-xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, u08 plusrender, bool rendergrid, bool lighttrace )
+xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight, u08 plusrender, bool rendergrid, bool renderhead, bool lighttrace )
 : xui_container(size)
 {
 	m_columninfo = columninfo;
 	m_plusrender = plusrender;
 	m_rendergrid = rendergrid;
+	m_renderhead = renderhead;
 	m_lighttrace = lighttrace;
 	m_lineheight = lineheight;
 	m_nodeindent = 10;
@@ -439,7 +440,9 @@ xui_method_explain(xui_treeview, set_nodevisible,		void								)( xui_treenode* 
 xui_method_explain(xui_treeview, get_renderrtins,		xui_rect2d<s32>						)( void ) const
 {
 	xui_rect2d<s32> rt = xui_container::get_renderrtins();
-	rt.ay += m_lineheight;
+	if (m_renderhead)
+		rt.ay += m_lineheight;
+
 	return rt;
 }
 
@@ -475,17 +478,17 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 		scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 		scrollpt.y = 0;
 		xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
-		if (component == NULL)
+		if (component == NULL && m_renderhead && m_rendergrid)
 		{
-			xui_vecptr_addloop(m_columngrid)
+			xui_vecptr_delloop(m_columngrid)
 			{
 				if (component = m_columngrid[i]->choose(relative))
 					return component;
 			}
 		}
-		if (component == NULL)
+		if (component == NULL && m_renderhead)
 		{
-			xui_vecptr_addloop(m_columnhead)
+			xui_vecptr_delloop(m_columnhead)
 			{
 				if (component = m_columnhead[i]->choose(relative))
 					return component;
@@ -538,13 +541,17 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	{
 		alltreenodes[i]->render();
 	}
+
 	xui_rect2d<s32> rt = get_renderrtabs();
 	rt.ax += m_corner;
 	rt.bx -= m_corner;
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
-	xui_vecptr_addloop(m_columnhead)
+	if (m_renderhead)
 	{
-		m_columnhead[i]->render();
+		xui_vecptr_addloop(m_columnhead)
+		{
+			m_columnhead[i]->render();
+		}
 	}
 
 	xui_colour vertexcolor = get_vertexcolor();
@@ -564,7 +571,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 
 	xui_control::render_else();
 
-	if (m_rendergrid)
+	if (m_renderhead)
 	{
 		xui_vector<s32> pt = get_screenpt();
 		p1.x = pt.x;
@@ -611,7 +618,15 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&  
 	xui_rect2d<s32> rt = get_renderrtins();
 	if (width < rt.get_w() && width > 0)
 	{
-		m_columninfo.back().size += (rt.get_w() - width);
+		xui_vecptr_addloop(m_columninfo)
+		{
+			if (m_columninfo[i].type == TREECOLUMN_MAIN)
+			{
+				m_columninfo[i].size += (rt.get_w() - width);
+				break;
+			}
+		}
+
 		width = rt.get_w();
 	}
 

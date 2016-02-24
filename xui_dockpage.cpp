@@ -156,7 +156,7 @@ xui_method_explain(xui_dockpage, choose_else,			xui_component*		)( const xui_vec
 		xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 		if (dockview->get_showpage() == this)
 		{
-			xui_vecptr_addloop(m_widgetvec)
+			xui_vecptr_delloop(m_widgetvec)
 			{
 				if (component = m_widgetvec[i]->choose(relative))
 					return component;

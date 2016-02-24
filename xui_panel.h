@@ -73,7 +73,6 @@ protected:
 	//member
 	*/
 	std::vector<xui_control*>			m_childctrl;
-	std::vector<xui_component*>			m_resizevec;
 };
 
 #endif//__xui_panel_h__

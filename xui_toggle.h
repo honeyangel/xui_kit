@@ -54,7 +54,6 @@ public:
 	//virtual
 	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
-	virtual void				update_else		( f32 delta );
 
 	/*
 	//method

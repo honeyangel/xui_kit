@@ -27,6 +27,10 @@ public:
 	void						set_vscrollshow	( bool flag );
 	bool						was_hscrollshow	( void ) const;
 	void						set_hscrollshow	( bool flag );
+	bool						was_vscrollauto	( void ) const;
+	void						set_vscrollauto	( bool flag );
+	bool						was_hscrollauto ( void ) const;
+	void						set_hscrollauto	( bool flag );
 
 	/*
 	//menu

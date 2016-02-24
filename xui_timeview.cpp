@@ -70,7 +70,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	for (u32 i = 0; i < columninfo.size(); ++i)
 		treesize += columninfo[i].size;
 
-	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, false);
+	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, true, false);
 	xui_method_ptrcall(m_timetree, set_parent	)(this);
 	xui_method_ptrcall(m_timetree, set_drawcolor)(false);
 	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(0, 0, 8, 0));
@@ -440,7 +440,7 @@ xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_
 				return m_timehead;
 
 			std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-			xui_vecptr_addloop(nodes)
+			xui_vecptr_delloop(nodes)
 			{
 				xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 				if (component = timeline->choose(relative))

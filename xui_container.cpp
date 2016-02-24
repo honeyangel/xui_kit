@@ -71,6 +71,30 @@ xui_method_explain(xui_container, set_hscrollshow,	void			)( bool flag )
 		update_scroll();
 	}
 }
+xui_method_explain(xui_container, was_vscrollauto,	bool			)( void ) const
+{
+	return m_vscrollauto;
+}
+xui_method_explain(xui_container, set_vscrollauto,	void			)( bool flag )
+{
+	if (m_vscrollauto != flag)
+	{
+		m_vscrollauto  = flag;
+		update_scroll();
+	}
+}
+xui_method_explain(xui_container, was_hscrollauto,	bool			)( void ) const
+{
+	return m_hscrollauto;
+}
+xui_method_explain(xui_container, set_hscrollauto,	void			)( bool flag )
+{
+	if (m_hscrollauto != flag)
+	{
+		m_hscrollauto  = flag;
+		update_scroll();
+	}
+}
 
 /*
 //menu
@@ -108,7 +132,7 @@ xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vect
 		scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 		scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 		xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
-		xui_vecptr_addloop(m_ascrollitem)
+		xui_vecptr_delloop(m_ascrollitem)
 		{
 			if (component = m_ascrollitem[i]->choose(relative))
 				return component;
@@ -185,6 +209,8 @@ xui_method_explain(xui_container, on_mousedown,		void			)( xui_method_mouse& arg
 	xui_control::on_mousedown(args);
 	if (args.mouse == MB_R && m_contextmenu)
 	{
+		m_contextmenu->refresh();
+
 		xui_vector<s32> pt = args.point;
 		if (pt.x + m_contextmenu->get_renderw() > xui_desktop::get_ins()->get_renderw())
 			pt.x = xui_desktop::get_ins()->get_renderw() - m_contextmenu->get_renderw();
@@ -256,55 +282,24 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 	if (m_vscroll)   renderrt.bx += xui_scroll::default_size;
 	bool needvscroll = m_vscrollshow;
 	bool needhscroll = m_hscrollshow;
-	if (clientrt.get_h() > renderrt.get_h()) needvscroll = true;
-	if (clientrt.get_w() > renderrt.get_w()) needhscroll = true;
+	if (clientrt.get_h() > renderrt.get_h() && m_vscrollauto) needvscroll = true;
+	if (clientrt.get_w() > renderrt.get_w() && m_hscrollauto) needhscroll = true;
 	if (needvscroll) renderrt.bx -= xui_scroll::default_size;
 	if (needhscroll) renderrt.by -= xui_scroll::default_size;
 
-	if (clientrt.get_h() > renderrt.get_h())
-	{
-		if (m_vscrollauto)
-			create_scroll(FLOWSTYLE_V);
+	if (needvscroll)	create_scroll(FLOWSTYLE_V);
+	else				delete_scroll(FLOWSTYLE_V);
 
-		if (m_vscroll)
-			m_vscroll->set_enable(true);
-	}
-	else
-	{
-		if (m_vscrollshow)
-			create_scroll(FLOWSTYLE_V);
-		else
-			delete_scroll(FLOWSTYLE_V);
+	if (needhscroll)	create_scroll(FLOWSTYLE_H);
+	else				delete_scroll(FLOWSTYLE_H);
 
-		if (m_vscroll)
-			m_vscroll->set_enable(false);
-	}
-
-	if (clientrt.get_w() > renderrt.get_w())
-	{
-		if (m_hscrollauto)
-			create_scroll(FLOWSTYLE_H);
-
-		if (m_hscroll)
-			m_hscroll->set_enable(true);
-	}
-	else
-	{
-		if (m_hscrollshow)
-			create_scroll(FLOWSTYLE_H);
-		else
-			delete_scroll(FLOWSTYLE_H);
-
-		if (m_hscroll)
-			m_hscroll->set_enable(false);
-	}
+	if (m_vscroll)		xui_method_ptrcall(m_vscroll, set_enable)(clientrt.get_h() > renderrt.get_h());
+	if (m_hscroll)		xui_method_ptrcall(m_hscroll, set_enable)(clientrt.get_w() > renderrt.get_w());
 
 	//更新滚动条位置大小和范围
 	renderrt = get_renderrtins();
-	if (m_vscroll)
-		m_vscroll->set_range(clientrt.get_h() - renderrt.get_h());
-	if (m_hscroll)
-		m_hscroll->set_range(clientrt.get_w() - renderrt.get_w());
+	if (m_vscroll)		xui_method_ptrcall(m_vscroll, set_range	)(clientrt.get_h() - renderrt.get_h());
+	if (m_hscroll)		xui_method_ptrcall(m_hscroll, set_range )(clientrt.get_w() - renderrt.get_w());
 }
 xui_method_explain(xui_container, create_scroll,	void			)( u08 style )
 {
