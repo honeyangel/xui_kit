@@ -336,8 +336,16 @@ xui_method_explain(xui_container, delete_scroll,	void			)( u08 style )
 	xui_scroll* scroll = NULL;
 	switch (style)
 	{
-	case FLOWSTYLE_H: scroll = m_hscroll; m_hscroll = NULL;	break;
-	case FLOWSTYLE_V: scroll = m_vscroll; m_vscroll = NULL;	break;
+	case FLOWSTYLE_H: 
+		scroll = m_hscroll; 
+		m_hscroll->set_value(0);
+		m_hscroll = NULL;	
+		break;
+	case FLOWSTYLE_V: 
+		scroll = m_vscroll; 
+		m_vscroll->set_value(0);
+		m_vscroll = NULL;	
+		break;
 	}
 
 	std::vector<xui_component*>::iterator itor = std::find(
@@ -348,7 +356,8 @@ xui_method_explain(xui_container, delete_scroll,	void			)( u08 style )
 	if (itor != m_widgetvec.end())
 	{
 		m_widgetvec.erase(itor);
-		delete scroll;
+		scroll->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(scroll);
 	}
 
 	invalid();

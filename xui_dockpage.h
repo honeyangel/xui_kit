@@ -33,6 +33,7 @@ public:
 	*/
 	bool					has_dockarea		( u08 dockstyle );
 	s32						get_minlimit		( void ) const;
+	s32						get_namesize		( void ) const;
 	const std::wstring&		get_pagename		( void ) const;
 	void					ini_namectrl		( xui_bitmap* icon, const std::wstring& text );
 	void					mov_namectrl		( s32 x, s32 y, s32 w );

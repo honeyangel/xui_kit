@@ -53,6 +53,16 @@ xui_method_explain(xui_dockpage, get_minlimit,			s32					)( void ) const
 {
 	return m_minlimit;
 }
+xui_method_explain(xui_dockpage, get_namesize,			s32					)( void ) const
+{
+	s32 size = 0;
+	size += m_namectrl->get_borderrt().ax;
+	size += m_namectrl->get_borderrt().bx;
+	size += m_namectrl->get_iconsize().w + m_namectrl->get_textoffset().x;
+	size += xui_convas::get_ins()->calc_size(m_namectrl->get_text(), m_namectrl->get_textfont(), 0, true).w;
+
+	return size;
+}
 xui_method_explain(xui_dockpage, get_pagename,			const std::wstring&	)( void ) const
 {
 	return m_namectrl->get_text();
@@ -63,13 +73,19 @@ xui_method_explain(xui_dockpage, ini_namectrl,			void				)( xui_bitmap* icon, co
 	m_namectrl->ini_drawer(text);
 	if (icon)
 	{
-		m_namectrl->set_iconalign(IMAGE_FRONT_TEXT);
-		m_namectrl->set_textalign(TA_LC);
+		xui_method_ptrcall(m_namectrl, set_iconalign )(IMAGE_FRONT_TEXT);
+		xui_method_ptrcall(m_namectrl, set_textalign )(TA_LC);
+		xui_method_ptrcall(m_namectrl, set_textoffset)(xui_vector<s32>(2, 0));
 	}
 	else
 	{
-		m_namectrl->set_textalign(TA_CC);
+		xui_method_ptrcall(m_namectrl, set_iconsize	 )(xui_vector<s32>(0));
+		xui_method_ptrcall(m_namectrl, set_textalign )(TA_CC);
+		xui_method_ptrcall(m_namectrl, set_textoffset)(xui_vector<s32>(0));
 	}
+
+	if (m_parent)
+		m_parent->invalid();
 }
 xui_method_explain(xui_dockpage, add_pagectrl,			void				)( xui_component* ctrl )
 {

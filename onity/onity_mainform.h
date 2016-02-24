@@ -38,6 +38,7 @@ protected:
 	virtual void		on_clicksave		( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickload		( xui_component* sender, xui_method_args& args );
 	virtual void		on_clickreset		( xui_component* sender, xui_method_args& args );
+	virtual void		on_mainviewinvalid	( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member

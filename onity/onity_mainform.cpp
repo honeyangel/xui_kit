@@ -99,6 +99,7 @@ xui_create_explain(onity_mainform)( void )
 	//main
 	m_toolpane		= new xui_panel(xui_vector<s32>(40));
 	m_mainview		= xui_dockview::create();
+	xui_method_ptrcall(m_mainview,		xm_invalid		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_mainviewinvalid);
 	xui_method_ptrcall(m_toolpane,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_toolpane,		set_borderrt	)(xui_rect2d<s32>(8));
 	xui_method_ptrcall(m_toolpane,		add_child		)(line_transform);
@@ -233,5 +234,19 @@ xui_method_explain(onity_mainform, on_paintdebug,		void)( xui_component* sender,
 		rt.set_w( 3);
 		rt.set_h(14);
 		xui_convas::get_ins()->fill_rectangle(rt, color);
+	}
+}
+xui_method_explain(onity_mainform, on_mainviewinvalid,	void)( xui_component* sender, xui_method_args& args )
+{
+	xui_vector<s32> minlimit = m_mainview->get_minlimit();
+	minlimit.h += m_toolpane->get_renderh();
+
+	xui_vector<s32> sz = get_clientsz();
+	sz.w = xui_max(sz.w, 800);
+	sz.w = xui_max(sz.w, minlimit.w);
+	sz.h = xui_max(sz.h, minlimit.h);
+	if (get_clientsz() != sz)
+	{
+		set_clientsz(sz);
 	}
 }

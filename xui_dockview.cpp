@@ -11,7 +11,7 @@ xui_implement_rtti(xui_dockview, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_dockview, create,				xui_dockview*	)( void )
+xui_method_explain(xui_dockview, create,				xui_dockview*						)( void )
 {
 	xui_dockview* dockview = new xui_dockview(xui_vector<s32>(0), DOCKSTYLE_F);
 	return dockview;
@@ -61,15 +61,19 @@ xui_create_explain(xui_dockview)( const xui_vector<s32>& size, u08 dockstyle )
 /*
 //method
 */
-xui_method_explain(xui_dockview, get_showpage,			xui_dockpage*	)( void )
+xui_method_explain(xui_dockview, get_pagelist,			const std::vector<xui_dockpage*>&	)( void ) const
+{
+	return m_pagelist;
+}
+xui_method_explain(xui_dockview, get_showpage,			xui_dockpage*						)( void )
 {
 	return m_showpage;
 }
-xui_method_explain(xui_dockview, set_showpage,			void			)( xui_dockpage* page )
+xui_method_explain(xui_dockview, set_showpage,			void								)( xui_dockpage* page )
 {
 	m_showpage = page;
 }
-xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>	)( void ) const
+xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>						)( void ) const
 {
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vecptr_addloop(m_viewlist)
@@ -85,25 +89,31 @@ xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>	)( void ) const
 
 	return rt;
 }
-xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>	)( void ) const
+xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>						)( void ) const
 {
 	xui_rect2d<s32> rt(0);
 	if (m_pagelist.size() > 0)
 	{
-		s32 w = xui_min(100, (get_freerect().get_w()-32)/m_pagelist.size());
+		s32 maxtotal = get_freerect().get_w()-32;
+		s32 total = 0;
+		xui_vecptr_addloop(m_pagelist)
+		{
+			total += m_pagelist[i]->get_namesize();
+		}
+
 		rt.set_x(2);
 		rt.set_y(2);
 		rt.set_h(24);
-		rt.set_w(w*m_pagelist.size());
+		rt.set_w(xui_min(total, maxtotal));
 	}
 
 	return rt;
 }
-xui_method_explain(xui_dockview, get_portions,			f32				)( void ) const
+xui_method_explain(xui_dockview, get_portions,			f32									)( void ) const
 {
 	return m_portions;
 }
-xui_method_explain(xui_dockview, cal_portions,			void			)( void )
+xui_method_explain(xui_dockview, cal_portions,			void								)( void )
 {
 	if (m_parent)
 	{
@@ -120,7 +130,7 @@ xui_method_explain(xui_dockview, cal_portions,			void			)( void )
 		}
 	}
 }
-xui_method_explain(xui_dockview, use_portions,			void			)( void )
+xui_method_explain(xui_dockview, use_portions,			void								)( void )
 {
 	xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (rootview)
@@ -149,7 +159,7 @@ xui_method_explain(xui_dockview, use_portions,			void			)( void )
 /*
 //size
 */
-xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>	)( void )
+xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>						)( void )
 {
 	xui_vector<s32> minlimit(0);
 	switch (m_dockstyle)
@@ -229,15 +239,39 @@ xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>	)( void )
 
 	return minlimit;
 }
-xui_method_explain(xui_dockview, get_maxlimit,			xui_vector<s32>	)( void )
+xui_method_explain(xui_dockview, get_maxlimit,			xui_vector<s32>						)( void )
 {
-	return xui_vector<s32>(0);
+	xui_vector<s32> maxlimit = get_rendersz();
+	xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
+	if (rootview)
+	{
+		xui_rect2d<s32> freerect = rootview->get_freerect();
+		s32 minlimit = 0;
+		const std::vector<xui_dockpage*>& pagelist = rootview->get_pagelist();
+		xui_vecptr_addloop(pagelist)
+		{
+			minlimit = xui_max(minlimit, pagelist[i]->get_minlimit());
+		}
+		switch (m_dockstyle)
+		{
+		case DOCKSTYLE_L:
+		case DOCKSTYLE_R:
+			maxlimit.w += freerect.get_w()-minlimit;
+			break;
+		case DOCKSTYLE_T:
+		case DOCKSTYLE_B:
+			maxlimit.h += freerect.get_h()-minlimit;
+			break;
+		}
+	}
+
+	return maxlimit;
 }
 
 /*
 //page
 */
-xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u08 dockstyle, bool autosize )
+xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* page, u08 dockstyle, bool autosize )
 {
 	if (page->get_parent())
 		return;
@@ -290,7 +324,7 @@ xui_method_explain(xui_dockview, add_dockpage,			void			)( xui_dockpage* page, u
 
 	invalid();
 }
-xui_method_explain(xui_dockview, del_dockpage,			void			)( xui_dockpage* page )
+xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* page )
 {
 	del_dockctrl(page);
 	xui_vecptr_addloop(m_pagelist)
@@ -308,7 +342,7 @@ xui_method_explain(xui_dockview, del_dockpage,			void			)( xui_dockpage* page )
 	m_menuctrl->set_visible(m_pagelist.size() > 0);
 	invalid();
 }
-xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
+xui_method_explain(xui_dockview, del_dockview,			void								)( xui_dockview* view )
 {
 	del_dockctrl(view);
 	xui_vecptr_addloop(m_viewlist)
@@ -323,7 +357,7 @@ xui_method_explain(xui_dockview, del_dockview,			void			)( xui_dockview* view )
 
 	invalid();
 }
-xui_method_explain(xui_dockview, mov_dockview,			void			)( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview )
+xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview )
 {
 	xui_vecptr_addloop(viewlist)
 	{
@@ -350,7 +384,7 @@ xui_method_explain(xui_dockview, mov_dockview,			void			)( std::vector<xui_dockv
 /*
 //callback
 */
-xui_method_explain(xui_dockview, on_setrendersz,		void			)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_setrendersz,		void								)( xui_method_args& args )
 {
 	xui_control::on_setrendersz(args);
 	xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
@@ -359,7 +393,7 @@ xui_method_explain(xui_dockview, on_setrendersz,		void			)( xui_method_args& arg
 		use_portions();
 	}
 }
-xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args& args )
 {
 	xui_control::on_invalid(args);
 
@@ -384,11 +418,15 @@ xui_method_explain(xui_dockview, on_invalid,			void			)( xui_method_args& args )
 			{
 				set_rendersz(sz);
 				cal_portions();
+				xui_vecptr_addloop(m_viewlist)
+				{
+					m_viewlist[i]->cal_portions();
+				}
 			}
 		}
 	}
 }
-xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args& args )
 {
 	xui_control::on_perform(args);
 
@@ -417,13 +455,22 @@ xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 
 	if (m_pagelist.size() > 0)
 	{
+		s32 maxtotal = freert.get_w()-32;
+		s32 total = 0;
+		xui_vecptr_addloop(m_pagelist)
+		{
+			total += m_pagelist[i]->get_namesize();
+		}
+
 		xui_rect2d<s32> namert = get_namerect();
-		s32 x = namert.get_x();
-		s32 y = namert.get_y();
-		s32 w = namert.get_w() / m_pagelist.size();
+		s32 x = 2;
+		s32 y = 2;
+		s32 w = maxtotal / m_pagelist.size();
 		xui_vecptr_addloop(m_pagelist)
 		{
 			xui_dockpage* page = m_pagelist[i];
+
+			w = (total > maxtotal) ? w : page->get_namesize();
 			xui_method_ptrcall(page, on_perform_pt	)(freert.get_pt());
 			xui_method_ptrcall(page, on_perform_sz	)(freert.get_sz());
 			xui_method_ptrcall(page, mov_namectrl	)(x, y, w);
@@ -435,7 +482,7 @@ xui_method_explain(xui_dockview, on_perform,			void			)( xui_method_args& args )
 /*
 //event
 */
-xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_dockview, on_sizectrlmousemove,	void								)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -455,21 +502,8 @@ xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* 
 		xui_vector<s32> maxlimit = get_maxlimit();
 		sz.w = xui_max(sz.w, minlimit.w);
 		sz.h = xui_max(sz.h, minlimit.h);
-		//xui_rect2d<s32> freert = get_freerect();
-		//if (delta.w < 0 && freert.get_w()+delta.w < 60)
-		//	delta.w = xui_min(0, 60-freert.get_w());
-		//if (delta.h < 0 && freert.get_h()+delta.h < 60)
-		//	delta.h = xui_min(0, 60-freert.get_h());
-
-		//xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
-		//if (rootview)
-		//{
-		//	freert = rootview->get_freerect();
-		//	if (delta.w > 0 && freert.get_w()-delta.w < 60)
-		//		delta.w = freert.get_w()-60;
-		//	if (delta.h > 0 && freert.get_h()-delta.h < 60)
-		//		delta.h = freert.get_h()-60;
-		//}
+		sz.w = xui_min(sz.w, maxlimit.w);
+		sz.h = xui_min(sz.h, maxlimit.h);
 
 		if (get_rendersz() != sz)
 		{
@@ -478,12 +512,12 @@ xui_method_explain(xui_dockview, on_sizectrlmousemove,	void			)( xui_component* 
 		}
 	}
 }
-xui_method_explain(xui_dockview, on_sizectrltopdraw,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_dockview, on_sizectrltopdraw,	void								)( xui_component* sender, xui_method_args& args )
 {
 	//xui_rect2d<s32> rt = sender->get_renderrtabs();
 	//xui_convas::get_ins()->fill_rectangle(rt, xui_colour(0.8f, 0.0f));
 }
-xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_dockview, on_menuctrlrenderself, void								)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt     = sender->get_renderrtabs();
 	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_button::default_backcolor;
@@ -498,7 +532,7 @@ xui_method_explain(xui_dockview, on_menuctrlrenderself, void			)( xui_component*
 	rt.oft_y(3);
 	xui_convas::get_ins()->fill_rectangle(rt, color);
 }
-xui_method_explain(xui_dockview, on_viewmenucloseclick,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_dockview, on_viewmenucloseclick,	void								)( xui_component* sender, xui_method_args& args )
 {
 	if (m_showpage)
 	{
@@ -509,12 +543,12 @@ xui_method_explain(xui_dockview, on_viewmenucloseclick,	void			)( xui_component*
 /*
 //method
 */
-xui_method_explain(xui_dockview, add_dockctrl,			void			)( xui_component* comp )
+xui_method_explain(xui_dockview, add_dockctrl,			void								)( xui_component* comp )
 {
 	comp->set_parent(this);
 	m_widgetvec.push_back(comp);
 }
-xui_method_explain(xui_dockview, del_dockctrl,			void			)( xui_component* comp )
+xui_method_explain(xui_dockview, del_dockctrl,			void								)( xui_component* comp )
 {
 	comp->set_parent(NULL);
 	xui_vecptr_addloop(m_widgetvec)
