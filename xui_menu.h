@@ -2,6 +2,7 @@
 #define __xui_menu_h__
 
 #include "xui_control.h"
+#include "xui_family_render.h"
 
 class xui_menu : public xui_control
 {

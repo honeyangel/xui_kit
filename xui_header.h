@@ -59,6 +59,8 @@ class   xui_action_ctrl_move;
 class   xui_timer;
 class   xui_component;
 class   xui_control;
+class   xui_container;
+class   xui_panel;
 class   xui_drawer;
 class	xui_window;
 class   xui_button;
