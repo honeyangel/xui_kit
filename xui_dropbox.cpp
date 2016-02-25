@@ -397,7 +397,7 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 		u32 count = showvec.size() - m_droplst->get_itemcount();
 		for (u32 i = 0; i < count; ++i)
 		{
-			xui_listitem* item = m_droplst->add_item(L"");
+			xui_listitem* item = m_droplst->add_item(L"", xui_family_render::default);
 			item->xm_nonfocus  += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
 			item->xm_keybddown += new xui_method_member<xui_method_keybd, xui_dropbox>(this, &xui_dropbox::on_dropallkeybddown);
 			item->xm_mousedown += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_dropallmousedown);

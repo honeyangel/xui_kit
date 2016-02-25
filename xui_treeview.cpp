@@ -662,7 +662,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&  
 	xui_vecptr_addloop(alltreenodes)
 	{
 		pt.x = m_border.ax;
-		pt.y = m_border.ay + (i+1) * m_lineheight;
+		pt.y = m_border.ay + i*m_lineheight + (m_renderhead ? m_lineheight : 0);
 		sz.w = width;
 		sz.h = m_lineheight;
 		alltreenodes[i]->on_perform_pt(pt);

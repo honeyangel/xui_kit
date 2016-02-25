@@ -90,22 +90,6 @@ xui_method_explain(xui_listview, set_textfont,			void						)( const xui_family& 
 		}
 	}
 }
-xui_method_explain(xui_listview, get_textdraw,			const xui_family_render&	)( void ) const
-{
-	return m_textdraw;
-}
-xui_method_explain(xui_listview, set_textdraw,			void						)( const xui_family_render& textdraw )
-{
-	if (m_textdraw != textdraw)
-	{
-		m_textdraw  = textdraw;
-		xui_vecptr_addloop(m_ascrollitem)
-		{
-			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
-			item->set_textdraw(m_textdraw);
-		}
-	}
-}
 xui_method_explain(xui_listview, get_textalign,			u08							)( void ) const
 {
 	return m_textalign;
@@ -331,15 +315,15 @@ xui_method_explain(xui_listview, get_item,				xui_listitem*				)( u32 index )
 {
 	return xui_dynamic_cast(xui_listitem, m_ascrollitem[index]);
 }
-xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text )
+xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text, const xui_family_render& textdraw )
 {
-	return add_item(text, NULL);
+	return add_item(NULL, text, textdraw);
 }
-xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text, xui_bitmap* icon )
+xui_method_explain(xui_listview, add_item,				xui_listitem*				)( xui_bitmap* icon, const std::wstring& text, const xui_family_render& textdraw )
 {
 	xui_listitem* item = new xui_listitem(m_itemborder, m_drawtick);
 	xui_method_ptrcall(item, ini_drawer		)(icon, m_iconsize);
-	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, m_textdraw);
+	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, textdraw);
 	xui_method_ptrcall(item, set_parent		)(this);
 	xui_method_ptrcall(item, set_iconalign	)(m_iconalign);
 	xui_method_ptrcall(item, set_textalign	)(m_textalign);

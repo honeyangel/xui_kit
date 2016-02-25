@@ -5,6 +5,8 @@
 #include "xui_toggle.h"
 #include "xui_textbox.h"
 #include "xui_treeview.h"
+#include "xui_treedata.h"
+#include "xui_treenode.h"
 #include "onity_hierarchy.h"
 
 xui_implement_rtti(onity_hierarchy, xui_dockpage);
@@ -15,12 +17,14 @@ xui_implement_rtti(onity_hierarchy, xui_dockpage);
 xui_create_explain(onity_hierarchy)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_L)
 {
+	m_inborder = xui_rect2d<s32>(4);
 	ini_namectrl(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy");
 
-	xui_menu* menu = xui_menu::create(80);
-	xui_menuitem* create = menu->add_item(NULL, L"Create");
-	create->set_submenu(xui_menu::create(80));
-	m_entity = create->get_submenu()->add_item(NULL, L"Entity");
+	xui_menu*		menu		= xui_menu::create(80);
+	xui_menuitem*	create		= menu->add_item(NULL, L"Create");
+	xui_menu*		createmenu	= xui_menu::create(80);
+	create->set_submenu(createmenu);
+	m_entity = createmenu->add_item(NULL, L"Entity");
 
 	m_search = xui_textbox::create(100);
 	xui_method_ptrcall(m_search,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_searchtextchanged);
@@ -46,7 +50,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_head,		xm_perform		) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_headperform);
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
-	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
+	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_head,		add_child		)(m_search);
 	xui_method_ptrcall(m_head,		add_child		)(m_clear);
 
@@ -54,11 +58,64 @@ xui_create_explain(onity_hierarchy)( void )
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"name", NULL, 0));
 	m_tree  = new xui_treeview(xui_vector<s32>(100), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_tree,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_tree,		set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_tree,		set_contextmenu	)(menu);
 	xui_method_ptrcall(m_tree,		set_hscrollauto )(false);
 	add_pagectrl(m_head);
 	add_pagectrl(m_tree);
+}
+
+/*
+//callback
+*/
+//DEBUG
+class onity_entity_data : public xui_treedata
+{
+public:
+	/*
+	//constructor
+	*/
+	onity_entity_data( const std::wstring& text )
+	: xui_treedata(text)
+	{}
+
+	/*
+	//override
+	*/
+	virtual xui_family_render	get_textdraw	( u32 index )
+	{
+		if (m_node && m_node->was_selected() == false)
+		{
+			s32 colorindex = rand()%8;
+			switch (colorindex)
+			{
+			case 4:
+				return xui_family_render(xui_colour::gray);
+			case 5:
+			case 6:
+				return xui_family_render(xui_colour(1.0f, 76.0f/255.0f, 128.0f/255.0f, 217.0f/255.0f));
+			case 7:
+				return xui_family_render(xui_colour::red);
+			}
+		}
+
+		return xui_family_render();
+	}
+};
+
+xui_method_explain(onity_hierarchy, on_load,				void)( xui_method_args& args )
+{
+	xui_dockpage::on_load(args);
+
+	xui_treenode* node = NULL;
+	m_tree->add_upmostnode(0, new onity_entity_data(L"Camera"));
+	node = m_tree->add_upmostnode(1, new onity_entity_data(L"SceneSpawnMgr"));
+	node->add_leafnode(0, new onity_entity_data(L"Monster"));
+	node->add_leafnode(1, new onity_entity_data(L"Star"));
+	node->add_leafnode(2, new onity_entity_data(L"LargeMonster"));
+	node->add_leafnode(3, new onity_entity_data(L"Ground"));
+	node = m_tree->add_upmostnode(2, new onity_entity_data(L"UI"));
+	node->add_leafnode(0, new onity_entity_data(L"GameHUD"));
+	m_tree->add_upmostnode(3, new onity_entity_data(L"Player"));
 }
 
 /*

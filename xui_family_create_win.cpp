@@ -89,6 +89,9 @@ xui_method_explain(xui_family_create_win, get_bits, void*			)( const xui_family&
 	info->size.w = (s32)ceilf(rect.Width ); 
 	info->size.h = (s32)ceilf(rect.Height);
 
+	if (info->size.w == 0)
+		info->size.w =  family.size / 2;
+
 	//copy buffer
 	s32 w = info->size.w;
 	s32 h = info->size.h;
@@ -102,9 +105,6 @@ xui_method_explain(xui_family_create_win, get_bits, void*			)( const xui_family&
 			info->bits[y*w+x] = color.GetAlpha();
 		}
 	}
-
-	if (info->size.w == 0)
-		info->size.w =  family.size / 2;
 
 	return info->bits;
 }

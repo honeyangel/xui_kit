@@ -9,7 +9,7 @@ xui_implement_rtti(xui_dockpage, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_dockpage, create,				xui_dockpage*		)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit, u08 initdock )
+xui_method_explain(xui_dockpage, create,				xui_dockpage*			)( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit, u08 initdock )
 {
 	xui_dockpage* dockpage = new xui_dockpage(xui_vector<s32>(size), dockarea, minlimit, initdock);
 	dockpage->ini_namectrl(icon, text);
@@ -23,6 +23,7 @@ xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32
 : xui_control(size)
 {
 	m_border	= xui_rect2d<s32>(2);
+	m_inborder	= xui_rect2d<s32>(0);
 	m_dockarea	= dockarea;
 	m_initdock	= initdock;
 	m_minlimit  = minlimit;
@@ -37,7 +38,19 @@ xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32
 /*
 //method
 */
-xui_method_explain(xui_dockpage, has_dockarea,			bool				)( u08 dockstyle )
+xui_method_explain(xui_dockpage, get_inborder,			const xui_rect2d<s32>&	)( void ) const
+{
+	return m_inborder;
+}
+xui_method_explain(xui_dockpage, set_inborder,			void					)( const xui_rect2d<s32>& border )
+{
+	if (m_inborder != border)
+	{
+		m_inborder  = border;
+		perform();
+	}
+}
+xui_method_explain(xui_dockpage, has_dockarea,			bool					)( u08 dockstyle )
 {
 	switch (dockstyle)
 	{
@@ -50,15 +63,15 @@ xui_method_explain(xui_dockpage, has_dockarea,			bool				)( u08 dockstyle )
 
 	return false;
 }
-xui_method_explain(xui_dockpage, get_initdock,			u08					)( void ) const
+xui_method_explain(xui_dockpage, get_initdock,			u08						)( void ) const
 {
 	return m_initdock;
 }
-xui_method_explain(xui_dockpage, get_minlimit,			s32					)( void ) const
+xui_method_explain(xui_dockpage, get_minlimit,			s32						)( void ) const
 {
 	return m_minlimit;
 }
-xui_method_explain(xui_dockpage, get_namesize,			s32					)( void ) const
+xui_method_explain(xui_dockpage, get_namesize,			s32						)( void ) const
 {
 	s32 size = 0;
 	size += m_namectrl->get_borderrt().ax;
@@ -68,11 +81,11 @@ xui_method_explain(xui_dockpage, get_namesize,			s32					)( void ) const
 
 	return size;
 }
-xui_method_explain(xui_dockpage, get_pagename,			const std::wstring&	)( void ) const
+xui_method_explain(xui_dockpage, get_pagename,			const std::wstring&		)( void ) const
 {
 	return m_namectrl->get_text();
 }
-xui_method_explain(xui_dockpage, ini_namectrl,			void				)( xui_bitmap* icon, const std::wstring& text )
+xui_method_explain(xui_dockpage, ini_namectrl,			void					)( xui_bitmap* icon, const std::wstring& text )
 {
 	m_namectrl->ini_drawer(icon);
 	m_namectrl->ini_drawer(text);
@@ -92,7 +105,7 @@ xui_method_explain(xui_dockpage, ini_namectrl,			void				)( xui_bitmap* icon, co
 	if (m_parent)
 		m_parent->invalid();
 }
-xui_method_explain(xui_dockpage, add_pagectrl,			void				)( xui_component* ctrl )
+xui_method_explain(xui_dockpage, add_pagectrl,			void					)( xui_component* ctrl )
 {
 	if (ctrl->get_parent())
 		return;
@@ -102,7 +115,7 @@ xui_method_explain(xui_dockpage, add_pagectrl,			void				)( xui_component* ctrl 
 	m_widgetvec.push_back(ctrl);
 	invalid();
 }
-xui_method_explain(xui_dockpage, del_pagectrl,			void				)( xui_component* ctrl )
+xui_method_explain(xui_dockpage, del_pagectrl,			void					)( xui_component* ctrl )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -117,7 +130,7 @@ xui_method_explain(xui_dockpage, del_pagectrl,			void				)( xui_component* ctrl 
 	delete ctrl;
 	invalid();
 }
-xui_method_explain(xui_dockpage, mov_namectrl,			void				)( s32 x, s32 y, s32 w )
+xui_method_explain(xui_dockpage, mov_namectrl,			void					)( s32 x, s32 y, s32 w )
 {
 	m_namectrl->on_perform_x(x);
 	m_namectrl->on_perform_y(y);
@@ -127,7 +140,7 @@ xui_method_explain(xui_dockpage, mov_namectrl,			void				)( s32 x, s32 y, s32 w 
 /*
 //override
 */
-xui_method_explain(xui_dockpage, get_renderrtins,		xui_rect2d<s32>		)( void ) const
+xui_method_explain(xui_dockpage, get_renderrtins,		xui_rect2d<s32>			)( void ) const
 {
 	xui_rect2d<s32> rt = xui_control::get_renderrtins();
 	rt.ay += m_namectrl->get_renderh();
@@ -137,7 +150,7 @@ xui_method_explain(xui_dockpage, get_renderrtins,		xui_rect2d<s32>		)( void ) co
 /*
 //virtual
 */
-xui_method_explain(xui_dockpage, choose,				xui_component*		)( const xui_vector<s32>& pt )
+xui_method_explain(xui_dockpage, choose,				xui_component*			)( const xui_vector<s32>& pt )
 {
 	if (m_enable)
 	{
@@ -146,7 +159,7 @@ xui_method_explain(xui_dockpage, choose,				xui_component*		)( const xui_vector<
 
 	return NULL;
 }
-xui_method_explain(xui_dockpage, choose_else,			xui_component*		)( const xui_vector<s32>& pt )
+xui_method_explain(xui_dockpage, choose_else,			xui_component*			)( const xui_vector<s32>& pt )
 {
 	xui_component* component = NULL;
 	if (m_render.was_inside(pt))
@@ -170,7 +183,7 @@ xui_method_explain(xui_dockpage, choose_else,			xui_component*		)( const xui_vec
 
 	return NULL;
 }
-xui_method_explain(xui_dockpage, update_else,			void				)( f32 delta )
+xui_method_explain(xui_dockpage, update_else,			void					)( f32 delta )
 {
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (dockview->get_showpage() == this)
@@ -186,7 +199,7 @@ xui_method_explain(xui_dockpage, update_else,			void				)( f32 delta )
 		m_namectrl->update(delta);
 	}
 }
-xui_method_explain(xui_dockpage, render_else,			void				)( void )
+xui_method_explain(xui_dockpage, render_else,			void					)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
@@ -235,7 +248,22 @@ xui_method_explain(xui_dockpage, render_else,			void				)( void )
 /*
 //callback
 */
-xui_method_explain(xui_dockpage, on_renderback,			void				)( xui_method_args& args )
+xui_method_explain(xui_dockpage, on_perform,			void					)( xui_method_args& args )
+{
+	if (m_widgetvec.size() > 0)
+	{
+		xui_rect2d<s32> rt = get_renderrtins();
+		rt.ax += m_inborder.ax;
+		rt.ay += m_inborder.ay;
+		rt.bx -= m_inborder.bx;
+		rt.by -= m_inborder.by;
+
+		perform_alignhorz(rt, m_widgetvec);
+		perform_alignvert(rt, m_widgetvec);
+		perform_dockstyle(rt, m_widgetvec);
+	}
+}
+xui_method_explain(xui_dockpage, on_renderback,			void					)( xui_method_args& args )
 {
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (dockview->get_showpage() == this)
@@ -252,7 +280,7 @@ xui_method_explain(xui_dockpage, on_renderback,			void				)( xui_method_args& ar
 /*
 //event
 */
-xui_method_explain(xui_dockpage, on_namectrltopdraw,	void				)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(xui_dockpage, on_namectrltopdraw,	void					)( xui_component* sender, xui_method_args&  args )
 {
 	if (m_namectrl->has_catch())
 	{
@@ -297,12 +325,12 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void				)( xui_component* s
 		}
 	}
 }
-xui_method_explain(xui_dockpage, on_namectrlmousedown,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_dockpage, on_namectrlmousedown,	void					)( xui_component* sender, xui_method_mouse& args )
 {
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	dockview->set_showpage(this);
 }
-xui_method_explain(xui_dockpage, on_namectrlmouserise,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_dockpage, on_namectrlmouserise,	void					)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_namectrl->has_catch())
 	{
@@ -323,7 +351,7 @@ xui_method_explain(xui_dockpage, on_namectrlmouserise,	void				)( xui_component*
 /*
 //method
 */
-xui_method_explain(xui_dockpage, get_dockview,			xui_dockview*		)( xui_component* comp )
+xui_method_explain(xui_dockpage, get_dockview,			xui_dockview*			)( xui_component* comp )
 {
 	xui_component* root      = comp;
 	xui_dockview*  dockview  = NULL;
@@ -337,7 +365,7 @@ xui_method_explain(xui_dockpage, get_dockview,			xui_dockview*		)( xui_component
 
 	return dockview;
 }
-xui_method_explain(xui_dockpage, cal_dockinfo,			u08					)( xui_dockview* dockview, const xui_vector<s32>& pt )
+xui_method_explain(xui_dockpage, cal_dockinfo,			u08						)( xui_dockview* dockview, const xui_vector<s32>& pt )
 {
 	u08 dockstyle = DOCKSTYLE_N;
 

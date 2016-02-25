@@ -15,6 +15,11 @@ public:
 
 protected:
 	/*
+	//callback
+	*/
+	virtual void	on_load				( xui_method_args& args );
+
+	/*
 	//event
 	*/
 	void			on_clearclick		( xui_component* sender, xui_method_args& args );

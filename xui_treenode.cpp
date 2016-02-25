@@ -1,5 +1,6 @@
 #include "xui_desktop.h"
 #include "xui_textbox.h"
+#include "xui_bitmap.h"
 #include "xui_toggle.h"
 #include "xui_treedata.h"
 #include "xui_treeview.h"
@@ -103,9 +104,13 @@ xui_method_explain(xui_treenode, was_selected,		bool								)( void ) const
 }
 xui_method_explain(xui_treenode, set_selected,		void								)( bool flag )
 {
-	m_selected = flag;
-	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-	m_treeplus->set_onlyside(treeview->was_lighttrace() && m_selected);
+	if (m_selected != flag)
+	{
+		m_selected  = flag;
+		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+		m_treeplus->set_onlyside(treeview->was_lighttrace() && m_selected);
+		use_linkdata();
+	}
 }
 
 xui_method_explain(xui_treenode, was_expanded,		bool								)( void ) const
@@ -215,10 +220,13 @@ xui_method_explain(xui_treenode, use_linkdata,		void								)( void )
 		else
 		{
 			xui_drawer* drawer = xui_dynamic_cast(xui_drawer, m_widgetvec[i]);
-			xui_method_ptrcall(drawer, set_text		)(m_linkdata->get_text(i));
-			xui_method_ptrcall(drawer, set_icon		)(m_linkdata->get_icon(i));
-			xui_method_ptrcall(drawer, set_textfont	)(m_linkdata->get_textfont(i));
-			xui_method_ptrcall(drawer, set_textdraw )(m_linkdata->get_textdraw(i));
+			xui_bitmap*			icon		= m_linkdata->get_icon(i);
+			std::wstring		text		= m_linkdata->get_text(i);
+			xui_family			textfont	= m_linkdata->get_textfont(i);
+			xui_family_render	textdraw	= m_linkdata->get_textdraw(i);
+			xui_vector<s32>		iconsize	= (icon == NULL) ? xui_vector<s32>(0) : icon->get_size();
+			drawer->ini_drawer(icon, iconsize);
+			drawer->ini_drawer(text, textfont, textdraw);
 		}
 	}
 }

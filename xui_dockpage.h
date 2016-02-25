@@ -31,6 +31,8 @@ public:
 	/*
 	//method
 	*/
+	const xui_rect2d<s32>&	get_inborder		( void ) const;
+	void					set_inborder		( const xui_rect2d<s32>& border );
 	bool					has_dockarea		( u08 dockstyle );
 	u08						get_initdock		( void ) const;
 	s32						get_minlimit		( void ) const;
@@ -58,6 +60,7 @@ protected:
 	/*
 	//callback
 	*/
+	virtual void			on_perform			( xui_method_args& args );
 	virtual void			on_renderback		( xui_method_args& args );
 
 	/*
@@ -80,6 +83,7 @@ protected:
 	u08						m_initdock;
 	u32						m_dockarea;
 	s32						m_minlimit;
+	xui_rect2d<s32>			m_inborder;
 };
 
 #endif//__xui_dockpage_h__
