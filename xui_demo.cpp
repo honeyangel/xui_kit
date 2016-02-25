@@ -131,11 +131,11 @@ void xui_demo::test_listview( xui_window* window )
 	listview->set_renderpt(xui_vector<s32>(250, 10));
 	window->add_child(listview);
 
-	listview->add_item(xui_bitmap::create("icon/edit.png"), L"Window", xui_family_render::default);
-	listview->add_item(L"Panel", xui_family_render::default);
-	listview->add_item(L"Button", xui_family_render::default);
-	listview->add_item(xui_bitmap::create("icon/edit.png"), L"TextBox", xui_family_render::default);
-	listview->add_item(L"ListView", xui_family_render::default);
+	listview->add_item(xui_bitmap::create("icon/edit.png"), L"Window");
+	listview->add_item(L"Panel");
+	listview->add_item(L"Button");
+	listview->add_item(xui_bitmap::create("icon/edit.png"), L"TextBox");
+	listview->add_item(L"ListView");
 }
 void xui_demo::test_dropbox( xui_window* window )
 {

@@ -902,7 +902,8 @@ xui_method_explain(xui_treeview, delete_node,			void								)( xui_treenode* nod
 
 	if (itor != m_ascrollitem.end())
 	{
-		delete node;
+		node->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(node);
 		m_ascrollitem.erase(itor);
 		invalid();
 	}

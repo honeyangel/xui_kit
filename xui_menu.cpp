@@ -124,7 +124,7 @@ xui_method_explain(xui_menu, del_item,			void			)( xui_menuitem* item )
 		return;
 
 	item->set_parent(NULL);
-	delete item;
+	xui_desktop::get_ins()->move_recycle(item);
 	m_widgetvec.erase(itor);
 	invalid();
 }

@@ -1,3 +1,4 @@
+#include "xui_desktop.h"
 #include "xui_convas.h"
 #include "xui_linebox.h"
 
@@ -63,7 +64,7 @@ xui_method_explain(xui_linebox, del_linectrl,	void			)( xui_control* ctrl )
 		return;
 
 	ctrl->set_parent(NULL);
-	delete ctrl;
+	xui_desktop::get_ins()->move_recycle(ctrl);
 	m_widgetvec.erase(itor);
 	invalid();
 }

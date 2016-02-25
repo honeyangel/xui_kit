@@ -127,7 +127,7 @@ xui_method_explain(xui_dockpage, del_pagectrl,			void					)( xui_component* ctrl
 
 	ctrl->set_parent(NULL);
 	m_widgetvec.erase(itor);
-	delete ctrl;
+	xui_desktop::get_ins()->move_recycle(ctrl);
 	invalid();
 }
 xui_method_explain(xui_dockpage, mov_namectrl,			void					)( s32 x, s32 y, s32 w )

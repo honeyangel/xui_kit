@@ -35,6 +35,8 @@ public:
 	void						set_iconsize			( const xui_vector<s32>& iconsize );
 	const xui_family&			get_textfont			( void ) const;
 	void						set_textfont			( const xui_family& textfont );
+	const xui_family_render&	get_textdraw			( void ) const;
+	void						set_textdraw			( const xui_family_render& textdraw );
 	u08							get_textalign			( void ) const;
 	void						set_textalign			( u08 textalign );
 	u08							get_iconalign			( void ) const;
@@ -67,9 +69,10 @@ public:
 	u32							get_itemcount			( void ) const;
 	u32							get_itemindex			( xui_listitem* item );
 	xui_listitem*				get_item				( u32 index );
-	xui_listitem*				add_item				( const std::wstring& text, const xui_family_render& textdraw );
-	xui_listitem*				add_item				( xui_bitmap* icon, const std::wstring& text, const xui_family_render& textdraw );
-	void						del_item				( xui_listitem* item );
+	void						add_item				( xui_listitem* item, u32 index );
+	xui_listitem*				add_item				( const std::wstring& text );
+	xui_listitem*				add_item				( xui_bitmap* icon, const std::wstring& text );
+	void						del_item				( xui_listitem* item, bool destroy = true );
 	void						del_itemall				( void );
 	void						set_itemvisible			( xui_listitem* item );
 
@@ -91,6 +94,7 @@ protected:
 	bool						m_drawtick;
 	xui_vector<s32>				m_iconsize;
 	xui_family					m_textfont;
+	xui_family_render			m_textdraw;
 	u08							m_textalign;
 	u08							m_iconalign;
 	xui_colour					m_movecolor;

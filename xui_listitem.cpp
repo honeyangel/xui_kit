@@ -44,7 +44,7 @@ xui_method_explain(xui_listitem, get_maxwidth,		s32					)( void )
 	width += m_iconoffset.x;
 	width += m_iconsize.w;
 	width += m_textoffset.x;
-	if (m_text.length() > 0)
+	if (m_text.length() > 0 && m_singleline)
 	{
 		width += xui_convas::get_ins()->calc_size(m_text, m_textfont, 0, true).w;
 	}

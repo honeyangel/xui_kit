@@ -1,3 +1,4 @@
+#include "xui_desktop.h"
 #include "xui_convas.h"
 #include "xui_gridbox.h"
 
@@ -103,7 +104,8 @@ xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_co
 	if (itor != m_widgetvec.end())
 	{
 		m_widgetvec.erase(itor);
-		delete (*itor);
+		m_ptrarray[row][col]->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(*itor);
 	}
 
 	m_ptrarray[row][col] = ctrl;

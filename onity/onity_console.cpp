@@ -4,7 +4,8 @@
 #include "xui_button.h"
 #include "xui_toggle.h"
 #include "xui_toolbar.h"
-#include "xui_treeview.h"
+#include "xui_listview.h"
+#include "xui_listitem.h"
 #include "onity_console.h"
 
 xui_implement_rtti(onity_console, xui_dockpage);
@@ -35,6 +36,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_error,		set_drawcolor	)(true);
 	xui_method_ptrcall(m_error,		set_textoffset	)(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(m_error,		ini_drawer		)(xui_bitmap::create("icon/error.png"));
+	xui_method_ptrcall(m_error,		ini_toggle		)(true);
 	xui_method_ptrcall(m_error,		set_text		)(L"0");
 
 	m_warning	= new xui_toggle(xui_vector<s32>(60, 20), TOGGLE_BUTTON);
@@ -45,6 +47,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_warning,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_warning,	set_textoffset	)(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(m_warning,	ini_drawer		)(xui_bitmap::create("icon/warning.png"));
+	xui_method_ptrcall(m_warning,	ini_toggle		)(true);
 	xui_method_ptrcall(m_warning,	set_text		)(L"0");
 
 	m_message	= new xui_toggle(xui_vector<s32>(60, 20), TOGGLE_BUTTON);
@@ -55,6 +58,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_message,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_message,	set_textoffset	)(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(m_message,	ini_drawer		)(xui_bitmap::create("icon/message.png"));
+	xui_method_ptrcall(m_message,	ini_toggle		)(true);
 	xui_method_ptrcall(m_message,	set_text		)(L"0");
 
 	xui_toolbar* toolbar = new xui_toolbar(xui_vector<s32>(0, 20));
@@ -72,15 +76,97 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
 	xui_method_ptrcall(m_head,		add_child		)(toolbar);
 
-	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT, 80,  L"head", NULL, 0));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"name", NULL, 0));
-	m_tree  = new xui_treeview(xui_vector<s32>(100), columninfo, 20, PLUSRENDER_NORMAL, false, false);
-	xui_method_ptrcall(m_tree,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_tree,		set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_tree,		set_hscrollauto )(false);
+	m_list  = new xui_listview(xui_vector<s32>(100), false);
+	xui_method_ptrcall(m_list,		ini_component	)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_list,		set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_list,		set_hscrollauto )(false);
+	xui_method_ptrcall(m_list,		set_lineheight	)(36);
+	xui_method_ptrcall(m_list,		set_iconsize	)(xui_vector<s32>(24));
+	xui_method_ptrcall(m_list,		set_itemborder	)(xui_rect2d<s32>(4));
 	add_pagectrl(m_head);
-	add_pagectrl(m_tree);
+	add_pagectrl(m_list);
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(onity_console)( void )
+{
+	for (u08 itype = 0; itype < LOGTYPE_MAX; ++itype)
+	{
+		xui_vecptr_addloop(m_logvec[itype])
+			delete m_logvec[itype][i];
+	}
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_console, add_log,				void)( u08 type, const std::wstring& file, const std::wstring& text )
+{
+	std::wstringstream	temp;
+	xui_bitmap*			icon = NULL;
+	xui_toggle*			togg = NULL;
+	switch (type)
+	{
+	case LOGTYPE_ERROR:		
+		togg = m_error;	
+		icon = xui_bitmap::create("icon/bigerror.png");
+		temp << L"error:";
+		break;
+	case LOGTYPE_WARNING:	
+		togg = m_warning; 
+		icon = xui_bitmap::create("icon/bigwarning.png");
+		temp << L"warning:";
+		break;
+	case LOGTYPE_MESSAGE:	
+		togg = m_message; 
+		icon = xui_bitmap::create("icon/bigmessage.png");
+		temp << L"log:";
+		break;
+	}
+
+	temp << text.c_str();
+	temp << L"\n";
+	temp << file.c_str();
+	xui_listitem* item = new xui_listitem(xui_rect2d<s32>(0), false);
+	xui_method_ptrcall(item, ini_drawer		)(icon);
+	xui_method_ptrcall(item, ini_drawer		)(temp.str());
+	xui_method_ptrcall(item, set_singleline )(false);
+	xui_method_ptrcall(item, set_data		)((void*)type);
+	if (togg->was_push())
+	{
+		add_item(type, item);
+	}
+	else
+	{
+		m_logvec[type].push_back(item);
+	}
+}
+xui_method_explain(onity_console, del_logall,			void)( void )
+{
+	m_list->del_itemall();
+	for (u08 itype = 0; itype < LOGTYPE_MAX; ++itype)
+	{
+		xui_vecptr_addloop(m_logvec[itype])
+			delete m_logvec[itype][i];
+
+		m_logvec[itype].clear();
+	}
+}
+
+/*
+//callback
+*/
+//DEBUG
+xui_method_explain(onity_console, on_load,				void)( xui_method_args& args )
+{
+	xui_dockpage::on_load(args);
+	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
+	add_log(LOGTYPE_MESSAGE,	L"Asset/Script/func.lua",			L"print lua function");
+	add_log(LOGTYPE_ERROR,		L"Asset/Script/main.lua",			L"lua compiler");
+	add_log(LOGTYPE_WARNING,	L"Asset/Script/func.lua",			L"function idle has not call");
+	add_log(LOGTYPE_ERROR,		L"Asset/Particle/fire.particle",	L"texture not find");
 }
 
 /*
@@ -99,11 +185,68 @@ xui_method_explain(onity_console, on_toggletextchanged, void)( xui_component* se
 }
 xui_method_explain(onity_console, on_toggleclick,		void)( xui_component* sender, xui_method_args& args )
 {
-	//m_list->add_item(L"[Error  ]: error",   xui_family_render(xui_colour::red));
-	//m_list->add_item(L"[Warning]: warning", xui_family_render(xui_colour(1.0f, 208.0f/255.0f, 170.0f/255.0f, 9.0f/255.0f)));
-	//m_list->add_item(L"[Message]: message", xui_family_render::default);
+	xui_toggle* togg = NULL;
+	u08         type = 0;
+
+	std::vector<xui_toggle*> vec;
+	vec.push_back(m_error  );
+	vec.push_back(m_warning);
+	vec.push_back(m_message);
+	for (u08 i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i] == sender)
+		{
+			togg = vec[i];
+			type = i;
+			break;
+		}
+	}
+
+	if (togg->was_push())	add_item(type);
+	else					del_item(type);
 }
 xui_method_explain(onity_console, on_clearclick,		void)( xui_component* sender, xui_method_args& args )
 {
+	del_logall();
+}
 
+/*
+//method
+*/
+xui_method_explain(onity_console, add_item,				void)( u08 type, xui_listitem* item )
+{
+	u32 index = m_list->get_itemcount();
+	for (u32 i = 0; i < m_list->get_itemcount(); ++i)
+	{
+		u08 itemtype = (u08)m_list->get_item(i)->get_data();
+		if (itemtype >= type)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	m_list->add_item(item, index);
+}
+xui_method_explain(onity_console, add_item,				void)( u08 type )
+{
+	std::vector<xui_listitem*>& vec = m_logvec[type];
+	xui_vecptr_addloop(vec)
+	{
+		add_item(type, vec[i]);
+	}
+
+	vec.clear();
+}
+xui_method_explain(onity_console, del_item,				void)( u08 type )
+{
+	for (s32 i = (s32)m_list->get_itemcount()-1; i >= 0; --i)
+	{
+		xui_listitem* item = m_list->get_item((u32)i);
+		if ((u08)item->get_data() == type)
+		{
+			m_list->del_item(item, false);
+			m_logvec[type].push_back(item);
+		}
+	}
 }

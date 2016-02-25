@@ -39,7 +39,7 @@ public:
 		size = 14;
 		bold = false;
 		horz = 0;
-		vert = 0;
+		vert = 1;
 	}
 	xui_family( s32 _size, bool _bold = false )
 	{
@@ -47,7 +47,7 @@ public:
 		size = _size;
 		bold = _bold;
 		horz = 0;
-		vert = 0;
+		vert = 1;
 	}
 	xui_family( const std::string& _face, s32 _size, bool _bold )
 	{
@@ -55,7 +55,7 @@ public:
 		size = _size;
 		bold = _bold;
 		horz = 0;
-		vert = 0;
+		vert = 1;
 	}
 	xui_family( const xui_family& other )
 	{

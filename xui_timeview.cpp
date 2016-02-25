@@ -661,7 +661,8 @@ xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line
 	if (itor != m_ascrollitem.end())
 	{
 		m_ascrollitem.erase(itor);
-		delete line;
+		line->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(line);
 	}
 
 	invalid();

@@ -1,4 +1,4 @@
-
+#include "xui_desktop.h"
 #include "xui_separate.h"
 #include "xui_toolbar.h"
 
@@ -78,7 +78,7 @@ xui_method_explain(xui_toolbar, del_item,		void		)( xui_component* component )
 		return;
 
 	component->set_parent(NULL);
-	delete component;
+	xui_desktop::get_ins()->move_recycle(component);
 	m_widgetvec.erase(itor);
 	invalid();
 }

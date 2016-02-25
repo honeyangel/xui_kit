@@ -1,4 +1,5 @@
 #include "xui_convas.h"
+#include "xui_desktop.h"
 #include "xui_scroll.h"
 #include "xui_listitem.h"
 #include "xui_listview.h"
@@ -87,6 +88,22 @@ xui_method_explain(xui_listview, set_textfont,			void						)( const xui_family& 
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_textfont(m_textfont);
+		}
+	}
+}
+xui_method_explain(xui_listview, get_textdraw,			const xui_family_render&	)( void ) const
+{
+	return m_textdraw;
+}
+xui_method_explain(xui_listview, set_textdraw,			void						)( const xui_family_render& textdraw )
+{
+	if (m_textdraw != textdraw)
+	{
+		m_textdraw  = textdraw;
+		xui_vecptr_addloop(m_ascrollitem)
+		{
+			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
+			item->set_textdraw(m_textdraw);
 		}
 	}
 }
@@ -315,15 +332,31 @@ xui_method_explain(xui_listview, get_item,				xui_listitem*				)( u32 index )
 {
 	return xui_dynamic_cast(xui_listitem, m_ascrollitem[index]);
 }
-xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text, const xui_family_render& textdraw )
+xui_method_explain(xui_listview, add_item,				void						)( xui_listitem* item, u32 index )
 {
-	return add_item(NULL, text, textdraw);
+	xui_method_ptrcall(item, set_parent		)(this);
+	xui_method_ptrcall(item, set_iconalign	)(m_iconalign);
+	xui_method_ptrcall(item, set_textalign	)(m_textalign);
+	xui_method_ptrcall(item, set_iconoffset	)(m_iconoffset);
+	xui_method_ptrcall(item, set_textoffset	)(m_textoffset);
+	xui_method_ptrcall(item, set_borderrt	)(m_itemborder);
+	m_ascrollitem.insert(m_ascrollitem.begin()+index, item);
+
+	xui_vector<s32> pt;
+	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+	xui_method_ptrcall(item, set_scrollpt	)(pt);
+	invalid();
 }
-xui_method_explain(xui_listview, add_item,				xui_listitem*				)( xui_bitmap* icon, const std::wstring& text, const xui_family_render& textdraw )
+xui_method_explain(xui_listview, add_item,				xui_listitem*				)( const std::wstring& text )
+{
+	return add_item(NULL, text);
+}
+xui_method_explain(xui_listview, add_item,				xui_listitem*				)( xui_bitmap* icon, const std::wstring& text )
 {
 	xui_listitem* item = new xui_listitem(m_itemborder, m_drawtick);
 	xui_method_ptrcall(item, ini_drawer		)(icon, m_iconsize);
-	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, textdraw);
+	xui_method_ptrcall(item, ini_drawer		)(text, m_textfont, m_textdraw);
 	xui_method_ptrcall(item, set_parent		)(this);
 	xui_method_ptrcall(item, set_iconalign	)(m_iconalign);
 	xui_method_ptrcall(item, set_textalign	)(m_textalign);
@@ -339,7 +372,7 @@ xui_method_explain(xui_listview, add_item,				xui_listitem*				)( xui_bitmap* ic
 
 	return item;
 }
-xui_method_explain(xui_listview, del_item,				void						)( xui_listitem* item )
+xui_method_explain(xui_listview, del_item,				void						)( xui_listitem* item, bool destroy )
 {
 	std::vector<xui_control*>::iterator itor = std::find(
 		m_ascrollitem.begin(),
@@ -348,16 +381,20 @@ xui_method_explain(xui_listview, del_item,				void						)( xui_listitem* item )
 
 	if (itor != m_ascrollitem.end())
 	{
-		delete item;
+		item->set_parent(NULL);
 		m_ascrollitem.erase(itor);
 		invalid();
+
+		if (destroy)
+			xui_desktop::get_ins()->move_recycle(item);
 	}
 }
 xui_method_explain(xui_listview, del_itemall,			void						)( void )
 {
 	xui_vecptr_addloop(m_ascrollitem)
 	{
-		delete m_ascrollitem[i];
+		m_ascrollitem[i]->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
 	}
 	m_ascrollitem.clear();
 	invalid();
