@@ -4,7 +4,7 @@
 #include "xui_button.h"
 #include "xui_toggle.h"
 #include "xui_toolbar.h"
-#include "xui_listview.h"
+#include "xui_treeview.h"
 #include "onity_console.h"
 
 xui_implement_rtti(onity_console, xui_dockpage);
@@ -71,12 +71,16 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_head,		set_corner		)(6);
 	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
 	xui_method_ptrcall(m_head,		add_child		)(toolbar);
-	m_list		= new xui_listview(xui_vector<s32>(200), false);
-	xui_method_ptrcall(m_list,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_list,		set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_list,		set_iconsize	)(xui_vector<s32>(0));
+
+	std::vector<xui_treecolumn> columninfo;
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT, 80,  L"head", NULL, 0));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"name", NULL, 0));
+	m_tree  = new xui_treeview(xui_vector<s32>(100), columninfo, 20, PLUSRENDER_NORMAL, false, false);
+	xui_method_ptrcall(m_tree,		ini_component	)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_tree,		set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_tree,		set_hscrollauto )(false);
 	add_pagectrl(m_head);
-	add_pagectrl(m_list);
+	add_pagectrl(m_tree);
 }
 
 /*
@@ -95,9 +99,9 @@ xui_method_explain(onity_console, on_toggletextchanged, void)( xui_component* se
 }
 xui_method_explain(onity_console, on_toggleclick,		void)( xui_component* sender, xui_method_args& args )
 {
-	m_list->add_item(L"[Error  ]: error",   xui_family_render(xui_colour::red));
-	m_list->add_item(L"[Warning]: warning", xui_family_render(xui_colour(1.0f, 208.0f/255.0f, 170.0f/255.0f, 9.0f/255.0f)));
-	m_list->add_item(L"[Message]: message", xui_family_render::default);
+	//m_list->add_item(L"[Error  ]: error",   xui_family_render(xui_colour::red));
+	//m_list->add_item(L"[Warning]: warning", xui_family_render(xui_colour(1.0f, 208.0f/255.0f, 170.0f/255.0f, 9.0f/255.0f)));
+	//m_list->add_item(L"[Message]: message", xui_family_render::default);
 }
 xui_method_explain(onity_console, on_clearclick,		void)( xui_component* sender, xui_method_args& args )
 {

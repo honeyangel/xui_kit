@@ -29,7 +29,7 @@ protected:
 	xui_toggle*			m_warning;
 	xui_toggle*			m_message;
 	xui_panel*			m_head;
-	xui_listview*		m_list;
+	xui_treeview*		m_tree;
 };
 
 #endif//__onity_console_h__
