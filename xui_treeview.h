@@ -185,7 +185,9 @@ public:
 	const std::vector<xui_treenode*>&	get_upmostnodearray	( void ) const;
 	xui_treenode*						get_upmostnode		( u32 index );
 	xui_treenode*						add_upmostnode		( u32 index, xui_treedata* data );
-	void								del_upmostnode		( xui_treenode* node );
+	void								add_upmostnode		( u32 index, xui_treenode* node );
+	void								del_upmostnode		( xui_treenode* node, bool destroy = true );
+	void								del_upmostnodeall	( void );
 	void								set_nodevisible		( xui_treenode* node );
 
 	/*
@@ -228,6 +230,7 @@ protected:
 	/*
 	//method
 	*/
+	void								insert_node			( xui_treenode* node );
 	xui_treenode*						create_node			( xui_treedata* data );
 	void								delete_node			( xui_treenode* node );
 
@@ -249,7 +252,7 @@ protected:
 	bool								m_renderhead;
 	bool								m_lighttrace;
 	std::vector<xui_treenode*>			m_upmostnode;
-	std::vector<xui_treenode*>			m_upmostback;
+	std::vector<xui_treenode*>			m_upmostpart;
 	std::vector<xui_treecolumn>			m_columninfo;
 	std::vector<xui_treegrid*>			m_columngrid;
 	std::vector<xui_drawer*>			m_columnhead;

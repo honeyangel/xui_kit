@@ -189,8 +189,7 @@ xui_method_explain(xui_treeview, non_columnsort,		void								)( void )
 	if (m_columnsort != TREESORT_NONE)
 	{
 		m_columnsort  = TREESORT_NONE;
-		m_upmostnode  = m_upmostback;
-		m_upmostback.clear();
+		m_upmostpart.clear();
 
 		for (u32 i = 0; i < m_upmostnode.size(); ++i)
 		{
@@ -218,17 +217,17 @@ xui_method_explain(xui_treeview, set_columnsort,		void								)( u32 index, u08 
 		m_sortcolumn  = index;
 		m_columnsort  = sort;
 
-		if (m_upmostback.empty())
-			m_upmostback = m_upmostnode;
+		if (m_upmostpart.empty())
+			m_upmostpart = m_upmostnode;
 
 		std::sort(
-			m_upmostnode.begin(),
-			m_upmostnode.end(),
+			m_upmostpart.begin(),
+			m_upmostpart.end(),
 			xui_treenode::compare);
 
-		for (u32 i = 0; i < m_upmostnode.size(); ++i)
+		for (u32 i = 0; i < m_upmostpart.size(); ++i)
 		{
-			m_upmostnode[i]->set_leafsort();
+			m_upmostpart[i]->set_leafsort();
 		}
 
 		invalid();
@@ -251,8 +250,7 @@ xui_method_explain(xui_treeview, set_searchtext,		void								)( const std::wstr
 		m_searchtext  = text;
 		if (m_searchtext.length() == 0)
 		{
-			m_upmostnode = m_upmostback;
-			m_upmostback.clear();
+			m_upmostpart.clear();
 			for (u32 i = 0; i < m_upmostnode.size(); ++i)
 			{
 				m_upmostnode[i]->non_findtext();
@@ -260,9 +258,6 @@ xui_method_explain(xui_treeview, set_searchtext,		void								)( const std::wstr
 		}
 		else
 		{
-			if (m_upmostback.empty())
-				m_upmostback = m_upmostnode;
-
 			u32 mainIndex = 0;
 			for (u32 i = 0; i < m_columninfo.size(); ++i)
 			{
@@ -273,11 +268,11 @@ xui_method_explain(xui_treeview, set_searchtext,		void								)( const std::wstr
 				}
 			}
 
-			m_upmostnode.clear();
-			for (u32 i = 0; i < m_upmostback.size(); ++i)
+			m_upmostpart.clear();
+			for (u32 i = 0; i < m_upmostnode.size(); ++i)
 			{
-				if (m_upmostback[i]->has_findtext(mainIndex, m_searchtext))
-					m_upmostnode.push_back(m_upmostback[i]);
+				if (m_upmostnode[i]->has_findtext(mainIndex, m_searchtext))
+					m_upmostpart.push_back(m_upmostnode[i]);
 			}
 		}
 
@@ -366,9 +361,15 @@ xui_method_explain(xui_treeview, get_selectednode,		std::vector<xui_treenode*>		
 xui_method_explain(xui_treeview, get_entirenode,		std::vector<xui_treenode*>			)( bool total )
 {
 	std::vector<xui_treenode*> nodes;
-	xui_vecptr_addloop(m_upmostnode)
+	if (m_searchtext.length() > 0 || m_columnsort != TREESORT_NONE)
 	{
-		m_upmostnode[i]->get_leafnodetotal(nodes, total);
+		xui_vecptr_addloop(m_upmostpart)
+			m_upmostpart[i]->get_leafnodetotal(nodes, total);
+	}
+	else
+	{
+		xui_vecptr_addloop(m_upmostnode)
+			m_upmostnode[i]->get_leafnodetotal(nodes, total);
 	}
 
 	return nodes;
@@ -389,20 +390,49 @@ xui_method_explain(xui_treeview, add_upmostnode,		xui_treenode*						)( u32 inde
 {
 	xui_treenode* node = create_node(data);
 	m_upmostnode.insert(m_upmostnode.begin()+index, node);
+	invalid();
 	return node;
 }
-xui_method_explain(xui_treeview, del_upmostnode,		void								)( xui_treenode* node )
+xui_method_explain(xui_treeview, add_upmostnode,		void								)( u32 index, xui_treenode* node )
 {
-	std::vector<xui_treenode*>::iterator itor = std::find(
-		m_upmostnode.begin(),
-		m_upmostnode.end(),
-		node);
+	if (node->get_parent() != this)
+		return;
 
+	insert_node(node);
+	m_upmostnode.insert(m_upmostnode.begin()+index, node);
+	invalid();
+}
+xui_method_explain(xui_treeview, del_upmostnode,		void								)( xui_treenode* node, bool destroy )
+{
+	std::vector<xui_treenode*>::iterator itor;
+	itor = std::find(m_upmostpart.begin(), m_upmostpart.end(), node);
+	if (itor != m_upmostpart.end())
+	{
+		m_upmostpart.erase(itor);
+	}
+	itor = std::find(m_upmostnode.begin(), m_upmostnode.end(), node);
 	if (itor != m_upmostnode.end())
 	{
 		m_upmostnode.erase(itor);
-		delete_node(node);
+
+		if (destroy)
+			delete_node(node);
 	}
+
+	invalid();
+}
+xui_method_explain(xui_treeview, del_upmostnodeall,		void								)( void )
+{
+	m_upmostnode.clear();
+	m_upmostpart.clear();
+
+	xui_vecptr_addloop(m_ascrollitem)
+	{
+		m_ascrollitem[i]->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
+	}
+	m_ascrollitem.clear();
+	invalid();
 }
 xui_method_explain(xui_treeview, set_nodevisible,		void								)( xui_treenode* node )
 {
@@ -688,6 +718,9 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+		xui_vector<s32> dw = xui_desktop::get_ins()->get_mousedown();
+		if (xui_abs(pt.y-dw.y) < m_lineheight/2)
+			return;
 
 		s32 scroll_value =  0;
 		if (pt.y > rt.ay && pt.y < rt.ay+m_lineheight/2)
@@ -821,7 +854,7 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 		set_selectednode(node, true);
 	}
 
-	if (args.mouse == MB_L)
+	if (args.mouse == MB_L && m_searchtext.empty() && m_columnsort == TREESORT_NONE)
 		m_mousecatch = node;
 }
 xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse& args )
@@ -879,6 +912,13 @@ xui_method_explain(xui_treeview, on_mouserise,			void								)( xui_method_mouse
 /*
 //method
 */
+xui_method_explain(xui_treeview, insert_node,			void								)( xui_treenode* node )
+{
+	xui_vector<s32> pt;
+	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+	node->set_scrollpt(pt);
+}
 xui_method_explain(xui_treeview, create_node,			xui_treenode*						)( xui_treedata* data )
 {
 	xui_treenode* node = new xui_treenode(data, this);
@@ -887,9 +927,7 @@ xui_method_explain(xui_treeview, create_node,			xui_treenode*						)( xui_treeda
 	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 	node->set_scrollpt(pt);
-
 	m_ascrollitem.push_back(node);
-	invalid();
 
 	return node;
 }
@@ -902,10 +940,10 @@ xui_method_explain(xui_treeview, delete_node,			void								)( xui_treenode* nod
 
 	if (itor != m_ascrollitem.end())
 	{
-		node->set_parent(NULL);
-		xui_desktop::get_ins()->move_recycle(node);
 		m_ascrollitem.erase(itor);
-		invalid();
+		node->set_parent(NULL);
+		node->del_leafnodeall();
+		xui_desktop::get_ins()->move_recycle(node);
 	}
 }
 

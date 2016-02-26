@@ -264,8 +264,8 @@ xui_method_explain(xui_control, render_else,		void					)( void )
 		xui_rect2d<s32> renderrt = get_renderrtabs();
 		xui_colour      color    = get_vertexcolor();
 
-		renderrt.bx -= 1;
-		renderrt.by -= 1;
+		//renderrt.bx -= 1;
+		//renderrt.by -= 1;
 		xui_colour side_color = m_sidecolor * color;
 		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
 

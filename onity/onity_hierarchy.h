@@ -30,6 +30,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_toggle*		m_create;
 	xui_menuitem*	m_entity;
 	xui_textbox*	m_search;
 	xui_button*		m_clear;

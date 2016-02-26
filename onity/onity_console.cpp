@@ -16,7 +16,6 @@ xui_implement_rtti(onity_console, xui_dockpage);
 xui_create_explain(onity_console)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_T|AREALIMIT_B, 200, DOCKSTYLE_B)
 {
-	m_inborder	= xui_rect2d<s32>(4);
 	ini_namectrl(xui_bitmap::create("icon/console.png"), L"Console");
 
 	m_clear		= new xui_button(xui_vector<s32>(60, 20));
@@ -71,14 +70,15 @@ xui_create_explain(onity_console)( void )
 
 	m_head		= new xui_panel(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
-	xui_method_ptrcall(m_head,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
 	xui_method_ptrcall(m_head,		set_corner		)(6);
 	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
 	xui_method_ptrcall(m_head,		add_child		)(toolbar);
 
 	m_list  = new xui_listview(xui_vector<s32>(100), false);
 	xui_method_ptrcall(m_list,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_list,		set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_list,		set_sidecolor	)(xui_colour::black);
+	xui_method_ptrcall(m_list,		set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_list,		set_hscrollauto )(false);
 	xui_method_ptrcall(m_list,		set_lineheight	)(36);
 	xui_method_ptrcall(m_list,		set_iconsize	)(xui_vector<s32>(24));
@@ -167,6 +167,8 @@ xui_method_explain(onity_console, on_load,				void)( xui_method_args& args )
 	add_log(LOGTYPE_ERROR,		L"Asset/Script/main.lua",			L"lua compiler");
 	add_log(LOGTYPE_WARNING,	L"Asset/Script/func.lua",			L"function idle has not call");
 	add_log(LOGTYPE_ERROR,		L"Asset/Particle/fire.particle",	L"texture not find");
+	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
+	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
 }
 
 /*

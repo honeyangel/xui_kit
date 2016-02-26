@@ -294,6 +294,9 @@ xui_method_explain(xui_propctrl_stdvec, on_sortctrlupdateself,	void			)( xui_com
 		xui_propview* propview = get_propview();
 		xui_rect2d<s32> rt = propview->get_renderrtins() + propview->get_screenpt();
 		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+		xui_vector<s32> dw = xui_desktop::get_ins()->get_mousedown();
+		if (xui_abs(pt.y-dw.y) < xui_propview::default_lineheight/2)
+			return;
 
 		s32 scroll_value =  0;
 		if (pt.y > rt.ay && pt.y < rt.ay+xui_propview::default_lineheight/2)

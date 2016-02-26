@@ -38,7 +38,9 @@ public:
 	const std::vector<xui_treenode*>&	get_leafnodearray	( void ) const;
 	xui_treenode*						get_leafnode		( u32 index );
 	xui_treenode*						add_leafnode		( u32 index, xui_treedata* data );
-	void								del_leafnode		( xui_treenode* node );
+	void								add_leafnode		( u32 index, xui_treenode* node );
+	void								del_leafnode		( xui_treenode* node, bool destroy = true );
+	void								del_leafnodeall		( void );
 
 	/*
 	//data
@@ -90,7 +92,7 @@ protected:
 	xui_treedata*						m_linkdata;
 	xui_treenode*						m_rootnode;
 	std::vector<xui_treenode*>			m_leafnode;
-	std::vector<xui_treenode*>			m_leafback;
+	std::vector<xui_treenode*>			m_leafpart;
 	xui_plusctrl*						m_treeplus;
 	xui_textbox*						m_edittext;
 	s32									m_holdtime;

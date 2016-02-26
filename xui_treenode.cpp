@@ -154,9 +154,15 @@ xui_method_explain(xui_treenode, get_leafnodetotal, void								)( std::vector<x
 	nodes.push_back(this);
 	if (m_treeplus->was_expanded() || total || treeview->get_searchtext().length() > 0)
 	{
-		xui_vecptr_addloop(m_leafnode)
+		if (treeview->get_searchtext().length() > 0 || treeview->get_columnsort() != TREESORT_NONE)
 		{
-			m_leafnode[i]->get_leafnodetotal(nodes, total);
+			xui_vecptr_addloop(m_leafpart)
+				m_leafpart[i]->get_leafnodetotal(nodes, total);
+		}
+		else
+		{
+			xui_vecptr_addloop(m_leafnode)
+				m_leafnode[i]->get_leafnodetotal(nodes, total);
 		}
 	}
 }
@@ -179,24 +185,62 @@ xui_method_explain(xui_treenode, add_leafnode,		xui_treenode*						)( u32 index,
 	node->m_rootnode = this;
 	m_leafnode.insert(m_leafnode.begin()+index, node);
 
-	m_treeplus->set_visible(true);
+	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE)
+		m_treeplus->set_visible(true);
+
+	treeview->invalid();
 	return node;
 }
-xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* node )
+xui_method_explain(xui_treenode, add_leafnode,		void								)( u32 index, xui_treenode* node )
 {
-	std::vector<xui_treenode*>::iterator itor = std::find(
-		m_leafnode.begin(),
-		m_leafnode.end(),
-		node);
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+	if (node->get_parent() != treeview)
+		return;
 
+	treeview->insert_node(node);
+	node->m_rootnode = this;
+	m_leafnode.insert(m_leafnode.begin()+index, node);
+
+	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE)
+		m_treeplus->set_visible(true);
+
+	treeview->invalid();
+}
+xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* node, bool destroy )
+{
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+
+	std::vector<xui_treenode*>::iterator itor;
+	itor = std::find(m_leafpart.begin(), m_leafpart.end(), node);
+	if (itor != m_leafpart.end())
+	{
+		m_leafpart.erase(itor);
+	}
+	itor = std::find(m_leafnode.begin(), m_leafnode.end(), node);
 	if (itor != m_leafnode.end())
 	{
 		m_leafnode.erase(itor);
-		xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-		treeview->delete_node(node);
+		if (destroy)
+			treeview->delete_node(node);
 	}
 
-	m_treeplus->set_visible(m_leafnode.size() > 0);
+	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE && m_leafnode.empty())
+		m_treeplus->set_visible(false);
+
+	treeview->invalid();
+}
+xui_method_explain(xui_treenode, del_leafnodeall,	void								)( void )
+{
+	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+	xui_vecptr_addloop(m_leafnode)
+	{
+		treeview->delete_node(m_leafnode[i]);
+	}
+
+	m_leafnode.clear();
+	m_leafpart.clear();
+
+	treeview->invalid();
 }
 
 /*
@@ -429,23 +473,22 @@ xui_method_explain(xui_treenode, set_linktext,		void								)( void )
 }
 xui_method_explain(xui_treenode, set_leafsort,		void								)( void )
 {
-	if (m_leafback.empty())
-		m_leafback = m_leafnode;
+	if (m_leafpart.empty())
+		m_leafpart = m_leafnode;
 
 	std::sort(
-		m_leafnode.begin(),
-		m_leafnode.end(),
+		m_leafpart.begin(),
+		m_leafpart.end(),
 		xui_treenode::compare);
 
-	for (u32 i = 0; i < m_leafnode.size(); ++i)
+	for (u32 i = 0; i < m_leafpart.size(); ++i)
 	{
-		m_leafnode[i]->set_leafsort();
+		m_leafpart[i]->set_leafsort();
 	}
 }
 xui_method_explain(xui_treenode, non_leafsort,		void								)( void )
 {
-	m_leafnode = m_leafback;
-	m_leafback.clear();
+	m_leafpart.clear();
 
 	for (u32 i = 0; i < m_leafnode.size(); ++i)
 	{
@@ -454,30 +497,26 @@ xui_method_explain(xui_treenode, non_leafsort,		void								)( void )
 }
 xui_method_explain(xui_treenode, has_findtext,		bool								)( u32 index, const std::wstring& text )
 {
-	if (m_leafback.empty())
-		m_leafback = m_leafnode;
-
-	m_leafnode.clear();
+	m_leafpart.clear();
 	m_treeplus->set_visible(false);
-	if (m_leafback.empty())
+	if (m_leafnode.empty())
 	{
 		return (m_linkdata && m_linkdata->get_text(index).find(text) != -1);
 	}
 	else
 	{
-		for (u32 i = 0; i < m_leafback.size(); ++i)
+		for (u32 i = 0; i < m_leafnode.size(); ++i)
 		{
-			if (m_leafback[i]->has_findtext(index, text))
-				m_leafnode.push_back(m_leafback[i]);
+			if (m_leafnode[i]->has_findtext(index, text))
+				m_leafpart.push_back(m_leafnode[i]);
 		}
 
-		return (m_leafnode.size() > 0);
+		return (m_leafpart.size() > 0);
 	}
 }
 xui_method_explain(xui_treenode, non_findtext,		void								)( void )
 {
-	m_leafnode = m_leafback;
-	m_leafback.clear();
+	m_leafpart.clear();
 	m_treeplus->set_visible(m_leafnode.size() > 0);
 
 	for (u32 i = 0; i < m_leafnode.size(); ++i)

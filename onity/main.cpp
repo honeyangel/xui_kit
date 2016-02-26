@@ -101,7 +101,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_MOUSEWHEEL:
 		{
 			xui_method_mouse args;
-			args.wheel = (s32)(s16)HIWORD(wParam);
+			args.wheel = (s32)(s16)HIWORD(wParam) / 3;
 			xui_desktop::get_ins()->os_mousewheel(args);
 		}
 		break;

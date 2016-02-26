@@ -222,8 +222,8 @@ xui_method_explain(xui_dockpage, render_else,			void					)( void )
 		xui_rect2d<s32> namert = m_namectrl->get_renderrtabs();
 		xui_colour      color  = get_vertexcolor() * m_sidecolor;
 
-		pagert.bx -= 1;
-		pagert.by -= 1;
+		//pagert.bx -= 1;
+		//pagert.by -= 1;
 		xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.bx,   pagert.ay  ), xui_vector<s32>(pagert.bx,   pagert.by  ), color);
 		xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.bx,   pagert.by  ), xui_vector<s32>(pagert.ax,   pagert.by  ), color);
 		xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.ax,   pagert.by  ), xui_vector<s32>(pagert.ax,   pagert.ay  ), color);
@@ -317,8 +317,8 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void					)( xui_component* 
 				case DOCKSTYLE_B: rt.ay  = rt.by - rt.get_h()/3; break;
 				}
 
-				rt.bx -=  1;
-				rt.by -=  1;
+				//rt.bx -= 1;
+				//rt.by -= 1;
 				xui_convas::get_ins()->fill_rectangle(rt, fill_color);
 				xui_convas::get_ins()->draw_rectangle(rt, side_color);
 			}

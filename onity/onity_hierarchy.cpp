@@ -17,25 +17,34 @@ xui_implement_rtti(onity_hierarchy, xui_dockpage);
 xui_create_explain(onity_hierarchy)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_L)
 {
-	m_inborder = xui_rect2d<s32>(4);
 	ini_namectrl(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy");
 
-	xui_menu*		menu		= xui_menu::create(80);
-	xui_menuitem*	create		= menu->add_item(NULL, L"Create");
-	xui_menu*		createmenu	= xui_menu::create(80);
-	create->set_submenu(createmenu);
-	m_entity = createmenu->add_item(NULL, L"Entity");
+	xui_menu*  menu = xui_menu::create(80);
+	m_entity = menu->add_item(NULL, L"Entity");
 
-	m_search = xui_textbox::create(100);
+	m_create = new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_create,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_create,	set_corner		)(3);
+	xui_method_ptrcall(m_create,	set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_create,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_create,	set_textalign	)(TA_LC);
+	xui_method_ptrcall(m_create,	set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_create,	ini_drawer		)(L"Create");
+	xui_method_ptrcall(m_create,	set_menu		)(menu);
+
+	m_search = new xui_textbox(xui_vector<s32>(100, 20));
 	xui_method_ptrcall(m_search,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_searchtextchanged);
 	xui_method_ptrcall(m_search,	xm_textenter	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_searchtextenter);
-	xui_method_ptrcall(m_search,	ini_component	)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_search,	ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_search,	ini_drawer		)(xui_bitmap::create("icon/search.png"));
-	xui_method_ptrcall(m_search,	set_sidestyle	)(SIDESTYLE_N);
+	xui_method_ptrcall(m_search,	set_backcolor	)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(m_search,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_search,	set_textalign	)(TA_LC);
 	xui_method_ptrcall(m_search,	set_textoffset	)(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(8, 2, 24, 2));
-	xui_method_ptrcall(m_search,	set_corner		)(8);
+	xui_method_ptrcall(m_search,	set_corner		)(10);
+	xui_method_ptrcall(m_search,	set_hintdraw	)(xui_family_render(xui_colour::gray));
 	xui_method_ptrcall(m_search,	set_hinttext	)(L"All");
 
 	m_clear = new xui_button(xui_vector<s32>(16));
@@ -50,15 +59,18 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_head,		xm_perform		) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_headperform);
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
-	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
+	xui_method_ptrcall(m_head,		set_hscrollauto	)(false);
+	xui_method_ptrcall(m_head,		add_child		)(m_create);
 	xui_method_ptrcall(m_head,		add_child		)(m_search);
-	xui_method_ptrcall(m_head,		add_child		)(m_clear);
+	xui_method_ptrcall(m_head,		add_child		)(m_clear );
 
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"name", NULL, 0));
 	m_tree  = new xui_treeview(xui_vector<s32>(100), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_tree,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_tree,		set_contextmenu	)(menu);
+	xui_method_ptrcall(m_tree,		set_sidecolor	)(xui_colour::black);
+	xui_method_ptrcall(m_tree,		set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_tree,		set_hscrollauto )(false);
 	add_pagectrl(m_head);
 	add_pagectrl(m_tree);
@@ -140,5 +152,8 @@ xui_method_explain(onity_hierarchy, on_searchtextenter,		void)( xui_component* s
 xui_method_explain(onity_hierarchy, on_headperform,			void)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_head->get_renderrtins();
-	m_clear->on_perform_x(rt.bx-m_clear->get_renderw()-2);
+	s32 w = rt.get_w()-m_create->get_renderw()-6;
+	xui_method_ptrcall(m_search, on_perform_w)(xui_min(w, 150));
+	xui_method_ptrcall(m_search, on_perform_x)(rt.ax+m_create->get_renderw()+6);
+	xui_method_ptrcall(m_clear,  on_perform_x)(rt.ax+m_create->get_renderw()+6+m_search->get_renderw()-m_clear->get_renderw()-2);
 }

@@ -705,6 +705,9 @@ xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componen
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+		xui_vector<s32> dw = xui_desktop::get_ins()->get_mousedown();
+		if (xui_abs(pt.x-dw.x) < 10)
+			return;
 
 		s32 scroll_value =  0;
 		if (pt.x > rt.ax && pt.x < rt.ax+10)
@@ -729,6 +732,9 @@ xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componen
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+		xui_vector<s32> dw = xui_desktop::get_ins()->get_mousedown();
+		if (xui_abs(pt.y-dw.y) < m_timetree->get_lineheight()/2)
+			return;
 
 		s32 scroll_value =  0;
 		if (pt.y > rt.ay && pt.y < rt.ay+10)
@@ -753,6 +759,9 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componen
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+		xui_vector<s32> dw = xui_desktop::get_ins()->get_mousedown();
+		if (xui_abs(pt.x-dw.x) < 10)
+			return;
 
 		s32 scroll_value =  0;
 		if (pt.x > rt.ax && pt.x < rt.ax+10)

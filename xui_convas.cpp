@@ -69,9 +69,9 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 			glEnable (GL_SCISSOR_TEST);
 			glScissor(
 				m_cliprect.ax, 
-				m_viewport.get_h()-m_cliprect.by, 
+				m_viewport.get_h()-1-m_cliprect.by, 
 				m_cliprect.get_w(), 
-				m_cliprect.get_h());
+				m_cliprect.get_h()+1);
 		}
 		else
 		{
