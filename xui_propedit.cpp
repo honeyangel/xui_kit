@@ -88,9 +88,9 @@ xui_create_explain(xui_propedit_bool)( xui_propctrl* propctrl )
 	xui_method_ptrcall(boolctrl, set_corner		)(3);
 	xui_method_ptrcall(boolctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(boolctrl, set_backcolor	)(xui_colour::darkgray);
-	boolctrl->xm_nonfocus	+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlnonfocus);
-	boolctrl->xm_getfocus	+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlgetfocus);
-	boolctrl->xm_click		+= new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_boolctrlclick);
+	boolctrl->xm_nonfocus	 += new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlnonfocus);
+	boolctrl->xm_getfocus	 += new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_editctrlgetfocus);
+	boolctrl->xm_toggleclick += new xui_method_member<xui_method_args, xui_propedit_bool>(this, &xui_propedit_bool::on_boolctrlclick);
 
 	m_editctrl = boolctrl;
 }

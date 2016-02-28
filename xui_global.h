@@ -44,6 +44,8 @@ public:
 	static void								set_workpath	( const std::wstring& path );
 	static std::vector<std::wstring>		get_path		( const std::wstring& path );
 	static std::vector<std::wstring>		get_file		( const std::wstring& path );
+	static bool								has_path		( const std::wstring& path );
+	static bool								add_path		( const std::wstring& path );
 	static bool								del_file		( const std::wstring& file );
 	static bool								mov_file		( const std::wstring& src, const std::wstring& dst );
 	static bool								cpy_file		( const std::wstring& src, const std::wstring& dst );

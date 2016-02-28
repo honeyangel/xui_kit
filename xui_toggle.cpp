@@ -90,8 +90,8 @@ xui_method_explain(xui_toggle, set_push,			void			)( bool push )
 	{
 		m_push  = push;
 
-		xui_method_args args;
-		xm_click(this,  args);
+		xui_method_args		 args;
+		xm_toggleclick(this, args);
 
 		if (m_menu && m_push)
 		{

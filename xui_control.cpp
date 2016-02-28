@@ -238,7 +238,7 @@ xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 {
 	xui_vecptr_addloop(m_widgetvec)
 	{
-		if (m_widgetvec[i]->was_enable())
+		if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
 			m_widgetvec[i]->update(delta);
 	}
 }
@@ -250,10 +250,11 @@ xui_method_explain(xui_control, render,				void					)( void )
 xui_method_explain(xui_control, render_else,		void					)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
+	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtabs());
+	xui_convas::get_ins()->set_cliprect(currrect);
 	xui_vecptr_addloop(m_widgetvec)
 	{
-		if (m_widgetvec[i]->was_visible())
+		if (m_widgetvec[i]->was_visible() && currrect.get_inter(m_widgetvec[i]->get_renderrtabs()).was_valid())
 			m_widgetvec[i]->render();
 	}
 	xui_convas::get_ins()->set_cliprect(cliprect);

@@ -19,7 +19,7 @@ xui_create_explain(onity_console)( void )
 	ini_namectrl(xui_bitmap::create("icon/console.png"), L"Console");
 
 	m_clear		= new xui_button(xui_vector<s32>(60, 20));
-	xui_method_ptrcall(m_clear,		xm_click		) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_clearclick);
+	xui_method_ptrcall(m_clear,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_clearclick);
 	xui_method_ptrcall(m_clear,		set_corner		)(3);
 	xui_method_ptrcall(m_clear,		set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_clear,		set_drawcolor	)(true);
@@ -28,7 +28,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_clear,		ini_drawer		)(L"Clear");
 
 	m_error		= new xui_toggle(xui_vector<s32>(60, 20), TOGGLE_BUTTON);
-	xui_method_ptrcall(m_error,		xm_click		) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
+	xui_method_ptrcall(m_error,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
 	xui_method_ptrcall(m_error,		xm_textchanged	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggletextchanged);
 	xui_method_ptrcall(m_error,		set_corner		)(3);
 	xui_method_ptrcall(m_error,		set_borderrt	)(xui_rect2d<s32>(2));
@@ -39,7 +39,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_error,		set_text		)(L"0");
 
 	m_warning	= new xui_toggle(xui_vector<s32>(60, 20), TOGGLE_BUTTON);
-	xui_method_ptrcall(m_warning,	xm_click		) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
+	xui_method_ptrcall(m_warning,	xm_toggleclick	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
 	xui_method_ptrcall(m_warning,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggletextchanged);
 	xui_method_ptrcall(m_warning,	set_corner		)(3);
 	xui_method_ptrcall(m_warning,	set_borderrt	)(xui_rect2d<s32>(2));
@@ -50,7 +50,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_warning,	set_text		)(L"0");
 
 	m_message	= new xui_toggle(xui_vector<s32>(60, 20), TOGGLE_BUTTON);
-	xui_method_ptrcall(m_message,	xm_click		) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
+	xui_method_ptrcall(m_message,	xm_toggleclick	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggleclick);
 	xui_method_ptrcall(m_message,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_toggletextchanged);
 	xui_method_ptrcall(m_message,	set_corner		)(3);
 	xui_method_ptrcall(m_message,	set_borderrt	)(xui_rect2d<s32>(2));

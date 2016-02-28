@@ -26,6 +26,12 @@ public:
 	void						set_submenu		( xui_menu* submenu );
 
 	/*
+	//flag
+	*/
+	bool						get_flag		( void ) const;
+	void						set_flag		( bool flag );
+
+	/*
 	//hottext
 	*/
 	const std::wstring&			get_hint		( void ) const;
@@ -55,6 +61,7 @@ protected:
 	/*
 	//member
 	*/
+	bool						m_flag;
 	std::wstring				m_hint;
 	xui_family_render			m_draw;
 	xui_menu*					m_submenu;

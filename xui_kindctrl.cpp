@@ -46,7 +46,7 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	xui_method_ptrcall(m_flagctrl, set_corner		)(3);
 	xui_method_ptrcall(m_flagctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(m_flagctrl, set_backcolor	)(xui_colour::darkgray);
-	m_flagctrl->xm_click		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_flagctrlclick);
+	m_flagctrl->xm_toggleclick	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_flagctrlclick);
 	m_widgetvec.push_back(m_flagctrl);
 
 	//plus

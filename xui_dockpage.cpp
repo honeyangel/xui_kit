@@ -190,7 +190,7 @@ xui_method_explain(xui_dockpage, update_else,			void					)( f32 delta )
 	{
 		xui_vecptr_addloop(m_widgetvec)
 		{
-			if (m_widgetvec[i]->was_enable())
+			if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
 				m_widgetvec[i]->update(delta);
 		}
 	}
@@ -204,17 +204,23 @@ xui_method_explain(xui_dockpage, render_else,			void					)( void )
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
 	m_namectrl->render();
+	xui_convas::get_ins()->set_cliprect(cliprect);
+
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (dockview->get_showpage() == this)
 	{
-		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
+		xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
+		xui_convas::get_ins()->set_cliprect(currrect);
 		xui_vecptr_addloop(m_widgetvec)
 		{
-			if (m_widgetvec[i]->was_visible() && m_widgetvec[i] != m_namectrl)
+			if (m_widgetvec[i] == m_namectrl)
+				continue;
+
+			if (m_widgetvec[i]->was_visible() && currrect.get_inter(m_widgetvec[i]->get_renderrtabs()).was_valid())
 				m_widgetvec[i]->render();
 		}
+		xui_convas::get_ins()->set_cliprect(cliprect);
 	}
-	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	if (dockview->get_showpage() == this)
 	{
@@ -377,18 +383,21 @@ xui_method_explain(xui_dockpage, cal_dockinfo,			u08						)( xui_dockview* dockv
 
 	if (pt.y < rt.ay+24)
 	{
-		if (dockview != m_parent && has_dockarea(dockview->get_dockstyle()))
+		if (has_dockarea(dockview->get_dockstyle()) && dockview != m_parent)
 			dockstyle = DOCKSTYLE_F;
 	}
 	else
 	{
-		rt.ay += 24;
-		if		 (pt.x < (rt.ax+rt.get_w()/3) && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
-		else if  (pt.x > (rt.bx-rt.get_w()/3) && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
-		else if	 (pt.y < (rt.ay+rt.get_h()/3) && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
-		else if  (pt.y > (rt.by-rt.get_h()/3) && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
-		else
-		{}
+		if (has_dockarea(dockview->get_dockstyle()) || dockview->get_dockstyle() == DOCKSTYLE_F)
+		{
+			rt.ay += 24;
+			if		 (pt.x < (rt.ax+rt.get_w()/3) && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
+			else if  (pt.x > (rt.bx-rt.get_w()/3) && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
+			else if	 (pt.y < (rt.ay+rt.get_h()/3) && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
+			else if  (pt.y > (rt.by-rt.get_h()/3) && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
+			else
+			{}
+		}
 	}
 
 	return dockstyle;

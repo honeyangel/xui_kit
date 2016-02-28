@@ -21,12 +21,12 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	m_accept = xui_button::create(NULL, L"OK",     80);
 	m_accept->ini_component((num_button == 1) ? ALIGNHORZ_C : 0, ALIGNVERT_B, 0);
 	m_accept->ini_component(true, num_button > 0);
-	m_accept->xm_click += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_accept);
+	m_accept->xm_buttonclick += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_accept);
 
 	m_cancel = xui_button::create(NULL, L"Cancel", 80);
 	m_cancel->ini_component(0, ALIGNVERT_B, 0);
 	m_cancel->ini_component(true, num_button > 1);
-	m_cancel->xm_click += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_cancel);
+	m_cancel->xm_buttonclick += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_cancel);
 
 	m_detail = xui_drawer::create(text);
 	m_detail->ini_component(ALIGNHORZ_C, ALIGNVERT_T, 0);

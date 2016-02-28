@@ -48,7 +48,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_search,	set_hinttext	)(L"All");
 
 	m_clear = new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_clear,		xm_click		) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_clearclick);
+	xui_method_ptrcall(m_clear,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_clearclick);
 	xui_method_ptrcall(m_clear,		ini_component	)(true, false);
 	xui_method_ptrcall(m_clear,		ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_clear,		set_corner		)(8);

@@ -551,26 +551,33 @@ xui_method_explain(xui_treeview, update_else,			void								)( f32 delta )
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
 	xui_vecptr_addloop(alltreenodes)
 	{
-		alltreenodes[i]->update(delta);
+		if (alltreenodes[i]->was_enable() && alltreenodes[i]->was_visible())
+			alltreenodes[i]->update(delta);
 	}
 	xui_vecptr_addloop(m_columngrid)
 	{
-		m_columngrid[i]->update(delta);
+		if (m_columngrid[i]->was_enable() && m_columngrid[i]->was_visible())
+			m_columngrid[i]->update(delta);
 	}
 	xui_vecptr_addloop(m_columnhead)
 	{
-		m_columnhead[i]->update(delta);
+		if (m_columnhead[i]->was_enable() && m_columnhead[i]->was_visible())
+			m_columnhead[i]->update(delta);
 	}
 }
 xui_method_explain(xui_treeview, render_else,			void								)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
+	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
+
+	xui_convas::get_ins()->set_cliprect(currrect);
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
 	xui_vecptr_addloop(alltreenodes)
 	{
-		alltreenodes[i]->render();
+		if (currrect.get_inter(alltreenodes[i]->get_renderrtabs()).was_valid())
+			alltreenodes[i]->render();
 	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	xui_rect2d<s32> rt = get_renderrtabs();
 	rt.ax += m_corner;

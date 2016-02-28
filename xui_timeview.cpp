@@ -462,27 +462,33 @@ xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 	xui_vecptr_addloop(nodes)
 	{
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
-		timeline->update(delta);
+		if (timeline->was_enable() && timeline->was_visible())
+			timeline->update(delta);
 	}
 }
 xui_method_explain(xui_timeview, render_else,				void						)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
+
+	xui_rect2d<s32> temprect = xui_container::get_renderrtins() + get_screenpt();
+	temprect.ay += m_timegrad->get_renderh();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprect));
+	m_timetree->render();
+	xui_convas::get_ins()->set_cliprect(cliprect);
+
+	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(currrect);
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 	xui_vecptr_addloop(nodes)
 	{
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
-		timeline->render();
+		if (currrect.get_inter(timeline->get_renderrtabs()).was_valid())
+			timeline->render();
 	}
 	if (m_timehead->was_visible())
 		m_timehead->render();
 	if (m_timerect->was_visible())
 		m_timerect->render();
-	xui_rect2d<s32> temprt = xui_container::get_renderrtins() + get_screenpt();
-	temprt.ay += m_timegrad->get_renderh();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprt));
-	m_timetree->render();
 	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	m_timetree->ini_component(true, false);

@@ -179,7 +179,7 @@ xui_create_explain(xui_propctrl_vector_button)( xui_propdata* propdata )
 	m_namectrl->set_visible(false);
 
 	m_zeroctrl = new xui_button(xui_vector<s32>(24, 16));
-	m_zeroctrl->xm_click += new xui_method_member<xui_method_args, xui_propctrl_vector_button>(this, &xui_propctrl_vector_button::on_zeroctrlclick);
+	m_zeroctrl->xm_buttonclick += new xui_method_member<xui_method_args, xui_propctrl_vector_button>(this, &xui_propctrl_vector_button::on_zeroctrlclick);
 	xui_method_ptrcall(m_zeroctrl,	set_parent		)(this);
 	xui_method_ptrcall(m_zeroctrl,	set_corner		)(3);
 	xui_method_ptrcall(m_zeroctrl,	set_drawcolor	)(true);

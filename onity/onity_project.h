@@ -28,8 +28,18 @@ protected:
 	void			on_headperform		( xui_component* sender, xui_method_args&  args );
 	void			on_fillperform		( xui_component* sender, xui_method_args&  args );
 	void			on_sizectrlmousemove( xui_component* sender, xui_method_mouse& args );
-	void			on_treeviewselection( xui_component* sender, xui_method_args&  args );
 	void			on_lineviewdclick	( xui_component* sender, xui_method_mouse& args );
+	void			on_treeviewselection( xui_component* sender, xui_method_args&  args );
+	void			on_folderclick		( xui_component* sender, xui_method_args&  args );
+	void			on_pathitemclick	( xui_component* sender, xui_method_args&  args );
+	void			on_pathtogglerender	( xui_component* sender, xui_method_args&  args );
+	void			on_sliderscroll		( xui_component* sender, xui_method_args&  args );
+
+	/*
+	//method
+	*/
+	void			refresh_lineview	( void );
+	void			refresh_pathpane	( void );
 
 	/*
 	//member
@@ -44,8 +54,11 @@ protected:
 	xui_control*	m_sizectrl;
 	xui_treeview*	m_pathview;
 	xui_treeview*	m_lineview;
+	xui_panel*		m_drawview;
 	xui_panel*		m_pathpane;
 	xui_panel*		m_toolpane;
+	xui_slider*		m_slider;
+	xui_drawer*		m_status;
 };
 
 #endif//__onity_project_h__

@@ -13,7 +13,8 @@ xui_implement_rtti(xui_menuitem, xui_drawer);
 xui_create_explain(xui_menuitem)( void )
 : xui_drawer(xui_vector<s32>(0, 20))
 {
-	m_submenu = NULL;
+	m_flag		= false;
+	m_submenu	= NULL;
 }
 
 /*
@@ -49,6 +50,18 @@ xui_method_explain(xui_menuitem, get_submenu,		xui_menu*				)( void )
 xui_method_explain(xui_menuitem, set_submenu,		void					)( xui_menu* submenu )
 {
 	m_submenu = submenu;
+}
+
+/*
+//flag
+*/
+xui_method_explain(xui_menuitem, get_flag,			bool					)( void ) const
+{
+	return m_flag;
+}
+xui_method_explain(xui_menuitem, set_flag,			void					)( bool flag )
+{
+	m_flag = flag;
 }
 
 /*
@@ -103,6 +116,14 @@ xui_method_explain(xui_menuitem, on_nonfocus,		void					)( xui_method_args&  arg
 xui_method_explain(xui_menuitem, on_renderself,		void					)( xui_method_args&  args )
 {
 	xui_drawer::on_renderself(args);
+	if (m_icon == NULL && m_flag)
+	{
+		xui_vector<s32> pt = get_rendericonpt()+get_screenpt();
+		pt.x += m_iconsize.w/2;
+		pt.y += m_iconsize.h/2;
+		xui_convas::get_ins()->draw_tick(pt, 8, xui_colour::white);
+	}
+
 	if (m_hint.length() > 0)
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();

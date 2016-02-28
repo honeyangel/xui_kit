@@ -11,6 +11,7 @@
 #include "xui_menuitem.h"
 #include "xui_treedata.h"
 #include "xui_treenode.h"
+#include "xui_slider.h"
 #include "onity_project.h"
 
 xui_implement_rtti(onity_project, xui_dockpage);
@@ -25,6 +26,7 @@ xui_create_explain(onity_project)( void )
 
 	xui_menu*  menu = xui_menu::create(80);
 	m_folder = menu->add_item(NULL, L"Folder");
+	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_folderclick);
 
 	m_create = new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -51,7 +53,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_search,	set_hintdraw		)(xui_family_render(xui_colour::gray));
 
 	m_clear = new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_clear,		xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_clearclick);
+	xui_method_ptrcall(m_clear,		xm_buttonclick		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_clearclick);
 	xui_method_ptrcall(m_clear,		ini_component		)(true, false);
 	xui_method_ptrcall(m_clear,		ini_component		)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_clear,		set_corner			)(8);
@@ -85,20 +87,37 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_lineview,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_lineview,	set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_lineview,	set_hscrollauto		)(false);
+	m_drawview = new xui_panel(xui_vector<s32>(100));
+	xui_method_ptrcall(m_drawview,	ini_component		)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_drawview,	ini_component		)(true, false);
+	xui_method_ptrcall(m_drawview,	set_backcolor		)(xui_colour::black);
 
 	m_pathpane = new xui_panel(xui_vector<s32>(20));
 	xui_method_ptrcall(m_pathpane,	ini_component		)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_pathpane,	set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_pathpane,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_pathpane,	set_drawcolor		)(false);
+	xui_method_ptrcall(m_pathpane,	set_borderrt		)(xui_rect2d<s32>(8, 0, 8, 0));
 	xui_method_ptrcall(m_pathpane,	set_hscrollauto		)(false);
+
+	m_slider = xui_slider::create(FLOWSTYLE_H, ARROWDRAW_NONE);
+	xui_method_ptrcall(m_slider,	ini_component		)(0, 0, DOCKSTYLE_R);
+	xui_method_ptrcall(m_slider,	set_range			)(100);
+	xui_method_ptrcall(m_slider,	xm_scroll			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_sliderscroll);
+
+	m_status = new xui_drawer(xui_vector<s32>(200, 20)); 
+	xui_method_ptrcall(m_status,	ini_component		)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_status,	set_textoffset		)(xui_vector<s32>(2, 0));
 
 	m_toolpane = new xui_panel(xui_vector<s32>(20));
 	xui_method_ptrcall(m_toolpane,	ini_component		)(0, 0, DOCKSTYLE_B);
 	xui_method_ptrcall(m_toolpane,	set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_toolpane,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_toolpane,	set_drawcolor		)(false);
+	xui_method_ptrcall(m_toolpane,	set_borderrt		)(xui_rect2d<s32>(4, 2, 24, 2));
 	xui_method_ptrcall(m_toolpane,	set_hscrollauto		)(false);
+	xui_method_ptrcall(m_toolpane,	add_child			)(m_slider);
+	xui_method_ptrcall(m_toolpane,	add_child			)(m_status);
 
 	m_sizectrl = new xui_control(xui_vector<s32>(4));
 	xui_method_ptrcall(m_sizectrl,	xm_mousemove		) += new xui_method_member<xui_method_mouse, onity_project>(this, &onity_project::on_sizectrlmousemove);
@@ -115,6 +134,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_fill,		add_child			)(m_pathpane);
 	xui_method_ptrcall(m_fill,		add_child			)(m_toolpane);
 	xui_method_ptrcall(m_fill,		add_child			)(m_lineview);
+	xui_method_ptrcall(m_fill,		add_child			)(m_drawview);
 	xui_method_ptrcall(m_fill,		add_child			)(m_sizectrl);
 	add_pagectrl(m_head);
 	add_pagectrl(m_fill);
@@ -124,41 +144,6 @@ xui_create_explain(onity_project)( void )
 //callback
 */
 //DEBUG
-class onity_line_data : public xui_treedata
-{
-public:
-	/*
-	//constructor
-	*/
-	onity_line_data( const std::wstring& full )
-	: xui_treedata(full, NULL)
-	{}
-
-	virtual xui_bitmap*	 get_icon( u32 index )
-	{
-		int npos = m_text.find_last_of(L'.');
-		if (npos != -1)
-			return xui_bitmap::create("icon/file.png");
-		else
-			return xui_bitmap::create("icon/folder.png");
-	}
-	virtual std::wstring get_text( u32 index )
-	{
-		std::wstring temp = m_text;
-
-		int npos  = temp.find_last_of(L'/');
-		if (npos == -1)
-			npos  = temp.find_last_of(L'\\');
-		if (npos != -1)
-			temp.erase(0, npos+1);
-
-			npos  = temp.find_last_of(L'.');
-		if (npos != -1)
-			temp.erase(npos);
-
-		return temp;
-	}
-};
 class onity_path_data : public xui_treedata
 {
 public:
@@ -199,12 +184,35 @@ public:
 		}
 	}
 };
+class onity_file_data : public onity_path_data
+{
+public:
+	/*
+	//constructor
+	*/
+	onity_file_data( const std::wstring& full )
+	: onity_path_data(full)
+	{
+		m_icon = xui_bitmap::create("icon/file.png");
+	}
+
+	virtual std::wstring get_text( u32 index )
+	{
+		std::wstring temp = onity_path_data::get_text(index);
+
+		int npos  = temp.find_last_of(L'.');
+		if (npos != -1)
+			temp.erase(npos);
+
+		return temp;
+	}
+};
 
 xui_method_explain(onity_project, on_load,					void)( xui_method_args& args )
 {
 	xui_dockpage::on_load(args);
 	 
-	std::wstring workpath = L"D:/BreezeGame/art/res";//xui_global::get_workpath();
+	std::wstring workpath = L"C:/XUI";//xui_global::get_workpath();
 	u32 index = 0;
 	std::vector<std::wstring> pathvec = xui_global::get_path(workpath);
 	for (u32 i = 0; i < pathvec.size(); ++i,++index)
@@ -261,28 +269,27 @@ xui_method_explain(onity_project, on_treeviewselection,		void)( xui_component* s
 {
 	if (sender == m_pathview)
 	{
-		m_lineview->del_upmostnodeall();
-		std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+		refresh_lineview();
+		refresh_pathpane();
+	}
+	else
+	if (sender == m_lineview)
+	{
+		std::vector<xui_treenode*> nodevec = m_lineview->get_selectednode();
 		if (nodevec.size() > 0)
 		{
-			u32 index = 0;
-			xui_treenode* root = nodevec.front();
-			std::vector<xui_treenode*> pathvec = root->get_leafnodearray();
-			for (u32 i = 0; i < pathvec.size(); ++i,++index)
-			{
-				onity_path_data* data = (onity_path_data*)pathvec[i]->get_linkdata();
-				xui_treenode*    node = m_lineview->add_upmostnode(index, new onity_line_data(data->get_full()));
-				node->set_data(pathvec[i]);
-			}
+			xui_treenode*    node = nodevec.front();
+			onity_path_data* data = (onity_path_data*)node->get_linkdata();
+			std::wstring text = data->get_full();
+			int npos  = text.find_last_of(L'/');
+			if (npos == -1)
+				npos  = text.find_last_of(L'\\');
+			if (npos != -1)
+				text.erase(0, npos+1);
 
-			onity_path_data* rootdata = (onity_path_data*)root->get_linkdata();
-			std::vector<std::wstring> filevec = xui_global::get_file(rootdata->get_full());
-			for (u32 i = 0; i < filevec.size(); ++i,++index)
-			{
-				m_lineview->add_upmostnode(index, new onity_line_data(rootdata->get_full()+filevec[i]));
-			}
+			m_status->ini_drawer(data->get_icon(0));
+			m_status->ini_drawer(text);
 		}
-		m_lineview->refresh();
 	}
 }
 xui_method_explain(onity_project, on_lineviewdclick,		void)( xui_component* sender, xui_method_mouse& args )
@@ -295,6 +302,169 @@ xui_method_explain(onity_project, on_lineviewdclick,		void)( xui_component* send
 			xui_treenode* pathnode = (xui_treenode*)node->get_data();
 			xui_method_ptrcall(m_pathview, set_selectednode	)(pathnode, true);
 			xui_method_ptrcall(m_pathview, set_nodevisible	)(pathnode);
+		}
+	}
+}
+xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender, xui_method_args&  args )
+{
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	std::wstring path = L"C:/XUI";
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*    node = nodevec.front();
+		onity_path_data* data = (onity_path_data*)node->get_linkdata();
+		path = data->get_full();
+	}
+
+	s32  number  = 0;
+	bool success = false;
+	std::wstringstream temp;
+	while (true)
+	{
+		temp.str(L"");
+		temp << path.c_str();
+		temp << L"/New Folder ";
+		temp << number;
+		if (xui_global::has_path(temp.str()) == false)
+		{
+			success = xui_global::add_path(temp.str());
+			break;
+		}
+
+		++number;
+	}
+
+	if (success == false)
+		return;
+
+	if (nodevec.size() > 0)
+	{
+		xui_treenode* rootnode = nodevec.front();
+		xui_treenode* pathnode = rootnode->add_leafnode(0, new onity_path_data(temp.str()));
+		xui_treenode* linenode = m_lineview->add_upmostnode(0, new onity_path_data(temp.str()));
+		linenode->set_data(pathnode);
+		rootnode->set_expanded(true);
+	}
+	else
+	{
+		m_pathview->add_upmostnode(0, new onity_path_data(temp.str()));
+	}
+}
+xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* sender, xui_method_args&  args )
+{
+	xui_treenode* node = (xui_treenode*)sender->get_data();
+	if (node)
+	{
+		xui_method_ptrcall(m_pathview, set_selectednode	)(node, true);
+		xui_method_ptrcall(m_pathview, set_nodevisible	)(node);
+	}
+}
+xui_method_explain(onity_project, on_pathtogglerender,		void)( xui_component* sender, xui_method_args&  args )
+{
+	xui_toggle*     toggle = xui_dynamic_cast(xui_toggle, sender);
+	xui_colour      color  = toggle->get_rendercolor() * toggle->get_vertexcolor();
+	xui_rect2d<s32> rt     = toggle->get_renderrtins() + toggle->get_screenpt();
+	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+	xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
+}
+xui_method_explain(onity_project, on_sliderscroll,			void)( xui_component* sender, xui_method_args&  args )
+{
+	//if (m_slider->get_value() < 20)
+	//	m_slider->ini_scroll(m_slider->get_range(), 0);
+	//if (m_slider->get_value() > 0 && m_slider->get_value() < 20)
+	//	m_slider->ini_scroll(m_slider->get_range(), 20);
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_project, refresh_lineview,			void)( void )
+{
+	m_lineview->del_upmostnodeall();
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		u32 index = 0;
+		xui_treenode* root = nodevec.front();
+		std::vector<xui_treenode*> pathvec = root->get_leafnodearray();
+		for (u32 i = 0; i < pathvec.size(); ++i,++index)
+		{
+			onity_path_data* data = (onity_path_data*)pathvec[i]->get_linkdata();
+			xui_treenode*    node = m_lineview->add_upmostnode(index, new onity_path_data(data->get_full()));
+			node->set_data(pathvec[i]);
+		}
+
+		onity_path_data* rootdata = (onity_path_data*)root->get_linkdata();
+		std::vector<std::wstring> filevec = xui_global::get_file(rootdata->get_full());
+		for (u32 i = 0; i < filevec.size(); ++i,++index)
+		{
+			m_lineview->add_upmostnode(index, new onity_file_data(rootdata->get_full()+filevec[i]));
+		}
+	}
+	m_lineview->refresh();
+}
+xui_method_explain(onity_project, refresh_pathpane,			void)( void )
+{
+	const std::vector<xui_control*>& ctrlvec = m_pathpane->get_children();
+	xui_vecptr_addloop(ctrlvec)
+	{
+		xui_toggle* toggle = xui_dynamic_cast(xui_toggle, ctrlvec[i]);
+		if (toggle)
+			toggle->set_menu(NULL);
+	}
+	m_pathpane->del_children();
+
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size())
+	{
+		xui_treenode* node = nodevec.front();
+		xui_treenode* root = node;
+		std::vector<xui_treenode*> pathvec;
+		while (root)
+		{
+			pathvec.push_back(root);
+			root = root->get_rootnode();
+		}
+
+		xui_vecptr_delloop(pathvec)
+		{
+			xui_treenode*    pathnode = pathvec[i];
+			onity_path_data* pathdata = (onity_path_data*)pathnode->get_linkdata();
+			xui_drawer*        drawer = (i == 0) ? new xui_drawer(xui_vector<s32>(0, 20)) : new xui_button(xui_vector<s32>(0, 20));
+			xui_method_ptrcall(drawer, ini_component)(0, 0, DOCKSTYLE_L);
+			xui_method_ptrcall(drawer, ini_drawer	)(pathdata->get_text(0));
+			xui_method_ptrcall(drawer, set_backcolor)(xui_colour::transparent);
+			xui_method_ptrcall(drawer, set_drawcolor)(true);
+			xui_method_ptrcall(drawer, set_textfont	)(xui_family(14, i == 0));
+			xui_method_ptrcall(drawer, set_data		)(pathnode);
+			xui_method_ptrcall(drawer, on_perform_w	)(xui_convas::get_ins()->calc_size(drawer->get_text(), drawer->get_textfont(), 0, true).w);
+			m_pathpane->add_child(drawer);
+
+			xui_button* button = xui_dynamic_cast(xui_button, drawer);
+			if (button)
+				button->xm_buttonclick += new xui_method_member<xui_method_args, onity_project>(this, &onity_project::on_pathitemclick);
+
+			if (pathnode->get_leafnodecount() == 0)
+				continue;
+
+			xui_menu* menu = xui_menu::create(80);
+			const std::vector<xui_treenode*>& leafvec = pathnode->get_leafnodearray();
+			for (u32 ileaf = 0; ileaf < leafvec.size(); ++ileaf)
+			{
+				xui_treenode*    leafnode = leafvec[ileaf];
+				onity_path_data* leafdata = (onity_path_data*)leafnode->get_linkdata();
+				xui_menuitem*    menuitem = menu->add_item(NULL, leafdata->get_text(0));
+				menuitem->xm_click	   += new xui_method_member<xui_method_args, onity_project>(this, &onity_project::on_pathitemclick);
+				xui_method_ptrcall(menuitem, set_data)(leafnode);
+				xui_method_ptrcall(menuitem, set_flag)(leafnode->was_selected());
+			}
+
+			xui_toggle*        toggle = new xui_toggle(xui_vector<s32>(16, 20), TOGGLE_BUTTON);
+			toggle->xm_renderself += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_pathtogglerender);
+			xui_method_ptrcall(toggle, ini_component)(0, 0, DOCKSTYLE_L);
+			xui_method_ptrcall(toggle, set_data		)(pathnode);
+			xui_method_ptrcall(toggle, set_menu		)(menu);
+			m_pathpane->add_child(toggle);
 		}
 	}
 }

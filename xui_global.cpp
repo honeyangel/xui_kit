@@ -230,6 +230,23 @@ xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const st
 
 	return result;
 }
+xui_method_explain(xui_global, has_path,		bool							)( const std::wstring& path )
+{
+	WIN32_FIND_DATAW findData;
+	std::wstring temp = (path.length() == 0) ? L"*.*" : path+L"/*.*";
+	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
+	if (handle != INVALID_HANDLE_VALUE)
+	{
+		FindClose(handle);
+		return true;
+	}
+
+	return false;
+}
+xui_method_explain(xui_global, add_path,		bool							)( const std::wstring& path )
+{
+	return CreateDirectory(path.c_str(), NULL) != 0;
+}
 xui_method_explain(xui_global, del_file,		bool							)( const std::wstring& path )
 {
 	std::wstring temp = path+L'\0';

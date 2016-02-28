@@ -13,6 +13,7 @@ public:
 	//static
 	*/
 	static xui_slider*	create			( u08 style, u08 arrowdraw = ARROWDRAW_NONE );
+
 	/*
 	//constructor
 	*/

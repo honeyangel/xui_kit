@@ -27,10 +27,10 @@ xui_create_explain(onity_mainform)( void )
 	m_translate		= xui_toggle::create(xui_bitmap::create("icon/translate.png"),	32);
 	m_scale			= xui_toggle::create(xui_bitmap::create("icon/scale.png"),		32);
 	m_rotation		= xui_toggle::create(xui_bitmap::create("icon/rotation.png"),	32);
-	xui_method_ptrcall(m_select,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
-	xui_method_ptrcall(m_translate,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
-	xui_method_ptrcall(m_scale,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
-	xui_method_ptrcall(m_rotation,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
+	xui_method_ptrcall(m_select,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
+	xui_method_ptrcall(m_translate,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
+	xui_method_ptrcall(m_scale,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
+	xui_method_ptrcall(m_rotation,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
 	xui_method_ptrcall(m_translate,		ini_toggle		)(true);
 
 	//transform
@@ -45,8 +45,8 @@ xui_create_explain(onity_mainform)( void )
 	m_coordinate	= xui_button::create(xui_bitmap::create("icon/world.png"), L"World", 80);
 	xui_method_ptrcall(m_anchor,		set_data		)((void*)TOA_PIVOT);
 	xui_method_ptrcall(m_coordinate,	set_data		)((void*)TOC_WORLD);
-	xui_method_ptrcall(m_anchor,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickanchor);
-	xui_method_ptrcall(m_coordinate,	xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickcoordinate);
+	xui_method_ptrcall(m_anchor,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickanchor);
+	xui_method_ptrcall(m_coordinate,	xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickcoordinate);
 
 	//anchor
 	//coordinate
@@ -59,9 +59,9 @@ xui_create_explain(onity_mainform)( void )
 	m_run			= xui_toggle::create(NULL, 32);
 	m_pause			= xui_toggle::create(NULL, 32);
 	m_step			= xui_button::create(NULL, 32);
-	xui_method_ptrcall(m_run,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
-	xui_method_ptrcall(m_pause,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
-	xui_method_ptrcall(m_step,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
+	xui_method_ptrcall(m_run,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
+	xui_method_ptrcall(m_pause,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
+	xui_method_ptrcall(m_step,			xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
 	xui_method_ptrcall(m_run,			xm_renderself	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_paintdebug);
 	xui_method_ptrcall(m_pause,			xm_renderself	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_paintdebug);
 	xui_method_ptrcall(m_step,			xm_renderself	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_paintdebug);

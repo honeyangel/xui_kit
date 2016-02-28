@@ -278,7 +278,7 @@ public:
 
 		xui_button* button = xui_button::create(NULL, L"Accept", 100);
 		button->ini_component(ALIGNHORZ_C, ALIGNVERT_C, 0);
-		button->xm_click += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
+		button->xm_buttonclick += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
 		add_child(button);
 	}
 

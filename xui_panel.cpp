@@ -227,17 +227,18 @@ xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 	xui_container::update_else(delta);
 	xui_vecptr_addloop(m_childctrl)
 	{
-		if (m_childctrl[i]->was_enable())
+		if (m_childctrl[i]->was_enable() && m_childctrl[i]->was_visible())
 			m_childctrl[i]->update(delta);
 	}
 }
 xui_method_explain(xui_panel, render_else,		void								)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
+	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
+	xui_convas::get_ins()->set_cliprect(currrect);
 	xui_vecptr_addloop(m_childctrl)
 	{
-		if (m_childctrl[i]->was_visible())
+		if (m_childctrl[i]->was_visible() && currrect.get_inter(m_childctrl[i]->get_renderrtabs()).was_valid())
 			m_childctrl[i]->render();
 	}
 	xui_convas::get_ins()->set_cliprect(cliprect);
