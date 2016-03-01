@@ -41,7 +41,7 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_treeview* treeview
 			xui_method_ptrcall(drawer, set_textdraw		)(columninfo.textdraw);
 			xui_method_ptrcall(drawer, set_iconsize		)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(16)   : xui_vector<s32>(0));
 			xui_method_ptrcall(drawer, set_iconalign	)(columninfo.type == TREECOLUMN_MAIN ? IMAGE_FRONT_TEXT		 : columninfo.iconalign);
-			xui_method_ptrcall(drawer, set_textalign	)(columninfo.type == TREECOLUMN_MAIN ? TA_LC				 : columninfo.textalign);
+			xui_method_ptrcall(drawer, set_textalign	)(columninfo.type == TREECOLUMN_MAIN ? TEXTALIGN_LC			 : columninfo.textalign);
 			xui_method_ptrcall(drawer, set_textoffset	)(columninfo.type == TREECOLUMN_MAIN ? xui_vector<s32>(2, 0) : xui_vector<s32>(0));
 		}
 		m_widgetvec.push_back(drawer);

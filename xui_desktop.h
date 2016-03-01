@@ -70,7 +70,7 @@ public:
 	/*
 	//os
 	*/
-	void						os_mousedclick	( xui_method_mouse& args );
+	//void						os_mousedclick	( xui_method_mouse& args );
 	void						os_mousewheel	( xui_method_mouse& args );
 	void						os_mousedown	( xui_method_mouse& args );
 	void						os_mouserise	( xui_method_mouse& args );

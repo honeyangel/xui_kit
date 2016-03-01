@@ -16,7 +16,7 @@ xui_method_explain(xui_textbox, create, xui_textbox*)( s32 width )
 	xui_method_ptrcall(textbox, set_drawcolor	)(true);
 	xui_method_ptrcall(textbox, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textbox, set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(textbox, set_textalign	)(TA_RC);
+	xui_method_ptrcall(textbox, set_textalign	)(TEXTALIGN_RC);
 	xui_method_ptrcall(textbox, set_hintdraw	)(xui_family_render(xui_colour::gray));
 
 	return textbox;
@@ -471,9 +471,9 @@ xui_method_explain(xui_textbox, do_back,			void					)( void )
 	{
 		switch (m_textalign)
 		{
-		case TA_RT:
-		case TA_RC:
-		case TA_RB:
+		case TEXTALIGN_RT:
+		case TEXTALIGN_RC:
+		case TEXTALIGN_RB:
 			if (m_firstshowindex > 0)
 				--m_firstshowindex;
 			break;
@@ -583,14 +583,14 @@ xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 	{
 		switch (m_textalign)
 		{
-		case TA_CT:
-		case TA_CC:
-		case TA_CB:
+		case TEXTALIGN_CT:
+		case TEXTALIGN_CC:
+		case TEXTALIGN_CB:
 			rt.ax += rt.get_w()/2-1;
 			break;
-		case TA_RT:
-		case TA_RC:
-		case TA_RB:
+		case TEXTALIGN_RT:
+		case TEXTALIGN_RC:
+		case TEXTALIGN_RB:
 			rt.ax  = rt.bx-2;
 			break;
 		}

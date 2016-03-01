@@ -23,7 +23,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_clear,		set_corner		)(3);
 	xui_method_ptrcall(m_clear,		set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_clear,		set_drawcolor	)(true);
-	xui_method_ptrcall(m_clear,		set_textalign	)(TA_CC);
+	xui_method_ptrcall(m_clear,		set_textalign	)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_clear,		ini_drawer		)(NULL, xui_vector<s32>(0));
 	xui_method_ptrcall(m_clear,		ini_drawer		)(L"Clear");
 

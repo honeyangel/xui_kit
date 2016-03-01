@@ -106,7 +106,7 @@ xui_method_explain(xui_menu, add_item,			void			)( xui_menuitem* item )
 	xui_method_ptrcall(item, set_borderrt	)(xui_rect2d<s32>(4, 2, 4, 2));
 	xui_method_ptrcall(item, set_iconsize	)(xui_vector<s32>(16));
 	xui_method_ptrcall(item, set_iconalign	)(IMAGE_FRONT_TEXT);
-	xui_method_ptrcall(item, set_textalign	)(TA_LC);
+	xui_method_ptrcall(item, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(item, set_textoffset	)(xui_vector<s32>(8, 0));
 	xui_method_ptrcall(item, set_renderh	)(20);
 	xui_method_ptrcall(item, set_parent		)(this);

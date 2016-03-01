@@ -37,7 +37,7 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	xui_method_ptrcall(m_namectrl, set_parent		)(this);
 	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(m_namectrl, set_backcolor	)(xui_colour::darkgray);
-	xui_method_ptrcall(m_namectrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(m_namectrl, set_textalign	)(TEXTALIGN_LC);
 	m_widgetvec.push_back(m_namectrl);
 
 	//flag

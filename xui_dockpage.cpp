@@ -92,13 +92,13 @@ xui_method_explain(xui_dockpage, ini_namectrl,			void					)( xui_bitmap* icon, c
 	if (icon)
 	{
 		xui_method_ptrcall(m_namectrl, set_iconalign )(IMAGE_FRONT_TEXT);
-		xui_method_ptrcall(m_namectrl, set_textalign )(TA_LC);
+		xui_method_ptrcall(m_namectrl, set_textalign )(TEXTALIGN_LC);
 		xui_method_ptrcall(m_namectrl, set_textoffset)(xui_vector<s32>(2, 0));
 	}
 	else
 	{
 		xui_method_ptrcall(m_namectrl, set_iconsize	 )(xui_vector<s32>(0));
-		xui_method_ptrcall(m_namectrl, set_textalign )(TA_CC);
+		xui_method_ptrcall(m_namectrl, set_textalign )(TEXTALIGN_CC);
 		xui_method_ptrcall(m_namectrl, set_textoffset)(xui_vector<s32>(0));
 	}
 

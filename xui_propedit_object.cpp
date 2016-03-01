@@ -18,7 +18,7 @@ xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* ico
 	xui_method_ptrcall(textctrl, set_icon		)(icon);
 	xui_method_ptrcall(textctrl, set_iconsize	)(xui_vector<s32>(12));
 	xui_method_ptrcall(textctrl, set_iconalign	)(IMAGE_FRONT_TEXT);
-	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(textctrl, set_iconoffset )(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(textctrl, set_textoffset )(xui_vector<s32>(2, 0));
 	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlnonfocus);

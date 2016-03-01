@@ -343,26 +343,26 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 		}
 	}
 }
-xui_method_explain(xui_desktop, os_mousedclick,	void					)( xui_method_mouse& args )
-{
-	xui_component* component = NULL;
-
-	if (m_floatctrl)
-		component = m_floatctrl->choose(args.point);
-	if (component == NULL)
-	{
-		if (get_modaltop())
-			component = get_modaltop()->choose(args.point);
-		else
-			component = choose(args.point);
-	}
-
-	if (component)
-	{
-		component->on_mousedoubleclick(			  args);
-		component->xm_mousedoubleclick(component, args);
-	}
-}
+//xui_method_explain(xui_desktop, os_mousedclick,	void					)( xui_method_mouse& args )
+//{
+//	xui_component* component = NULL;
+//
+//	if (m_floatctrl)
+//		component = m_floatctrl->choose(args.point);
+//	if (component == NULL)
+//	{
+//		if (get_modaltop())
+//			component = get_modaltop()->choose(args.point);
+//		else
+//			component = choose(args.point);
+//	}
+//
+//	if (component)
+//	{
+//		component->on_mousedoubleclick(			  args);
+//		component->xm_mousedoubleclick(component, args);
+//	}
+//}
 xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args )
 {
 	xui_component* component = NULL;

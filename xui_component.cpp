@@ -25,6 +25,8 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size )
 	m_backalpha = 1.0f;
 	m_backcolor = xui_colour::transparent;
 	m_maskcolor	= xui_colour::white;
+	m_clicktime = -1.0f;
+	m_clickdown = xui_vector<s32>(0);
 }
 
 /*
@@ -436,6 +438,13 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 		m_init = true;
 	}
 
+	if (m_clicktime >= 0.0f)
+	{
+		m_clicktime += delta;
+		if (m_clicktime > 0.3f)
+			m_clicktime =-1.0f;
+	}
+
 	xui_method_args     args; 
 	on_updateself(      args);
 	xm_updateself(this, args);
@@ -581,6 +590,23 @@ xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&	
 	{
 		on_mouseclick(      args);
 		xm_mouseclick(this, args);
+		if (m_clicktime < 0.0f)
+		{
+			m_clicktime = 0.0f;
+			m_clickdown = args.point;
+		}
+		else
+		{
+			if (xui_abs(m_clickdown.x-args.point.x) <= 4 &&
+				xui_abs(m_clickdown.y-args.point.y) <= 4)
+			{
+				on_mousedoubleclick(	  args);
+				xm_mousedoubleclick(this, args);
+			}
+
+			m_clicktime =-1.0f;
+			m_clickdown = xui_vector<s32>(0);
+		}
 	}
 }
 xui_method_explain(xui_component, on_mousemove,			void					)( xui_method_mouse&		args )

@@ -269,14 +269,14 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 	//水平方向对齐
 	switch (textalign)
 	{
-	case TA_CT:	//CT
-	case TA_CC:	//CC
-	case TA_CB:	//CB
+	case TEXTALIGN_CT:	//CT
+	case TEXTALIGN_CC:	//CC
+	case TEXTALIGN_CB:	//CB
 		drawrect.oft_x((calcrect.get_sz().w - size.w) / 2);
 		break;
-	case TA_RT:	//RT
-	case TA_RC:	//RC
-	case TA_RB:	//RB
+	case TEXTALIGN_RT:	//RT
+	case TEXTALIGN_RC:	//RC
+	case TEXTALIGN_RB:	//RB
 		drawrect.oft_x((calcrect.get_sz().w - size.w));
 		break;
 	}
@@ -284,14 +284,14 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 	//竖直方向对齐
 	switch (textalign)
 	{
-	case TA_LC:	//LC
-	case TA_CC:	//CC
-	case TA_RC:	//RC
+	case TEXTALIGN_LC:	//LC
+	case TEXTALIGN_CC:	//CC
+	case TEXTALIGN_RC:	//RC
 		drawrect.oft_y((calcrect.get_sz().h - size.h) / 2);
 		break;
-	case TA_LB:	//LB
-	case TA_CB:	//CB
-	case TA_RB:	//RB
+	case TEXTALIGN_LB:	//LB
+	case TEXTALIGN_CB:	//CB
+	case TEXTALIGN_RB:	//RB
 		drawrect.oft_y((calcrect.get_sz().h - size.h));
 		break;
 	}

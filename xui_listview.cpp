@@ -31,7 +31,7 @@ xui_create_explain(xui_listview)( const xui_vector<s32>& size, bool drawtick )
 {
 	m_drawtick		= drawtick;
 	m_iconsize		= xui_vector<s32>(0);
-	m_textalign		= TA_LC;
+	m_textalign		= TEXTALIGN_LC;
 	m_iconalign		= IMAGE_FRONT_TEXT;
 	m_movecolor		= default_movecolor;
 	m_tickcolor		= default_tickcolor;

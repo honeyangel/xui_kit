@@ -313,6 +313,8 @@ protected:
 	f32								m_backalpha;
 	xui_colour						m_backcolor;
     xui_colour						m_maskcolor;
+	f32								m_clicktime;
+	xui_vector<s32>					m_clickdown;
 };
 
 #endif//__xui_component_h__

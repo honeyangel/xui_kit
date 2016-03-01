@@ -77,7 +77,7 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 			rt.bx = m_border.ax + i*keyspace+50 - value;
 			rt.ay =  2;
 			rt.by = 24;
-			rt    = xui_convas::get_ins()->calc_draw(text.str(), m_textfont, rt, TA_CT, true);
+			rt    = xui_convas::get_ins()->calc_draw(text.str(), m_textfont, rt, TEXTALIGN_CT, true);
 
 			if (i != timeview->get_curframe())
 			{

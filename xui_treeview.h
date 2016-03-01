@@ -91,7 +91,7 @@ public:
 		u08						 _boolmode  = TOGGLE_CIRCLE,
 		const xui_rect2d<s32>&	 _borderrt  = xui_rect2d<s32>(2),
 		u08                      _iconalign = IMAGE_C,
-		u08                      _textalign = TA_LC )
+		u08                      _textalign = TEXTALIGN_LC )
 	{
 		type		= _type;
 		size		= _size;

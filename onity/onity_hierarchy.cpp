@@ -27,7 +27,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_create,	set_corner		)(3);
 	xui_method_ptrcall(m_create,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_create,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_create,	set_textalign	)(TA_LC);
+	xui_method_ptrcall(m_create,	set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_create,	set_iconsize	)(xui_vector<s32>(0));
 	xui_method_ptrcall(m_create,	ini_drawer		)(L"Create");
 	xui_method_ptrcall(m_create,	set_menu		)(menu);
@@ -40,7 +40,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_search,	set_backcolor	)(xui_colour(1.0f, 0.20f));
 	xui_method_ptrcall(m_search,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_search,	set_textalign	)(TA_LC);
+	xui_method_ptrcall(m_search,	set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_search,	set_textoffset	)(xui_vector<s32>(2, 0));
 	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(8, 2, 24, 2));
 	xui_method_ptrcall(m_search,	set_corner		)(10);

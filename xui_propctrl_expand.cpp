@@ -30,7 +30,7 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 	//name
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
 	xui_method_ptrcall(m_namectrl, set_parent	)(this);
-	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
+	xui_method_ptrcall(m_namectrl, set_textalign)(TEXTALIGN_LC);
 	m_widgetvec.push_back(m_namectrl);
 
 	//prop

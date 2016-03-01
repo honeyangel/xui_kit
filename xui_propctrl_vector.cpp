@@ -27,7 +27,7 @@ xui_create_explain(xui_propctrl_vector)( xui_propdata* propdata )
 	m_subyedit = new xui_propedit_number(this, datavector->get_interval());
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
 	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
-	xui_method_ptrcall(m_namectrl,	set_textalign	)(TA_LC);
+	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);
 	m_widgetvec.push_back(m_namectrl);
 
 	xui_drawer*  subxname = m_subxedit->get_namectrl();
@@ -184,13 +184,13 @@ xui_create_explain(xui_propctrl_vector_button)( xui_propdata* propdata )
 	xui_method_ptrcall(m_zeroctrl,	set_corner		)(3);
 	xui_method_ptrcall(m_zeroctrl,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_zeroctrl,	set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(m_zeroctrl,	set_textalign	)(TA_CC);
+	xui_method_ptrcall(m_zeroctrl,	set_textalign	)(TEXTALIGN_CC);
 	m_widgetvec.push_back(m_zeroctrl);
 
 	xui_drawer*  subxname = m_subxedit->get_namectrl();
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
-	xui_method_ptrcall(subxname,	set_textalign	)(TA_CC);
-	xui_method_ptrcall(subyname,	set_textalign	)(TA_CC);
+	xui_method_ptrcall(subxname,	set_textalign	)(TEXTALIGN_CC);
+	xui_method_ptrcall(subyname,	set_textalign	)(TEXTALIGN_CC);
 }
 
 /*

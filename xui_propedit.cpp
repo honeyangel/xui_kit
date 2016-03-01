@@ -27,7 +27,7 @@ xui_create_explain(xui_propedit_base)( xui_propctrl* propctrl )
 : xui_propedit(propctrl)
 {
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
-	xui_method_ptrcall(m_namectrl, set_textalign)(TA_LC);
+	xui_method_ptrcall(m_namectrl, set_textalign)(TEXTALIGN_LC);
 	m_namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlnonfocus);
 	m_namectrl->xm_getfocus		+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_editctrlgetfocus);
 	m_namectrl->xm_textchanged	+= new xui_method_member<xui_method_args, xui_propedit_base>(this, &xui_propedit_base::on_namectrltextchanged);
@@ -210,7 +210,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlgetfocus);
@@ -288,7 +288,7 @@ xui_create_explain(xui_propedit_string)( xui_propctrl* propctrl )
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textalign	)(TA_LC);
+	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlgetfocus);

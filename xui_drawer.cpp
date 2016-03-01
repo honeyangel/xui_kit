@@ -19,7 +19,7 @@ xui_method_explain(xui_drawer, create,				xui_drawer*				)( const std::wstring& 
 {
 	xui_drawer* drawer = new xui_drawer(xui_vector<s32>(80, 24));
 	xui_method_ptrcall(drawer, set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(drawer, set_textalign)(TA_LC);
+	xui_method_ptrcall(drawer, set_textalign)(TEXTALIGN_LC);
 	xui_method_ptrcall(drawer, ini_drawer	)(text);
 	return drawer;
 }
@@ -32,7 +32,7 @@ xui_create_explain(xui_drawer)( const xui_vector<s32>& size )
 {
 	m_icon			= NULL;
 	m_iconsize		= xui_vector<s32>(0);
-	m_textalign		= TA_LC;
+	m_textalign		= TEXTALIGN_LC;
 	m_iconalign		= IMAGE_FRONT_TEXT;
 	m_textoffset	= xui_vector<s32>(0);
 	m_iconoffset	= xui_vector<s32>(0);

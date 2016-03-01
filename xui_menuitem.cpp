@@ -128,7 +128,7 @@ xui_method_explain(xui_menuitem, on_renderself,		void					)( xui_method_args&  a
 	{
 		xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 		rt.ax = rt.bx-72;
-		rt    = xui_convas::get_ins()->calc_draw(m_hint, m_textfont, rt, TA_LC, true);
+		rt    = xui_convas::get_ins()->calc_draw(m_hint, m_textfont, rt, TEXTALIGN_LC, true);
 		xui_convas::get_ins()->draw_text(m_hint, m_textfont, rt.get_pt(), m_draw);
 	}
 
