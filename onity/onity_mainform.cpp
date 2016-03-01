@@ -11,6 +11,8 @@
 #include "onity_inspector.h"
 #include "onity_console.h"
 #include "onity_project.h"
+#include "onity_timeline.h"
+#include "onity_game.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -88,10 +90,14 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_inspector,		set_data		)(new onity_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new onity_project);
 	xui_method_ptrcall(m_console,		set_data		)(new onity_console);
+	xui_method_ptrcall(m_timeline,		set_data		)(new onity_timeline);
+	xui_method_ptrcall(m_game,			set_data		)(new onity_game);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");

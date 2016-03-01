@@ -121,6 +121,7 @@ xui_create_explain(onity_project)( void )
 
 	m_sizectrl = new xui_control(xui_vector<s32>(4));
 	xui_method_ptrcall(m_sizectrl,	xm_mousemove		) += new xui_method_member<xui_method_mouse, onity_project>(this, &onity_project::on_sizectrlmousemove);
+	xui_method_ptrcall(m_sizectrl,	ini_component		)(0, 0, DOCKSTYLE_U);
 	xui_method_ptrcall(m_sizectrl,	set_cursor			)(CURSOR_WE);
 
 	m_fill = new xui_panel(xui_vector<s32>(100));
@@ -212,7 +213,7 @@ xui_method_explain(onity_project, on_load,					void)( xui_method_args& args )
 {
 	xui_dockpage::on_load(args);
 	 
-	std::wstring workpath = L"C:/XUI";//xui_global::get_workpath();
+	std::wstring workpath = L"D:/BreezeGame/art/res";//xui_global::get_workpath();
 	u32 index = 0;
 	std::vector<std::wstring> pathvec = xui_global::get_path(workpath);
 	for (u32 i = 0; i < pathvec.size(); ++i,++index)
@@ -308,7 +309,7 @@ xui_method_explain(onity_project, on_lineviewdclick,		void)( xui_component* send
 xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender, xui_method_args&  args )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-	std::wstring path = L"C:/XUI";
+	std::wstring path = L"D:/BreezeGame/art/res";
 	if (nodevec.size() > 0)
 	{
 		xui_treenode*    node = nodevec.front();

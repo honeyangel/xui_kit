@@ -29,6 +29,7 @@ enum
 	DOCKSTYLE_R,	//right
 	DOCKSTYLE_B,	//bottom
 	DOCKSTYLE_F,	//fill
+	DOCKSTYLE_U,	//user
 };
 
 enum

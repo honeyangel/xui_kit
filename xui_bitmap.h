@@ -30,6 +30,7 @@ public:
 	void					set_bind	( void );
 	void					non_bind	( void );
 	const xui_vector<s32>&	get_size	( void ) const;
+	GLuint					get_object	( void ) const;
 	u08						get_format	( void ) const;
 	void					get_buffer	( const xui_rect2d<s32>& rect, void* data );
 	void					set_buffer	( const xui_rect2d<s32>& rect, void* data );

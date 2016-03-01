@@ -15,3 +15,14 @@
 /Release/*.log
 /bin/*.pdb
 /onity/Debug/*.pdb
+/xui_demo/Debug/*.tlog
+/onity/Debug/*.xml
+*.log
+*.xml
+*.user
+*.ilk
+*.exe
+*.idb
+*.lastbuildstate
+*.obj
+*.pdb

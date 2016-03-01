@@ -3,6 +3,12 @@
 #include "xui_bitmap.h"
 #include "xui_family_bitmap.h"
 
+void xui_png_readdata( png_structp png, png_bytep buffer, png_size_t size )
+{
+	FILE* handle = static_cast<FILE*>(png_get_io_ptr(png));
+	fread(buffer, 1, size, handle);
+}
+
 /*
 // static
 */
@@ -38,8 +44,8 @@ xui_method_explain(xui_bitmap, create,		xui_bitmap*				)( const std::string& fil
 	}
 
 	// header
-	png_init_io  (png, pio);
-	png_read_info(png, pngInfo);
+	png_set_read_fn(png, pio, xui_png_readdata);
+	png_read_info  (png, pngInfo);
 
 	// get
 	png_byte		depth		= png_get_bit_depth	  (png, pngInfo);
@@ -180,6 +186,11 @@ xui_method_explain(xui_bitmap, non_bind,	void					)( void )
 xui_method_explain(xui_bitmap, get_size,	const xui_vector<s32>&	)( void ) const
 {
 	return m_size;
+}
+
+xui_method_explain(xui_bitmap, get_object,	GLuint					)( void ) const
+{
+	return m_object;
 }
 
 xui_method_explain(xui_bitmap, get_format,	u08						)( void ) const

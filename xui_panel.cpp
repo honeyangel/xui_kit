@@ -279,7 +279,8 @@ xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args 
 	xui_vector<s32> sz(0);
 	xui_vecptr_addloop(m_childctrl)
 	{
-		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_F)
+		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_F ||
+			m_childctrl[i]->get_dockstyle() == DOCKSTYLE_U)
 			continue;
 
 		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_L ||

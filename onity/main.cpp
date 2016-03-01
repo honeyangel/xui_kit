@@ -1,4 +1,7 @@
 #include <Shlobj.h>
+#include "NPRender.h"
+#include "NP2DSLib.h"
+
 #include "xui_family_create_win.h"
 #include "xui_timermgr.h"
 #include "xui_convas.h"
@@ -262,6 +265,9 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 
 	xui_desktop::get_ins()->add_child(new onity_mainform());
 	xui_global::set_fwatchstart(xui_global::get_workpath());
+
+	NPRender::Init();
+	NP2DSLib::Init();
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));

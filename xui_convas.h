@@ -30,6 +30,7 @@ public:
 	*/
 	void					begin				( void );
 	void					clear				( const xui_colour& color );
+	void					present				( void );
 
 	/*
 	//cliprect

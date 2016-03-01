@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E5ECC7C0-780E-481E-9AD2-96694045FF51}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>XUI</RootNamespace>
+    <RootNamespace>xui_kit</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -63,6 +63,9 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalDependencies>opengl32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -83,9 +86,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="xui_demo.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_dockpage.h" />
     <ClInclude Include="xui_dockview.h" />
@@ -246,11 +246,7 @@
     <ClCompile Include="libzip\src\trees.c" />
     <ClCompile Include="libzip\src\uncompr.c" />
     <ClCompile Include="libzip\src\zutil.c" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="xui_colour.cpp" />
-    <ClCompile Include="xui_demo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="xui_dialog.cpp" />
     <ClCompile Include="xui_dockpage.cpp" />
     <ClCompile Include="xui_dockview.cpp" />

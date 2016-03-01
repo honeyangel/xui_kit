@@ -6,6 +6,9 @@
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_project.h" />
+    <ClInclude Include="onity_game.h" />
+    <ClInclude Include="onity_timeline.h" />
+    <ClInclude Include="onity_renderview.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -14,5 +17,8 @@
     <ClCompile Include="onity_console.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_project.cpp" />
+    <ClCompile Include="onity_game.cpp" />
+    <ClCompile Include="onity_timeline.cpp" />
+    <ClCompile Include="onity_renderview.cpp" />
   </ItemGroup>
 </Project>

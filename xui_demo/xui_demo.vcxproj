@@ -10,39 +10,10 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="onity_console.h" />
-    <ClInclude Include="onity_game.h" />
-    <ClInclude Include="onity_hierarchy.h" />
-    <ClInclude Include="onity_inspector.h" />
-    <ClInclude Include="onity_mainform.h" />
-    <ClInclude Include="onity_project.h" />
-    <ClInclude Include="onity_timeline.h" />
-    <ClInclude Include="onity_renderview.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="onity_console.cpp" />
-    <ClCompile Include="onity_game.cpp" />
-    <ClCompile Include="onity_hierarchy.cpp" />
-    <ClCompile Include="onity_inspector.cpp" />
-    <ClCompile Include="onity_mainform.cpp" />
-    <ClCompile Include="onity_project.cpp" />
-    <ClCompile Include="onity_timeline.cpp" />
-    <ClCompile Include="onity_renderview.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\engine\build\Win32\NPEngine_VC10.vcxproj">
-      <Project>{97847f09-efa8-4cb2-a9e5-2eb17b16b59a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\xui_kit.vcxproj">
-      <Project>{e5ecc7c0-780e-481e-9ad2-96694045ff51}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B27893E0-A196-47A0-8C3E-FF1F864FA4A1}</ProjectGuid>
+    <ProjectGuid>{26367678-7E27-4DF1-BAA5-0B103D100CB7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>onity</RootNamespace>
+    <RootNamespace>xui_demo</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -52,7 +23,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -69,7 +40,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,14 +52,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;winmm.lib;GLee_VC10.lib;pthreadVC2.lib;fmod_event.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../BreezeGameBranchFlyMode_V26/engine/lib/win32/extern;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;xui_kit.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,7 +70,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +79,13 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="xui_demo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xui_demo.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
