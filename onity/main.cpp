@@ -243,7 +243,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	wc.lpfnWndProc		= WndProc;
 	wc.lpszClassName	= L"Onity";
 	wc.lpszMenuName		= NULL;
-	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC | CS_DBLCLKS;
+	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
 
 	if (!RegisterClass(&wc))
 		return 0;
@@ -290,8 +290,8 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 			render_window->present();
 
 			int delta = timeGetTime() - time;
-			if (delta < 16)
-				Sleep(16-delta);
+			//if (delta < 16)
+				//Sleep(16-delta);
 		}
 	}
 

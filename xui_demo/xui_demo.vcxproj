@@ -86,6 +86,11 @@
   <ItemGroup>
     <ClInclude Include="xui_demo.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xui_kit.vcxproj">
+      <Project>{e5ecc7c0-780e-481e-9ad2-96694045ff51}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

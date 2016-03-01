@@ -36,7 +36,7 @@ xui_method_explain(onity_renderview, render,				void)( void )
 	attach_framebuffer();
 	xui_convas::get_ins()->set_viewport(get_renderrt());
 	xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
-	xui_convas::get_ins()->clear(get_rendercolor());
+	//xui_convas::get_ins()->clear(get_rendercolor());
 	xui_method_args     args; 
 	on_renderself(      args);
 	xm_renderself(this, args);
@@ -45,8 +45,13 @@ xui_method_explain(onity_renderview, render,				void)( void )
 	xui_convas::get_ins()->set_cliprect(cliprect);
 	xui_convas::get_ins()->begin();
 
-	xui_rect2d<s32> rt = get_renderrtabs();
-	xui_convas::get_ins()->draw_image(m_colorbitmap, rt, get_vertexcolor());
+	xui_rect2d<s32> src;
+	src.ax = 0;
+	src.bx = m_colorbitmap->get_size().w;
+	src.ay = m_colorbitmap->get_size().h;
+	src.by = 0;
+	xui_rect2d<s32> dst = get_renderrtabs();
+	xui_convas::get_ins()->draw_image(m_colorbitmap, src, dst, get_vertexcolor());
 
 	xui_control::render_else();
 }
@@ -78,7 +83,7 @@ xui_method_explain(onity_renderview, create_framebuffer,	void)( void )
 		attach_framebuffer();
 
 		xui_vector<s32> size = get_rendersz();
-		m_colorbitmap = new xui_bitmap(size, xui_bitmap_format::R8G8B8A8, NULL);
+		m_colorbitmap = new xui_bitmap(size, xui_bitmap_format::R8G8B8, NULL);
 		glFramebufferTexture2D(
 			GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0,

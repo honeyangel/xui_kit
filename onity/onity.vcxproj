@@ -35,6 +35,17 @@
     <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\engine\build\Win32\NPEngine_VC10.vcxproj">
       <Project>{97847f09-efa8-4cb2-a9e5-2eb17b16b59a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\omiga\Project\win32\Omiga.vcxproj">
+      <Project>{7e3d0a80-0fd4-4dc2-baac-836adcf0f60e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\project\win32\Game.vcxproj">
+      <Project>{90732415-59ab-4e46-93b6-47553fc6693c}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
     <ProjectReference Include="..\xui_kit.vcxproj">
       <Project>{e5ecc7c0-780e-481e-9ad2-96694045ff51}</Project>
     </ProjectReference>
@@ -48,7 +59,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -77,14 +88,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;OGLEE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;winmm.lib;GLee_VC10.lib;pthreadVC2.lib;fmod_event.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../BreezeGameBranchFlyMode_V26/engine/lib/win32/extern;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;GLee_VC10.lib;pthreadVC2.lib;fmod_event.lib;fmodex_vc.lib;ws2_32.lib;wldap32.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../BreezeGameBranchFlyMode_V26/engine/lib/win32/extern;../../BreezeGameBranchFlyMode_V26/Game/Network/Platform/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
