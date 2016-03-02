@@ -742,6 +742,60 @@ public:
 	virtual xui_vector<f64>		get_value	( void ) const = 0;
 	virtual void				set_value	( const xui_vector<f64>& value ) = 0;
 };
+class xui_propdata_vector_func : public xui_propdata_vector
+{
+public:
+	typedef xui_vector<f64> (*get_func)( void* userptr );
+	typedef void			(*set_func)( void* userptr, const xui_vector<f64>& value );
+
+	/*
+	//constructor
+	*/
+	xui_propdata_vector_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, const xui_vector<f64>& defvalue = xui_vector<f64>(0) )
+	: xui_propdata_vector(kind, name, func)
+	{
+		m_userget	= userget;
+		m_userset	= userset;
+		m_userptr	= userptr;
+		m_defvalue	= defvalue;
+		m_interval	= interval;
+	}
+
+	/*
+	//virtual
+	*/
+	virtual f64					get_interval( void ) const
+	{
+		return m_interval;
+	}
+	virtual void				set_defvalue( void )
+	{
+		set_value(m_defvalue);
+	}
+	virtual xui_vector<f64>		get_value	( void ) const
+	{
+		return m_userget(m_userptr);
+	}
+	virtual void				set_value	( const xui_vector<f64>& value )
+	{
+		xui_vector<f64> temp = get_value();
+		if (get_value() != value)
+		{
+			m_userset(m_userptr, value);
+			on_valuechanged();
+		}
+	}
+
+protected:
+	/*
+	//member
+	*/
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
+	xui_vector<f64>				m_defvalue;
+	f64							m_interval;
+};
 template<typename T>
 class xui_propdata_vector_impl : public xui_propdata_vector
 {

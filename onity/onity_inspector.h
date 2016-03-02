@@ -12,6 +12,17 @@ public:
 	//constructor
 	*/
 	onity_inspector( void );
+
+protected:
+	/*
+	//callback
+	*/
+	virtual void	on_load( xui_method_args& args );
+
+	/*
+	//member
+	*/
+	xui_propview*	m_view;
 };
 
 #endif//__onity_inspector_h__

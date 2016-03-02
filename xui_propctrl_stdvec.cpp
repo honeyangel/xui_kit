@@ -25,18 +25,18 @@ xui_create_explain(xui_propctrl_stdvec)( xui_propdata* propdata )
 	m_dragelem = -1;
 	m_dropelem = -1;
 
+	//name
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
+	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
+	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);
+	m_widgetvec.push_back(m_namectrl);
+
 	//plus
 	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_propexpand);
 	xui_method_ptrcall(m_propplus,	set_parent		)(this);
 	xui_method_ptrcall(m_propplus,	ini_component	)(true, true);
 	m_widgetvec.push_back(m_propplus);
-
-	//name
-	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
-	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
-	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);
-	m_widgetvec.push_back(m_namectrl);
 
 	//size
 	m_propedit = new xui_propedit_stdvec(this);

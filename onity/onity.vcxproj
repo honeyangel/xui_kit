@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;OGLEE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
