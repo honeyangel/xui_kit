@@ -608,7 +608,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 
 	xui_control::render_else();
 
-	if (m_renderhead)
+	if (m_renderhead && m_rendergrid)
 	{
 		xui_vector<s32> pt = get_screenpt();
 		p1.x = pt.x;
@@ -646,6 +646,7 @@ xui_method_explain(xui_treeview, on_invalid,			void								)( xui_method_args&  
 xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&  args )
 {
 	xui_container::on_perform(args);
+
 	s32 width = 0;
 	xui_vecptr_addloop(m_columninfo)
 	{

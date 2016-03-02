@@ -104,6 +104,7 @@ public:
 	*/
 	xui_method<xui_method_args>		xm_setclientsz;
 	xui_method<xui_method_args>		xm_setborderrt;
+	xui_method<xui_method_args>		xm_renderelse;
 
 protected:
 	/*

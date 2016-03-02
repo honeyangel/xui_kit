@@ -22,6 +22,7 @@ xui_convas::xui_convas( void )
 xui_method_explain(xui_convas, begin,				void					)( void )
 {
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_POLYGON_SMOOTH);
 	glEnable (GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -56,9 +57,9 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 			glEnable (GL_SCISSOR_TEST);
 			glScissor(
 				m_cliprect.ax, 
-				m_viewport.get_h()-1-m_cliprect.by, 
-				m_cliprect.get_w()+1, 
-				m_cliprect.get_h()+1);
+				m_viewport.get_h()-m_cliprect.by, 
+				m_cliprect.get_w(), 
+				m_cliprect.get_h());
 		}
 		else
 		{

@@ -202,11 +202,13 @@ xui_method_explain(xui_scroll, get_hallowrt,	xui_rect2d<s32>	)( void ) const
 xui_method_explain(xui_scroll, on_lock,			void			)( xui_method_args&  args )
 {
 	xui_control::on_lock(args);
+	set_maskcolor(xui_colour::white);
 	m_thumb->set_visible(false);
 }
 xui_method_explain(xui_scroll, on_free,			void			)( xui_method_args&  args )
 {
 	xui_control::on_free(args);
+	set_maskcolor(xui_colour::white);
 	m_thumb->set_visible(true);
 }
 xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args&  args )

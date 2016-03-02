@@ -75,8 +75,6 @@ xui_create_explain(onity_project)( void )
 	m_pathview  = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_pathview,	xm_selectedchange	) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_treeviewselection);
 	xui_method_ptrcall(m_pathview,	ini_component		)(0, 0, DOCKSTYLE_L);
-	xui_method_ptrcall(m_pathview,	set_sidestyle		)(SIDESTYLE_S);
-	xui_method_ptrcall(m_pathview,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_pathview,	set_hscrollauto		)(false);
 
 	m_lineview = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
@@ -84,8 +82,6 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_lineview,	xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse, onity_project>(this, &onity_project::on_lineviewdclick);
 	xui_method_ptrcall(m_lineview,	ini_component		)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_lineview,	set_drawcolor		)(false);
-	xui_method_ptrcall(m_lineview,	set_sidecolor		)(xui_colour::black);
-	xui_method_ptrcall(m_lineview,	set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_lineview,	set_hscrollauto		)(false);
 	m_drawview = new xui_panel(xui_vector<s32>(100));
 	xui_method_ptrcall(m_drawview,	ini_component		)(0, 0, DOCKSTYLE_F);
@@ -94,8 +90,6 @@ xui_create_explain(onity_project)( void )
 
 	m_pathpane = new xui_panel(xui_vector<s32>(20));
 	xui_method_ptrcall(m_pathpane,	ini_component		)(0, 0, DOCKSTYLE_T);
-	xui_method_ptrcall(m_pathpane,	set_sidestyle		)(SIDESTYLE_S);
-	xui_method_ptrcall(m_pathpane,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_pathpane,	set_drawcolor		)(false);
 	xui_method_ptrcall(m_pathpane,	set_borderrt		)(xui_rect2d<s32>(8, 0, 8, 0));
 	xui_method_ptrcall(m_pathpane,	set_hscrollauto		)(false);
@@ -111,8 +105,6 @@ xui_create_explain(onity_project)( void )
 
 	m_toolpane = new xui_panel(xui_vector<s32>(20));
 	xui_method_ptrcall(m_toolpane,	ini_component		)(0, 0, DOCKSTYLE_B);
-	xui_method_ptrcall(m_toolpane,	set_sidestyle		)(SIDESTYLE_S);
-	xui_method_ptrcall(m_toolpane,	set_sidecolor		)(xui_colour::black);
 	xui_method_ptrcall(m_toolpane,	set_drawcolor		)(false);
 	xui_method_ptrcall(m_toolpane,	set_borderrt		)(xui_rect2d<s32>(4, 2, 24, 2));
 	xui_method_ptrcall(m_toolpane,	set_hscrollauto		)(false);
@@ -126,6 +118,7 @@ xui_create_explain(onity_project)( void )
 
 	m_fill = new xui_panel(xui_vector<s32>(100));
 	xui_method_ptrcall(m_fill,		xm_perform			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_fillperform);
+	xui_method_ptrcall(m_fill,		xm_renderelse		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_fillrenderelse);
 	xui_method_ptrcall(m_fill,		ini_component		)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_fill,		set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_fill,		set_sidecolor		)(xui_colour::black);
@@ -254,6 +247,16 @@ xui_method_explain(onity_project, on_fillperform,			void)( xui_component* sender
 	m_sizectrl->on_perform_h(rt.get_h());
 	m_sizectrl->on_perform_x(rt.bx-m_sizectrl->get_renderw());
 	m_sizectrl->on_perform_y(rt.ay);
+}
+xui_method_explain(onity_project, on_fillrenderelse,		void)( xui_component* sender, xui_method_args&  args )
+{
+	xui_rect2d<s32> rt;
+	rt = m_pathview->get_renderrtabs();
+	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.bx, rt.ay), xui_vector<s32>(rt.bx, rt.by), xui_colour::black);
+	rt = m_pathpane->get_renderrtabs();
+	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by), xui_colour::black);
+	rt = m_toolpane->get_renderrtabs();
+	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay), xui_colour::black);
 }
 xui_method_explain(onity_project, on_sizectrlmousemove,		void)( xui_component* sender, xui_method_mouse& args )
 {

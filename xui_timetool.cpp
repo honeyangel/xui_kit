@@ -18,7 +18,7 @@ xui_create_explain(xui_timetool)( xui_timeview* timeview )
 : xui_toolbar(xui_vector<s32>(0, 40))
 {
 	m_grap		= 8;
-	m_border	= xui_rect2d<s32>(0, 8, 0, 8);
+	m_border	= xui_rect2d<s32>(8, 8, 0, 8);
 	m_parent	= timeview;
 
 	//prev

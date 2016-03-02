@@ -56,11 +56,10 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_widgetvec.push_back(m_timetool);
 	m_widgetvec.push_back(m_timegrad);
 
-	m_ksslider = new xui_slider(xui_vector<s32>(150, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS);
+	m_ksslider = new xui_slider(xui_vector<s32>(100, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS);
 	m_ksslider->xm_scroll		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_kssliderscroll);
 	xui_method_ptrcall(m_ksslider, set_parent	)(this);
 	xui_method_ptrcall(m_ksslider, set_backcolor)(xui_colour::darkgray);
-	xui_method_ptrcall(m_ksslider, set_sidestyle)(SIDESTYLE_S);
 	xui_method_ptrcall(m_ksslider, set_corner	)(3);
 	xui_method_ptrcall(m_ksslider, set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_ksslider, ini_scroll	)(100, 15);
@@ -73,7 +72,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, true, false);
 	xui_method_ptrcall(m_timetree, set_parent	)(this);
 	xui_method_ptrcall(m_timetree, set_drawcolor)(false);
-	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(0, 0, 8, 0));
+	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(4, 0, 8, 0));
 	m_timetree->xm_setclientsz	+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
 	m_timetree->xm_invalid		+= new xui_method_member<xui_method_args, xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
 	m_widgetvec.push_back(m_timetree);
@@ -532,7 +531,26 @@ xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& ar
 }
 xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& args )
 {
-	xui_container::on_perform(args);
+	xui_control::on_perform(args);
+
+	//vscroll
+	if (m_vscroll)
+	{
+		xui_rect2d<s32> rt = get_renderrtins();
+		m_vscroll->on_perform_x(rt.bx);
+		m_vscroll->on_perform_y(rt.ay);
+		m_vscroll->on_perform_h(rt.get_h());
+	}
+	//hscroll
+	if (m_hscroll)
+	{
+		xui_rect2d<s32> rt = get_renderrtins();
+		rt.ax += m_timegrad->get_borderrt().ax;
+		m_hscroll->on_perform_x(rt.ax);
+		m_hscroll->on_perform_y(rt.by);
+		m_hscroll->on_perform_w(rt.get_w());
+	}
+
 	xui_vector<s32> pt(0);
 	xui_vector<s32> sz(0);
 	pt.x = m_border.ax;

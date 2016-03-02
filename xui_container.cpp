@@ -279,14 +279,14 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 	xui_rect2d<s32>  clientrt = get_clientrt();
 	xui_rect2d<s32>  renderrt = get_renderrtins();
 
-	if (m_hscroll)   renderrt.by += xui_scroll::default_size;
-	if (m_vscroll)   renderrt.bx += xui_scroll::default_size;
+	if (m_hscroll && m_hscrollshow == false) renderrt.by += xui_scroll::default_size;
+	if (m_vscroll && m_vscrollshow == false) renderrt.bx += xui_scroll::default_size;
 	bool needvscroll = m_vscrollshow;
 	bool needhscroll = m_hscrollshow;
 	if (clientrt.get_h() > renderrt.get_h() && m_vscrollauto) needvscroll = true;
 	if (clientrt.get_w() > renderrt.get_w() && m_hscrollauto) needhscroll = true;
-	if (needvscroll) renderrt.bx -= xui_scroll::default_size;
-	if (needhscroll) renderrt.by -= xui_scroll::default_size;
+	//if (needvscroll) renderrt.bx -= xui_scroll::default_size;
+	//if (needhscroll) renderrt.by -= xui_scroll::default_size;
 
 	if (needvscroll)	create_scroll(FLOWSTYLE_V);
 	else				delete_scroll(FLOWSTYLE_V);
@@ -294,11 +294,11 @@ xui_method_explain(xui_container, update_scroll,	void			)( void )
 	if (needhscroll)	create_scroll(FLOWSTYLE_H);
 	else				delete_scroll(FLOWSTYLE_H);
 
+	renderrt = get_renderrtins();
 	if (m_vscroll)		xui_method_ptrcall(m_vscroll, set_enable)(clientrt.get_h() > renderrt.get_h());
 	if (m_hscroll)		xui_method_ptrcall(m_hscroll, set_enable)(clientrt.get_w() > renderrt.get_w());
 
 	//更新滚动条位置大小和范围
-	renderrt = get_renderrtins();
 	if (m_vscroll)		xui_method_ptrcall(m_vscroll, set_range	)(clientrt.get_h() - renderrt.get_h());
 	if (m_hscroll)		xui_method_ptrcall(m_hscroll, set_range )(clientrt.get_w() - renderrt.get_w());
 }

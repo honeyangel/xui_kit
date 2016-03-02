@@ -15,6 +15,11 @@ public:
 
 protected:
 	/*
+	//callback
+	*/
+	virtual void	on_load( xui_method_args& args );
+
+	/*
 	//member
 	*/
 	xui_timeview*	m_view;

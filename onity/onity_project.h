@@ -27,6 +27,7 @@ protected:
 	void			on_searchtextenter	( xui_component* sender, xui_method_args&  args );
 	void			on_headperform		( xui_component* sender, xui_method_args&  args );
 	void			on_fillperform		( xui_component* sender, xui_method_args&  args );
+	void			on_fillrenderelse	( xui_component* sender, xui_method_args&  args );
 	void			on_sizectrlmousemove( xui_component* sender, xui_method_mouse& args );
 	void			on_lineviewdclick	( xui_component* sender, xui_method_mouse& args );
 	void			on_treeviewselection( xui_component* sender, xui_method_args&  args );

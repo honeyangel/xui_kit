@@ -32,7 +32,15 @@ protected:
 	/*
 	//member
 	*/
+	xui_panel*			m_head;
 	onity_renderview*	m_view;
+	xui_toggle*			m_aspect;
+	xui_menuitem*		m_fill;
+	xui_menuitem*		m_iphone4;
+	xui_menuitem*		m_iphone5;
+	xui_menuitem*		m_iphone6;
+	xui_menuitem*		m_iphone6p;
+	xui_menuitem*		m_ipad;
 };
 
 #endif//__onity_game_h__
