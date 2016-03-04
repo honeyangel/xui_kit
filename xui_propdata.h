@@ -6,7 +6,7 @@
 typedef xui_propctrl*	(*xui_prop_newctrl)( xui_propdata* propdata );
 typedef void			(*xui_prop_additem)( void* vec );
 typedef void			(*xui_prop_delitem)( void* vec );
-typedef xui_propdata*	(*xui_prop_newprop)( void* ptr, xui_propkind* kind );
+typedef xui_propdata*	(*xui_prop_newprop)( void* vec, u32 index, xui_propkind* kind );
 
 class   xui_pickwnd;
 typedef xui_pickwnd*	(*xui_prop_newpick)( xui_propctrl* propctrl );
@@ -40,6 +40,11 @@ public:
 	void						set_edit		( bool flag );
 	bool						can_show		( void ) const;
 	void						set_show		( bool flag );
+
+	/*
+	//refresh
+	*/
+	void						refresh			( void );
 
 protected:
 	/*
@@ -225,8 +230,8 @@ public:
 	/*
 	//virtual
 	*/
-	virtual u32					get_index		( void ) const = 0;
-	virtual void				set_index		( u32 index )  = 0;
+	virtual u32					get_value		( void ) const = 0;
+	virtual void				set_value		( u32 index )  = 0;
 
 protected:
 	/*
@@ -248,8 +253,8 @@ public:
 	/*
 	//override
 	*/
-	virtual u32					get_index		( void ) const;
-	virtual void				set_index		( u32 index );
+	virtual u32					get_value		( void ) const;
+	virtual void				set_value		( u32 index );
 
 protected:
 	/*
@@ -275,7 +280,7 @@ public:
 	/*
 	//virtual
 	*/
-	virtual u32					get_index		( void ) const
+	virtual u32					get_value		( void ) const
 	{
 		u32 index = 0;
 		for (xui_propenum_map::const_iterator itor = m_textmap.begin(); itor != m_textmap.end(); ++itor)
@@ -288,7 +293,7 @@ public:
 
 		return index;
 	}
-	virtual void				set_index		( u32 index )
+	virtual void				set_value		( u32 index )
 	{
 		if (get_value() != index)
 		{
@@ -442,11 +447,6 @@ public:
 	void						add_subprop		( xui_propdata* propdata );
 	void						del_subprop		( xui_propdata* propdata );
 	void						del_subpropall	( void );
-
-	/*
-	//virtual
-	*/
-	virtual void				refresh			( void );
 };
 
 class xui_propdata_expand_bool : public xui_propdata_bool, public xui_expandvary
@@ -576,10 +576,7 @@ public:
 	/*
 	//method
 	*/
-	const xui_propdata_vec&		get_propvec		( void ) const
-	{
-		return m_propvec;
-	}
+	const xui_propdata_vec&		get_propvec		( void ) const;
 
 	/*
 	//virtual
@@ -598,44 +595,44 @@ protected:
 	xui_propdata_vec			m_propvec;
 };
 template<typename T>
-class xui_propdata_stdvec_impl : public xui_propdata_stdvec
+class xui_propdata_stdvec_func : public xui_propdata_stdvec
 {
 public:
+	typedef std::vector<T>&		(*get_func)( void* userptr );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_stdvec_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_prop_additem addfunc, xui_prop_delitem delfunc, xui_prop_newprop newfunc, std::vector<T>* ptr )
+	xui_propdata_stdvec_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_prop_additem addfunc, xui_prop_delitem delfunc, xui_prop_newprop newfunc, get_func userget, void* userptr )
 	: xui_propdata_stdvec(kind, name, func, addfunc, delfunc, newfunc)
 	{
-		m_ptr = ptr;
-		refresh();
+		m_userget = userget;
+		m_userptr = userptr;
+		realloc();
 	}
 
 	/*
 	//refresh
 	*/
-	void						refresh			( void )
+	void						realloc			( void )
 	{
 		for (u32 i = 0; i < m_propvec.size(); ++i)
 			delete m_propvec[i];
 
 		m_propvec.clear();
-		for (u32 i = 0; i < (*m_ptr).size(); ++i)
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)(&(*m_ptr)[i]), m_kind);
+			xui_propdata* propdata = (*m_newprop)((void*)(&vec), i, m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
 		}
 
-		if (m_ctrl)
-		{
-			m_ctrl->on_linkpropdata();
-			m_ctrl->refresh();
-		}
+		refresh();
 	}
 
 	/*
@@ -643,109 +640,113 @@ public:
 	*/
 	virtual u32					get_value		( void ) const
 	{
-		return (*m_ptr).size();
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		return vec.size();
 	}
 	virtual void				set_value		( u32 value )
 	{
-		if ((*m_ptr).size() < value)
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		if (vec.size() < value)
 		{
-			u32 count = value - (*m_ptr).size();
+			u32 count = value - vec.size();
 			for (u32 i = 0; i < count; ++i)
 			{
 				if (m_additem)
 				{
-					(*m_additem)((void*)m_ptr);
+					(*m_additem)((void*)(&vec));
 				}
 				else
 				{
-					(*m_ptr).push_back(T(0));
+					vec.push_back(T(0));
 				}
 			}
 
-			refresh();
+			realloc();
 		}
 		else
-		if ((*m_ptr).size() > value)
+		if (vec.size() > value)
 		{
-			u32 count = (*m_ptr).size() - value;
+			u32 count = vec.size() - value;
 			for (u32 i = 0; i < count; ++i)
 			{
 				if (m_delitem)
 				{
-					(*m_delitem)((void*)m_ptr);
+					(*m_delitem)((void*)(&vec));
 				}
 				else
 				{
-					u32 index = (*m_ptr).size()-1;
-					(*m_ptr).erase((*m_ptr).begin()+index);
+					u32 index = vec.size()-1;
+					vec.erase(vec.begin()+index);
 				}
 			}
 
-			refresh();
+			realloc();
 		}
 	}
 	virtual void				set_index		( u32 oldindex, u32 newindex )
 	{
-		if (oldindex >= (*m_ptr).size() ||
-			newindex >  (*m_ptr).size())
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		if (oldindex >= vec.size() ||
+			newindex >  vec.size())
 			return;
 
-		T value = (*m_ptr)[oldindex];
-		(*m_ptr).insert((*m_ptr).begin()+newindex, value);
+		T value = vec[oldindex];
+		vec.insert(vec.begin()+newindex, value);
 
 		if (newindex < oldindex)
 			++oldindex;
-		(*m_ptr).erase((*m_ptr).begin()+oldindex);
+		vec.erase (vec.begin()+oldindex);
 
-		refresh();
+		realloc();
 	}
 
 protected:
 	/*
 	//member
 	*/
-	std::vector<T>*				m_ptr;
+	get_func					m_userget;
+	void*						m_userptr;
 };
 template<typename T>
-class xui_propdata_stdlst_impl : public xui_propdata_stdvec
+class xui_propdata_stdlst_func : public xui_propdata_stdvec
 {
 public:
+	typedef std::list<T>&		(*get_func)( void* userptr );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_stdlst_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_prop_additem addfunc, xui_prop_delitem delfunc, xui_prop_newprop newfunc, std::list<T>* ptr )
+	xui_propdata_stdlst_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_prop_additem addfunc, xui_prop_delitem delfunc, xui_prop_newprop newfunc, get_func userget, void* userptr )
 	: xui_propdata_stdvec(kind, name, func, addfunc, delfunc, newfunc)
 	{
-		m_ptr = ptr;
-		refresh();
+		m_userget = userget;
+		m_userptr = userptr;
+		realloc();
 	}
 
 	/*
-	//refresh
+	//realloc
 	*/
-	void						refresh			( void )
+	void						realloc			( void )
 	{
 		for (u32 i = 0; i < m_propvec.size(); ++i)
 			delete m_propvec[i];
 
 		m_propvec.clear();
+		std::list<T>& lst = (*m_userget)(m_userptr);
 		u32 i = 0;
-		for (std::list<T>::iterator itor = (*m_ptr).begin(); itor != (*m_ptr).end(); ++itor, ++i)
+		for (std::list<T>::iterator itor = vec.begin(); itor != vec.end(); ++itor, ++i)
 		{
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)(&(*itor)), m_kind);
+			xui_propdata* propdata = (*m_newprop)((void*)(&lst), i, m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
 		}
 
-		if (m_ctrl)
-		{
-			m_ctrl->on_linkpropdata();
-			m_ctrl->refresh();
-		}
+		refresh();
 	}
 
 	/*
@@ -753,75 +754,79 @@ public:
 	*/
 	virtual u32					get_value		( void ) const
 	{
-		return (*m_ptr).size();
+		std::list<T>& lst = (*m_userget)(m_userptr);
+		return lst.size();
 	}
 	virtual void				set_value		( u32 value )
 	{
-		if ((*m_ptr).size() < value)
+		std::list<T>& lst = (*m_userget)(m_userptr);
+		if (lst.size() < value)
 		{
-			u32 count = value - (*m_ptr).size();
+			u32 count = value - lst.size();
 			for (u32 i = 0; i < count; ++i)
 			{
 				if (m_additem)
 				{
-					(*m_additem)((void*)m_ptr);
+					(*m_additem)((void*)(&lst));
 				}
 				else
 				{
-					(*m_ptr).push_back(T(0));
+					lst.push_back(T(0));
 				}
 			}
 
-			refresh();
+			realloc();
 		}
 		else
-		if ((*m_ptr).size() > value)
+		if (lst.size() > value)
 		{
-			u32 count = (*m_ptr).size() - value;
+			u32 count = lst.size() - value;
 			for (u32 i = 0; i < count; ++i)
 			{
 				if (m_delitem)
 				{
-					(*m_delitem)((void*)m_ptr);
+					(*m_delitem)((void*)(&lst));
 				}
 				else
 				{
-					(*m_ptr).pop_back();
+					lst.pop_back();
 				}
 			}
 
-			refresh();
+			realloc();
 		}
 	}
 	virtual void				set_index		( u32 oldindex, u32 newindex )
 	{
-		if (oldindex >= (*m_ptr).size() ||
-			newindex >  (*m_ptr).size())
+		std::list<T>& lst = (*m_userget)(m_userptr)
+		if (oldindex >= lst.size() ||
+			newindex >  lst.size())
 			return;
 
 		std::list<T>::iterator itor;
-		itor = (*m_ptr).begin();
+		itor = lst.begin();
 		std::advance(itor, oldindex);
 		T value = (*itor);
 
-		itor = (*m_ptr).begin();
+		itor = lst.begin();
 		std::advance(itor, newindex);
-		(*m_ptr).insert(itor, value);
+		lst.insert(itor, value);
 
 		if (newindex < oldindex)
 			++oldindex;
-		itor = (*m_ptr).begin();
+		itor = lst.begin();
 		std::advance(itor, oldindex);
-		(*m_ptr).erase(itor);
+		lst.erase (itor);
 
-		refresh();
+		realloc();
 	}
 
 protected:
 	/*
 	//member
 	*/
-	std::list<T>*				m_ptr;
+	get_func					m_userget;
+	void*						m_userptr;
 };
 
 /*
@@ -830,64 +835,21 @@ protected:
 class xui_propdata_vector : public xui_propdata
 {
 public:
-	/*
-	//constructor
-	*/
-	xui_propdata_vector( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func )
-	: xui_propdata(kind, name, func)
-	{}
-
-	/*
-	//virtual
-	*/
-	virtual f64					get_interval( void ) const = 0;
-	virtual void 				set_defvalue( void ) = 0;
-	virtual xui_vector<f64>		get_value	( void ) const = 0;
-	virtual void				set_value	( const xui_vector<f64>& value ) = 0;
-};
-class xui_propdata_vector_func : public xui_propdata_vector
-{
-public:
-	typedef xui_vector<f64> (*get_func)( void* userptr );
-	typedef void			(*set_func)( void* userptr, const xui_vector<f64>& value );
+	typedef xui_vector<f64>		(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, const xui_vector<f64>& value );
 
 	/*
 	//constructor
 	*/
-	xui_propdata_vector_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, const xui_vector<f64>& defvalue = xui_vector<f64>(0) )
-	: xui_propdata_vector(kind, name, func)
-	{
-		m_userget	= userget;
-		m_userset	= userset;
-		m_userptr	= userptr;
-		m_defvalue	= defvalue;
-		m_interval	= interval;
-	}
+	xui_propdata_vector( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, const xui_vector<f64>& defvalue = xui_vector<f64>(0) );
 
 	/*
 	//virtual
 	*/
-	virtual f64					get_interval( void ) const
-	{
-		return m_interval;
-	}
-	virtual void				set_defvalue( void )
-	{
-		set_value(m_defvalue);
-	}
-	virtual xui_vector<f64>		get_value	( void ) const
-	{
-		return m_userget(m_userptr);
-	}
-	virtual void				set_value	( const xui_vector<f64>& value )
-	{
-		xui_vector<f64> temp = get_value();
-		if (get_value() != value)
-		{
-			m_userset(m_userptr, value);
-			on_valuechanged();
-		}
-	}
+	virtual f64					get_interval( void ) const;
+	virtual void 				set_defvalue( void );
+	virtual xui_vector<f64>		get_value	( void ) const;
+	virtual void				set_value	( const xui_vector<f64>& value );
 
 protected:
 	/*
@@ -899,63 +861,6 @@ protected:
 	xui_vector<f64>				m_defvalue;
 	f64							m_interval;
 };
-template<typename T>
-class xui_propdata_vector_impl : public xui_propdata_vector
-{
-public:
-	/*
-	//constructor
-	*/
-	xui_propdata_vector_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_vector<T>* ptr, T interval = T(1), const xui_vector<T>& defvalue = xui_vector<T>(0) )
-	: xui_propdata_vector(kind, name, func)
-	{
-		m_ptr		= ptr;
-		m_defvalue	= defvalue;
-		m_interval	= interval;
-	}
-
-	/*
-	//virtual
-	*/
-	virtual f64					get_interval( void ) const
-	{
-		return (f64)m_interval;
-	}
-	virtual void				set_defvalue( void )
-	{
-		if ((*m_ptr) != m_defvalue)
-		{
-			(*m_ptr)  = m_defvalue;
-			on_valuechanged();
-		}
-	}
-	virtual xui_vector<f64>		get_value	( void ) const
-	{
-		xui_vector<f64> result;
-		result.x = (f64)(*m_ptr).x;
-		result.y = (f64)(*m_ptr).y;
-		return result;
-	}
-	virtual void				set_value	( const xui_vector<f64>& value )
-	{
-		xui_vector<T> temp;
-		temp.x = (T)value.x;
-		temp.y = (T)value.y;
-		if ((*m_ptr) != temp)
-		{
-			(*m_ptr)  = temp;
-			on_valuechanged();
-		}
-	}
-
-protected:
-	/*
-	//member
-	*/
-	xui_vector<T>*				m_ptr;
-	xui_vector<T>				m_defvalue;
-	T							m_interval;
-};
 
 /*
 //rect2d
@@ -963,70 +868,29 @@ protected:
 class xui_propdata_rect2d : public xui_propdata
 {
 public:
+	typedef xui_rect2d<f64>		(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, const xui_rect2d<f64>& value );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_rect2d( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func )
-	: xui_propdata(kind, name, func)
-	{}
+	xui_propdata_rect2d( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1 );
 
 	/*
 	//method
 	*/
-	virtual f64					get_interval( void ) const = 0;
-	virtual xui_rect2d<f64>		get_value	( void ) const = 0;
-	virtual void				set_value	( const xui_rect2d<f64>& value ) = 0;
-};
-template<typename T>
-class xui_propdata_rect2d_impl : public xui_propdata_rect2d
-{
-public:
-	/*
-	//constructor
-	*/
-	xui_propdata_rect2d_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_rect2d<T>* ptr, T interval = T(1) )
-	: xui_propdata_rect2d(kind, name, func)
-	{
-		m_ptr		= ptr;
-		m_interval	= interval;
-	}
-
-	/*
-	//virtual
-	*/
-	virtual f64					get_interval( void ) const
-	{
-		return (f64)m_interval;
-	}
-	virtual xui_rect2d<f64>		get_value	( void ) const
-	{
-		xui_rect2d<f64> result;
-		result.ax = (f64)(*m_ptr).ax;
-		result.ay = (f64)(*m_ptr).ay;
-		result.bx = (f64)(*m_ptr).bx;
-		result.by = (f64)(*m_ptr).by;
-		return result;
-	}
-	virtual void				set_value	( const xui_rect2d<f64>& value )
-	{
-		xui_rect2d<T> temp;
-		temp.ax = (T)value.ax;
-		temp.ay = (T)value.ay;
-		temp.bx = (T)value.bx;
-		temp.by = (T)value.by;
-		if ((*m_ptr) != temp)
-		{
-			(*m_ptr)  = temp;
-			on_valuechanged();
-		}
-	}
+	virtual f64					get_interval( void ) const;
+	virtual xui_rect2d<f64>		get_value	( void ) const;
+	virtual void				set_value	( const xui_rect2d<f64>& value );
 
 protected:
 	/*
 	//member
 	*/
-	xui_rect2d<T>*				m_ptr;
-	T							m_interval;
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
+	f64							m_interval;
 };
 
 /*
@@ -1035,22 +899,27 @@ protected:
 class xui_propdata_colour : public xui_propdata
 {
 public:
+	typedef xui_colour			(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, const xui_colour& value );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_colour( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_colour* ptr );
+	xui_propdata_colour( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr );
 
 	/*
 	//virtual
 	*/
-	virtual const xui_colour&	get_value		( void ) const;
+	virtual xui_colour			get_value		( void ) const;
 	virtual void				set_value		( const xui_colour& value );
 
 protected:
 	/*
 	//member
 	*/
-	xui_colour*					m_ptr;
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 
 /*

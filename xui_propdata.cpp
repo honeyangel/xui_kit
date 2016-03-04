@@ -63,6 +63,18 @@ xui_method_explain(xui_propdata,				set_show,			void					)( bool flag )
 }
 
 /*
+//refresh
+*/
+xui_method_explain(xui_propdata,				refresh,			void					)( void )
+{
+	if (m_ctrl && m_ctrl->has_propdata(this))
+	{
+		m_ctrl->on_linkpropdata();
+		m_ctrl->refresh();
+	}
+}
+
+/*
 //virtual
 */
 xui_method_explain(xui_propdata,				on_valuechanged,	void					)( void )
@@ -260,7 +272,7 @@ xui_create_explain(xui_propdata_enum_func)( xui_propkind* kind, const std::wstri
 /*
 //override
 */
-xui_method_explain(xui_propdata_enum_func,		get_index,			u32						)( void ) const
+xui_method_explain(xui_propdata_enum_func,		get_value,			u32						)( void ) const
 {
 	u32 index = 0;
 	s32 value = (*m_userget)(m_userptr);
@@ -274,9 +286,9 @@ xui_method_explain(xui_propdata_enum_func,		get_index,			u32						)( void ) cons
 
 	return index;
 }
-xui_method_explain(xui_propdata_enum_func,		set_index,			void					)( u32 index )
+xui_method_explain(xui_propdata_enum_func,		set_value,			void					)( u32 index )
 {
-	if (get_index() != index)
+	if (get_value() != index)
 	{
 		xui_propenum_map::iterator itor = m_textmap.begin();
 		std::advance(itor, index);
@@ -332,17 +344,9 @@ xui_method_explain(xui_propdata_expand_plus,	del_subpropall,		void					)( void )
 /*
 //virtual
 */
-xui_method_explain(xui_propdata_expand_plus,	refresh,			void					)( void )
-{
-	if (m_ctrl && m_ctrl->has_propdata(this))
-	{
-		m_ctrl->on_linkpropdata();
-		m_ctrl->refresh();
-	}
-}
 
 //////////////////////////////////////////////////////////////////////////
-//propdata_stdvector
+//propdata_stdvec
 //////////////////////////////////////////////////////////////////////////
 /*
 //constructor
@@ -364,30 +368,115 @@ xui_delete_explain(xui_propdata_stdvec)( void )
 		delete m_propvec[i];
 }
 
+/*
+//method
+*/
+xui_method_explain(xui_propdata_stdvec,			get_propvec,		const xui_propdata_vec&	)( void ) const
+{
+	return m_propvec;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//propdata_vector
+//////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(xui_propdata_vector)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval , const xui_vector<f64>& defvalue  ) 
+: xui_propdata(kind, name, func)
+{
+	m_userget	= userget;
+	m_userset	= userset;
+	m_userptr	= userptr;
+	m_defvalue	= defvalue;
+	m_interval	= interval;
+}
+
+/*
+//method
+*/
+xui_method_explain(xui_propdata_vector,			get_interval,		f64						)( void ) const
+{
+	return m_interval;
+}
+xui_method_explain(xui_propdata_vector,			set_defvalue,		void					)( void )
+{
+	set_value(m_defvalue);
+}
+xui_method_explain(xui_propdata_vector,			get_value,			xui_vector<f64>			)( void ) const
+{
+	return (*m_userget)(m_userptr);
+}
+xui_method_explain(xui_propdata_vector,			set_value,			void					)( const xui_vector<f64>& value )
+{
+	if (get_value() != value)
+	{
+		(*m_userset)(m_userptr, value);
+		on_valuechanged();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//propdata_rect2d
+//////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(xui_propdata_rect2d)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval ) 
+: xui_propdata(kind, name, func)
+{
+	m_userget	= userget;
+	m_userset	= userset;
+	m_userptr	= userptr;
+	m_interval	= interval;
+}
+
+/*
+//method
+*/
+xui_method_explain(xui_propdata_rect2d,			get_interval,		f64						)( void ) const
+{
+	return m_interval;
+}
+xui_method_explain(xui_propdata_rect2d,			get_value,			xui_rect2d<f64>			)( void ) const
+{
+	return (*m_userget)(m_userptr);
+}
+xui_method_explain(xui_propdata_rect2d,			set_value,			void					)( const xui_rect2d<f64>& value )
+{
+	if (get_value() != value)
+	{
+		(*m_userset)(m_userptr, value);
+		on_valuechanged();
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 //propdata_colour
 //////////////////////////////////////////////////////////////////////////
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_colour)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, xui_colour* ptr )
+xui_create_explain(xui_propdata_colour)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr )
 : xui_propdata(kind, name, func)
 {
-	m_ptr = ptr;
+	m_userget = userget;
+	m_userset = userset;
+	m_userptr = userptr;
 }
 
 /*
 //virtual
 */
-xui_method_explain(xui_propdata_colour,			get_value,			const xui_colour&		)( void ) const
+xui_method_explain(xui_propdata_colour,			get_value,			xui_colour				)( void ) const
 {
-	return (*m_ptr);
+	return (*m_userget)(m_userptr);
 }
 xui_method_explain(xui_propdata_colour,			set_value,			void					)( const xui_colour& value )
 {
-	if ((*m_ptr) != value)
+	if (get_value() != value)
 	{
-		(*m_ptr)  = value;
+		(*m_userset)(m_userptr, value);
 		on_valuechanged();
 	}
 }

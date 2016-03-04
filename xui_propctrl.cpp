@@ -25,6 +25,16 @@ xui_method_explain(xui_propctrl,		get_propdata,		const xui_propdata_vec&	)( void
 {
 	return m_propdatavec;
 }
+xui_method_explain(xui_propctrl,		has_propdata,		bool					)( xui_propdata* propdata ) const
+{
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		if (propdata == m_propdatavec[i])
+			return true;
+	}
+
+	return false;
+}
 xui_method_explain(xui_propctrl,		set_propdata,		void					)( xui_propdata* propdata )
 {
 	m_propdata = propdata;
