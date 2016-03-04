@@ -64,10 +64,13 @@ protected:
 class xui_propdata_bool : public xui_propdata
 {
 public:
+	typedef bool				(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, bool value );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_bool( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, bool* ptr );
+	xui_propdata_bool( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr );
 
 	/*
 	//virtual
@@ -79,7 +82,9 @@ protected:
 	/*
 	//member
 	*/
-	bool*						m_ptr;
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 
 /*
@@ -88,22 +93,27 @@ protected:
 class xui_propdata_string : public xui_propdata
 {
 public:
+	typedef std::wstring		(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, const std::wstring& value );
+
 	/*
 	//constructor
 	*/
-	xui_propdata_string( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, std::wstring* ptr );
+	xui_propdata_string( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr );
 
 	/*
 	//virtual
 	*/
-	virtual const std::wstring&	get_value		( void ) const;
+	virtual std::wstring		get_value		( void ) const;
 	virtual void				set_value		( const std::wstring& value );
 
 protected:
 	/*
 	//member
 	*/
-	std::wstring*				m_ptr;
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 
 /*
@@ -115,18 +125,50 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_number( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func )
-	: xui_propdata(kind, name, func)
-	{}
+	xui_propdata_number( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, f64 interval, f64 minvalue, f64 maxvalue );
 
 	/*
 	//virtual
 	*/
-	virtual f64					get_interval	( void ) const = 0;
-	virtual f64					get_minvalue	( void ) const = 0;
-	virtual f64					get_maxvalue	( void ) const = 0;
+	f64							get_interval	( void ) const;
+	f64							get_minvalue	( void ) const;
+	f64							get_maxvalue	( void ) const;
+
 	virtual f64					get_value		( void ) const = 0;
 	virtual void				set_value		( f64 value )  = 0;
+
+protected:
+	/*
+	//member
+	*/
+	f64							m_interval;
+	f64							m_minvalue;
+	f64							m_maxvalue;
+};
+class xui_propdata_number_func : public xui_propdata_number
+{
+public:
+	typedef f64					(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, f64 value );
+
+	/*
+	//constructor
+	*/
+	xui_propdata_number_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 );
+
+	/*
+	//override
+	*/
+	virtual f64					get_value		( void ) const;
+	virtual void				set_value		( f64 value );
+
+protected:
+	/*
+	//member
+	*/
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 template<typename T>
 class xui_propdata_number_impl : public xui_propdata_number
@@ -135,30 +177,15 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_number_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, T* ptr, T interval = T(1), T minvalue = T(0), T maxvalue = T(0) )
-	: xui_propdata_number(kind, name, func)
+	xui_propdata_number_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, T* ptr, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 )
+	: xui_propdata_number(kind, name, func, interval, minvalue, maxvalue)
 	{
-		m_ptr		= ptr;
-		m_interval	= interval;
-		m_minvalue	= minvalue;
-		m_maxvalue	= maxvalue;
+		m_ptr = ptr;
 	}
 
 	/*
 	//override
 	*/
-	virtual f64					get_interval	( void ) const
-	{
-		return (f64)m_interval;
-	}
-	virtual f64					get_minvalue	( void ) const
-	{
-		return (f64)m_minvalue;
-	}
-	virtual f64					get_maxvalue	( void ) const
-	{
-		return (f64)m_maxvalue;
-	}
 	virtual f64					get_value		( void ) const
 	{
 		return (f64)(*m_ptr);
@@ -177,9 +204,6 @@ protected:
 	//member
 	*/
 	T*							m_ptr;
-	T							m_interval;
-	T							m_minvalue;
-	T							m_maxvalue;
 };
 
 /*
@@ -191,31 +215,49 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_enum( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propenum_map& textmap )
-	: xui_propdata(kind, name, func)
-	{
-		m_textmap = textmap;
-	}
+	xui_propdata_enum( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propenum_map& textmap );
 
 	/*
 	//method
 	*/
-	const xui_propenum_map&		get_textmap		( void ) const
-	{
-		return m_textmap;
-	}
+	const xui_propenum_map&		get_textmap		( void ) const;
 
 	/*
 	//virtual
 	*/
-	virtual u32					get_value		( void ) const = 0;
-	virtual void				set_value		( u32 index )  = 0;
+	virtual u32					get_index		( void ) const = 0;
+	virtual void				set_index		( u32 index )  = 0;
 
 protected:
 	/*
 	//member
 	*/
 	xui_propenum_map			m_textmap;
+};
+class xui_propdata_enum_func : public xui_propdata_enum
+{
+public:
+	typedef s32					(*get_func)( void* userptr );
+	typedef void				(*set_func)( void* userptr, s32 value );
+
+	/*
+	//constructor
+	*/
+	xui_propdata_enum_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propenum_map& textmap, get_func userget, set_func userset, void* userptr );
+
+	/*
+	//override
+	*/
+	virtual u32					get_index		( void ) const;
+	virtual void				set_index		( u32 index );
+
+protected:
+	/*
+	//member
+	*/
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 template<typename T>
 class xui_propdata_enum_impl : public xui_propdata_enum
@@ -227,15 +269,15 @@ public:
 	xui_propdata_enum_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propenum_map& textmap, T* ptr )
 	: xui_propdata_enum(kind, name, func, textmap)
 	{
-		m_ptr   = ptr;
+		m_ptr = ptr;
 	}
 
 	/*
 	//virtual
 	*/
-	virtual u32					get_value		( void ) const
+	virtual u32					get_index		( void ) const
 	{
-		u32 index = 0;;
+		u32 index = 0;
 		for (xui_propenum_map::const_iterator itor = m_textmap.begin(); itor != m_textmap.end(); ++itor)
 		{
 			if ((*itor).first == (s32)(*m_ptr))
@@ -246,7 +288,7 @@ public:
 
 		return index;
 	}
-	virtual void				set_value		( u32 index )
+	virtual void				set_index		( u32 index )
 	{
 		if (get_value() != index)
 		{
@@ -307,14 +349,13 @@ protected:
 	bool						m_subfold;
 	xui_propdata_vec			m_subprop;
 };
-template<typename T>
 class xui_expandvary : public xui_expandbase
 {
 public:
 	/*
 	//def
 	*/
-	typedef std::map< T, std::vector<u32> > xui_propdata_map;
+	typedef std::map<s32, std::vector<u32> > xui_propdata_map;
 	static const xui_propdata_map empty_map;
 
 	/*
@@ -331,7 +372,7 @@ protected:
 	/*
 	//method
 	*/
-	void						set_subshow		( T value )
+	void						set_subshow		( s32 value )
 	{
 		if (m_showmap.size() > 0)
 		{
@@ -351,7 +392,7 @@ protected:
 			}
 		}
 	}
-	void						set_subedit		( T value )
+	void						set_subedit		( s32 value )
 	{
 		if (m_editmap.size() > 0)
 		{
@@ -385,11 +426,30 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_expand( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propdata_vec& subprop, bool subfold = true )
-	: xui_propdata(kind, name, func), xui_expandbase(subprop, subfold)
-	{}
+	xui_propdata_expand( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propdata_vec& subprop, bool subfold = true );
 };
-class xui_propdata_expand_bool : public xui_propdata_bool, public xui_expandvary<bool>
+class xui_propdata_expand_plus : public xui_propdata_expand
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_propdata_expand_plus( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propdata_vec& subprop, bool subfold = true );
+
+	/*
+	//method
+	*/
+	void						add_subprop		( xui_propdata* propdata );
+	void						del_subprop		( xui_propdata* propdata );
+	void						del_subpropall	( void );
+
+	/*
+	//virtual
+	*/
+	virtual void				refresh			( void );
+};
+
+class xui_propdata_expand_bool : public xui_propdata_bool, public xui_expandvary
 {
 public:
 	/*
@@ -401,13 +461,17 @@ public:
 		xui_prop_newctrl							func, 
 		bool*										ptr, 
 		const xui_propdata_vec&						subprop, 
+		get_func									userget,
+		set_func									userset,
+		void*										userptr,
 		bool										subfold = true, 
-		const std::map<bool, std::vector<u32> >&	showmap = xui_expandvary<bool>::empty_map,
-		const std::map<bool, std::vector<u32> >&	editmap = xui_expandvary<bool>::empty_map )
-	: xui_propdata_bool(kind, name, func, ptr), xui_expandvary<bool>(subprop, subfold, showmap, editmap)
+		const std::map<s32, std::vector<u32> >&		showmap = xui_expandvary::empty_map,
+		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
+	: xui_propdata_bool(kind, name, func, userget, userset, userptr), xui_expandvary(subprop, subfold, showmap, editmap)
 	{
-		set_subshow(*m_ptr);
-		set_subedit(*m_ptr);
+		bool value = get_value();
+		set_subshow(value ? 1 : 0);
+		set_subedit(value ? 1 : 0);
 	}
 
 	/*
@@ -415,32 +479,35 @@ public:
 	*/
 	virtual void				on_valuechanged	( void )
 	{
-		set_subshow(*m_ptr);
-		set_subedit(*m_ptr);
+		bool value = get_value();
+		set_subshow(value ? 1 : 0);
+		set_subedit(value ? 1 : 0);
 		xui_propdata_bool::on_valuechanged();
 	}
 };
-template<typename T>
-class xui_propdata_expand_enum : public xui_propdata_enum_impl<T>, public xui_expandvary<T>
+class xui_propdata_expand_enum_func : public xui_propdata_enum_func, public xui_expandvary
 {
 public:
 	/*
 	//constructor
 	*/
-	xui_propdata_expand_enum( 
+	xui_propdata_expand_enum_func( 
 		xui_propkind*								kind, 
 		const std::wstring&							name, 
 		xui_prop_newctrl							func, 
 		const xui_propenum_map&						textmap,
-		T*											ptr, 
+		get_func									userget,
+		set_func									userset,
+		void*										userptr, 
 		const xui_propdata_vec&						subprop, 
 		bool										subfold = true, 
-		const std::map<T, std::vector<u32> >&		showmap = xui_expandvary<T>::empty_map,
-		const std::map<T, std::vector<u32> >&		editmap = xui_expandvary<T>::empty_map )
-	: xui_propdata_enum_impl<T>(kind, name, func, textmap, ptr), xui_expandvary<T>(subprop, subfold, showmap, editmap)
+		const std::map<s32, std::vector<u32> >&		showmap = xui_expandvary::empty_map,
+		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
+	: xui_propdata_enum_func(kind, name, func, textmap, userget, userset, userptr), xui_expandvary(subprop, subfold, showmap, editmap)
 	{
-		set_subshow(*m_ptr);
-		set_subedit(*m_ptr);
+		s32 value = (*m_userget)(m_userptr);
+		set_subshow(value);
+		set_subedit(value);
 	}
 
 	/*
@@ -448,8 +515,44 @@ public:
 	*/
 	virtual void				on_valuechanged	( void )
 	{
-		set_subshow(*m_ptr);
-		set_subedit(*m_ptr);
+		s32 value = (*m_userget)(m_userptr);
+		set_subshow(value);
+		set_subedit(value);
+		xui_propdata_enum_func::on_valuechanged();
+	}
+};
+template<typename T>
+class xui_propdata_expand_enum_impl : public xui_propdata_enum_impl<T>, public xui_expandvary
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_propdata_expand_enum_impl( 
+		xui_propkind*								kind, 
+		const std::wstring&							name, 
+		xui_prop_newctrl							func, 
+		const xui_propenum_map&						textmap,
+		T*											ptr, 
+		const xui_propdata_vec&						subprop, 
+		bool										subfold = true, 
+		const std::map<s32, std::vector<u32> >&		showmap = xui_expandvary::empty_map,
+		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
+	: xui_propdata_enum_impl<T>(kind, name, func, textmap, ptr), xui_expandvary(subprop, subfold, showmap, editmap)
+	{
+		s32 value = (s32)(*m_ptr);
+		set_subshow(value);
+		set_subedit(value);
+	}
+
+	/*
+	//method
+	*/
+	virtual void				on_valuechanged	( void )
+	{
+		s32 value = (s32)(*m_ptr);
+		set_subshow(value);
+		set_subedit(value);
 		xui_propdata_enum_impl<T>::on_valuechanged();
 	}
 };

@@ -20,6 +20,7 @@ public:
 	//propdata
 	*/
 	const xui_propdata_vec& get_propdata	( void ) const;
+	bool					has_propdata	( xui_propdata* propdata ) const;
 	void					set_propdata	( xui_propdata* propdata );
 	void					set_propdata	( const xui_propdata_vec& propdata );
 	virtual void			on_linkpropdata	( void ) = 0;

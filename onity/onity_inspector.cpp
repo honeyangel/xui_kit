@@ -68,8 +68,8 @@ public:
 	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/local.png"), true)
 	{
 		m_rot = 0;
-		add_propdata(new xui_propdata_vector_func(this, L"P", xui_propctrl_vector_button::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
-		add_propdata(new xui_propdata_vector_func(this, L"S", xui_propctrl_vector_button::create, onity_prop_transform::get_scale,     onity_prop_transform::set_scale,     (void*)(&m_transform), 1, xui_vector<f64>(1)));
+		add_propdata(new xui_propdata_vector_func(this, L"Position", xui_propctrl_vector::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
+		add_propdata(new xui_propdata_vector_func(this, L"Scaling",  xui_propctrl_vector::create, onity_prop_transform::get_scale,     onity_prop_transform::set_scale,     (void*)(&m_transform), 1, xui_vector<f64>(1)));
 		add_propdata(new xui_propdata_number_impl<s32>(this, L"Rotation", xui_propctrl_number::create, &m_rot));
 		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_transform::on_flagchange);
 	}
