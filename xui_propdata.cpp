@@ -487,21 +487,35 @@ xui_method_explain(xui_propdata_colour,			set_value,			void					)( const xui_col
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_object)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const std::string& droptype, xui_prop_newpick pickfunc, xui_prop_geticon iconfunc, xui_prop_getname namefunc )
+xui_create_explain(xui_propdata_object)( 
+	xui_propkind*					kind, 
+	const std::wstring&				name, 
+	xui_prop_newctrl				func, 
+	const std::vector<std::string>& droptype, 
+	xui_prop_newpick				pickfunc, 
+	xui_prop_geticon				iconfunc, 
+	xui_prop_getname				namefunc )
 : xui_propdata(kind, name, func)
 {
 	m_droptype = droptype;
 	m_pickfunc = pickfunc;
 	m_iconfunc = iconfunc;
 	m_namefunc = namefunc;
+	m_oldvalue = NULL;
 }
 
 /*
 //method
 */
-xui_method_explain(xui_propdata_object,			get_droptype,		const std::string&		)( void ) const
+xui_method_explain(xui_propdata_object,			has_droptype,		bool					)( const std::string& type ) const
 {
-	return m_droptype;
+	for (u32 i = 0; i < m_droptype.size(); ++i)
+	{
+		if (m_droptype[i] == type)
+			return true;
+	}
+
+	return false;
 }
 xui_method_explain(xui_propdata_object,			get_pickfunc,		xui_prop_newpick		)( void ) const
 {
@@ -514,4 +528,51 @@ xui_method_explain(xui_propdata_object,			get_iconfunc,		xui_prop_geticon		)( vo
 xui_method_explain(xui_propdata_object,			get_namefunc,		xui_prop_getname		)( void ) const
 {
 	return m_namefunc;
+}
+xui_method_explain(xui_propdata_object,			old_value,			void					)( void )
+{
+	set_value(m_oldvalue);
+}
+xui_method_explain(xui_propdata_object,			syn_value,			void					)( void )
+{
+	m_oldvalue = get_value();
+}
+
+/*
+//constructor
+*/
+xui_create_explain(xui_propdata_object_func)( 
+	xui_propkind*					kind, 
+	const std::wstring&				name, 
+	xui_prop_newctrl				func, 
+	const std::vector<std::string>& droptype, 
+	xui_prop_newpick				pickfunc, 
+	xui_prop_geticon				iconfunc, 
+	xui_prop_getname				namefunc, 
+	get_func						userget, 
+	set_func						userset, 
+	void*							userptr )
+: xui_propdata_object(kind, name, func, droptype, pickfunc, iconfunc, namefunc)
+{
+	m_userget = userget;
+	m_userset = userset;
+	m_userptr = userptr;
+}
+
+/*
+//override
+*/
+xui_method_explain(xui_propdata_object_func,	get_value,			void*					)( void ) const
+{
+	return (*m_userget)(m_userptr);
+}
+xui_method_explain(xui_propdata_object_func,	set_value,			void					)( void* value )
+{
+	void* tempvalue = get_value();
+	if (tempvalue != value)
+	{
+		m_oldvalue = tempvalue;
+		(*m_userset)(m_userptr, value);
+		on_valuechanged();
+	}
 }

@@ -89,7 +89,7 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		{
 			std::wstring text;
 			text += L"None(";
-			text += xui_global::utf8_to_unicode(dataobject->get_droptype());
+			//text += xui_global::utf8_to_unicode(dataobject->get_droptype());
 			text += L")";
 			textctrl->set_text(text);
 		}
@@ -166,7 +166,7 @@ xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_compone
 xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
-	if (dataobject->get_droptype() == args.type)
+	if (dataobject->has_droptype(args.type))
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
@@ -182,7 +182,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
-	if (dataobject->get_droptype() == args.type)
+	if (dataobject->has_droptype(args.type))
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour::darkgray);
@@ -198,7 +198,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_comp
 xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
-	if (dataobject->get_droptype() == args.type)
+	if (dataobject->has_droptype(args.type))
 	{
 		args.allow = true;
 	}
@@ -206,7 +206,7 @@ xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_compo
 xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
-	if (dataobject->get_droptype() == args.type)
+	if (dataobject->has_droptype(args.type))
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour::darkgray);

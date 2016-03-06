@@ -932,18 +932,18 @@ public:
 	//constructor
 	*/
 	xui_propdata_object( 
-		xui_propkind*		kind, 
-		const std::wstring& name, 
-		xui_prop_newctrl	func, 
-		const std::string&	droptype, 
-		xui_prop_newpick	pickfunc,
-		xui_prop_geticon	iconfunc, 
-		xui_prop_getname	namefunc );
+		xui_propkind*					kind, 
+		const std::wstring&				name, 
+		xui_prop_newctrl				func, 
+		const std::vector<std::string>&	droptype, 
+		xui_prop_newpick				pickfunc,
+		xui_prop_geticon				iconfunc, 
+		xui_prop_getname				namefunc );
 
 	/*
 	//method
 	*/
-	const std::string&			get_droptype( void ) const;
+	bool						has_droptype( const std::string& type ) const;
 	xui_prop_newpick			get_pickfunc( void ) const;
 	xui_prop_geticon			get_iconfunc( void ) const;
 	xui_prop_getname			get_namefunc( void ) const;
@@ -953,8 +953,8 @@ public:
 	*/
 	virtual void*				get_value	( void ) const  = 0;
 	virtual void				set_value	( void* value ) = 0;
-	virtual void				old_value	( void )		= 0;
-	virtual void				syn_value	( void )		= 0;
+	virtual void				old_value	( void );
+	virtual void				syn_value	( void );
 
 	/*
 	//method
@@ -965,10 +965,46 @@ protected:
 	/*
 	//member
 	*/
-	std::string					m_droptype;
+	std::vector<std::string>	m_droptype;
 	xui_prop_newpick			m_pickfunc;
 	xui_prop_geticon			m_iconfunc;
 	xui_prop_getname			m_namefunc;
+	void*						m_oldvalue;
+};
+class xui_propdata_object_func : public xui_propdata_object
+{
+public:
+	typedef void*	(*get_func)( void* userptr );
+	typedef void	(*set_func)( void* userptr, void* value );
+
+	/*
+	//constructor
+	*/
+	xui_propdata_object_func(
+		xui_propkind*					kind,
+		const std::wstring&				name, 
+		xui_prop_newctrl				func,
+		const std::vector<std::string>& droptype,
+		xui_prop_newpick				pickfunc,
+		xui_prop_geticon				iconfunc,
+		xui_prop_getname				namefunc,
+		get_func						userget,
+		set_func						userset,
+		void*							userptr );
+
+	/*
+	//override
+	*/
+	virtual void*				get_value	( void ) const;
+	virtual void				set_value	( void* value );
+
+protected:
+	/*
+	//member
+	*/
+	get_func					m_userget;
+	set_func					m_userset;
+	void*						m_userptr;
 };
 template<typename T>
 class xui_propdata_object_impl : public xui_propdata_object
@@ -978,18 +1014,17 @@ public:
 	//constructor
 	*/
 	xui_propdata_object_impl( 
-		xui_propkind*		kind, 
-		const std::wstring& name, 
-		xui_prop_newctrl	func, 
-		const std::string&	droptype, 
-		xui_prop_newpick	pickfunc, 
-		xui_prop_geticon	iconfunc,
-		xui_prop_getname	namefunc,
-		T*					ptr )
+		xui_propkind*					kind, 
+		const std::wstring&				name, 
+		xui_prop_newctrl				func, 
+		const std::vector<std::string>&	droptype, 
+		xui_prop_newpick				pickfunc, 
+		xui_prop_geticon				iconfunc,
+		xui_prop_getname				namefunc,
+		T*								ptr )
 	: xui_propdata_object(kind, name, func, droptype, pickfunc, iconfunc, namefunc)
 	{
 		m_ptr = ptr;
-		m_old = (*m_ptr);
 	}
 
 	/*
@@ -1001,31 +1036,18 @@ public:
 	}
 	virtual void				set_value	( void* value )
 	{
-		if ((*m_ptr) != (T)value)
+		if (get_value() != value)
 		{
-			  m_old   = (*m_ptr);
-			(*m_ptr)  = (T)value;
+			m_oldvalue = (void*)(*m_ptr);
+			(*m_ptr) = (T)value;
 			on_valuechanged();
 		}
-	}
-	virtual void				old_value	( void )
-	{
-		if ((*m_ptr) != m_old)
-		{
-			(*m_ptr)  = m_old;
-			on_valuechanged();
-		}
-	}
-	virtual void				syn_value	( void )
-	{
-		m_old = (*m_ptr);
 	}
 
 protected:
 	/*
 	//member
 	*/
-	T							m_old;
 	T*							m_ptr;
 };
 
