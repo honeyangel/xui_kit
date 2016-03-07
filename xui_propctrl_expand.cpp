@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_drawer.h"
+#include "xui_desktop.h"
 #include "xui_propview.h"
 #include "xui_propctrl_expand.h"
 
@@ -179,6 +180,75 @@ xui_method_explain(xui_propctrl_expand,			get_propdataall,	xui_propdata_vec)( u3
 	}
 
 	return result;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//propctrl_expandplus
+//////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_expand_plus, xui_propctrl_expand);
+/*
+//create
+*/
+xui_method_explain(xui_propctrl_expand_plus,	create,				xui_propctrl*	)( xui_propdata* propdata )
+{
+	return new xui_propctrl_expand_plus(propdata);
+}
+
+/*
+//constructor
+*/
+xui_create_explain(xui_propctrl_expand_plus)( xui_propdata* propdata )
+: xui_propctrl_expand(propdata)
+{}
+
+/*
+//override
+*/
+xui_method_explain(xui_propctrl_expand_plus,	on_linkpropdata,	void			)( void )
+{
+	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+	{
+		std::vector<xui_component*>::iterator itor = std::find(m_widgetvec.begin(), m_widgetvec.end(), m_propctrlvec[i]);
+		if (itor != m_widgetvec.end())
+		{
+			m_widgetvec.erase(itor);
+			m_propctrlvec[i]->set_parent(NULL);
+			xui_desktop::get_ins()->move_recycle(m_propctrlvec[i]);
+		}
+	}
+	m_propctrlvec.clear();
+
+	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
+	xui_method_ptrcall(m_namectrl, set_text		)(m_propdata->get_name());
+	xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
+
+	if (m_propdatavec.size() == 1)
+	{
+		//propctrl
+		const xui_propdata_vec& vec = dataexpand->get_subprop();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			xui_prop_newctrl  func = vec[i]->get_func();
+			xui_propctrl* propctrl = (*func)(vec[i]);
+			propctrl->refresh();
+			propctrl->set_parent(this);
+			m_widgetvec.push_back(propctrl);
+			m_propctrlvec.push_back(propctrl);
+		}
+
+		//propdata
+		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+		{
+			xui_propdata_vec propdataall = get_propdataall(i);
+			xui_propctrl* propctrl = m_propctrlvec[i];
+			propctrl->set_propdata(propdataall);
+
+			for (xui_propdata_vec::iterator itor = propdataall.begin(); itor != propdataall.end(); ++itor)
+			{
+				(*itor)->set_ctrl(propctrl);
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

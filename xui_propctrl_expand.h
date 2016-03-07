@@ -56,6 +56,27 @@ protected:
 	xui_propctrl_vec		m_propctrlvec;
 };
 
+class xui_propctrl_expand_plus : public xui_propctrl_expand
+{
+	xui_declare_rtti
+
+public:
+	/*
+	//create
+	*/
+	static xui_propctrl*	create			( xui_propdata* propdata );
+
+	/*
+	//constructor
+	*/
+	xui_propctrl_expand_plus( xui_propdata* propdata );
+
+	/*
+	//override
+	*/
+	virtual void			on_linkpropdata	( void );
+};
+
 class xui_propctrl_expand_bool : public xui_propctrl_expand
 {
 	xui_declare_rtti

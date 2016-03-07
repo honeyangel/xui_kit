@@ -68,8 +68,8 @@ public:
 	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/local.png"), true)
 	{
 		m_rot = 0;
-		add_propdata(new xui_propdata_vector_func(this, L"Position", xui_propctrl_vector::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
-		add_propdata(new xui_propdata_vector_func(this, L"Scaling",  xui_propctrl_vector::create, onity_prop_transform::get_scale,     onity_prop_transform::set_scale,     (void*)(&m_transform), 1, xui_vector<f64>(1)));
+		add_propdata(new xui_propdata_vector(this, L"Position", xui_propctrl_vector::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
+		add_propdata(new xui_propdata_vector(this, L"Scaling",  xui_propctrl_vector::create, onity_prop_transform::get_scale,     onity_prop_transform::set_scale,     (void*)(&m_transform), 1, xui_vector<f64>(1)));
 		add_propdata(new xui_propdata_number_impl<s32>(this, L"Rotation", xui_propctrl_number::create, &m_rot));
 		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_transform::on_flagchange);
 	}
@@ -81,10 +81,15 @@ protected:
 class onity_prop_visual : public xui_propkind
 {
 public:
+	static std::vector<NP2DSTransRef*>& get_node( void* ptr )
+	{
+		onity_prop_visual* visual = (onity_prop_visual*)ptr;
+		return visual->m_test;
+	}
 	onity_prop_visual( xui_proproot* root, const std::wstring& name )
 	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/animator.png"), true)
 	{
-		add_propdata(new xui_propdata_stdvec_impl<NP2DSTransRef*>(this, L"Nodes", xui_propctrl_stdvec::create, NULL, NULL, onity_prop_visual::stdvec_newprop, &m_test));
+		add_propdata(new xui_propdata_stdvec_func<NP2DSTransRef*>(this, L"Nodes", xui_propctrl_stdvec::create, NULL, NULL, onity_prop_visual::stdvec_newprop, onity_prop_visual::get_node, this));
 		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_visual::on_flagchange);
 	}
 
@@ -120,7 +125,7 @@ public:
 		m_bool_value = true;
 
 		add_propdata(new xui_propdata_number_impl<s32>(this, L"Speed", xui_propctrl_number::create, &m_prop_value));
-		add_propdata(new xui_propdata_bool(this, L"Break", xui_propctrl_bool::create, &m_bool_value));
+		add_propdata(new xui_propdata_bool(this, L"Break", xui_propctrl_bool::create, NULL, NULL, &m_bool_value));
 		add_propdata(new xui_propdata_number_impl<s32>(this, L"Gravity", xui_propctrl_slider::create, &m_test_value, 2, -50, 50));
 		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_ai::on_flagchange);
 	}

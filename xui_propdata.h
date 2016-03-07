@@ -6,7 +6,7 @@
 typedef xui_propctrl*	(*xui_prop_newctrl)( xui_propdata* propdata );
 typedef void			(*xui_prop_additem)( void* vec );
 typedef void			(*xui_prop_delitem)( void* vec );
-typedef xui_propdata*	(*xui_prop_newprop)( void* vec, u32 index, xui_propkind* kind );
+typedef xui_propdata*	(*xui_prop_newprop)( void* ptr, xui_propkind* kind );
 
 class   xui_pickwnd;
 typedef xui_pickwnd*	(*xui_prop_newpick)( xui_propctrl* propctrl );
@@ -626,7 +626,7 @@ public:
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)(&vec), i, m_kind);
+			xui_propdata* propdata = (*m_newprop)((void*)(&vec[i]), m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
@@ -740,7 +740,7 @@ public:
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)(&lst), i, m_kind);
+			xui_propdata* propdata = (*m_newprop)((void*)itor, m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
@@ -932,18 +932,19 @@ public:
 	//constructor
 	*/
 	xui_propdata_object( 
-		xui_propkind*					kind, 
-		const std::wstring&				name, 
-		xui_prop_newctrl				func, 
-		const std::vector<std::string>&	droptype, 
-		xui_prop_newpick				pickfunc,
-		xui_prop_geticon				iconfunc, 
-		xui_prop_getname				namefunc );
+		xui_propkind*			kind, 
+		const std::wstring&		name, 
+		xui_prop_newctrl		func, 
+		const std::string&		droptype, 
+		xui_prop_newpick		pickfunc,
+		xui_prop_geticon		iconfunc, 
+		xui_prop_getname		namefunc );
 
 	/*
 	//method
 	*/
 	bool						has_droptype( const std::string& type ) const;
+	void						add_droptype( const std::string& type );
 	xui_prop_newpick			get_pickfunc( void ) const;
 	xui_prop_geticon			get_iconfunc( void ) const;
 	xui_prop_getname			get_namefunc( void ) const;
@@ -981,16 +982,16 @@ public:
 	//constructor
 	*/
 	xui_propdata_object_func(
-		xui_propkind*					kind,
-		const std::wstring&				name, 
-		xui_prop_newctrl				func,
-		const std::vector<std::string>& droptype,
-		xui_prop_newpick				pickfunc,
-		xui_prop_geticon				iconfunc,
-		xui_prop_getname				namefunc,
-		get_func						userget,
-		set_func						userset,
-		void*							userptr );
+		xui_propkind*			kind,
+		const std::wstring&		name, 
+		xui_prop_newctrl		func,
+		const std::string&		droptype,
+		xui_prop_newpick		pickfunc,
+		xui_prop_geticon		iconfunc,
+		xui_prop_getname		namefunc,
+		get_func				userget,
+		set_func				userset,
+		void*					userptr );
 
 	/*
 	//override
@@ -1014,14 +1015,14 @@ public:
 	//constructor
 	*/
 	xui_propdata_object_impl( 
-		xui_propkind*					kind, 
-		const std::wstring&				name, 
-		xui_prop_newctrl				func, 
-		const std::vector<std::string>&	droptype, 
-		xui_prop_newpick				pickfunc, 
-		xui_prop_geticon				iconfunc,
-		xui_prop_getname				namefunc,
-		T*								ptr )
+		xui_propkind*			kind, 
+		const std::wstring&		name, 
+		xui_prop_newctrl		func, 
+		const std::string&		droptype, 
+		xui_prop_newpick		pickfunc, 
+		xui_prop_geticon		iconfunc,
+		xui_prop_getname		namefunc,
+		T*						ptr )
 	: xui_propdata_object(kind, name, func, droptype, pickfunc, iconfunc, namefunc)
 	{
 		m_ptr = ptr;

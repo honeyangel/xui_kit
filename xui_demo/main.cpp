@@ -102,26 +102,6 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			xui_desktop::get_ins()->os_mousewheel(args);
 		}
 		break;
-	case WM_LBUTTONDBLCLK:
-	case WM_RBUTTONDBLCLK:
-	case WM_MBUTTONDBLCLK:
-		{
-			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
-			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-
-			switch (message)
-			{
-			case WM_LBUTTONDBLCLK:	args.mouse = MB_L;	break;
-			case WM_RBUTTONDBLCLK:	args.mouse = MB_R;	break;
-			case WM_MBUTTONDBLCLK:	args.mouse = MB_M;	break;
-			}
-
-			xui_desktop::get_ins()->os_mousedclick(args);
-		}
-		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
@@ -237,7 +217,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	wc.lpfnWndProc		= WndProc;
 	wc.lpszClassName	= L"XUI";
 	wc.lpszMenuName		= NULL;
-	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC | CS_DBLCLKS;
+	wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
 
 	if (!RegisterClass(&wc))
 		return 0;
@@ -289,18 +269,24 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		}
 		else
 		{
-			int time  = timeGetTime();
+			static int total_time = 0;
+			static int delta_time = 0;
+
+			total_time = timeGetTime();
 
 			xui_method_inscall(xui_convas,		clear	)(xui_colour(1.0f, 0.1f, 0.1f, 0.1f));
 			xui_method_inscall(xui_convas,		begin	)();
-			xui_method_inscall(xui_timermgr,	update	)(0.016f);
-			xui_method_inscall(xui_desktop,		update	)(0.016f);
+			xui_method_inscall(xui_timermgr,	update	)(delta_time/1000.0f);
+			xui_method_inscall(xui_desktop,		update	)(delta_time/1000.0f);
 			xui_method_inscall(xui_desktop,		render	)();
 			render_window->present();
 
-			int delta = timeGetTime() - time;
-			if (delta < 16)
-				Sleep(16-delta);
+			delta_time = timeGetTime() - total_time;
+			if (delta_time < 16)
+			{
+				Sleep(16-delta_time);
+				delta_time = 16;
+			}
 		}
 	}
 

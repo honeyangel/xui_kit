@@ -180,7 +180,7 @@ void xui_demo::test_treeview( xui_window* window )
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"", xui_bitmap::create("icon/edit.png"), 0, false, TOGGLE_CIRCLE));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_TEXT,  60, L"desc", NULL, 0, false, 0, xui_rect2d<s32>(2), IMAGE_FRONT_TEXT));
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"main", NULL, 0, true));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"main", NULL, 1, true));
 	xui_treeview* treeview = xui_treeview::create(columninfo);
 	treeview->set_renderpt(xui_vector<s32>(250, 180));
 	treeview->xm_mousedragitem += new xui_method_static<xui_method_dragdrop>(treeview_dragitem);
@@ -251,13 +251,38 @@ void xui_demo::test_timeview( xui_window* window )
 //test propview prop
 s32  prop_value = 0;
 bool bool_value = false;
-u08  enum_value = TA_LB;
+u08  enum_value = TEXTALIGN_LB;
 std::wstring string_value = L"abc";
 xui_propenum_map enum_map;
 xui_vector<s32> vector_value(0);
 xui_rect2d<s32> rect2d_value(0);
 std::vector<xui_treenode*> stdvec_value;
+std::vector<xui_treenode*>& stdvec_getfunc( void* userptr )
+{
+	return stdvec_value;
+}
 xui_treenode* object_value = NULL;
+
+xui_vector<f64> vector_getfunc( void* userptr )
+{
+	return xui_vector<f64>((f64)vector_value.x, (f64)vector_value.y);
+}
+void vector_setfunc( void* userptr, const xui_vector<f64>& value )
+{
+	vector_value.x = (s32)value.x;
+	vector_value.y = (s32)value.y;
+}
+xui_rect2d<f64> rect2d_getfunc( void* userptr )
+{
+	return xui_rect2d<f64>((f64)rect2d_value.ax, (f64)rect2d_value.ay, (f64)rect2d_value.bx, (f64)rect2d_value.by);
+}
+void rect2d_setfunc( void* userptr, const xui_rect2d<f64>& value )
+{
+	rect2d_value.ax = (s32)value.ax;
+	rect2d_value.ay = (s32)value.ay;
+	rect2d_value.bx = (s32)value.bx;
+	rect2d_value.by = (s32)value.by;
+}
 
 //test pickwnd
 class test_pickwnd : public xui_pickwnd
@@ -329,11 +354,11 @@ void xui_demo::test_propview( xui_window* window )
 	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true);
 	headkind->xm_flagchanged += new xui_method_static<xui_method_args>(kind_flagchanged);
 	//headkind->xm_namechanged += new xui_method_static<xui_method_args>(kind_textchanged);
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"P", xui_propctrl_vector_button::create, &vector_value, 1));
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"S", xui_propctrl_vector_button::create, &vector_value, 1, xui_vector<s32>(1)));
-	headkind->add_propdata(new xui_propdata_vector_impl<s32>(headkind, L"R", xui_propctrl_vector_button::create, &vector_value, 1));
-	headkind->add_propdata(new xui_propdata_rect2d_impl<s32>(headkind, L"rect2d", xui_propctrl_rect2d::create, &rect2d_value, 1));
-	headkind->add_propdata(new xui_propdata_stdvec_impl<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, &stdvec_value));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"P", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"S", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1, xui_vector<f64>(1)));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"R", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1));
+	headkind->add_propdata(new xui_propdata_rect2d(headkind, L"RECT", xui_propctrl_rect2d::create, rect2d_getfunc, rect2d_setfunc, NULL, 1));
+	headkind->add_propdata(new xui_propdata_stdvec_func<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, stdvec_getfunc, NULL));
 	headkind->add_propdata(new xui_propdata_object_impl<xui_treenode*>(headkind, L"object", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, &object_value));
 	proproot->add_propkind(headkind);
 
@@ -341,26 +366,26 @@ void xui_demo::test_propview( xui_window* window )
 	proproot->add_propkind(propkind);
 	xui_propdata* propdata = new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_number::create, &prop_value);
 	propkind->add_propdata(propdata);
-	propkind->add_propdata(new xui_propdata_bool(propkind, L"bool", xui_propctrl_bool::create, &bool_value));
+	propkind->add_propdata(new xui_propdata_bool(propkind, L"bool", xui_propctrl_bool::create, NULL, NULL, &bool_value));
 	propkind->add_propdata(new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
-	enum_map[TA_LT] = L"LeftTop";
-	enum_map[TA_LC] = L"LeftCenter";
-	enum_map[TA_LB] = L"LeftBottom";
+	enum_map[TEXTALIGN_LT] = L"LeftTop";
+	enum_map[TEXTALIGN_LC] = L"LeftCenter";
+	enum_map[TEXTALIGN_LB] = L"LeftBottom";
 	propkind->add_propdata(new xui_propdata_enum_impl<u08>(propkind, L"enum", xui_propctrl_enum::create, enum_map, &enum_value));
-	propkind->add_propdata(new xui_propdata_string(propkind, L"string", xui_propctrl_string::create, &string_value));
+	propkind->add_propdata(new xui_propdata_string(propkind, L"string", xui_propctrl_string::create, NULL, NULL, &string_value));
 
 	xui_propdata_vec subprop;
-	subprop.push_back(new xui_propdata_bool(propkind, L"sub_bool", xui_propctrl_bool::create, &bool_value));
+	subprop.push_back(new xui_propdata_bool(propkind, L"sub_bool", xui_propctrl_bool::create, NULL, NULL, &bool_value));
 	subprop.push_back(new xui_propdata_number_impl<s32>(propkind, L"sub_s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
 	subprop.push_back(new xui_propdata_enum_impl<u08>(propkind, L"sub_enum", xui_propctrl_enum::create, enum_map, &enum_value));
-	subprop.push_back(new xui_propdata_string(propkind, L"sub_string", xui_propctrl_string::create, &string_value));
-	std::map<u08, std::vector<u32>> showmap;
-	std::map<u08, std::vector<u32>> editmap;
-	showmap[TA_LT].push_back(0);
-	showmap[TA_LT].push_back(1);
-	showmap[TA_LC].push_back(2);
-	showmap[TA_LB].push_back(3);
-	xui_propdata_expand_enum<u08>* dataexpand = new xui_propdata_expand_enum<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, true, showmap, editmap);
+	subprop.push_back(new xui_propdata_string(propkind, L"sub_string", xui_propctrl_string::create, NULL, NULL, &string_value));
+	std::map<s32, std::vector<u32>> showmap;
+	std::map<s32, std::vector<u32>> editmap;
+	showmap[TEXTALIGN_LT].push_back(0);
+	showmap[TEXTALIGN_LT].push_back(1);
+	showmap[TEXTALIGN_LC].push_back(2);
+	showmap[TEXTALIGN_LB].push_back(3);
+	xui_propdata_expand_enum_impl<u08>* dataexpand = new xui_propdata_expand_enum_impl<u08>(propkind, L"expand", xui_propctrl_expand_enum::create, enum_map, &enum_value, subprop, true, showmap, editmap);
 	propkind->add_propdata(dataexpand);
 
 	propview->set_proproot(proproot);

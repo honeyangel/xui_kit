@@ -54,7 +54,7 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* component )
 {
 	component->set_parent(this);
-	m_widgetvec.insert(m_widgetvec.begin(), component);
+	m_widgetvec.push_back(component);
 }
 xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )
 {
