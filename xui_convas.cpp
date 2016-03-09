@@ -167,28 +167,12 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 /*
 //text
 */
-//xui_method_explain(xui_convas, calc_height,			s32						)( const std::wstring&		text, 
-//																			   const xui_family&		textfont )
-//{
-//	s32 height = 0;
-//	for (u32 i = 0; i < text.length(); ++i)
-//	{
-//		//非可见字符
-//		if (text[i] < 0x20)
-//			continue;
-//
-//		xui_family_member* member = get_family_member(textfont, text[i]);
-//		height = xui_max(height, member->rt.get_h()+textfont.vert);
-//	}
-//
-//	return height;
-//}
 xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																		       s32						maxwidth,
 																			   bool						singleline )
 {
-	s32 height = xui_convas::get_ins()->get_family_create()->get_height(textfont) + textfont.vert;
+	s32 height = m_familycreate->get_height(textfont);
 
 	xui_vector<s32> size(0);
 	if (singleline)
@@ -257,7 +241,7 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			++textline;
 
 		size.w = textline > 1 ? maxwidth : curwidth;
-		size.h = textline * height;
+		size.h = height * textline + ((textline > 1) ? (textline-1)*textfont.vert : 0);
 	}
 
 	return size;
@@ -428,6 +412,8 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 																			   const xui_rect2d<s32>&	drawrect,
 																			   const xui_family_render&	textdraw )
 {
+	s32 height = m_familycreate->get_height(textfont);
+
 	xui_vector<s32> pt = drawrect.get_pt();
 
 	//绘制多行
@@ -441,7 +427,7 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 		if(*p == L'\n')
 		{
 			draw_text(buffer, textfont, pt, textdraw);
-			pt.y += textfont.size;
+			pt.y += height;
 			pt.y += textfont.vert;
 			buffer.clear();
 
@@ -462,7 +448,7 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 					break;
 
 				draw_text(buffer, textfont, pt, textdraw);
-				pt.y += textfont.size;
+				pt.y += height;
 				pt.y += textfont.vert;
 				buffer.clear();
 
@@ -486,7 +472,7 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 																			   const xui_vector<s32>&	screenpt,
 																			   const xui_family_render&	textdraw )
 {
-	s32 ascender = xui_convas::get_ins()->get_family_create()->get_ascender(textfont);
+	s32 ascender = m_familycreate->get_ascender(textfont);
 
 	xui_rect2d<s32> dst;
 	dst.set_pt(screenpt);
@@ -501,43 +487,26 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 		s32 x =  member->bearing.x;
 		s32 y = -member->bearing.y + ascender;
 
-		//if (textdraw.renderstyle == TEXTDRAW_STROKE)
-		//{
-		//	xui_vector<s32> offset;
-		//	offset = xui_vector<s32>(-textdraw.strokewidth,   -textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>( 0,                      -textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>( textdraw.strokewidth,   -textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>(-textdraw.strokewidth,    0);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>( textdraw.strokewidth,    0);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>(-textdraw.strokewidth,    textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>( 0,                       textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//	offset = xui_vector<s32>( textdraw.strokewidth,    textdraw.strokewidth);
-		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-		//}
-		//if (textdraw.renderstyle == TEXTDRAW_SHADOW)
-		//{
-		//	xui_vector<s32> offset;
-		//	offset = xui_vector<s32>(1, 0);
-		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-		//	offset = xui_vector<s32>(0, 1);
-		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-		//	offset = xui_vector<s32>(1, 1);
-		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-		//}
 		if (textfont.bold)
 		{
 			dst.set_sz(member->stroke.get_sz());
-			draw_image(member->bitmap, member->stroke, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
+			draw_image(member->bitmap, member->stroke, dst+xui_vector<s32>(x, y), textdraw.strokecolor);
+			dst.set_sz(member->normal.get_sz());
+			draw_image(member->bitmap, member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}
 		else
 		{
+			if (textdraw.renderstyle == TEXTDRAW_SHADOW)
+			{
+				xui_vector<s32> offset;
+				offset = xui_vector<s32>(x+1, y  );
+				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+				offset = xui_vector<s32>(x,   y+1);
+				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+				offset = xui_vector<s32>(x+1, y+1);
+				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+			}
+
 			dst.set_sz(member->normal.get_sz());
 			draw_image(member->bitmap, member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}

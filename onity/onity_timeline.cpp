@@ -2,6 +2,7 @@
 #include "xui_timeview.h"
 #include "xui_timedata.h"
 #include "xui_timeline.h"
+#include "onity_resource.h"
 #include "onity_timeline.h"
 
 xui_implement_rtti(onity_timeline, xui_dockpage);
@@ -12,7 +13,7 @@ xui_implement_rtti(onity_timeline, xui_dockpage);
 xui_create_explain(onity_timeline)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_T|AREALIMIT_B, 200, DOCKSTYLE_B)
 {
-	ini_namectrl(xui_bitmap::create("icon/timeline.png"), L"Timeline");
+	ini_namectrl(onity_resource::icon_timeline, L"Timeline");
 
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0));

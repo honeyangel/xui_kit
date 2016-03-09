@@ -9,6 +9,7 @@
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
+    <ClInclude Include="onity_resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -20,5 +21,6 @@
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
+    <ClCompile Include="onity_resource.cpp" />
   </ItemGroup>
 </Project>

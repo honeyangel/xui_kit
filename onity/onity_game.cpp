@@ -12,6 +12,7 @@
 #include "xui_panel.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "onity_resource.h"
 #include "onity_game.h"
 
 xui_implement_rtti(onity_game, xui_dockpage);
@@ -23,9 +24,9 @@ std::string	g_strPWD;
 //constructor
 */
 xui_create_explain(onity_game)( void )
-: xui_dockpage(xui_vector<s32>(200), AREALIMIT_F, 200, DOCKSTYLE_F)
+: xui_dockpage(xui_vector<s32>(200), AREALIMIT_A, 200, DOCKSTYLE_F)
 {
-	ini_namectrl(xui_bitmap::create("icon/game.png"), L"Game");
+	ini_namectrl(onity_resource::icon_game, L"Game");
 
 	xui_menu* menu = xui_menu::create(80);
 	m_fill		= menu->add_item(NULL, L"Fill");

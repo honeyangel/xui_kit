@@ -17,6 +17,7 @@
     <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_mainform.h" />
     <ClInclude Include="onity_project.h" />
+    <ClInclude Include="onity_resource.h" />
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
   </ItemGroup>
@@ -28,6 +29,7 @@
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
     <ClCompile Include="onity_project.cpp" />
+    <ClCompile Include="onity_resource.cpp" />
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
   </ItemGroup>

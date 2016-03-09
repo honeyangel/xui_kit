@@ -1,5 +1,6 @@
 #include "xui_bitmap.h"
 #include "xui_convas.h"
+#include "xui_family_create.h"
 #include "xui_desktop.h"
 #include "xui_textbox.h"
 
@@ -578,6 +579,7 @@ xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 	if (get_rendertext().length() > 0)
 	{
 		rt.oft_x(get_textwidth(m_text.substr(m_firstshowindex, m_caretcurrindex-m_firstshowindex)));
+		rt.set_w(2);
 	}
 	else
 	{
@@ -594,9 +596,21 @@ xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 			rt.ax  = rt.bx-2;
 			break;
 		}
+
+		s32 height = xui_convas::get_ins()->get_family_create()->get_height(m_textfont);
+		switch (m_textalign)
+		{
+		case TEXTALIGN_LC:
+		case TEXTALIGN_CC:
+		case TEXTALIGN_RC:
+			rt.ay += (height - rt.get_h()) / 2;
+			break;
+		}
+
+		rt.set_w(2);
+		rt.set_h(height);
 	}
 
-	rt.set_w(2);
 	m_caretdrawer->set_caretrect(rt);
 }
 xui_method_explain(xui_textbox, get_textwidth,		u32						)( const std::wstring& text ) const

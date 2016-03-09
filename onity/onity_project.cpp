@@ -439,7 +439,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 			xui_method_ptrcall(drawer, ini_drawer	)(pathdata->get_text(0));
 			xui_method_ptrcall(drawer, set_backcolor)(xui_colour::transparent);
 			xui_method_ptrcall(drawer, set_drawcolor)(true);
-			xui_method_ptrcall(drawer, set_textfont	)(xui_family(i == 0 ? 12 : 10));
+			xui_method_ptrcall(drawer, set_textfont	)(xui_family(10, (i == 0) ? 1 : 0));
 			xui_method_ptrcall(drawer, set_data		)(pathnode);
 			xui_method_ptrcall(drawer, on_perform_w	)(xui_convas::get_ins()->calc_size(drawer->get_text(), drawer->get_textfont(), 0, true).w);
 			m_pathpane->add_child(drawer);

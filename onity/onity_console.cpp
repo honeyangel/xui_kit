@@ -6,6 +6,7 @@
 #include "xui_toolbar.h"
 #include "xui_listview.h"
 #include "xui_listitem.h"
+#include "onity_resource.h"
 #include "onity_console.h"
 
 xui_implement_rtti(onity_console, xui_dockpage);
@@ -16,7 +17,7 @@ xui_implement_rtti(onity_console, xui_dockpage);
 xui_create_explain(onity_console)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_T|AREALIMIT_B, 200, DOCKSTYLE_B)
 {
-	ini_namectrl(xui_bitmap::create("icon/console.png"), L"Console");
+	ini_namectrl(onity_resource::icon_console, L"Console");
 
 	m_clear		= new xui_button(xui_vector<s32>(60, 20));
 	xui_method_ptrcall(m_clear,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_console>(this, &onity_console::on_clearclick);
@@ -34,7 +35,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_error,		set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_error,		set_drawcolor	)(true);
 	xui_method_ptrcall(m_error,		set_textoffset	)(xui_vector<s32>(2, 0));
-	xui_method_ptrcall(m_error,		ini_drawer		)(xui_bitmap::create("icon/error.png"));
+	xui_method_ptrcall(m_error,		ini_drawer		)(onity_resource::icon_error);
 	xui_method_ptrcall(m_error,		ini_toggle		)(true);
 	xui_method_ptrcall(m_error,		set_text		)(L"0");
 
@@ -45,7 +46,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_warning,	set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_warning,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_warning,	set_textoffset	)(xui_vector<s32>(2, 0));
-	xui_method_ptrcall(m_warning,	ini_drawer		)(xui_bitmap::create("icon/warning.png"));
+	xui_method_ptrcall(m_warning,	ini_drawer		)(onity_resource::icon_warning);
 	xui_method_ptrcall(m_warning,	ini_toggle		)(true);
 	xui_method_ptrcall(m_warning,	set_text		)(L"0");
 
@@ -56,7 +57,7 @@ xui_create_explain(onity_console)( void )
 	xui_method_ptrcall(m_message,	set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_message,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_message,	set_textoffset	)(xui_vector<s32>(2, 0));
-	xui_method_ptrcall(m_message,	ini_drawer		)(xui_bitmap::create("icon/message.png"));
+	xui_method_ptrcall(m_message,	ini_drawer		)(onity_resource::icon_message);
 	xui_method_ptrcall(m_message,	ini_toggle		)(true);
 	xui_method_ptrcall(m_message,	set_text		)(L"0");
 
@@ -111,17 +112,17 @@ xui_method_explain(onity_console, add_log,				void)( u08 type, const std::wstrin
 	{
 	case LOGTYPE_ERROR:		
 		togg = m_error;	
-		icon = xui_bitmap::create("icon/bigerror.png");
+		icon = onity_resource::icon_bigerror;
 		temp << L"error:";
 		break;
 	case LOGTYPE_WARNING:	
 		togg = m_warning; 
-		icon = xui_bitmap::create("icon/bigwarning.png");
+		icon = onity_resource::icon_bigwarning;
 		temp << L"warning:";
 		break;
 	case LOGTYPE_MESSAGE:	
 		togg = m_message; 
-		icon = xui_bitmap::create("icon/bigmessage.png");
+		icon = onity_resource::icon_bigmessage;
 		temp << L"log:";
 		break;
 	}

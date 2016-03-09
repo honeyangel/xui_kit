@@ -12,6 +12,7 @@
 #include "xui_propctrl_stdvec.h"
 #include "xui_propctrl_object.h"
 #include "xui_propctrl_slider.h"
+#include "onity_resource.h"
 #include "onity_inspector.h"
 
 xui_implement_rtti(onity_inspector, xui_dockpage);
@@ -22,7 +23,7 @@ xui_implement_rtti(onity_inspector, xui_dockpage);
 xui_create_explain(onity_inspector)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_R)
 {
-	ini_namectrl(xui_bitmap::create("icon/inspector.png"), L"Inspector");
+	ini_namectrl(onity_resource::icon_inspector, L"Inspector");
 
 	m_view = new xui_propview(xui_vector<s32>(0));
 	xui_method_ptrcall(m_view, ini_component)(0, 0, DOCKSTYLE_F);
@@ -65,7 +66,7 @@ public:
 	}
 
 	onity_prop_transform( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/local.png"), true)
+	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_local, true)
 	{
 		m_rot = 0;
 		add_propdata(new xui_propdata_vector(this, L"Position", xui_propctrl_vector::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
@@ -87,7 +88,7 @@ public:
 		return visual->m_test;
 	}
 	onity_prop_visual( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/animator.png"), true)
+	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_animator, true)
 	{
 		add_propdata(new xui_propdata_stdvec_func<NP2DSTransRef*>(this, L"Nodes", xui_propctrl_stdvec::create, NULL, NULL, onity_prop_visual::stdvec_newprop, onity_prop_visual::get_node, this));
 		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_visual::on_flagchange);
@@ -118,7 +119,7 @@ class onity_prop_ai : public xui_propkind
 {
 public:
 	onity_prop_ai( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, xui_bitmap::create("icon/game.png"), true)
+	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_game, true)
 	{
 		m_prop_value = 60;
 		m_test_value = 0;

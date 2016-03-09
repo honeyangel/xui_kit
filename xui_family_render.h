@@ -7,7 +7,6 @@
 enum 
 {
 	TEXTDRAW_NORMAL,
-	TEXTDRAW_STROKE,
 	TEXTDRAW_SHADOW,
 };
 
@@ -24,8 +23,8 @@ public:
 	*/
 	u08			renderstyle;
 	xui_colour	normalcolor;
-	u08			strokewidth;
 	xui_colour	strokecolor;
+	xui_colour	shadowcolor;
 
 	/*
 	//constructor
@@ -34,29 +33,29 @@ public:
 	{
 		renderstyle = 0;
 		normalcolor = xui_colour(1.0f, 0.8f);
-		strokewidth = 1;
 		strokecolor = xui_colour(1.0f, 0.0f);
+		shadowcolor = xui_colour(1.0f, 0.0f);
 	}
 	xui_family_render( const xui_colour& _normalcolor )
 	{
 		renderstyle = TEXTDRAW_NORMAL;
 		normalcolor = _normalcolor;
-		strokewidth = 1;
 		strokecolor = xui_colour(1.0f, 0.0f);
+		shadowcolor = xui_colour(1.0f, 0.0f);
 	}
-	xui_family_render( u08 _renderstyle, const xui_colour& _normalcolor, u08 _strokewidth, const xui_colour& _strokecolor )
+	xui_family_render( u08 _renderstyle, const xui_colour& _normalcolor, const xui_colour& _strokecolor, const xui_colour& _shadowcolor )
 	{
 		renderstyle = _renderstyle;
 		normalcolor = _normalcolor;
-		strokewidth = _strokewidth;
 		strokecolor = _strokecolor;
+		shadowcolor = _shadowcolor;
 	}
 	xui_family_render( const xui_family_render& other )
 	{
 		renderstyle = other.renderstyle;
 		normalcolor = other.normalcolor;
-		strokewidth = other.strokewidth;
 		strokecolor = other.strokecolor;
+		shadowcolor = other.shadowcolor;
 	}
 
 	/*
@@ -66,15 +65,15 @@ public:
 	{
 		return (renderstyle == other.renderstyle &&
 				normalcolor == other.normalcolor &&
-				strokewidth == other.strokewidth &&
-				strokecolor == other.strokecolor);
+				strokecolor == other.strokecolor &&
+				shadowcolor == other.shadowcolor);
 	}
 	bool operator != ( const xui_family_render& other ) const
 	{
 		return (renderstyle != other.renderstyle ||
 				normalcolor != other.normalcolor ||
-				strokewidth != other.strokewidth ||
-				strokecolor != other.strokecolor);
+				strokecolor != other.strokecolor ||
+				shadowcolor != other.shadowcolor);
 	}
 };
 

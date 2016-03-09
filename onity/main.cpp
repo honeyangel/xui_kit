@@ -5,6 +5,7 @@
 #include "xui_desktop.h"
 #include "xui_render_window.h"
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_mainform.h"
 
 s32 DefaultWidth  = 1440;
@@ -255,11 +256,11 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_static_inscall(xui_convas,		init)();
 	xui_static_inscall(xui_timermgr,	init)();
 	xui_static_inscall(xui_desktop,		init)();
+	xui_static_inscall(onity_resource,	init)();
 
 	RECT rect;
 	GetClientRect(gHWND, &rect);
 	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
-
 	xui_desktop::get_ins()->add_child(new onity_mainform());
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 

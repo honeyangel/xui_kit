@@ -7,6 +7,7 @@
 #include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
+#include "onity_resource.h"
 #include "onity_hierarchy.h"
 #include "onity_inspector.h"
 #include "onity_console.h"
@@ -25,10 +26,10 @@ xui_create_explain(onity_mainform)( void )
 {
 	m_dockstyle		= DOCKSTYLE_F;
 
-	m_select		= xui_toggle::create(xui_bitmap::create("icon/select.png"),		32);
-	m_translate		= xui_toggle::create(xui_bitmap::create("icon/translate.png"),	32);
-	m_scale			= xui_toggle::create(xui_bitmap::create("icon/scale.png"),		32);
-	m_rotation		= xui_toggle::create(xui_bitmap::create("icon/rotation.png"),	32);
+	m_select		= xui_toggle::create(onity_resource::icon_select,		32);
+	m_translate		= xui_toggle::create(onity_resource::icon_translate,	32);
+	m_scale			= xui_toggle::create(onity_resource::icon_scale,		32);
+	m_rotation		= xui_toggle::create(onity_resource::icon_rotation,		32);
 	xui_method_ptrcall(m_select,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
 	xui_method_ptrcall(m_translate,		xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
 	xui_method_ptrcall(m_scale,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicktransform);
@@ -43,8 +44,8 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(line_transform,	add_linectrl	)(m_scale);
 	xui_method_ptrcall(line_transform,	add_linectrl	)(m_rotation);
 
-	m_anchor		= xui_button::create(xui_bitmap::create("icon/pivot.png"), L"Pivot", 80);
-	m_coordinate	= xui_button::create(xui_bitmap::create("icon/world.png"), L"World", 80);
+	m_anchor		= xui_button::create(onity_resource::icon_pivot, L"Pivot", 80);
+	m_coordinate	= xui_button::create(onity_resource::icon_world, L"World", 80);
 	xui_method_ptrcall(m_anchor,		set_data		)((void*)TOA_PIVOT);
 	xui_method_ptrcall(m_coordinate,	set_data		)((void*)TOC_WORLD);
 	xui_method_ptrcall(m_anchor,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickanchor);
@@ -78,14 +79,14 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(line_debug,		add_linectrl	)(m_step);
 
 	xui_menu* menu	= xui_menu::create(100);
-	m_hierarchy		= menu->add_item(xui_bitmap::create("icon/hierarchy.png"),	L"Hierarchy");
-	m_inspector		= menu->add_item(xui_bitmap::create("icon/inspector.png"),	L"Inspector");
-	m_project		= menu->add_item(xui_bitmap::create("icon/project.png"),	L"Project");
-	m_console		= menu->add_item(xui_bitmap::create("icon/console.png"),	L"Console");
-	m_timeline		= menu->add_item(xui_bitmap::create("icon/timeline.png"),	L"Timeline");
-	m_game			= menu->add_item(xui_bitmap::create("icon/game.png"),		L"Game");
-	m_scene			= menu->add_item(xui_bitmap::create("icon/scene.png"),		L"Scene");
-	m_animator		= menu->add_item(xui_bitmap::create("icon/animator.png"),	L"Animator");
+	m_hierarchy		= menu->add_item(onity_resource::icon_hierarchy,	L"Hierarchy");
+	m_inspector		= menu->add_item(onity_resource::icon_inspector,	L"Inspector");
+	m_project		= menu->add_item(onity_resource::icon_project,		L"Project");
+	m_console		= menu->add_item(onity_resource::icon_console,		L"Console");
+	m_timeline		= menu->add_item(onity_resource::icon_timeline,		L"Timeline");
+	m_game			= menu->add_item(onity_resource::icon_game,			L"Game");
+	m_scene			= menu->add_item(onity_resource::icon_scene,		L"Scene");
+	m_animator		= menu->add_item(onity_resource::icon_animator,		L"Animator");
 	xui_method_ptrcall(m_hierarchy,		set_data		)(new onity_hierarchy);
 	xui_method_ptrcall(m_inspector,		set_data		)(new onity_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new onity_project);
@@ -163,12 +164,12 @@ xui_method_explain(onity_mainform, on_clickanchor,		void)( xui_component* sender
 	{
 	case TOA_CENTER:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOA_PIVOT);
-		xui_method_ptrcall(drawer, ini_drawer	)(xui_bitmap::create("icon/pivot.png"));
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_pivot);
 		xui_method_ptrcall(drawer, ini_drawer	)(L"Pivot");
 		break;
 	case TOA_PIVOT:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOA_CENTER);
-		xui_method_ptrcall(drawer, ini_drawer	)(xui_bitmap::create("icon/center.png"));
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_center);
 		xui_method_ptrcall(drawer, ini_drawer	)(L"Center");
 		break;
 	}
@@ -181,12 +182,12 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void)( xui_component* sen
 	{
 	case TOC_LOCAL:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOC_WORLD);
-		xui_method_ptrcall(drawer, ini_drawer	)(xui_bitmap::create("icon/world.png"));
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_world);
 		xui_method_ptrcall(drawer, ini_drawer	)(L"World");
 		break;
 	case TOC_WORLD:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOC_LOCAL);
-		xui_method_ptrcall(drawer, ini_drawer	)(xui_bitmap::create("icon/local.png"));
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_local);
 		xui_method_ptrcall(drawer, ini_drawer	)(L"Local");
 		break;
 	}

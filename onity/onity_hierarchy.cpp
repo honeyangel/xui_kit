@@ -7,6 +7,7 @@
 #include "xui_treeview.h"
 #include "xui_treedata.h"
 #include "xui_treenode.h"
+#include "onity_resource.h"
 #include "onity_hierarchy.h"
 
 xui_implement_rtti(onity_hierarchy, xui_dockpage);
@@ -17,7 +18,7 @@ xui_implement_rtti(onity_hierarchy, xui_dockpage);
 xui_create_explain(onity_hierarchy)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_L)
 {
-	ini_namectrl(xui_bitmap::create("icon/hierarchy.png"), L"Hierarchy");
+	ini_namectrl(onity_resource::icon_hierarchy, L"Hierarchy");
 
 	xui_menu*  menu = xui_menu::create(80);
 	m_entity = menu->add_item(NULL, L"Entity");
@@ -36,7 +37,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_search,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_searchtextchanged);
 	xui_method_ptrcall(m_search,	xm_textenter	) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_searchtextenter);
 	xui_method_ptrcall(m_search,	ini_component	)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_search,	ini_drawer		)(xui_bitmap::create("icon/search.png"));
+	xui_method_ptrcall(m_search,	ini_drawer		)(onity_resource::icon_search);
 	xui_method_ptrcall(m_search,	set_backcolor	)(xui_colour(1.0f, 0.20f));
 	xui_method_ptrcall(m_search,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(4));
@@ -53,7 +54,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_clear,		ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_clear,		set_corner		)(8);
 	xui_method_ptrcall(m_clear,		set_drawcolor	)(true);
-	xui_method_ptrcall(m_clear,		ini_drawer		)(xui_bitmap::create("icon/clear.png"));
+	xui_method_ptrcall(m_clear,		ini_drawer		)(onity_resource::icon_clear);
 
 	m_head  = new xui_panel(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		xm_perform		) += new xui_method_member<xui_method_args, onity_hierarchy>(this, &onity_hierarchy::on_headperform);

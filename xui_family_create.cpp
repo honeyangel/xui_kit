@@ -5,13 +5,6 @@
 #include "xui_global.h"
 #include "xui_family_create.h"
 
-//xui_implement_instance_member(xui_family_create);
-//xui_implement_instance_method(xui_family_create);
-
-//const std::string g_family_file[] = {
-//	"msyh.ttf",
-//};
-
 /*
 //static method
 */
@@ -82,9 +75,6 @@ xui_method_explain(xui_family_create, add_font,				void						)( const xui_family
 {
 	FT_Info* info = NULL;
 	FT_Face  face = NULL;
-
-	//npu32 infoID = font.GetHashCode();
-	//npu32 faceID = font.GetFaceCode();
 
 	FT_InfoMap::iterator infoItor = m_FTInfoMap.find(family.to_key());
 	FT_FaceMap::iterator faceItor = m_FTFaceMap.find(family.face);

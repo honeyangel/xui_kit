@@ -12,7 +12,7 @@ xui_create_explain(xui_propedit_stdvec)( xui_propctrl* propctrl )
 	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18));
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(textctrl, set_numbonly	)(true);
