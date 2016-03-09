@@ -25,6 +25,11 @@ public:
 	xui_convas( void );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_convas( void );
+
+	/*
 	//begin
 	//clear
 	*/
@@ -61,8 +66,8 @@ public:
 	/*
 	//text
 	*/
-	s32						calc_height			( const std::wstring&		text, 
-												  const xui_family&			textfont );
+	//s32						calc_height			( const std::wstring&		text, 
+	//											  const xui_family&			textfont );
 
 	xui_vector<s32>			calc_size			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
@@ -191,19 +196,26 @@ public:
 	void					draw_tick			( const xui_vector<s32>&	center,
 												  s32						half,
 												  const xui_colour&			color );
-
-protected:
 	/*
 	//method
 	*/
-	xui_family_bitmap*		get_family_bitmap	( const xui_family& family );
+	xui_family_create*		get_family_create	( void );
 	xui_family_member*		get_family_member	( const xui_family& family, u16 wc );
+
+protected:
+	/*
+	//typedef
+	*/
+	typedef std::vector<xui_family_bitmap*>
+		family_bitmapvec;
 
 	/*
 	//member
 	*/
 	xui_rect2d<s32>			m_viewport;
 	xui_rect2d<s32>			m_cliprect;
+	xui_family_create*		m_familycreate;
+	family_bitmapvec		m_familybitmapvec;
 };
 
 #endif//__xui_convas_h__

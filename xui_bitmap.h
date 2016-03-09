@@ -22,7 +22,7 @@ public:
 	static
 	*/
 	static xui_bitmap*		create		( const std::string& filename );
-	static xui_bitmap*		create		( const xui_family&  family   );
+	//static xui_bitmap*		create		( const xui_family&  family   );
 
 	/*
 	method

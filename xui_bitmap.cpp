@@ -138,19 +138,19 @@ xui_method_explain(xui_bitmap, create,		xui_bitmap*				)( const std::string& fil
 	return bitmap;
 }
 
-xui_method_explain(xui_bitmap, create,		xui_bitmap*				)( const xui_family&  family   )
-{
-	// search
-	xui_bitmap_map::iterator itor = g_bitmaps.find(family.to_string());
-	if (itor != g_bitmaps.end())
-		return (*itor).second;
-
-	// create
-	xui_bitmap* bitmap = new xui_family_bitmap(family);
-	g_bitmaps[family.to_string()] = bitmap;
-
-	return bitmap;
-}
+//xui_method_explain(xui_bitmap, create,		xui_bitmap*				)( const xui_family&  family   )
+//{
+//	// search
+//	xui_bitmap_map::iterator itor = g_bitmaps.find(family.to_string());
+//	if (itor != g_bitmaps.end())
+//		return (*itor).second;
+//
+//	// create
+//	xui_bitmap* bitmap = new xui_family_bitmap(family);
+//	g_bitmaps[family.to_string()] = bitmap;
+//
+//	return bitmap;
+//}
 
 /*
 // constructor

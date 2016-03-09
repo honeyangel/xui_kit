@@ -24,9 +24,9 @@ public:
 	/*
 	//member
 	*/
-	std::string face;
+	s32			face;
 	s32			size;
-	bool		bold;
+	s32			bold;
 	s32			horz;
 	s32			vert;
 
@@ -35,27 +35,27 @@ public:
 	*/
 	xui_family( void )
 	{
-		face = "Euphemia";
-		size = 14;
-		bold = false;
+		face = 0;
+		size = 10;
+		bold = 0;
 		horz = 0;
-		vert = 1;
+		vert = 2;
 	}
-	xui_family( s32 _size, bool _bold = false )
+	xui_family( s32 _size, s32 _bold = 0 )
 	{
-		face = "Euphemia";
+		face = 0;
 		size = _size;
 		bold = _bold;
 		horz = 0;
-		vert = 1;
+		vert = 2;
 	}
-	xui_family( const std::string& _face, s32 _size, bool _bold )
+	xui_family( s32 _face, s32 _size, s32 _bold )
 	{
 		face = _face;
 		size = _size;
 		bold = _bold;
 		horz = 0;
-		vert = 1;
+		vert = 2;
 	}
 	xui_family( const xui_family& other )
 	{
@@ -89,15 +89,11 @@ public:
 	/*
 	//method
 	*/
-	std::string to_string( void ) const
+	s32	to_key( void ) const
 	{
-		std::stringstream ss;
-		ss << face; ss << "_";
-		ss << size; ss << "_";
-		if (bold)	ss << "b";
-		else		ss << "r";
-
-		return ss.str();
+		return  (face << 28) |
+				(size << 20) |
+				(bold << 16);
 	}
 };
 

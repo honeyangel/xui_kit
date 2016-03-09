@@ -53,8 +53,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>libzip/inc/;libpng/inc/;libogl/inc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>libzip/inc/;libpng/inc/;libogl/inc/;libftf/inc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -86,9 +86,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="libftf\inc\freetype\config\ftconfig.h" />
+    <ClInclude Include="libftf\inc\freetype\config\ftheader.h" />
+    <ClInclude Include="libftf\inc\freetype\config\ftmodule.h" />
+    <ClInclude Include="libftf\inc\freetype\config\ftoption.h" />
+    <ClInclude Include="libftf\inc\freetype\config\ftstdlib.h" />
+    <ClInclude Include="libftf\inc\ft2build.h" />
     <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_dockpage.h" />
     <ClInclude Include="xui_dockview.h" />
+    <ClInclude Include="xui_family_create.h" />
     <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_menu.h" />
     <ClInclude Include="xui_menuitem.h" />
@@ -179,8 +186,6 @@
     <ClInclude Include="xui_drawer.h" />
     <ClInclude Include="xui_family.h" />
     <ClInclude Include="xui_family_bitmap.h" />
-    <ClInclude Include="xui_family_create.h" />
-    <ClInclude Include="xui_family_create_win.h" />
     <ClInclude Include="xui_family_member.h" />
     <ClInclude Include="xui_listitem.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -217,6 +222,45 @@
     <ClInclude Include="xui_window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libftf\src\autofit\autofit.c" />
+    <ClCompile Include="libftf\src\base\ftbase.c" />
+    <ClCompile Include="libftf\src\base\ftbbox.c" />
+    <ClCompile Include="libftf\src\base\ftbitmap.c" />
+    <ClCompile Include="libftf\src\base\ftdebug.c" />
+    <ClCompile Include="libftf\src\base\ftfstype.c" />
+    <ClCompile Include="libftf\src\base\ftgasp.c" />
+    <ClCompile Include="libftf\src\base\ftglyph.c" />
+    <ClCompile Include="libftf\src\base\ftgxval.c" />
+    <ClCompile Include="libftf\src\base\ftinit.c" />
+    <ClCompile Include="libftf\src\base\ftlcdfil.c" />
+    <ClCompile Include="libftf\src\base\ftmm.c" />
+    <ClCompile Include="libftf\src\base\ftotval.c" />
+    <ClCompile Include="libftf\src\base\ftpatent.c" />
+    <ClCompile Include="libftf\src\base\ftpfr.c" />
+    <ClCompile Include="libftf\src\base\ftstroke.c" />
+    <ClCompile Include="libftf\src\base\ftsynth.c" />
+    <ClCompile Include="libftf\src\base\ftsystem.c" />
+    <ClCompile Include="libftf\src\base\fttype1.c" />
+    <ClCompile Include="libftf\src\base\ftwinfnt.c" />
+    <ClCompile Include="libftf\src\base\ftxf86.c" />
+    <ClCompile Include="libftf\src\bdf\bdf.c" />
+    <ClCompile Include="libftf\src\cache\ftccache.c" />
+    <ClCompile Include="libftf\src\cff\cff.c" />
+    <ClCompile Include="libftf\src\cid\type1cid.c" />
+    <ClCompile Include="libftf\src\gzip\ftgzip.c" />
+    <ClCompile Include="libftf\src\lzw\ftlzw.c" />
+    <ClCompile Include="libftf\src\pcf\pcf.c" />
+    <ClCompile Include="libftf\src\pfr\pfr.c" />
+    <ClCompile Include="libftf\src\psaux\psaux.c" />
+    <ClCompile Include="libftf\src\pshinter\pshinter.c" />
+    <ClCompile Include="libftf\src\psnames\psmodule.c" />
+    <ClCompile Include="libftf\src\raster\raster.c" />
+    <ClCompile Include="libftf\src\sfnt\sfnt.c" />
+    <ClCompile Include="libftf\src\smooth\smooth.c" />
+    <ClCompile Include="libftf\src\truetype\truetype.c" />
+    <ClCompile Include="libftf\src\type1\type1.c" />
+    <ClCompile Include="libftf\src\type42\type42.c" />
+    <ClCompile Include="libftf\src\winfonts\winfnt.c" />
     <ClCompile Include="libpng\src\png.c" />
     <ClCompile Include="libpng\src\pngerror.c" />
     <ClCompile Include="libpng\src\pnggccrd.c" />
@@ -251,6 +295,7 @@
     <ClCompile Include="xui_dockpage.cpp" />
     <ClCompile Include="xui_dockview.cpp" />
     <ClCompile Include="xui_family.cpp" />
+    <ClCompile Include="xui_family_create.cpp" />
     <ClCompile Include="xui_family_render.cpp" />
     <ClCompile Include="xui_kindctrl.cpp" />
     <ClCompile Include="xui_menu.cpp" />
@@ -318,7 +363,6 @@
     <ClCompile Include="xui_drawer.cpp" />
     <ClCompile Include="xui_dropbox.cpp" />
     <ClCompile Include="xui_itemtag.cpp" />
-    <ClCompile Include="xui_family_create_win.cpp" />
     <ClCompile Include="xui_family_bitmap.cpp" />
     <ClCompile Include="xui_gridbox.cpp" />
     <ClCompile Include="xui_linebox.cpp" />

@@ -100,6 +100,9 @@
     <Filter Include="LibGUI\dockview">
       <UniqueIdentifier>{0de00ee7-3a54-472a-a0b7-2a9562ec2346}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LibFTF">
+      <UniqueIdentifier>{9935b8aa-f2e4-4f9d-94c0-6387efe7be44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xui_colour.h">
@@ -172,12 +175,6 @@
       <Filter>LibPNG</Filter>
     </ClInclude>
     <ClInclude Include="xui_family_member.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="xui_family_create.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="xui_family_create_win.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="xui_action_ctrl.h">
@@ -387,6 +384,27 @@
     <ClInclude Include="xui_dockpage.h">
       <Filter>LibGUI\dockview</Filter>
     </ClInclude>
+    <ClInclude Include="libftf\inc\ft2build.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="libftf\inc\freetype\config\ftconfig.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="libftf\inc\freetype\config\ftheader.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="libftf\inc\freetype\config\ftmodule.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="libftf\inc\freetype\config\ftoption.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="libftf\inc\freetype\config\ftstdlib.h">
+      <Filter>LibFTF</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_family_create.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -487,9 +505,6 @@
     </ClCompile>
     <ClCompile Include="libpng\src\pngwutil.c">
       <Filter>LibPNG</Filter>
-    </ClCompile>
-    <ClCompile Include="xui_family_create_win.cpp">
-      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="xui_family_bitmap.cpp">
       <Filter>Render</Filter>
@@ -694,6 +709,126 @@
     </ClCompile>
     <ClCompile Include="xui_dockpage.cpp">
       <Filter>LibGUI\dockview</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\autofit\autofit.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\bdf\bdf.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\cff\cff.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftbase.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftbitmap.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftdebug.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\cache\ftccache.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftfstype.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftgasp.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftglyph.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\gzip\ftgzip.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftinit.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\lzw\ftlzw.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftstroke.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftsystem.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\smooth\smooth.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftbbox.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftgxval.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftlcdfil.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftmm.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftotval.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftpatent.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftpfr.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftsynth.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\fttype1.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftwinfnt.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\base\ftxf86.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\pcf\pcf.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\pfr\pfr.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\psaux\psaux.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\pshinter\pshinter.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\psnames\psmodule.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\raster\raster.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\sfnt\sfnt.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\truetype\truetype.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\type1\type1.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\cid\type1cid.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\type42\type42.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="libftf\src\winfonts\winfnt.c">
+      <Filter>LibFTF</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_family_create.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

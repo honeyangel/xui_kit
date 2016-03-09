@@ -13,7 +13,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propkind( xui_proproot* root, const std::wstring& name, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont = xui_family(16, true), const xui_family_render& textdraw = xui_family_render::default);
+	xui_propkind( xui_proproot* root, const std::wstring& name, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont = xui_family(12), const xui_family_render& textdraw = xui_family_render::default);
 
 	/*
 	//destructor

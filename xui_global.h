@@ -38,6 +38,12 @@ public:
 	static const notify_change_map&			get_fwatch		( void );
 
 	/*
+	//font
+	*/
+	static const std::string&				get_fontfile	( s32 face );
+	static void								add_fontfile	( const std::string& file );
+
+	/*
 	//file
 	*/
 	static std::wstring						get_workpath	( void );

@@ -1,6 +1,5 @@
 #include <Shlobj.h>
 
-#include "xui_family_create_win.h"
 #include "xui_timermgr.h"
 #include "xui_convas.h"
 #include "xui_desktop.h"
@@ -251,11 +250,11 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 
+	xui_global::add_fontfile("arial.ttf");
 	xui_render_window* render_window = new xui_render_window(gHWND);
-	g_family_create = new xui_family_create_win();
+	xui_static_inscall(xui_convas,		init)();
 	xui_static_inscall(xui_timermgr,	init)();
 	xui_static_inscall(xui_desktop,		init)();
-	xui_static_inscall(xui_convas,		init)();
 
 	RECT rect;
 	GetClientRect(gHWND, &rect);

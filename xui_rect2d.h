@@ -104,23 +104,31 @@ public:
 	/*
 	// method
 	*/
-	bool was_valid ( void ) const
+	bool was_valid	( void ) const
 	{
 		return (bx > ax && by > ay);
 	}
-	bool was_border( const xui_vector<T>& v ) const
+	bool was_border	( const xui_vector<T>& v ) const
 	{
 		return (v.x == ax  ||
 				v.y == ay  ||
 				v.x == bx-1||
 				v.y == by-1);
 	}
-	bool was_inside( const xui_vector<T>& v ) const
+	bool was_inside	( const xui_vector<T>& v ) const
 	{
 		return (v.x >= ax  &&
 				v.y >= ay  &&
 				v.x <  bx  &&
 				v.y <  by);
+	}
+
+	void set_include( const xui_vector<T>& v )
+	{
+		ax = xui_min(ax, v.x);
+		ay = xui_min(ay, v.y);
+		bx = xui_max(bx, v.x);
+		by = xui_max(by, v.y);
 	}
 
 	/*
@@ -202,12 +210,6 @@ public:
 	*/
 	xui_rect2d<T> get_inter( const xui_rect2d<T>& other ) const
 	{
-		//if (bx < other.ax ||
-		//	ax > other.bx ||
-		//	by < other.ay ||
-		//	ay > other.by)
-		//	return xui_rect2d<T>();
-
 		xui_rect2d<T> temp;
 		temp.ax = (ax > other.ax) ? ax : other.ax;
 		temp.ay = (ay > other.ay) ? ay : other.ay;
@@ -229,6 +231,7 @@ public:
 
 		return temp;
 	}
+
 
 	/*
 	// convert

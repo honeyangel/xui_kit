@@ -162,6 +162,19 @@ xui_method_explain(xui_global, get_fwatch,		const notify_change_map&		)( void )
 }
 
 /*
+//font
+*/
+std::vector<std::string> g_fontfilevec;
+xui_method_explain(xui_global, get_fontfile,	const std::string&				)( s32 face )
+{
+	return g_fontfilevec[face];
+}
+xui_method_explain(xui_global, add_fontfile,	void							)( const std::string& file )
+{
+	g_fontfilevec.push_back(file);
+}
+
+/*
 //file
 */
 xui_method_explain(xui_global, get_workpath,	std::wstring					)( void )

@@ -10,7 +10,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_family_bitmap( const xui_family& family );
+	xui_family_bitmap( void );
 
 	/*
 	//destructor
@@ -18,28 +18,27 @@ public:
 	virtual ~xui_family_bitmap( void );
 
 	/*
-	//method
-	*/
-	const xui_family&	get_family			( void ) const;
-
-	/*
 	//member
 	*/
-	xui_family_member*	get_member			( u16 wc );
-	xui_family_member*	add_member			( u16 wc );
-	void				add_member_check	( const xui_vector<s32>& size );
+	xui_family_member*	get_member			( const xui_family& family, u16 wc );
+	xui_family_member*	add_member			( const xui_family& family, u16 wc );
+	bool				add_member_check	( const xui_vector<s32>& size );
 
 protected:
 	/*
+	//method
+	*/
+	xui_rect2d<s32>		upload				( const xui_vector<s32>& size, void* data );
+
+	/*
 	//typedef
 	*/
-	typedef std::map<u16, xui_family_member*>
+	typedef std::map<u32, xui_family_member*>
 		xui_member_map;
 
 	/*
 	//member
 	*/
-	xui_family			m_family;
 	s32					m_render_x;
 	s32					m_render_y;
 	s32					m_render_h;

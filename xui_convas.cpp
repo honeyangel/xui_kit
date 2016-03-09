@@ -1,6 +1,7 @@
 #include "xui_bitmap.h"
 #include "xui_family_bitmap.h"
 #include "xui_family_member.h"
+#include "xui_family_create.h"
 #include "xui_convas.h"
 
 xui_implement_instance_member(xui_convas);
@@ -9,10 +10,21 @@ xui_implement_instance_method(xui_convas);
 /*
 //constructor
 */
-xui_convas::xui_convas( void )
+xui_create_explain(xui_convas)( void )
 {
-	m_viewport = xui_rect2d<s32>(0);
-	m_cliprect = xui_rect2d<s32>(0);
+	m_viewport		= xui_rect2d<s32>(0);
+	m_cliprect		= xui_rect2d<s32>(0);
+	m_familycreate	= new xui_family_create;
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(xui_convas)( void )
+{
+	delete m_familycreate;
+	for (u32 i = 0; i < m_familybitmapvec.size(); ++i)
+		delete m_familybitmapvec[i];
 }
 
 /*
@@ -155,27 +167,29 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 /*
 //text
 */
-xui_method_explain(xui_convas, calc_height,			s32						)( const std::wstring&		text, 
-																			   const xui_family&		textfont )
-{
-	s32 height = 0;
-	for (u32 i = 0; i < text.length(); ++i)
-	{
-		//非可见字符
-		if (text[i] < 0x20)
-			continue;
-
-		xui_family_member* member = get_family_member(textfont, text[i]);
-		height = xui_max(height, member->rt.get_h()+textfont.vert);
-	}
-
-	return height;
-}
+//xui_method_explain(xui_convas, calc_height,			s32						)( const std::wstring&		text, 
+//																			   const xui_family&		textfont )
+//{
+//	s32 height = 0;
+//	for (u32 i = 0; i < text.length(); ++i)
+//	{
+//		//非可见字符
+//		if (text[i] < 0x20)
+//			continue;
+//
+//		xui_family_member* member = get_family_member(textfont, text[i]);
+//		height = xui_max(height, member->rt.get_h()+textfont.vert);
+//	}
+//
+//	return height;
+//}
 xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																		       s32						maxwidth,
 																			   bool						singleline )
 {
+	s32 height = xui_convas::get_ins()->get_family_create()->get_height(textfont) + textfont.vert;
+
 	xui_vector<s32> size(0);
 	if (singleline)
 	{
@@ -186,18 +200,17 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 				continue;
 
 			xui_family_member* member = get_family_member(textfont, text[i]);
-			size.w += member->rt.get_sz().w;
+			size.w += member->advance;
 			size.w += textfont.horz;
 		}
 
-		size.h = calc_height(text, textfont);
+		size.h = height;
 	}
 	else
 	{
 		//绘制多行
 		s32 textline = 0;
 		s32 curwidth = 0;
-		s32 linemaxh = 0;
 
 		//single line buffer
 		std::wstring buffer;
@@ -208,10 +221,8 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			if (*p == L'\n')
 			{
 				buffer.clear();
-				size.h += linemaxh;
 
 				curwidth = 0;
-				linemaxh = 0;
 				++textline;
 				++p;
 			}
@@ -229,15 +240,12 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 						break;
 
 					buffer.clear();
-					size.h += linemaxh;
 
 					curwidth = 0;
-					linemaxh = 0;
 					++textline;
 				}
 				else
 				{
-					linemaxh  = xui_max(linemaxh, calc_height(word, textfont));
 					curwidth += sw;
 					buffer	 += word;
 					p		 += word.length();
@@ -246,12 +254,10 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 		}
 
 		if (buffer.length() > 0)
-		{
-			size.h += linemaxh;
 			++textline;
-		}
 
 		size.w = textline > 1 ? maxwidth : curwidth;
+		size.h = textline * height;
 	}
 
 	return size;
@@ -354,10 +360,10 @@ xui_method_explain(xui_convas, calc_char,			u32						)( const std::wstring&		tex
 			continue;
 
 		xui_family_member* member = get_family_member(textfont, text[i]);
-		if (position < currx + member->rt.get_w()/2)
+		if (position < currx + member->advance/2)
 			break;
 
-		currx += member->rt.get_w();
+		currx += member->advance;
 		currx += textfont.horz;
 		++index;
 	}
@@ -391,10 +397,10 @@ xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		tex
 		if ((text[i] >= L'a' && text[i] <= L'z') ||
 			(text[i] >= L'A' && text[i] <= L'Z'))
 		{
-			if (curwidth + member->rt.get_w() + textfont.horz > maxwidth)
+			if (curwidth + member->advance + textfont.horz > maxwidth)
 				break;
 
-			curwidth += member->rt.get_w();
+			curwidth += member->advance;
 			curwidth += textfont.horz;
 			word     += text[i];
 		}
@@ -404,10 +410,10 @@ xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		tex
 			if (word.length())
 				break;
 
-			if (curwidth + member->rt.get_sz().w + textfont.horz > maxwidth)
+			if (curwidth + member->advance + textfont.horz > maxwidth)
 				break;
 
-			curwidth += member->rt.get_sz().w;
+			curwidth += member->advance;
 			curwidth += textfont.horz;
 			word     += text[i];
 			break;
@@ -480,6 +486,8 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 																			   const xui_vector<s32>&	screenpt,
 																			   const xui_family_render&	textdraw )
 {
+	s32 ascender = xui_convas::get_ins()->get_family_create()->get_ascender(textfont);
+
 	xui_rect2d<s32> dst;
 	dst.set_pt(screenpt);
 
@@ -490,43 +498,51 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 			continue;
 
 		xui_family_member* member = get_family_member(textfont, text[i]);
-		dst.set_sz(member->rt.get_sz());
+		s32 x =  member->bearing.x;
+		s32 y = -member->bearing.y + ascender;
 
-		if (textdraw.renderstyle == TEXTDRAW_STROKE)
+		//if (textdraw.renderstyle == TEXTDRAW_STROKE)
+		//{
+		//	xui_vector<s32> offset;
+		//	offset = xui_vector<s32>(-textdraw.strokewidth,   -textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>( 0,                      -textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>( textdraw.strokewidth,   -textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>(-textdraw.strokewidth,    0);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>( textdraw.strokewidth,    0);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>(-textdraw.strokewidth,    textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>( 0,                       textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//	offset = xui_vector<s32>( textdraw.strokewidth,    textdraw.strokewidth);
+		//	draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+		//}
+		//if (textdraw.renderstyle == TEXTDRAW_SHADOW)
+		//{
+		//	xui_vector<s32> offset;
+		//	offset = xui_vector<s32>(1, 0);
+		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+		//	offset = xui_vector<s32>(0, 1);
+		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+		//	offset = xui_vector<s32>(1, 1);
+		//	draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
+		//}
+		if (textfont.bold)
 		{
-			xui_vector<s32> offset;
-			offset = xui_vector<s32>(-textdraw.strokewidth,   -textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>( 0,                      -textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>( textdraw.strokewidth,   -textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>(-textdraw.strokewidth,    0);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>( textdraw.strokewidth,    0);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>(-textdraw.strokewidth,    textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>( 0,                       textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
-			offset = xui_vector<s32>( textdraw.strokewidth,    textdraw.strokewidth);
-			draw_image(member->bitmap, member->rt, dst+offset, textdraw.strokecolor);
+			dst.set_sz(member->stroke.get_sz());
+			draw_image(member->bitmap, member->stroke, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}
-		if (textdraw.renderstyle == TEXTDRAW_SHADOW)
+		else
 		{
-			xui_vector<s32> offset;
-			offset = xui_vector<s32>(1, 0);
-			draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-			offset = xui_vector<s32>(0, 1);
-			draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-			offset = xui_vector<s32>(1, 1);
-			draw_image(member->bitmap, member->rt, dst+offset, xui_colour(1.0f, 0.0f, 0.0f, 0.0f));
-		}
-		{
-			draw_image(member->bitmap, member->rt, dst,        textdraw.normalcolor);
+			dst.set_sz(member->normal.get_sz());
+			draw_image(member->bitmap, member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}
 
-		dst.oft_x(member->rt.get_w()+textfont.horz);
+		dst.oft_x(member->advance+textfont.horz);
 	}
 }
 
@@ -982,12 +998,29 @@ xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	c
 	glEnd();
 }
 
-xui_method_explain(xui_convas, get_family_bitmap,	xui_family_bitmap*		)( const xui_family&		family )
+xui_method_explain(xui_convas, get_family_create,	xui_family_create*		)( void )
 {
-	return (xui_family_bitmap*)xui_bitmap::create(family);
+	return m_familycreate;
 }
-
 xui_method_explain(xui_convas, get_family_member,	xui_family_member*		)( const xui_family&		family, u16 wc )
 {
-	return get_family_bitmap(family)->get_member(wc);
+	xui_family_member* member = NULL;
+	for (u32 i = 0; i < m_familybitmapvec.size(); ++i)
+	{
+		member = m_familybitmapvec[i]->get_member(family, wc);
+		if (member)
+			return member;
+	}
+
+	if (m_familybitmapvec.size() > 0)
+		member = m_familybitmapvec.back()->add_member(family, wc);
+
+	if (member == NULL)
+	{
+		xui_family_bitmap* bitmap = new xui_family_bitmap;
+		m_familybitmapvec.push_back(bitmap);
+		member = bitmap->add_member(family, wc);
+	}
+
+	return member;
 }
