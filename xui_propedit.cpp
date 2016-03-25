@@ -199,7 +199,7 @@ xui_method_explain(xui_propedit_enum, on_enumctrlselection,		void				)( xui_comp
 /*
 //constructor
 */
-xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
+xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f64 interval )
 : xui_propedit_base(propctrl)
 {
 	m_namectrl->set_cursor(CURSOR_WE);
@@ -211,7 +211,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, f64 interval )
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(textctrl, set_numbonly	)(true);
+	xui_method_ptrcall(textctrl, set_numbtype	)(numbtype);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlgetfocus);
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_textctrltextchanged);
@@ -289,7 +289,6 @@ xui_create_explain(xui_propedit_string)( xui_propctrl* propctrl )
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(textctrl, set_numbonly	)(true);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_editctrlgetfocus);
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_string>(this, &xui_propedit_string::on_textctrltextchanged);

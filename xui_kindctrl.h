@@ -46,7 +46,8 @@ protected:
 	/*
 	//event
 	*/
-	void					on_namectrltextchanged	( xui_component* sender, xui_method_args& args );
+	void					on_namectrlnonfocus		( xui_component* sender, xui_method_args& args );
+	void					on_namectrltextenter	( xui_component* sender, xui_method_args& args );
 	void					on_flagctrlclick		( xui_component* sender, xui_method_args& args );
 	void					on_kindexpand			( xui_component* sender, xui_method_args& args );
 
@@ -66,5 +67,15 @@ protected:
 	xui_propkind_vec		m_propkindvec;
 	xui_propctrl_vec		m_propctrlvec;
 };
+
+#define xui_declare_kindctrl_func \
+public: \
+	static xui_kindctrl*	createkind				( xui_propkind* propkind );
+
+#define xui_explain_kindctrl_func(class_name) \
+xui_kindctrl*				class_name::createkind	( xui_propkind* propkind ) \
+{ \
+	return new xui_kindctrl(propkind); \
+}
 
 #endif//__xui_kindctrl_h__

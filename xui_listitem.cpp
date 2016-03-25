@@ -112,7 +112,8 @@ xui_method_explain(xui_listitem, on_mousedown,		void				)( xui_method_mouse& arg
 	{
 		xui_listview* listview = xui_dynamic_cast(xui_listview, m_parent);
 		if (args.ctrl  == false &&
-			args.shift == false)
+			args.shift == false &&
+			m_selected == false)
 			listview->non_selecteditem(false);
 
 		std::vector<u32> selectedindex = listview->get_selecteditemindex();

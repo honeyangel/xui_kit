@@ -2,6 +2,7 @@
 #define __onity_inspector_h__
 
 #include "xui_dockpage.h"
+#include "xui_propview.h"
 
 class onity_inspector : public xui_dockpage
 {
@@ -13,16 +14,17 @@ public:
 	*/
 	onity_inspector( void );
 
-protected:
 	/*
-	//callback
+	//method
 	*/
-	virtual void	on_load( xui_method_args& args );
+	void				set_proproot	( xui_proproot* proproot );
+	void				set_proproot	( const xui_proproot_vec& proproot );
 
+protected:
 	/*
 	//member
 	*/
-	xui_propview*	m_view;
+	xui_propview*		m_view;
 };
 
 #endif//__onity_inspector_h__

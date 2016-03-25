@@ -15,11 +15,15 @@ public:
 	*/
 	static std::string						unicode_to_utf8	( const std::wstring& src );
 	static std::wstring						utf8_to_unicode	( const std::string&  src );
+	static std::string						unicode_to_ascii( const std::wstring& src );
+	static std::wstring						ascii_to_unicode( const std::string&  src );
 
 	/*
-	//cursor
+	//system
 	*/
 	static void								set_cursor		( u32 cursor );
+	static void								set_capture		( void );
+	static void								non_capture		( void );
 
 	/*
 	//screen

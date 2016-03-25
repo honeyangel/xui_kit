@@ -10,6 +10,34 @@
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
     <ClInclude Include="onity_resource.h" />
+    <ClInclude Include="onity_animator.h" />
+    <ClInclude Include="onity_paramview.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_stateview.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_param.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_state.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propstate.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proptransition.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propctrl_transition.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propctrl_condition.h">
+      <Filter>animator</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_condition.h">
+      <Filter>animator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -22,5 +50,38 @@
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
     <ClCompile Include="onity_resource.cpp" />
+    <ClCompile Include="onity_animator.cpp" />
+    <ClCompile Include="onity_paramview.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_stateview.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_param.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_state.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propstate.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proptransition.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_transition.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_condition.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_condition.cpp">
+      <Filter>animator</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="animator">
+      <UniqueIdentifier>{9037fe86-4bac-4b4e-9f4f-b35ed0b51827}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

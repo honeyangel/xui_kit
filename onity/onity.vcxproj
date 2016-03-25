@@ -11,25 +11,45 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="onity_animator.h" />
+    <ClInclude Include="onity_condition.h" />
     <ClInclude Include="onity_console.h" />
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_mainform.h" />
+    <ClInclude Include="onity_param.h" />
+    <ClInclude Include="onity_paramview.h" />
     <ClInclude Include="onity_project.h" />
+    <ClInclude Include="onity_propctrl_condition.h" />
+    <ClInclude Include="onity_propctrl_transition.h" />
+    <ClInclude Include="onity_propstate.h" />
+    <ClInclude Include="onity_proptransition.h" />
     <ClInclude Include="onity_resource.h" />
+    <ClInclude Include="onity_state.h" />
+    <ClInclude Include="onity_stateview.h" />
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="onity_animator.cpp" />
+    <ClCompile Include="onity_condition.cpp" />
     <ClCompile Include="onity_console.cpp" />
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
+    <ClCompile Include="onity_param.cpp" />
+    <ClCompile Include="onity_paramview.cpp" />
     <ClCompile Include="onity_project.cpp" />
+    <ClCompile Include="onity_propctrl_condition.cpp" />
+    <ClCompile Include="onity_propctrl_transition.cpp" />
+    <ClCompile Include="onity_propstate.cpp" />
+    <ClCompile Include="onity_proptransition.cpp" />
     <ClCompile Include="onity_resource.cpp" />
+    <ClCompile Include="onity_state.cpp" />
+    <ClCompile Include="onity_stateview.cpp" />
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
   </ItemGroup>

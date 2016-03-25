@@ -32,122 +32,13 @@ xui_create_explain(onity_inspector)( void )
 }
 
 /*
-//callback
+//method
 */
-//DEBUG
-class onity_prop_transform : public xui_propkind
+xui_method_explain(onity_inspector, set_proproot, void	)( xui_proproot* proproot )
 {
-public:
-	static xui_vector<f64>		get_translate	( void* userptr )
-	{
-		Omiga::TransformComponent* transformComponent = (Omiga::TransformComponent*)userptr;
-		Omiga::Vec2Df position = transformComponent->GetPosition();
-		return xui_vector<f64>((f64)position.x, (f64)position.y);
-	}
-	static void					set_translate	( void* userptr, const xui_vector<f64>& value )
-	{
-		Omiga::TransformComponent* transformComponent = (Omiga::TransformComponent*)userptr;
-		transformComponent->SetPosition(Omiga::Vec2Df((f32)value.x, (f32)value.y));
-	}
-	static xui_vector<f64>		get_scale		( void* userptr )
-	{
-		Omiga::TransformComponent* transformComponent = (Omiga::TransformComponent*)userptr;
-		Omiga::Vec2Df scale = transformComponent->GetScale();
-		return xui_vector<f64>((f64)scale.x, (f64)scale.y);
-	}
-	static void					set_scale		( void* userptr, const xui_vector<f64>& value )
-	{
-		Omiga::TransformComponent* transformComponent = (Omiga::TransformComponent*)userptr;
-		transformComponent->SetScale(Omiga::Vec2Df((f32)value.x, (f32)value.y));
-	}
-	static void					on_flagchange	( xui_component* sender, xui_method_args& args )
-	{
-
-	}
-
-	onity_prop_transform( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_local, true)
-	{
-		m_rot = 0;
-		add_propdata(new xui_propdata_vector(this, L"Position", xui_propctrl_vector::create, onity_prop_transform::get_translate, onity_prop_transform::set_translate, (void*)(&m_transform)));
-		add_propdata(new xui_propdata_vector(this, L"Scaling",  xui_propctrl_vector::create, onity_prop_transform::get_scale,     onity_prop_transform::set_scale,     (void*)(&m_transform), 1, xui_vector<f64>(1)));
-		add_propdata(new xui_propdata_number_impl<s32>(this, L"Rotation", xui_propctrl_number::create, &m_rot));
-		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_transform::on_flagchange);
-	}
-
-protected:
-	Omiga::TransformComponent	m_transform;
-	s32							m_rot;
-};
-class onity_prop_visual : public xui_propkind
+	m_view->set_proproot(proproot);
+}
+xui_method_explain(onity_inspector, set_proproot, void	)( const xui_proproot_vec& proproot )
 {
-public:
-	static std::vector<NP2DSTransRef*>& get_node( void* ptr )
-	{
-		onity_prop_visual* visual = (onity_prop_visual*)ptr;
-		return visual->m_test;
-	}
-	onity_prop_visual( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_animator, true)
-	{
-		add_propdata(new xui_propdata_stdvec_func<NP2DSTransRef*>(this, L"Nodes", xui_propctrl_stdvec::create, NULL, NULL, onity_prop_visual::stdvec_newprop, onity_prop_visual::get_node, this));
-		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_visual::on_flagchange);
-	}
-
-	static void					on_flagchange	( xui_component* sender, xui_method_args& args )
-	{
-
-	}
-	static xui_bitmap*			transref_geticon( xui_propdata* propdata)
-	{
-		return xui_bitmap::create("icon/animator.png");
-	}
-	static std::wstring			transref_getname(xui_propdata* propdata)
-	{
-		return L"scene node";
-	}
-
-	static xui_propdata*		stdvec_newprop	( void* ptr, xui_propkind* kind )
-	{
-		return new xui_propdata_object_impl<NP2DSTransRef*>(kind, L"", xui_propctrl_object::create, "NPNode", NULL, onity_prop_visual::transref_geticon, onity_prop_visual::transref_getname, (NP2DSTransRef**)ptr);
-	}
-
-protected:
-	std::vector<NP2DSTransRef*>	m_test;
-};
-class onity_prop_ai : public xui_propkind
-{
-public:
-	onity_prop_ai( xui_proproot* root, const std::wstring& name )
-	: xui_propkind(root, name, xui_kindctrl::create, onity_resource::icon_game, true)
-	{
-		m_prop_value = 60;
-		m_test_value = 0;
-		m_bool_value = true;
-
-		add_propdata(new xui_propdata_number_impl<s32>(this, L"Speed", xui_propctrl_number::create, &m_prop_value));
-		add_propdata(new xui_propdata_bool(this, L"Break", xui_propctrl_bool::create, NULL, NULL, &m_bool_value));
-		add_propdata(new xui_propdata_number_impl<s32>(this, L"Gravity", xui_propctrl_slider::create, &m_test_value, 2, -50, 50));
-		xm_flagchanged += new xui_method_static<xui_method_args>(onity_prop_ai::on_flagchange);
-	}
-
-	static void					on_flagchange	( xui_component* sender, xui_method_args& args )
-	{
-
-	}
-
-protected:
-	s32							m_prop_value;
-	s32							m_test_value;
-	bool						m_bool_value;
-};
-
-xui_method_explain(onity_inspector, on_load, void)( xui_method_args& args )
-{
-	xui_dockpage::on_load(args);
-	xui_proproot* proproot = new xui_proproot;
-	proproot->add_propkind(new onity_prop_transform	(proproot, L"Transform"));
-	proproot->add_propkind(new onity_prop_visual	(proproot, L"Visual"));
-	proproot->add_propkind(new onity_prop_ai		(proproot, L"AI"));
 	m_view->set_proproot(proproot);
 }

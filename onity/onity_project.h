@@ -32,6 +32,7 @@ protected:
 	void			on_lineviewdclick	( xui_component* sender, xui_method_mouse& args );
 	void			on_treeviewselection( xui_component* sender, xui_method_args&  args );
 	void			on_folderclick		( xui_component* sender, xui_method_args&  args );
+	void			on_controllerclick	( xui_component* sender, xui_method_args&  args );
 	void			on_pathitemclick	( xui_component* sender, xui_method_args&  args );
 	void			on_pathtogglerender	( xui_component* sender, xui_method_args&  args );
 	void			on_sliderscroll		( xui_component* sender, xui_method_args&  args );
@@ -48,6 +49,7 @@ protected:
 	xui_panel*		m_head;
 	xui_toggle*		m_create;
 	xui_menuitem*	m_folder;
+	xui_menuitem*	m_controller;
 	xui_textbox*	m_search;
 	xui_button*		m_clear;
 

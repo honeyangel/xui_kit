@@ -23,8 +23,8 @@ xui_create_explain(xui_propctrl_vector)( xui_propdata* propdata )
 : xui_propctrl()
 {
 	xui_propdata_vector* datavector = dynamic_cast<xui_propdata_vector*>(propdata);
-	m_subxedit = new xui_propedit_number(this, datavector->get_interval());
-	m_subyedit = new xui_propedit_number(this, datavector->get_interval());
+	m_subxedit = new xui_propedit_number(this, datavector->get_numbtype(), datavector->get_interval());
+	m_subyedit = new xui_propedit_number(this, datavector->get_numbtype(), datavector->get_interval());
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
 	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);

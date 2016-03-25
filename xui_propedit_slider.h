@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propedit_slider( xui_propctrl* propctrl, f64 interval, f64 minvalue, f64 maxvalue );
+	xui_propedit_slider( xui_propctrl* propctrl, u08 numbtype, f64 interval, f64 minvalue, f64 maxvalue );
 
 	/*
 	//destructor

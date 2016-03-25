@@ -58,9 +58,8 @@ xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* comp
 }
 xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )
 {
-	xui_kindctrl* kindctrl = get_kindctrl();
-	if (kindctrl)
-		return xui_dynamic_cast(xui_propview, kindctrl->get_parent());
+	if (m_propdata)
+		return m_propdata->get_kind()->get_root()->get_ctrl();
 
 	return NULL;
 }
@@ -246,7 +245,7 @@ xui_create_explain(xui_propctrl_number)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
-	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_interval());
+	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval());
 	xui_propctrl_implement_attach(editnumber)
 }
 xui_propctrl_implement_link(xui_propctrl_number, xui_propedit_number, xui_propdata_number, f64)

@@ -21,7 +21,7 @@ xui_create_explain(xui_propctrl_slider)( xui_propdata* propdata )
 : xui_propctrl()
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
-	xui_propedit_slider* editslider = new xui_propedit_slider(this, datanumber->get_interval(), datanumber->get_minvalue(), datanumber->get_maxvalue());
+	xui_propedit_slider* editslider = new xui_propedit_slider(this, datanumber->get_numbtype(), datanumber->get_interval(), datanumber->get_minvalue(), datanumber->get_maxvalue());
 
 	xui_drawer*  namectrl = editslider->get_editnumb()->get_namectrl();
 	xui_control* textctrl = editslider->get_editnumb()->get_editctrl();

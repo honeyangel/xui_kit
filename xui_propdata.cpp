@@ -45,6 +45,10 @@ xui_method_explain(xui_propdata,				set_ctrl,			void					)( xui_propctrl* ctrl )
 {
 	m_ctrl = ctrl;
 }
+xui_method_explain(xui_propdata,				non_ctrl,			void					)( void )
+{
+	m_ctrl = NULL;
+}
 xui_method_explain(xui_propdata,				can_edit,			bool					)( void ) const
 {
 	return m_edit;
@@ -187,17 +191,22 @@ xui_method_explain(xui_propdata_string,			set_value,			void					)( const std::ws
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_number)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, f64 interval, f64 minvalue, f64 maxvalue ) 
+xui_create_explain(xui_propdata_number)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, u08 numbtype, f64 interval, f64 minvalue, f64 maxvalue ) 
 : xui_propdata(kind, name, func)
 {
 	m_interval = interval;
 	m_minvalue = minvalue;
 	m_maxvalue = maxvalue;
+	m_numbtype = numbtype;
 }
 
 /*
 //method
 */
+xui_method_explain(xui_propdata_number,			get_numbtype,		u08						)( void ) const
+{
+	return m_numbtype;
+}
 xui_method_explain(xui_propdata_number,			get_interval,		f64						)( void ) const
 {
 	return m_interval;
@@ -214,8 +223,8 @@ xui_method_explain(xui_propdata_number,			get_maxvalue,		f64						)( void ) cons
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_number_func)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval, f64 minvalue, f64 maxvalue )
-: xui_propdata_number(kind, name, func, interval, minvalue, maxvalue)
+xui_create_explain(xui_propdata_number_func)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval, f64 minvalue, f64 maxvalue )
+: xui_propdata_number(kind, name, func, numbtype, interval, minvalue, maxvalue)
 {
 	m_userget = userget;
 	m_userset = userset;
@@ -306,6 +315,12 @@ xui_method_explain(xui_propdata_enum_func,		set_value,			void					)( u32 index )
 xui_create_explain(xui_propdata_expand)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propdata_vec& subprop, bool subfold ) 
 : xui_propdata(kind, name, func), xui_expandbase(subprop, subfold)
 {}
+xui_method_explain(xui_propdata_expand,			non_ctrl,			void					)( void )
+{
+	xui_propdata::non_ctrl();
+	for (u32 i = 0; i < m_subprop.size(); ++i)
+		m_subprop[i]->non_ctrl();
+}
 
 /*
 //constructor
@@ -376,13 +391,23 @@ xui_method_explain(xui_propdata_stdvec,			get_propvec,		const xui_propdata_vec&	
 	return m_propvec;
 }
 
+/*
+//override
+*/
+xui_method_explain(xui_propdata_stdvec,			non_ctrl,			void					)( void )
+{
+	xui_propdata::non_ctrl();
+	for (u32 i = 0; i < m_propvec.size(); ++i)
+		m_propvec[i]->non_ctrl();
+}
+
 //////////////////////////////////////////////////////////////////////////
 //propdata_vector
 //////////////////////////////////////////////////////////////////////////
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_vector)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval , const xui_vector<f64>& defvalue  ) 
+xui_create_explain(xui_propdata_vector)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval , const xui_vector<f64>& defvalue  ) 
 : xui_propdata(kind, name, func)
 {
 	m_userget	= userget;
@@ -390,11 +415,16 @@ xui_create_explain(xui_propdata_vector)(xui_propkind* kind, const std::wstring& 
 	m_userptr	= userptr;
 	m_defvalue	= defvalue;
 	m_interval	= interval;
+	m_numbtype	= numbtype;
 }
 
 /*
 //method
 */
+xui_method_explain(xui_propdata_vector,			get_numbtype,		u08						)( void ) const
+{
+	return m_numbtype;
+}
 xui_method_explain(xui_propdata_vector,			get_interval,		f64						)( void ) const
 {
 	return m_interval;
@@ -422,18 +452,23 @@ xui_method_explain(xui_propdata_vector,			set_value,			void					)( const xui_vec
 /*
 //constructor
 */
-xui_create_explain(xui_propdata_rect2d)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval ) 
+xui_create_explain(xui_propdata_rect2d)(xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval ) 
 : xui_propdata(kind, name, func)
 {
 	m_userget	= userget;
 	m_userset	= userset;
 	m_userptr	= userptr;
 	m_interval	= interval;
+	m_numbtype	= numbtype;
 }
 
 /*
 //method
 */
+xui_method_explain(xui_propdata_rect2d,			get_numbtype,		u08						)( void ) const
+{
+	return m_numbtype;
+}
 xui_method_explain(xui_propdata_rect2d,			get_interval,		f64						)( void ) const
 {
 	return m_interval;

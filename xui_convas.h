@@ -38,6 +38,12 @@ public:
 	void					present				( void );
 
 	/*
+	//transform
+	*/
+	void					set_transform		( f32 angle, const xui_vector<f32>& scale, const xui_vector<f32>& translate );
+	void					non_transform		( void );
+
+	/*
 	//cliprect
 	//viewport
 	*/
@@ -139,7 +145,8 @@ public:
 												  s32						thick = 1 );
 
 	void					fill_rectangle		( const xui_rect2d<s32>&	rt, 
-												  const xui_colour&			color );
+												  const xui_colour&			color,
+												  bool						smooth = false );
 
 	/*
 	//round

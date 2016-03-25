@@ -1,3 +1,5 @@
+#include "NP2DSStateCtrl.h"
+
 #include "xui_bitmap.h"
 #include "xui_global.h"
 #include "xui_desktop.h"
@@ -12,6 +14,7 @@
 #include "xui_treedata.h"
 #include "xui_treenode.h"
 #include "xui_slider.h"
+#include "onity_resource.h"
 #include "onity_project.h"
 
 xui_implement_rtti(onity_project, xui_dockpage);
@@ -22,11 +25,14 @@ xui_implement_rtti(onity_project, xui_dockpage);
 xui_create_explain(onity_project)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_T|AREALIMIT_B, 200, DOCKSTYLE_B)
 {
-	ini_namectrl(xui_bitmap::create("icon/project.png"), L"Project");
+	ini_namectrl(onity_resource::icon_project, L"Project");
 
-	xui_menu*  menu = xui_menu::create(80);
-	m_folder = menu->add_item(NULL, L"Folder");
+	xui_menu* menu	= xui_menu::create(80);
+	m_folder		= menu->add_item(onity_resource::icon_folder,	L"Folder");
+	menu->add_separate();
+	m_controller	= menu->add_item(onity_resource::icon_animator, L"Animation Controller");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_folderclick);
+	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_controllerclick);
 
 	m_create = new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -42,7 +48,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_searchtextchanged);
 	xui_method_ptrcall(m_search,	xm_textenter		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_searchtextenter);
 	xui_method_ptrcall(m_search,	ini_component		)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_search,	ini_drawer			)(xui_bitmap::create("icon/search.png"));
+	xui_method_ptrcall(m_search,	ini_drawer			)(onity_resource::icon_search);
 	xui_method_ptrcall(m_search,	set_backcolor		)(xui_colour(1.0f, 0.20f));
 	xui_method_ptrcall(m_search,	set_drawcolor		)(true);
 	xui_method_ptrcall(m_search,	set_borderrt		)(xui_rect2d<s32>(4));
@@ -58,7 +64,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_clear,		ini_component		)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_clear,		set_corner			)(8);
 	xui_method_ptrcall(m_clear,		set_drawcolor		)(true);
-	xui_method_ptrcall(m_clear,		ini_drawer			)(xui_bitmap::create("icon/clear.png"));
+	xui_method_ptrcall(m_clear,		ini_drawer			)(onity_resource::icon_clear);
 
 	m_head  = new xui_panel(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		xm_perform			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_headperform);
@@ -354,6 +360,42 @@ xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender
 		m_pathview->add_upmostnode(0, new onity_path_data(temp.str()));
 	}
 }
+xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sender, xui_method_args& args )
+{
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*    node = nodevec.front();
+		onity_path_data* data = (onity_path_data*)node->get_linkdata();
+		std::wstring     path = data->get_full();
+
+		NP2DSStateCtrl* stateCtrl = new NP2DSStateCtrl;
+
+		s32  number  = 0;
+		bool success = false;
+		std::wstringstream temp;
+		while (true)
+		{
+			temp.str(L"");
+			temp << path.c_str();
+			temp << L"/New Animation Controller ";
+			temp << number;
+			temp << ".controller";
+			success = stateCtrl->SaveXmlFile(xui_global::unicode_to_ascii(temp.str()));
+
+			if (success)
+				break;
+
+			++number;
+		}
+
+		delete stateCtrl;
+		//xui_treenode* rootnode = nodevec.front();
+		//xui_treenode* pathnode = rootnode->add_leafnode(0, new onity_path_data(temp.str()));
+		xui_treenode* line = m_lineview->add_upmostnode(0, new onity_file_data(temp.str()));
+		//line->set_data(pathnode);
+	}
+}
 xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* sender, xui_method_args&  args )
 {
 	xui_treenode* node = (xui_treenode*)sender->get_data();
@@ -402,7 +444,8 @@ xui_method_explain(onity_project, refresh_lineview,			void)( void )
 		std::vector<std::wstring> filevec = xui_global::get_file(rootdata->get_full());
 		for (u32 i = 0; i < filevec.size(); ++i,++index)
 		{
-			m_lineview->add_upmostnode(index, new onity_file_data(rootdata->get_full()+filevec[i]));
+			std::wstring full = rootdata->get_full()+L"/"+filevec[i];
+			m_lineview->add_upmostnode(index, new onity_file_data(full));
 		}
 	}
 	m_lineview->refresh();
@@ -439,7 +482,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 			xui_method_ptrcall(drawer, ini_drawer	)(pathdata->get_text(0));
 			xui_method_ptrcall(drawer, set_backcolor)(xui_colour::transparent);
 			xui_method_ptrcall(drawer, set_drawcolor)(true);
-			xui_method_ptrcall(drawer, set_textfont	)(xui_family(10, (i == 0) ? 1 : 0));
+			xui_method_ptrcall(drawer, set_textcolor)(i == 0 ? xui_colour(1.0f, 0.5f) : xui_colour(1.0f, 0.8f));
 			xui_method_ptrcall(drawer, set_data		)(pathnode);
 			xui_method_ptrcall(drawer, on_perform_w	)(xui_convas::get_ins()->calc_size(drawer->get_text(), drawer->get_textfont(), 0, true).w);
 			m_pathpane->add_child(drawer);

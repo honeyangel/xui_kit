@@ -36,6 +36,7 @@ public:
 	void							set_icon	( xui_bitmap* icon );
 	bool							get_flag	( void ) const;
 	void							set_flag	( bool flag );
+	void							non_ctrl	( void );
 	xui_kindctrl*					get_ctrl	( void ) const;
 	void							set_ctrl	( xui_kindctrl* ctrl );
 	bool							can_show	( void ) const;

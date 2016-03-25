@@ -86,6 +86,12 @@ xui_method_explain(xui_propkind, set_ctrl,		void					)( xui_kindctrl* ctrl )
 {
 	m_ctrl = ctrl;
 }
+xui_method_explain(xui_propkind, non_ctrl,		void					)( void )
+{
+	m_ctrl = NULL;
+	for (u32 i = 0; i < m_propdata.size(); ++i)
+		m_propdata[i]->non_ctrl();
+}
 xui_method_explain(xui_propkind, can_show,		bool					)( void ) const
 {
 	return m_show;

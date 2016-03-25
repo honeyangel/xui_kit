@@ -83,10 +83,31 @@ xui_method_explain(xui_global, utf8_to_unicode, std::wstring					)( const std::s
 
 	return result;
 }
+xui_method_explain(xui_global, unicode_to_ascii,std::string						)( const std::wstring& src )
+{
+	char buffer[512];
+	WideCharToMultiByte(CP_ACP, 0, src.c_str(), -1, buffer, 512, NULL, NULL);
+	return std::string(buffer);
+}
+xui_method_explain(xui_global, ascii_to_unicode,std::wstring					)( const std::string&  src )
+{
+	wchar_t buffer[512];
+	MultiByteToWideChar(CP_ACP, 0, src.c_str(), -1, buffer, 512);
+	return std::wstring(buffer);
+}
 
 /*
-//cursor
+//system
 */
+xui_method_explain(xui_global, set_capture,		void							)( void )
+{
+	extern HWND gHWND;
+	SetCapture(gHWND);
+}
+xui_method_explain(xui_global, non_capture,		void							)( void )
+{
+	ReleaseCapture();
+}
 xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 {
 	switch (cursor)

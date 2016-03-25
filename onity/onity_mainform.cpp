@@ -1,3 +1,4 @@
+#include "xui_desktop.h"
 #include "xui_convas.h"
 #include "xui_bitmap.h"
 #include "xui_toggle.h"
@@ -14,6 +15,7 @@
 #include "onity_project.h"
 #include "onity_timeline.h"
 #include "onity_game.h"
+#include "onity_animator.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -93,12 +95,14 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_console,		set_data		)(new onity_console);
 	xui_method_ptrcall(m_timeline,		set_data		)(new onity_timeline);
 	xui_method_ptrcall(m_game,			set_data		)(new onity_game);
+	xui_method_ptrcall(m_animator,		set_data		)(new onity_animator);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_animator,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
@@ -131,9 +135,28 @@ xui_create_explain(onity_mainform)( void )
 }
 
 /*
+//static
+*/
+xui_method_explain(onity_mainform, get_ptr,				onity_mainform*		)( void )
+{
+	const std::vector<xui_control*>& vec = xui_desktop::get_ins()->get_children();
+	if (vec.size() > 0)
+		return xui_dynamic_cast(onity_mainform, vec[0]);
+
+	return NULL;
+}
+/*
+//method
+*/
+xui_method_explain(onity_mainform, get_inspector,		onity_inspector*	)( void )
+{
+	return (onity_inspector*)m_inspector->get_data();
+}
+
+/*
 //callback
 */
-xui_method_explain(onity_mainform, on_load,				void)( xui_method_args& args )
+xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args )
 {
 	xui_window::on_load(args);
 
@@ -144,7 +167,7 @@ xui_method_explain(onity_mainform, on_load,				void)( xui_method_args& args )
 /*
 //event
 */
-xui_method_explain(onity_mainform, on_clicktransform,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clicktransform,	void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_toggle* operator_toggle[4];
 	operator_toggle[0] = m_select;
@@ -156,7 +179,7 @@ xui_method_explain(onity_mainform, on_clicktransform,	void)( xui_component* send
 		operator_toggle[i]->ini_toggle(sender == operator_toggle[i]);
 	}
 }
-xui_method_explain(onity_mainform, on_clickanchor,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickanchor,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, sender);
 	u08 toa = (u08)drawer->get_data();
@@ -174,7 +197,7 @@ xui_method_explain(onity_mainform, on_clickanchor,		void)( xui_component* sender
 		break;
 	}
 }
-xui_method_explain(onity_mainform, on_clickcoordinate,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, sender);
 	u08 toc = (u08)drawer->get_data();
@@ -192,14 +215,14 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void)( xui_component* sen
 		break;
 	}
 }
-xui_method_explain(onity_mainform, on_clickdebug,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args& args )
 {
 	if (m_run->was_push() == false)
 	{
 		m_pause->ini_toggle(false);
 	}
 }
-xui_method_explain(onity_mainform, on_clickwndmenu,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_dockpage* page = (xui_dockpage*)sender->get_data();
 	if (page)
@@ -216,16 +239,16 @@ xui_method_explain(onity_mainform, on_clickwndmenu,		void)( xui_component* sende
 		}
 	}
 }
-xui_method_explain(onity_mainform, on_clicksave,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args& args )
 {
 
 }
-xui_method_explain(onity_mainform, on_clickload,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args& args )
 {
 	//TODO
 	on_clickreset(sender, args);
 }
-xui_method_explain(onity_mainform, on_clickreset,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sender, xui_method_args& args )
 {
 	del_allview();
 	std::vector<xui_menuitem*> menulist;
@@ -248,7 +271,7 @@ xui_method_explain(onity_mainform, on_clickreset,		void)( xui_component* sender,
 		}
 	}
 }
-xui_method_explain(onity_mainform, on_paintdebug,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_colour      color	= sender->get_vertexcolor();
 	xui_rect2d<s32> rt		= sender->get_renderrtabs();
@@ -288,7 +311,7 @@ xui_method_explain(onity_mainform, on_paintdebug,		void)( xui_component* sender,
 		xui_convas::get_ins()->fill_rectangle(rt, color);
 	}
 }
-xui_method_explain(onity_mainform, on_mainviewinvalid,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_mainviewinvalid,	void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_vector<s32> minlimit = m_mainview->get_minlimit();
 	minlimit.h += m_toolpane->get_renderh();
@@ -306,7 +329,7 @@ xui_method_explain(onity_mainform, on_mainviewinvalid,	void)( xui_component* sen
 /*
 //method
 */
-xui_method_explain(onity_mainform, del_allview,			void)( void )
+xui_method_explain(onity_mainform, del_allview,			void				)( void )
 {
 	std::vector<xui_menuitem*> menulist;
 	menulist.push_back(m_hierarchy);

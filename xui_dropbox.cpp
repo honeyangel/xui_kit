@@ -54,7 +54,7 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 	xui_method_ptrcall(m_droptog, ini_component	)(0, 0, DOCKSTYLE_R);
 	m_widgetvec.push_back(m_droptog);
 
-	m_droplst   = new xui_listview	(xui_vector<s32>(0), false);
+	m_droplst   = new xui_listview	(xui_vector<s32>(0), true);
 	m_droplst->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
 	m_droplst->xm_selectedchange += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstselection);
 	m_droplst->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_dropallmousedown);

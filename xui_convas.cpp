@@ -50,6 +50,41 @@ xui_method_explain(xui_convas, present,				void					)( void )
 }
 
 /*
+//transform
+*/
+xui_method_explain(xui_convas, set_transform,		void					)( f32 angle, const xui_vector<f32>& scale, const xui_vector<f32>& translate )
+{
+	glMatrixMode(GL_MODELVIEW);
+
+	f32 fs = sin(angle);
+	f32 fc = cos(angle);
+
+	f32 m[16];
+	memset(m, 0, sizeof(f32) * 16);
+	m[0]  =  fc;
+	m[1]  =  fs;
+	m[4]  = -fs;
+	m[5]  =  fc;
+	m[10] =  1.0f;
+	m[12] =  translate.x;
+	m[13] =  translate.y;
+	m[14] =  0.0f;
+	m[15] =  1.0f;
+	glLoadMatrixf(m);
+}
+xui_method_explain(xui_convas, non_transform,		void					)( void )
+{
+	glMatrixMode(GL_MODELVIEW);
+	f32 m[16];
+	memset(m, 0, sizeof(f32) * 16);
+	m[0]  =  1.0f;
+	m[5]  =  1.0f;
+	m[10] =  1.0f;
+	m[15] =  1.0f;
+	glLoadMatrixf(m);
+}
+
+/*
 //cliprect
 //viewport
 */
@@ -669,13 +704,16 @@ xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32
 }
 
 xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color )
+																			   const xui_colour&		color,
+																			   bool						smooth )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
+	if (smooth) glEnable (GL_POLYGON_SMOOTH);
+	else		glDisable(GL_POLYGON_SMOOTH);
+
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POLYGON_SMOOTH);
 	glBegin(GL_QUADS);
 	glColor4fv(color.value);
 

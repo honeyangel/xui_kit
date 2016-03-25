@@ -34,12 +34,13 @@ public:
 	xui_prop_newctrl			get_func		( void ) const;
 	const std::wstring&			get_name		( void ) const;
 	void						set_name		( const std::wstring& name );
-	xui_propctrl*				get_ctrl		( void );
-	void						set_ctrl		( xui_propctrl* ctrl );
 	bool						can_edit		( void ) const;
 	void						set_edit		( bool flag );
 	bool						can_show		( void ) const;
 	void						set_show		( bool flag );
+	xui_propctrl*				get_ctrl		( void );
+	void						set_ctrl		( xui_propctrl* ctrl );
+	virtual void				non_ctrl		( void );
 
 	/*
 	//refresh
@@ -130,11 +131,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_number( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, f64 interval, f64 minvalue, f64 maxvalue );
+	xui_propdata_number( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, u08 numbtype, f64 interval, f64 minvalue, f64 maxvalue );
 
 	/*
 	//virtual
 	*/
+	u08							get_numbtype	( void ) const;
 	f64							get_interval	( void ) const;
 	f64							get_minvalue	( void ) const;
 	f64							get_maxvalue	( void ) const;
@@ -146,6 +148,7 @@ protected:
 	/*
 	//member
 	*/
+	u08							m_numbtype;
 	f64							m_interval;
 	f64							m_minvalue;
 	f64							m_maxvalue;
@@ -159,7 +162,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_number_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 );
+	xui_propdata_number_func( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 );
 
 	/*
 	//override
@@ -182,8 +185,8 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_number_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, T* ptr, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 )
-	: xui_propdata_number(kind, name, func, interval, minvalue, maxvalue)
+	xui_propdata_number_impl( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, T* ptr, u08 numbtype, f64 interval = 1, f64 minvalue = 0, f64 maxvalue = 0 )
+	: xui_propdata_number(kind, name, func, numbtype, interval, minvalue, maxvalue)
 	{
 		m_ptr = ptr;
 	}
@@ -432,6 +435,11 @@ public:
 	//constructor
 	*/
 	xui_propdata_expand( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, const xui_propdata_vec& subprop, bool subfold = true );
+
+	/*
+	//override
+	*/
+	virtual void				non_ctrl		( void );
 };
 class xui_propdata_expand_plus : public xui_propdata_expand
 {
@@ -477,6 +485,17 @@ public:
 	/*
 	//override
 	*/
+	virtual void				non_ctrl		( void )
+	{
+		xui_propdata_bool::non_ctrl();
+		for (u32 i = 0; i < m_subprop.size(); ++i)
+			m_subprop[i]->non_ctrl();
+	}
+
+protected:
+	/*
+	//override
+	*/
 	virtual void				on_valuechanged	( void )
 	{
 		bool value = get_value();
@@ -511,7 +530,18 @@ public:
 	}
 
 	/*
-	//method
+	//override
+	*/
+	virtual void				non_ctrl		( void )
+	{
+		xui_propdata_enum_func::non_ctrl();
+		for (u32 i = 0; i < m_subprop.size(); ++i)
+			m_subprop[i]->non_ctrl();
+	}
+
+protected:
+	/*
+	//override
 	*/
 	virtual void				on_valuechanged	( void )
 	{
@@ -546,7 +576,18 @@ public:
 	}
 
 	/*
-	//method
+	//override
+	*/
+	virtual void				non_ctrl		( void )
+	{
+		xui_propdata_enum_impl<T>::non_ctrl();
+		for (u32 i = 0; i < m_subprop.size(); ++i)
+			m_subprop[i]->non_ctrl();
+	}
+
+protected:
+	/*
+	//override
 	*/
 	virtual void				on_valuechanged	( void )
 	{
@@ -584,6 +625,11 @@ public:
 	virtual u32					get_value		( void ) const					= 0;
 	virtual void				set_value		( u32 value )					= 0;
 	virtual void				set_index		( u32 oldindex, u32 newindex )	= 0;
+
+	/*
+	//override
+	*/
+	virtual void				non_ctrl		( void );
 
 protected:
 	/*
@@ -841,11 +887,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_vector( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1, const xui_vector<f64>& defvalue = xui_vector<f64>(0) );
+	xui_propdata_vector( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval = 1, const xui_vector<f64>& defvalue = xui_vector<f64>(0) );
 
 	/*
-	//virtual
+	//method
 	*/
+	u08							get_numbtype( void ) const;
 	virtual f64					get_interval( void ) const;
 	virtual void 				set_defvalue( void );
 	virtual xui_vector<f64>		get_value	( void ) const;
@@ -860,6 +907,7 @@ protected:
 	void*						m_userptr;
 	xui_vector<f64>				m_defvalue;
 	f64							m_interval;
+	u08							m_numbtype;
 };
 
 /*
@@ -874,11 +922,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propdata_rect2d( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, f64 interval = 1 );
+	xui_propdata_rect2d( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, get_func userget, set_func userset, void* userptr, u08 numbtype, f64 interval = 1 );
 
 	/*
 	//method
 	*/
+	u08							get_numbtype( void ) const;
 	virtual f64					get_interval( void ) const;
 	virtual xui_rect2d<f64>		get_value	( void ) const;
 	virtual void				set_value	( const xui_rect2d<f64>& value );
@@ -891,6 +940,7 @@ protected:
 	set_func					m_userset;
 	void*						m_userptr;
 	f64							m_interval;
+	u08							m_numbtype;
 };
 
 /*

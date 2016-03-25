@@ -10,7 +10,7 @@ xui_implement_rtti(xui_kindctrl, xui_control);
 /*
 //create
 */
-const s32 xui_kindctrl::KIND_HEIGHT = 24;
+const s32 xui_kindctrl::KIND_HEIGHT = 28;
 
 xui_method_explain(xui_kindctrl, create,					xui_kindctrl*	)( xui_propkind* propkind )
 {
@@ -27,13 +27,14 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_propkind	= NULL;
 
 	//icon
-	m_iconctrl	= new xui_drawer  (xui_vector<s32>(16));
+	m_iconctrl	= new xui_drawer  (xui_vector<s32>(24));
 	xui_method_ptrcall(m_iconctrl, set_parent		)(this);
 	m_widgetvec.push_back(m_iconctrl);
 
 	//name
-	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 20));
-	m_namectrl->xm_textchanged	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrltextchanged);
+	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 24));
+	m_namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrlnonfocus);
+	m_namectrl->xm_textenter	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrltextenter);
 	xui_method_ptrcall(m_namectrl, set_parent		)(this);
 	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(m_namectrl, set_backcolor	)(xui_colour::darkgray);
@@ -130,9 +131,6 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 {
 	if (m_propkind)
 	{
-		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon());
-		xui_method_ptrcall(m_namectrl, ini_textbox	)(m_propkind->get_name());
-		xui_method_ptrcall(m_flagctrl, ini_toggle	)(m_propkind->get_flag());
 		xui_method_ptrcall(m_namectrl, set_textfont	)(m_propkind->get_textfont());
 		xui_method_ptrcall(m_namectrl, set_textdraw	)(m_propkind->get_textdraw());
 		xui_method_ptrcall(m_namectrl, set_sidestyle)(m_propkind->xm_namechanged.count() >  0 ? SIDESTYLE_S            : SIDESTYLE_N);
@@ -140,6 +138,9 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 		xui_method_ptrcall(m_namectrl, set_drawcolor)(m_propkind->xm_namechanged.count() >  0);
 		xui_method_ptrcall(m_flagctrl, set_visible	)(m_propkind->xm_flagchanged.count() >  0);
 		xui_method_ptrcall(m_kindplus, set_visible	)(m_propctrlvec.size() > 0);
+		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon());
+		xui_method_ptrcall(m_namectrl, ini_textbox	)(m_propkind->get_name());
+		xui_method_ptrcall(m_flagctrl, ini_toggle	)(m_propkind->get_flag());
 
 		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 		{
@@ -196,7 +197,7 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	pt.x += m_flagctrl->get_renderw()+4;
 	pt.y  = rt.ay + (height-m_namectrl->get_renderh())/2;
 	m_namectrl->on_perform_pt(pt);
-	m_namectrl->on_perform_w (rt.get_w()/2);
+	m_namectrl->on_perform_w (rt.bx-pt.x);
 	//plus
 	pt.x  = rt.ax + (indent-m_kindplus->get_renderw());
 	pt.y  = rt.ay + (height-m_kindplus->get_renderh())/2;
@@ -223,7 +224,14 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 /*
 //event
 */
-xui_method_explain(xui_kindctrl, on_namectrltextchanged,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_kindctrl, on_namectrlnonfocus,		void			)( xui_component* sender, xui_method_args& args )
+{
+	if (m_propkind)
+	{
+		m_namectrl->ini_textbox(m_propkind->get_name());
+	}
+}
+xui_method_explain(xui_kindctrl, on_namectrltextenter,		void			)( xui_component* sender, xui_method_args& args )
 {
 	for (u32 i = 0; i < m_propkindvec.size(); ++i)
 	{

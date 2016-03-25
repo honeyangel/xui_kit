@@ -68,6 +68,9 @@ xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* compon
 		if (m_catchctrl)
 			set_focusctrl(m_catchctrl);
 	}
+
+	if (m_catchctrl) xui_global::set_capture();
+	else			 xui_global::non_capture();
 }
 xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
 {
@@ -385,30 +388,32 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 
 	if (component)
 	{
-		component->on_mousedown(             args);
-		component->xm_mousedown(m_catchctrl, args);
+		component->on_mousedown(           args);
+		component->xm_mousedown(component, args);
 	}
 }
 xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args )
 {
 	xui_component* component = NULL;
 
-	if (args.mouse == MB_L)
+	if (args.mouse == MB_L && m_catchctrl)
+	{
+		if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_allowdrag && m_catchdata)
+		{
+			xui_method_dragdrop other_args;
+			other_args.allow = m_allowdrag;
+			other_args.drag  = m_catchctrl;
+			other_args.data  = m_catchdata;
+			other_args.type  = m_catchtype;
+			xui_component* hoverctrl = m_hoverctrl;
+			hoverctrl->on_mousedragdrop(           other_args);
+			hoverctrl->xm_mousedragdrop(hoverctrl, other_args);
+		}
+	}
+
+	if (m_catchctrl)
 	{
 		component = m_catchctrl;
-		if (m_catchctrl)
-		{
-			if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_allowdrag && m_catchdata)
-			{
-				xui_method_dragdrop other_args;
-				other_args.allow = m_allowdrag;
-				other_args.drag  = m_catchctrl;
-				other_args.data  = m_catchdata;
-				other_args.type  = m_catchtype;
-				m_hoverctrl->on_mousedragdrop(             other_args);
-				m_hoverctrl->xm_mousedragdrop(m_hoverctrl, other_args);
-			}
-		}
 	}
 	else
 	{
@@ -465,8 +470,9 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 		{
 			xui_method_dragdrop other_args;
 			other_args.drag = m_catchctrl;
-			m_catchctrl->on_mousedragitem(             other_args);
-			m_catchctrl->xm_mousedragitem(m_catchctrl, other_args);
+			xui_component* catchctrl = m_catchctrl;
+			catchctrl->on_mousedragitem(           other_args);
+			catchctrl->xm_mousedragitem(catchctrl, other_args);
 			m_catchdata = other_args.data;
 			m_catchtype = other_args.type;
 			m_allowdrag = other_args.data != NULL;
@@ -477,19 +483,22 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 			other_args.drag = m_catchctrl;
 			other_args.data = m_catchdata;
 			other_args.type = m_catchtype;
-			m_hoverctrl->on_mousedragover(             other_args);
-			m_hoverctrl->xm_mousedragover(m_hoverctrl, other_args);
+			xui_component* hoverctrl = m_hoverctrl;
+			hoverctrl->on_mousedragover(           other_args);
+			hoverctrl->xm_mousedragover(hoverctrl, other_args);
 			m_allowdrag = other_args.allow;
 		}
 
-		m_catchctrl->on_mousemove(             args);
-		m_catchctrl->xm_mousemove(m_catchctrl, args);
+		component = m_catchctrl;
+		component->on_mousemove(           args);
+		component->xm_mousemove(component, args);
 	}
 	else
 	if (m_hoverctrl)
 	{
-		m_hoverctrl->on_mousemove(             args);
-		m_hoverctrl->xm_mousemove(m_hoverctrl, args);
+		component = m_hoverctrl;
+		component->on_mousemove(           args);
+		component->xm_mousemove(component, args);
 	}
 
 	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
@@ -503,18 +512,20 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 }
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )
 {
-	if (m_focusctrl)
+	xui_component* component = m_focusctrl;
+	if (component)
 	{
-		m_focusctrl->on_keybddown(             args);
-		m_focusctrl->xm_keybddown(m_focusctrl, args);
+		component->on_keybddown(           args);
+		component->xm_keybddown(component, args);
 	}
 }
 xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args )
 {
-	if (m_focusctrl)
+	xui_component* component = m_focusctrl;
+	if (component)
 	{
-		m_focusctrl->on_keybdrise(             args);
-		m_focusctrl->xm_keybdrise(m_focusctrl, args);
+		component->on_keybdrise(           args);
+		component->xm_keybdrise(component, args);
 	}
 }
 xui_method_explain(xui_desktop, os_keybdchar,	void					)( u16 c )

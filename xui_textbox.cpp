@@ -32,7 +32,7 @@ xui_create_explain(xui_textbox)( const xui_vector<s32>& size )
 	m_cursor		 = CURSOR_TEXT;
 	m_password		 = false;
 	m_readonly		 = false;
-	m_numbonly		 = false;
+	m_numbtype		 = NT_NONE;
 	m_caretdrawer	 = new xui_caretdrawer;
 	m_selectstart	 = 0;
 	m_selectfinal	 = 0;
@@ -56,7 +56,9 @@ xui_method_explain(xui_textbox, ini_textbox,		void					)( const std::wstring& te
 {
 	m_text = text;
 	non_selecttext();
-	set_caretindex(m_text.length());
+
+	if (m_readonly == false)
+		set_caretindex(m_text.length());
 }
 
 /*
@@ -91,13 +93,13 @@ xui_method_explain(xui_textbox, set_password,		void					)( bool flag )
 	m_password = flag;
 }
 
-xui_method_explain(xui_textbox, was_numbonly,		bool					)( void ) const
+xui_method_explain(xui_textbox, get_numbtype,		u08						)( void ) const
 {
-	return m_numbonly;
+	return m_numbtype;
 }
-xui_method_explain(xui_textbox, set_numbonly,		void					)( bool flag )
+xui_method_explain(xui_textbox, set_numbtype,		void					)( u08  type )
 {
-	m_numbonly = flag;
+	m_numbtype = type;
 }
 
 xui_method_explain(xui_textbox, was_readonly,		bool					)( void ) const
@@ -265,8 +267,24 @@ xui_method_explain(xui_textbox, on_keybdchar,		void					)( xui_method_keybd& arg
 	del_selecttext();
 
 	//Ö»ÊôÊý×Ö
-	if (was_numbonly() && (args.wchar < L'-' || args.wchar > L'9' || args.wchar == L'/'))
-		return;
+	if (m_numbtype != NT_NONE)
+	{
+		switch (m_numbtype)
+		{
+		case NT_INT:
+			if (args.wchar < L'-' || args.wchar > L'9' || args.wchar == L'/' || args.wchar == L'.')
+				return;
+			break;
+		case NT_UNSIGNEDINT:
+			if (args.wchar < L'0' || args.wchar > L'9')
+				return;
+			break;
+		case NT_FLOAT:
+			if (args.wchar < L'-' || args.wchar > L'9' || args.wchar == L'/')
+				return;
+			break;
+		}
+	}
 
 	//²åÈë×Ö·û
 	m_text.insert(m_caretcurrindex, 1, args.wchar);
@@ -304,6 +322,16 @@ xui_method_explain(xui_textbox, on_mousemove,		void					)( xui_method_mouse& arg
 		set_caretindex(hit_caretindex(relative));
 		set_selecttext(m_caretcurrindex, m_caretdragindex);
 	}
+}
+xui_method_explain(xui_textbox, on_mousedoubleclick,void					)( xui_method_mouse& args )
+{
+	xui_drawer::on_mousedoubleclick(args);
+	set_selecttext(0, m_text.length());
+}
+xui_method_explain(xui_textbox, on_nonfocus,		void					)( xui_method_args&  args )
+{
+	xui_drawer::on_nonfocus(args);
+	non_selecttext();
 }
 xui_method_explain(xui_textbox, on_textchanged,		void					)( xui_method_args&  args )
 {
@@ -575,11 +603,10 @@ xui_method_explain(xui_textbox, get_selecttext,		std::wstring			)( void ) const
 */
 xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 {
-	xui_rect2d<s32> rt = get_rendertextrt() + get_screenpt();
+	xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
 	if (get_rendertext().length() > 0)
 	{
 		rt.oft_x(get_textwidth(m_text.substr(m_firstshowindex, m_caretcurrindex-m_firstshowindex)));
-		rt.set_w(2);
 	}
 	else
 	{
@@ -597,19 +624,20 @@ xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 			break;
 		}
 
-		s32 height = xui_convas::get_ins()->get_family_create()->get_height(m_textfont);
-		switch (m_textalign)
-		{
-		case TEXTALIGN_LC:
-		case TEXTALIGN_CC:
-		case TEXTALIGN_RC:
-			rt.ay += (height - rt.get_h()) / 2;
-			break;
-		}
-
-		rt.set_w(2);
-		rt.set_h(height);
 	}
+
+	s32 height = xui_convas::get_ins()->get_family_create()->get_height(m_textfont);
+	switch (m_textalign)
+	{
+	case TEXTALIGN_LC:
+	case TEXTALIGN_CC:
+	case TEXTALIGN_RC:
+		rt.ay += (rt.get_h() - height) / 2;
+		break;
+	}
+
+	rt.set_w(2);
+	rt.set_h(height);
 
 	m_caretdrawer->set_caretrect(rt);
 }

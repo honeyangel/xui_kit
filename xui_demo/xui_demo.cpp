@@ -354,17 +354,17 @@ void xui_demo::test_propview( xui_window* window )
 	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true, xui_family(12));
 	headkind->xm_flagchanged += new xui_method_static<xui_method_args>(kind_flagchanged);
 	//headkind->xm_namechanged += new xui_method_static<xui_method_args>(kind_textchanged);
-	headkind->add_propdata(new xui_propdata_vector(headkind, L"P", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1));
-	headkind->add_propdata(new xui_propdata_vector(headkind, L"S", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1, xui_vector<f64>(1)));
-	headkind->add_propdata(new xui_propdata_vector(headkind, L"R", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, 1));
-	headkind->add_propdata(new xui_propdata_rect2d(headkind, L"RECT", xui_propctrl_rect2d::create, rect2d_getfunc, rect2d_setfunc, NULL, 1));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"P", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"S", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1, xui_vector<f64>(1)));
+	headkind->add_propdata(new xui_propdata_vector(headkind, L"R", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1));
+	headkind->add_propdata(new xui_propdata_rect2d(headkind, L"RECT", xui_propctrl_rect2d::create, rect2d_getfunc, rect2d_setfunc, NULL, NT_INT, 1));
 	headkind->add_propdata(new xui_propdata_stdvec_func<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, stdvec_getfunc, NULL));
 	headkind->add_propdata(new xui_propdata_object_impl<xui_treenode*>(headkind, L"object", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, &object_value));
 	proproot->add_propkind(headkind);
 
 	xui_propkind* propkind = new xui_propkind(proproot, L"test", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true);
 	proproot->add_propkind(propkind);
-	xui_propdata* propdata = new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_number::create, &prop_value);
+	xui_propdata* propdata = new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_number::create, &prop_value, NT_INT);
 	propkind->add_propdata(propdata);
 	propkind->add_propdata(new xui_propdata_bool(propkind, L"bool", xui_propctrl_bool::create, NULL, NULL, &bool_value));
 	propkind->add_propdata(new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));

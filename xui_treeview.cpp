@@ -484,10 +484,10 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 	xui_rect2d<s32> rt = get_renderrtins();
 	if (rt.was_inside(pt))
 	{
-		xui_vector<s32> screenpt;
-		screenpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
-		screenpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
-		xui_vector<s32> relative = pt + screenpt;
+		xui_vector<s32> scrollpt;
+		scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+		scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+		xui_vector<s32> relative = pt + scrollpt;
 		std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
 		xui_vecptr_addloop(alltreenodes)
 		{
