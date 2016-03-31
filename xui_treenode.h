@@ -16,6 +16,11 @@ public:
 	xui_treenode( xui_treedata* linkdata, xui_treeview* treeview );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_treenode( void );
+
+	/*
 	//static compare
 	*/
 	static bool							compare				( xui_treenode* node1, xui_treenode* node2 );
@@ -52,6 +57,7 @@ public:
 	//hold
 	*/
 	void								ini_holdtime		( void );
+	void								set_edittext		( u32 index );
 
 	/*
 	//override
@@ -71,7 +77,6 @@ protected:
 	//method
 	*/
 	void								set_selected		( bool flag );
-	void								set_edittext		( u32 index );
 	void								set_linktext		( void );
 	void								set_leafsort		( void );
 	void								non_leafsort		( void );

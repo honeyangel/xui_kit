@@ -10,8 +10,6 @@
 #include "onity_propctrl_condition.h"
 #include "onity_proptransition.h"
 
-xui_explain_kindctrl_func(onity_proptransition);
-
 /*
 //constructor
 */
@@ -23,7 +21,7 @@ xui_create_explain(onity_proptransition)( NP2DSTransition* transition )
 	text += transition->GetSelfState()->GetName();
 	text += " >> ";
 	text += transition->GetNextState()->GetName();
-	xui_propkind* kind = new xui_propkind(this, xui_global::ascii_to_unicode(text), onity_proptransition::createkind, onity_resource::icon_transition, true);
+	xui_propkind* kind = new xui_propkind(this, xui_global::ascii_to_unicode(text), "Transition", xui_kindctrl::create, onity_resource::icon_transition, true);
 	m_condition = new onity_propdata_condition(
 		kind,
 		L"",
@@ -41,7 +39,15 @@ xui_method_explain(onity_proptransition, get_transition,	NP2DSTransition*)( void
 {
 	return m_transition;
 }
-xui_method_explain(onity_proptransition, del_paramlink,		void			)( NP2DSParam* param )
+
+/*
+//notify
+*/
+xui_method_explain(onity_proptransition, on_delparam,		void			)( NP2DSParam* param )
+{
+	m_condition->refresh();
+}
+xui_method_explain(onity_proptransition, on_addparam,		void			)( NP2DSParam* param )
 {
 	m_condition->refresh();
 }

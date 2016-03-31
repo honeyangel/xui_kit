@@ -54,9 +54,9 @@ public:
 	virtual void			on_editvalue		( xui_propedit* sender );
 
 	/*
-	//method
+	//notify
 	*/
-	void					del_statelink		( NP2DSState* state );
+	void					on_delstate			( NP2DSState* state );
 
 protected:
 	/*

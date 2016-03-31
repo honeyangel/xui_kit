@@ -1,14 +1,45 @@
 #ifndef __xui_header_h__
 #define __xui_header_h__
 
+#ifndef SIMPLE_TYPE_U08
+#define SIMPLE_TYPE_U08
 typedef unsigned char   u08;
+#endif
+
+#ifndef SIMPLE_TYPE_S08
+#define SIMPLE_TYPE_S08
 typedef   signed char   s08;
+#endif
+
+#ifndef SIMPLE_TYPE_U16
+#define SIMPLE_TYPE_U16
 typedef unsigned short  u16;
+#endif
+
+#ifndef SIMPLE_TYPE_S16
+#define SIMPLE_TYPE_S16
 typedef   signed short  s16;
-typedef unsigned long   u32;
-typedef   signed long   s32;
+#endif
+
+#ifndef SIMPLE_TYPE_U32
+#define SIMPLE_TYPE_U32
+typedef unsigned int    u32;
+#endif
+
+#ifndef SIMPLE_TYPE_S32
+#define SIMPLE_TYPE_S32
+typedef   signed int    s32;
+#endif
+
+#ifndef SIMPLE_TYPE_F32
+#define SIMPLE_TYPE_F32
 typedef          float  f32;
+#endif
+
+#ifndef SIMPLE_TYPE_F64
+#define SIMPLE_TYPE_F64
 typedef          double f64;
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

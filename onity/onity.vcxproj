@@ -14,15 +14,24 @@
     <ClInclude Include="onity_animator.h" />
     <ClInclude Include="onity_condition.h" />
     <ClInclude Include="onity_console.h" />
+    <ClInclude Include="onity_filedata.h" />
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_mainform.h" />
     <ClInclude Include="onity_param.h" />
     <ClInclude Include="onity_paramview.h" />
+    <ClInclude Include="onity_pathctrl.h" />
+    <ClInclude Include="onity_pathdata.h" />
     <ClInclude Include="onity_project.h" />
+    <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propctrl_condition.h" />
     <ClInclude Include="onity_propctrl_transition.h" />
+    <ClInclude Include="onity_propfile.h" />
+    <ClInclude Include="onity_propimage.h" />
+    <ClInclude Include="onity_propmodule.h" />
+    <ClInclude Include="onity_proppath.h" />
+    <ClInclude Include="onity_propsprite.h" />
     <ClInclude Include="onity_propstate.h" />
     <ClInclude Include="onity_proptransition.h" />
     <ClInclude Include="onity_resource.h" />
@@ -36,15 +45,24 @@
     <ClCompile Include="onity_animator.cpp" />
     <ClCompile Include="onity_condition.cpp" />
     <ClCompile Include="onity_console.cpp" />
+    <ClCompile Include="onity_filedata.cpp" />
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
     <ClCompile Include="onity_param.cpp" />
     <ClCompile Include="onity_paramview.cpp" />
+    <ClCompile Include="onity_pathctrl.cpp" />
+    <ClCompile Include="onity_pathdata.cpp" />
     <ClCompile Include="onity_project.cpp" />
+    <ClCompile Include="onity_propaction.cpp" />
     <ClCompile Include="onity_propctrl_condition.cpp" />
     <ClCompile Include="onity_propctrl_transition.cpp" />
+    <ClCompile Include="onity_propfile.cpp" />
+    <ClCompile Include="onity_propimage.cpp" />
+    <ClCompile Include="onity_propmodule.cpp" />
+    <ClCompile Include="onity_proppath.cpp" />
+    <ClCompile Include="onity_propsprite.cpp" />
     <ClCompile Include="onity_propstate.cpp" />
     <ClCompile Include="onity_proptransition.cpp" />
     <ClCompile Include="onity_resource.cpp" />
@@ -85,9 +103,9 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -104,13 +122,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;OGLEE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -128,13 +149,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga/Libs;../../BreezeGameBranchFlyMode_V26/omiga;../../BreezeGameBranchFlyMode_V26/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../BreezeGameBranchFlyMode_V26/engine/lib/win32/extern;../../BreezeGameBranchFlyMode_V26/Game/Network/Platform/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;GLee_VC10.lib;pthreadVC2.lib;fmod_event.lib;fmodex_vc.lib;ws2_32.lib;wldap32.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

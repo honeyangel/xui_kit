@@ -6,6 +6,8 @@
 #include "xui_toggle.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "onity_animator.h"
+#include "onity_stateview.h"
 #include "onity_param.h"
 #include "onity_paramview.h"
 
@@ -186,7 +188,15 @@ xui_method_explain(onity_paramview, on_menuitemclick,	void			)( xui_component* s
 			}
 		}
 
-		add_paramctrl(m_editfile->AddParam(temp.str(), type));
+		NP2DSParam* param = m_editfile->AddParam(temp.str(), type);
+		add_paramctrl(param);
+
+		onity_animator* animator = xui_dynamic_cast(onity_animator, m_parent);
+		if (animator)
+		{
+			onity_stateview* stateview = animator->get_stateview();
+			stateview->on_addparam(param);
+		}
 	}
 }
 xui_method_explain(onity_paramview, on_addrenderself,	void			)( xui_component* sender, xui_method_args& args )

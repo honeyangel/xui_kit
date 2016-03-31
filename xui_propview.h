@@ -62,7 +62,7 @@ protected:
 	/*
 	//def
 	*/
-	typedef std::map< xui_kind_newctrl, std::vector<xui_kindctrl*> >
+	typedef std::map< std::string, std::vector<xui_kindctrl*> >
 		xui_kindctrl_map;
 
 	/*

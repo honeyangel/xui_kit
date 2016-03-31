@@ -22,23 +22,29 @@ public:
 	/*
 	//method
 	*/
+	onity_stateview*	get_stateview		( void );
+	onity_paramview*	get_paramview		( void );
 	NP2DSStateCtrl*		get_editfile		( void );
 	void				set_editfile		( NP2DSStateCtrl* editfile );
-	void				del_param			( NP2DSParam* param );
-	void				del_state			( NP2DSState* state );
+	//void				del_param			( NP2DSParam* param );
+	//void				del_state			( NP2DSState* state );
 
 protected:
 	/*
 	//event
 	*/
 	void				on_stateclick		( xui_component* sender, xui_method_args& args );
+	void				on_retargetclick	( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
 	*/
 	xui_toggle*			m_create;
+	xui_toggle*			m_retarget;
 	xui_menuitem*		m_state;
-	xui_panel*			m_head;
+	xui_menuitem*		m_on;
+	xui_menuitem*		m_off;
+	xui_toolbar*		m_head;
 	onity_stateview*	m_stateview;
 	onity_paramview*	m_paramview;
 	NP2DSStateCtrl*		m_editfile;

@@ -9,8 +9,6 @@ class onity_state;
 class onity_proptransition;
 class onity_propstate : public xui_proproot
 {
-	xui_declare_kindctrl_func
-
 public:
 	/*
 	//constructor
@@ -28,8 +26,13 @@ public:
 	onity_proptransition*				get_proptransition	( NP2DSTransition* transition );
 	void								add_transition		( NP2DSTransition* transition );
 	void								del_transition		( NP2DSTransition* transition );
-	void								del_statelink		( NP2DSState* state );
-	void								del_paramlink		( NP2DSParam* param );
+
+	/*
+	//notify
+	*/
+	void								on_delstate			( NP2DSState* state );
+	void								on_delparam			( NP2DSParam* param );
+	void								on_addparam			( NP2DSParam* param );
 
 protected:
 	/*

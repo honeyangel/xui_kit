@@ -43,6 +43,7 @@ u08 VKToKey(WPARAM wParam)
 	case 'X':				return KEY_X;
 	case 'Y':				return KEY_Y;
 	case 'Z':				return KEY_Z;
+	case VK_ESCAPE:			return KEY_ESC;
 	case VK_RETURN:			return KEY_ENTER;
 	case VK_TAB:			return KEY_TAB;
 	case VK_BACK:			return KEY_BACK;
@@ -105,6 +106,28 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			xui_method_mouse args;
 			args.wheel = (s32)(s16)HIWORD(wParam) / 3;
 			xui_desktop::get_ins()->os_mousewheel(args);
+		}
+		break;
+	case WM_CAPTURECHANGED:
+		{
+			HWND other_hwnd = (HWND)lParam;
+			if (other_hwnd && other_hwnd != hWnd)
+			{
+				if (xui_desktop::get_ins()->get_catchctrl() != NULL)
+				{
+					POINT pt;
+					GetCursorPos(&pt);
+					ScreenToClient(hWnd, &pt);
+
+					xui_method_mouse args;
+					args.mouse = MB_L;
+					args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+					args.ctrl  = false;
+					args.shift = false;
+					args.alt   = false;
+					xui_desktop::get_ins()->os_mouserise(args);
+				}
+			}
 		}
 		break;
 	//case WM_LBUTTONDBLCLK:

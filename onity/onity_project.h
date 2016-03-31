@@ -13,12 +13,17 @@ public:
 	*/
 	onity_project( void );
 
-protected:
 	/*
-	//callback
+	//method
 	*/
-	virtual void	on_load				( xui_method_args& args );
+	void			ini_pathtree		( void );
 
+	/*
+	//notify
+	*/
+	void			on_pathrename		( const std::wstring& last, const std::wstring& curr, const std::wstring& text );
+
+protected:
 	/*
 	//event
 	*/

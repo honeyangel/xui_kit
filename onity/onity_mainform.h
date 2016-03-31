@@ -18,6 +18,9 @@ enum
 };
 
 class onity_inspector;
+class onity_project;
+class onity_game;
+class onity_animator;
 class onity_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -37,6 +40,9 @@ public:
 	//method
 	*/
 	onity_inspector*		get_inspector		( void );
+	onity_project*			get_project			( void );
+	onity_animator*			get_animator		( void );
+	onity_game*				get_game			( void );
 
 protected:
 	/*

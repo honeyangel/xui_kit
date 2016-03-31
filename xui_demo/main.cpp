@@ -38,6 +38,7 @@ u08 VKToKey(WPARAM wParam)
 	case 'X':				return KEY_X;
 	case 'Y':				return KEY_Y;
 	case 'Z':				return KEY_Z;
+	case VK_ESCAPE:			return KEY_ESC;
 	case VK_RETURN:			return KEY_ENTER;
 	case VK_TAB:			return KEY_TAB;
 	case VK_BACK:			return KEY_BACK;
@@ -48,6 +49,7 @@ u08 VKToKey(WPARAM wParam)
 	case VK_RIGHT:			return KEY_RARROW;
 	case VK_HOME:			return KEY_HOME;
 	case VK_END:			return KEY_END;
+	case VK_DELETE:			return KEY_DELETE;
 	case VK_F1:				return KEY_F1;
 	case VK_F2:				return KEY_F2;
 	case VK_F3:				return KEY_F3;
@@ -97,19 +99,62 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_MOUSEWHEEL:
 		{
 			xui_method_mouse args;
-			args.wheel = (s32)(s16)HIWORD(wParam);
+			args.wheel = (s32)(s16)HIWORD(wParam) / 3;
 			xui_desktop::get_ins()->os_mousewheel(args);
 		}
 		break;
+	case WM_CAPTURECHANGED:
+		{
+			HWND other_hwnd = (HWND)lParam;
+			if (other_hwnd && other_hwnd != hWnd)
+			{
+				if (xui_desktop::get_ins()->get_catchctrl() != NULL)
+				{
+					POINT pt;
+					GetCursorPos(&pt);
+					ScreenToClient(hWnd, &pt);
+
+					xui_method_mouse args;
+					args.mouse = MB_L;
+					args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+					args.ctrl  = false;
+					args.shift = false;
+					args.alt   = false;
+					xui_desktop::get_ins()->os_mouserise(args);
+				}
+			}
+		}
+		break;
+	//case WM_LBUTTONDBLCLK:
+	//case WM_RBUTTONDBLCLK:
+	//case WM_MBUTTONDBLCLK:
+	//	{
+	//		xui_method_mouse args;
+	//		args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
+	//		args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+	//		args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+	//		args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+
+	//		switch (message)
+	//		{
+	//		case WM_LBUTTONDBLCLK:	args.mouse = MB_L;	break;
+	//		case WM_RBUTTONDBLCLK:	args.mouse = MB_R;	break;
+	//		case WM_MBUTTONDBLCLK:	args.mouse = MB_M;	break;
+	//		}
+
+	//		xui_desktop::get_ins()->os_mousedclick(args);
+	//	}
+	//	break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{
-			if (message == WM_LBUTTONDOWN)
-				SetCapture(hWnd);
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hWnd, &pt);
 
 			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
+			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
 			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
 			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
 			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
@@ -126,8 +171,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 		break;
 	case WM_MOUSEMOVE:
 		{
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hWnd, &pt);
 			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
+			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 		break;
@@ -135,11 +183,12 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_RBUTTONUP:
 	case WM_MBUTTONUP:
 		{
-			if (message == WM_LBUTTONUP)
-				ReleaseCapture();
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hWnd, &pt);
 
 			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
+			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
 			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
 			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
 			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
@@ -190,7 +239,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			GetClientRect(hWnd, &rect);
 			int w = rect.right-rect.left;
 			int h = rect.bottom-rect.top;
-			if (xui_convas::get_ins())
+			if (xui_convas::get_ins() && w > 0 && h > 0)
 			{
 				xui_method_inscall(xui_convas,  set_viewport)(xui_rect2d<s32>(0, 0, w, h));
 				xui_method_inscall(xui_desktop, set_rendersz)(xui_vector<s32>(w, h));
@@ -226,7 +275,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 
-	xui_global::add_fontfile("msyh.ttf");
+	xui_global::add_fontfile("arial.ttf");
 	xui_render_window* render_window = new xui_render_window(gHWND);
 	xui_static_inscall(xui_convas,			init)();
 	xui_static_inscall(xui_timermgr,		init)();

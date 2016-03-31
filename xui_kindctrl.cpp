@@ -138,7 +138,7 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 		xui_method_ptrcall(m_namectrl, set_drawcolor)(m_propkind->xm_namechanged.count() >  0);
 		xui_method_ptrcall(m_flagctrl, set_visible	)(m_propkind->xm_flagchanged.count() >  0);
 		xui_method_ptrcall(m_kindplus, set_visible	)(m_propctrlvec.size() > 0);
-		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon());
+		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon(), xui_vector<s32>(24));
 		xui_method_ptrcall(m_namectrl, ini_textbox	)(m_propkind->get_name());
 		xui_method_ptrcall(m_flagctrl, ini_toggle	)(m_propkind->get_flag());
 
@@ -153,6 +153,7 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 	sz.w  = get_renderw();
 	sz.h  = KIND_HEIGHT;
 	sz.h += m_border.ay + m_border.by;
+	sz.h += get_elsectrlsize();
 
 	if (m_propkind && m_kindplus->was_expanded())
 	{
@@ -207,7 +208,7 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	if (m_kindplus->was_expanded())
 	{
 		pt.x = rt.ax;
-		pt.y = rt.ay + height;
+		pt.y = rt.ay + height + get_prevctrlsize();
 		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 		{
 			xui_propctrl* propctrl = m_propctrlvec[i];
@@ -263,4 +264,12 @@ xui_method_explain(xui_kindctrl, get_propdataall,			xui_propdata_vec)( u32 index
 	}
 
 	return result;
+}
+xui_method_explain(xui_kindctrl, get_elsectrlsize,			s32				)( void )
+{
+	return 0;
+}
+xui_method_explain(xui_kindctrl, get_prevctrlsize,			s32				)( void )
+{
+	return 0;
 }

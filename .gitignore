@@ -27,3 +27,4 @@
 *.obj
 *.pdb
 *.lib
+*.tlog

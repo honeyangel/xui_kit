@@ -18,6 +18,11 @@ public:
 	xui_treedata( const std::wstring& text, xui_bitmap* icon );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_treedata( void ){};
+
+	/*
 	//method
 	*/
 	xui_treenode*				get_node		( void );

@@ -3,10 +3,11 @@
 /*
 //constructor
 */
-xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont, const xui_family_render& textdraw )
+xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, const xui_family& textfont, const xui_family_render& textdraw )
 {
 	m_root		= root;
 	m_func		= func;
+	m_type		= type;
 	m_ctrl		= NULL;
 	m_show		= true;
 	m_edit		= true;
@@ -32,6 +33,10 @@ xui_delete_explain(xui_propkind)( void )
 xui_method_explain(xui_propkind, get_root,		xui_proproot*			)( void ) const
 {
 	return m_root;
+}
+xui_method_explain(xui_propkind, get_type,		const std::string&		)( void ) const
+{
+	return m_type;
 }
 xui_method_explain(xui_propkind, get_name,		const std::wstring&		)( void ) const
 {

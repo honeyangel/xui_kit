@@ -75,6 +75,8 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 xui_delete_explain(xui_dropbox)( void )
 {
 	delete m_droplst;
+	for (u32 i = 0; i < m_itemvec.size(); ++i)
+		delete m_itemvec[i];
 }
 
 /*

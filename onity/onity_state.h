@@ -30,8 +30,13 @@ public:
 	*/
 	onity_propstate*	get_propstate	( void );
 	NP2DSState*			get_state		( void );
-	void				del_statelink	( NP2DSState* state );
-	void				del_paramlink	( NP2DSParam* param );
+
+	/*
+	//notify
+	*/
+	void				on_delstate		( NP2DSState* state );
+	void				on_delparam		( NP2DSParam* param );
+	void				on_addparam		( NP2DSParam* param );
 
 	/*
 	//override

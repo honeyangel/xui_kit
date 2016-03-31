@@ -8,8 +8,6 @@ class NP2DSParam;
 class NP2DSTransition;
 class onity_proptransition : public xui_proproot
 {
-	xui_declare_kindctrl_func
-
 public:
 	/*
 	//constructor
@@ -20,7 +18,12 @@ public:
 	//method
 	*/
 	NP2DSTransition*	get_transition		( void );
-	void				del_paramlink		( NP2DSParam* param );
+
+	/*
+	//notify
+	*/
+	void				on_delparam			( NP2DSParam* param );
+	void				on_addparam			( NP2DSParam* param );
 
 protected:
 	/*

@@ -14,11 +14,15 @@ public:
 	*/
 	onity_game( void );
 
+	/*
+	//method
+	*/
+	void				ini_game			( void );
+
 protected:
 	/*
 	//event
 	*/
-	void				on_viewload			( xui_component* sender, xui_method_args&  args );
 	void				on_viewupdateself	( xui_component* sender, xui_method_args&  args );
 	void				on_viewrenderself	( xui_component* sender, xui_method_args&  args );
 	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&  args );

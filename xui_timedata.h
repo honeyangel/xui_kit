@@ -23,6 +23,11 @@ public:
 	xui_timedata( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_timedata( void ){};
+
+	/*
 	//method
 	*/
 	xui_timeline*				get_line			( void );

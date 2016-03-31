@@ -14,6 +14,10 @@
 #include "xui_treedata.h"
 #include "xui_treenode.h"
 #include "xui_slider.h"
+#include "onity_mainform.h"
+#include "onity_inspector.h"
+#include "onity_pathdata.h"
+#include "onity_filedata.h"
 #include "onity_resource.h"
 #include "onity_project.h"
 
@@ -77,7 +81,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_head,		add_child			)(m_clear );
 
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
 	m_pathview  = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_pathview,	xm_selectedchange	) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_treeviewselection);
 	xui_method_ptrcall(m_pathview,	ini_component		)(0, 0, DOCKSTYLE_L);
@@ -141,86 +145,83 @@ xui_create_explain(onity_project)( void )
 }
 
 /*
-//callback
+//method
 */
-//DEBUG
-class onity_path_data : public xui_treedata
+xui_method_explain(onity_project, ini_pathtree,				void)( void )
 {
-public:
-	/*
-	//constructor
-	*/
-	onity_path_data( const std::wstring& full )
-	: xui_treedata(full, xui_bitmap::create("icon/folder.png"))
-	{}
-
-	const std::wstring&	 get_full( void ) const
+	u32 index = 0;
+	std::vector<std::wstring> vec = xui_global::get_path(L"");
+	for (u32 i = 0; i < vec.size(); ++i,++index)
 	{
-		return m_text;
+		std::wstring  full = vec[i];
+		xui_treenode* node = m_pathview->add_upmostnode(index, new onity_pathdata(full, false));
+		onity_pathdata::create_subnode(node);
 	}
-	virtual std::wstring get_text( u32 index )
+}
+
+/*
+//notify
+*/
+xui_method_explain(onity_project, on_pathrename,			void)( const std::wstring& last, const std::wstring& curr, const std::wstring& text )
+{
+	//status
+	xui_treenode*	currnode = (xui_treenode*)m_status->get_data();
+	onity_pathdata* currdata = (onity_pathdata*)currnode->get_linkdata();
+	if (currdata->get_full() == last)
+		m_status->set_text(text);
+
+	//pathpane
+	const std::vector<xui_control*>& child = m_pathpane->get_children();
+	for (u32 i = 0; i < child.size(); ++i)
 	{
-		std::wstring temp = m_text;
+		if (xui_equal_kindof(xui_toggle, child[i]))
+			continue;
 
-		int npos  = temp.find_last_of(L'/');
-		if (npos == -1)
-			npos  = temp.find_last_of(L'\\');
-		if (npos != -1)
-			temp.erase(0, npos+1);
-
-		return temp;
-	}
-
-	static void create_subnode( xui_treenode* root )
-	{
-		onity_path_data* data = (onity_path_data*)root->get_linkdata();
-		u32 index = 0;
-		std::vector<std::wstring> pathvec = xui_global::get_path(data->get_full());
-		for (u32 i = 0; i < pathvec.size(); ++i,++index)
+		xui_drawer*		drawer	= xui_dynamic_cast(xui_drawer, child[i]);
+		xui_treenode*   node	= (xui_treenode*)drawer->get_data();
+		onity_pathdata* data	= (onity_pathdata*)node->get_linkdata();
+		if (data->get_full() == last)
 		{
-			std::wstring  full = data->get_full()+L"/"+pathvec[i];
-			xui_treenode* node = root->add_leafnode(index, new onity_path_data(full));
-			onity_path_data::create_subnode(node);
+			xui_method_ptrcall(drawer, set_text		)(text);
+			xui_method_ptrcall(drawer, set_renderw	)(xui_convas::get_ins()->calc_size(drawer->get_text(), drawer->get_textfont(), 0, true).w);
 		}
 	}
-};
-class onity_file_data : public onity_path_data
-{
-public:
-	/*
-	//constructor
-	*/
-	onity_file_data( const std::wstring& full )
-	: onity_path_data(full)
+
+	//treeview
+	std::vector<xui_treenode*> nodes;
+	nodes = m_pathview->get_entirenode();
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
-		m_icon = xui_bitmap::create("icon/file.png");
+		xui_treenode*   node = nodes[i];
+		onity_pathdata* data = (onity_pathdata*)node->get_linkdata();
+		if (data->get_full() == last)
+		{
+			data->set_full(curr);
+
+			std::vector<xui_treenode*> subnodes;
+			node->get_leafnodetotal(subnodes, true);
+			for (std::vector<xui_treenode*>::iterator itor = subnodes.begin(); itor != subnodes.end(); ++itor)
+			{
+				xui_treenode*	subnode = (*itor);
+				onity_pathdata* subdata = (onity_pathdata*)subnode->get_linkdata();
+				std::wstring full = subdata->get_full();
+				int npos = full.find_first_of(last);
+				full.replace(npos, last.length(), curr);
+				subdata->set_full(full);
+			}
+		}
+	}
+	nodes = m_lineview->get_entirenode();
+	for (u32 i = 0; i < nodes.size(); ++i)
+	{
+		xui_treenode*   node = nodes[i];
+		onity_pathdata* data = (onity_pathdata*)node->get_linkdata();
+		if (data->get_full() == last)
+			data->set_full(curr);
 	}
 
-	virtual std::wstring get_text( u32 index )
-	{
-		std::wstring temp = onity_path_data::get_text(index);
-
-		int npos  = temp.find_last_of(L'.');
-		if (npos != -1)
-			temp.erase(npos);
-
-		return temp;
-	}
-};
-
-xui_method_explain(onity_project, on_load,					void)( xui_method_args& args )
-{
-	xui_dockpage::on_load(args);
-	 
-	std::wstring workpath = L"D:/BreezeGame/art/res";//xui_global::get_workpath();
-	u32 index = 0;
-	std::vector<std::wstring> pathvec = xui_global::get_path(workpath);
-	for (u32 i = 0; i < pathvec.size(); ++i,++index)
-	{
-		std::wstring  full = workpath+L"/"+pathvec[i];
-		xui_treenode* node = m_pathview->add_upmostnode(index, new onity_path_data(full));
-		onity_path_data::create_subnode(node);
-	}
+	//TODO
+	//Engine Modify
 }
 
 /*
@@ -288,8 +289,8 @@ xui_method_explain(onity_project, on_treeviewselection,		void)( xui_component* s
 		std::vector<xui_treenode*> nodevec = m_lineview->get_selectednode();
 		if (nodevec.size() > 0)
 		{
-			xui_treenode*    node = nodevec.front();
-			onity_path_data* data = (onity_path_data*)node->get_linkdata();
+			xui_treenode*   node = nodevec.front();
+			onity_pathdata* data = (onity_pathdata*)node->get_linkdata();
 			std::wstring text = data->get_full();
 			int npos  = text.find_last_of(L'/');
 			if (npos == -1)
@@ -297,8 +298,12 @@ xui_method_explain(onity_project, on_treeviewselection,		void)( xui_component* s
 			if (npos != -1)
 				text.erase(0, npos+1);
 
-			m_status->ini_drawer(data->get_icon(0));
-			m_status->ini_drawer(text);
+			xui_method_ptrcall(m_status, set_icon)(data->get_icon(0));
+			xui_method_ptrcall(m_status, set_text)(text);
+			xui_method_ptrcall(m_status, set_data)(node);
+
+			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+			inspector->set_proproot(data->get_prop());
 		}
 	}
 }
@@ -318,11 +323,11 @@ xui_method_explain(onity_project, on_lineviewdclick,		void)( xui_component* send
 xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender, xui_method_args&  args )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-	std::wstring path = L"D:/BreezeGame/art/res";
+	std::wstring path = xui_global::get_workpath();
 	if (nodevec.size() > 0)
 	{
-		xui_treenode*    node = nodevec.front();
-		onity_path_data* data = (onity_path_data*)node->get_linkdata();
+		xui_treenode*   node = nodevec.front();
+		onity_pathdata* data = (onity_pathdata*)node->get_linkdata();
 		path = data->get_full();
 	}
 
@@ -350,14 +355,20 @@ xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender
 	if (nodevec.size() > 0)
 	{
 		xui_treenode* rootnode = nodevec.front();
-		xui_treenode* pathnode = rootnode->add_leafnode(0, new onity_path_data(temp.str()));
-		xui_treenode* linenode = m_lineview->add_upmostnode(0, new onity_path_data(temp.str()));
+		xui_treenode* pathnode = rootnode->add_leafnode(0, new onity_pathdata(temp.str(), false));
+		xui_treenode* linenode = m_lineview->add_upmostnode(0, new onity_pathdata(temp.str(), true));
 		linenode->set_data(pathnode);
 		rootnode->set_expanded(true);
+
+		m_lineview->refresh();
+		linenode->set_edittext(0);
 	}
 	else
 	{
-		m_pathview->add_upmostnode(0, new onity_path_data(temp.str()));
+		xui_treenode* pathnode = m_pathview->add_upmostnode(0, new onity_pathdata(temp.str(), false));
+
+		m_pathview->refresh();
+		pathnode->set_edittext(0);
 	}
 }
 xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sender, xui_method_args& args )
@@ -365,9 +376,9 @@ xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sen
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
 	{
-		xui_treenode*    node = nodevec.front();
-		onity_path_data* data = (onity_path_data*)node->get_linkdata();
-		std::wstring     path = data->get_full();
+		xui_treenode*   node = nodevec.front();
+		onity_pathdata* data = (onity_pathdata*)node->get_linkdata();
+		std::wstring    path = data->get_full();
 
 		NP2DSStateCtrl* stateCtrl = new NP2DSStateCtrl;
 
@@ -392,7 +403,7 @@ xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sen
 		delete stateCtrl;
 		//xui_treenode* rootnode = nodevec.front();
 		//xui_treenode* pathnode = rootnode->add_leafnode(0, new onity_path_data(temp.str()));
-		xui_treenode* line = m_lineview->add_upmostnode(0, new onity_file_data(temp.str()));
+		xui_treenode* line = m_lineview->add_upmostnode(0, new onity_filedata(temp.str(), NULL));
 		//line->set_data(pathnode);
 	}
 }
@@ -435,17 +446,17 @@ xui_method_explain(onity_project, refresh_lineview,			void)( void )
 		std::vector<xui_treenode*> pathvec = root->get_leafnodearray();
 		for (u32 i = 0; i < pathvec.size(); ++i,++index)
 		{
-			onity_path_data* data = (onity_path_data*)pathvec[i]->get_linkdata();
-			xui_treenode*    node = m_lineview->add_upmostnode(index, new onity_path_data(data->get_full()));
+			onity_pathdata* data = (onity_pathdata*)pathvec[i]->get_linkdata();
+			xui_treenode*   node = m_lineview->add_upmostnode(index, new onity_pathdata(data->get_full(), true));
 			node->set_data(pathvec[i]);
 		}
 
-		onity_path_data* rootdata = (onity_path_data*)root->get_linkdata();
+		onity_pathdata* rootdata = (onity_pathdata*)root->get_linkdata();
 		std::vector<std::wstring> filevec = xui_global::get_file(rootdata->get_full());
 		for (u32 i = 0; i < filevec.size(); ++i,++index)
 		{
 			std::wstring full = rootdata->get_full()+L"/"+filevec[i];
-			m_lineview->add_upmostnode(index, new onity_file_data(full));
+			m_lineview->add_upmostnode(index, new onity_filedata(full, NULL));
 		}
 	}
 	m_lineview->refresh();
@@ -476,7 +487,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 		xui_vecptr_delloop(pathvec)
 		{
 			xui_treenode*    pathnode = pathvec[i];
-			onity_path_data* pathdata = (onity_path_data*)pathnode->get_linkdata();
+			onity_pathdata*  pathdata = (onity_pathdata*)pathnode->get_linkdata();
 			xui_drawer*        drawer = (i == 0) ? new xui_drawer(xui_vector<s32>(0, 20)) : new xui_button(xui_vector<s32>(0, 20));
 			xui_method_ptrcall(drawer, ini_component)(0, 0, DOCKSTYLE_L);
 			xui_method_ptrcall(drawer, ini_drawer	)(pathdata->get_text(0));
@@ -499,14 +510,14 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 			for (u32 ileaf = 0; ileaf < leafvec.size(); ++ileaf)
 			{
 				xui_treenode*    leafnode = leafvec[ileaf];
-				onity_path_data* leafdata = (onity_path_data*)leafnode->get_linkdata();
+				onity_pathdata*  leafdata = (onity_pathdata*)leafnode->get_linkdata();
 				xui_menuitem*    menuitem = menu->add_item(NULL, leafdata->get_text(0));
 				menuitem->xm_click	   += new xui_method_member<xui_method_args, onity_project>(this, &onity_project::on_pathitemclick);
 				xui_method_ptrcall(menuitem, set_data)(leafnode);
 				xui_method_ptrcall(menuitem, set_flag)(leafnode->was_selected());
 			}
 
-			xui_toggle*        toggle = new xui_toggle(xui_vector<s32>(16, 20), TOGGLE_BUTTON);
+			xui_toggle* toggle = new xui_toggle(xui_vector<s32>(16, 20), TOGGLE_BUTTON);
 			toggle->xm_renderself += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_pathtogglerender);
 			xui_method_ptrcall(toggle, ini_component)(0, 0, DOCKSTYLE_L);
 			xui_method_ptrcall(toggle, set_data		)(pathnode);

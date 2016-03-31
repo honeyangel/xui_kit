@@ -1,3 +1,4 @@
+#include "NP2DSState.h"
 #include "NP2DSStateCtrl.h"
 
 #include "xui_bitmap.h"
@@ -5,6 +6,7 @@
 #include "xui_toggle.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "xui_toolbar.h"
 #include "onity_resource.h"
 #include "onity_state.h"
 #include "onity_paramview.h"
@@ -22,11 +24,16 @@ xui_create_explain(onity_animator)( void )
 {
 	ini_namectrl(onity_resource::icon_animator, L"Animator");
 
-	xui_menu* menu = xui_menu::create(80);
-	m_state	= menu->add_item(NULL, L"State");
+	xui_menu* menu1 = xui_menu::create(80);
+	m_state	= menu1->add_item(NULL, L"State");
 	xui_method_ptrcall(m_state,		xm_click		) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_stateclick);
+	xui_menu* menu2 = xui_menu::create(80);
+	m_on	= menu2->add_item(NULL, L"On");
+	m_off	= menu2->add_item(NULL, L"Off");
+	xui_method_ptrcall(m_on,		xm_click		) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_retargetclick);
+	xui_method_ptrcall(m_off,		xm_click		) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_retargetclick);
 
-	m_create	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
+	m_create	= new xui_toggle(xui_vector<s32>( 80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_create,	set_corner		)(3);
 	xui_method_ptrcall(m_create,	set_borderrt	)(xui_rect2d<s32>(4));
@@ -34,14 +41,25 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_create,	set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_create,	set_iconsize	)(xui_vector<s32>(0));
 	xui_method_ptrcall(m_create,	ini_drawer		)(L"Create");
-	xui_method_ptrcall(m_create,	set_menu		)(menu);
+	xui_method_ptrcall(m_create,	set_menu		)(menu1);
 
-	m_head		= new xui_panel(xui_vector<s32>(28));
+	m_retarget	= new xui_toggle(xui_vector<s32>(100, 20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_retarget,	ini_component	)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_retarget,	set_corner		)(3);
+	xui_method_ptrcall(m_retarget,	set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_retarget,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_retarget,	set_textalign	)(TEXTALIGN_LC);
+	xui_method_ptrcall(m_retarget,	set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_retarget,	ini_drawer		)(L"All Retarget");
+	xui_method_ptrcall(m_retarget,	set_menu		)(menu2);
+
+	m_head		= new xui_toolbar(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
 	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
-	xui_method_ptrcall(m_head,		set_hscrollauto	)(false);
-	xui_method_ptrcall(m_head,		add_child		)(m_create);
+	xui_method_ptrcall(m_head,		set_grap		)(4);
+	xui_method_ptrcall(m_head,		add_item		)(m_create);
+	xui_method_ptrcall(m_head,		add_item		)(m_retarget);
 
 	m_stateview = new onity_stateview;
 	xui_method_ptrcall(m_stateview,	ini_component	)(0, 0, DOCKSTYLE_F);
@@ -70,11 +88,11 @@ xui_create_explain(onity_animator)( void )
 /*
 //method
 */
-xui_method_explain(onity_animator, get_editfile,	NP2DSStateCtrl*)( void )
+xui_method_explain(onity_animator, get_editfile,		NP2DSStateCtrl*	)( void )
 {
 	return m_editfile;
 }
-xui_method_explain(onity_animator, set_editfile,	void			)( NP2DSStateCtrl* editfile )
+xui_method_explain(onity_animator, set_editfile,		void			)( NP2DSStateCtrl* editfile )
 {
 	if (m_editfile != editfile)
 	{
@@ -83,23 +101,19 @@ xui_method_explain(onity_animator, set_editfile,	void			)( NP2DSStateCtrl* editf
 		m_stateview->set_editfile(m_editfile);
 	}
 }
-xui_method_explain(onity_animator, del_param,		void			)( NP2DSParam* param )
+xui_method_explain(onity_animator, get_stateview,		onity_stateview*)( void )
 {
-	xui_method_ptrcall(m_paramview, del_paramctrl)(param);
-	xui_method_ptrcall(m_stateview, del_paramlink)(param);
-	m_editfile->DelParam(param);
+	return m_stateview;
 }
-xui_method_explain(onity_animator, del_state,		void			)( NP2DSState* state )
+xui_method_explain(onity_animator, get_paramview,		onity_paramview*)( void )
 {
-	xui_method_ptrcall(m_stateview,	del_statectrl)(state);
-	xui_method_ptrcall(m_stateview, del_statelink)(state);
-	m_editfile->DelState(state);
+	return m_paramview;
 }
 
 /*
 //event
 */
-xui_method_explain(onity_animator, on_stateclick,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_animator, on_stateclick,		void			)( xui_component* sender, xui_method_args& args )
 {
 	if (m_editfile)
 	{
@@ -107,5 +121,17 @@ xui_method_explain(onity_animator, on_stateclick,	void			)( xui_component* sende
 		pt.x = m_stateview->get_renderw()/2 - onity_state::default_width /2;
 		pt.y = m_stateview->get_renderh()/2 - onity_state::default_height/2;
 		m_stateview->add_state(pt);
+	}
+}
+xui_method_explain(onity_animator, on_retargetclick,	void			)( xui_component* sender, xui_method_args& args )
+{
+	if (m_editfile)
+	{
+		bool flag = (sender == m_on);
+		const NP2DSStateCtrl::StateVec& vec = m_editfile->GetStateVec();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			vec[i]->SetRetarget(flag);
+		}
 	}
 }

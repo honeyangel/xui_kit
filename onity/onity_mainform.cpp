@@ -1,4 +1,9 @@
+#include "NPRender.h"
+#include "NP2DSLib.h"
+#include "m3eFrameWork.h"
+
 #include "xui_desktop.h"
+#include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_bitmap.h"
 #include "xui_toggle.h"
@@ -150,7 +155,19 @@ xui_method_explain(onity_mainform, get_ptr,				onity_mainform*		)( void )
 */
 xui_method_explain(onity_mainform, get_inspector,		onity_inspector*	)( void )
 {
-	return (onity_inspector*)m_inspector->get_data();
+	return (onity_inspector*)	xui_method_ptrcall(m_inspector, get_data)();
+}
+xui_method_explain(onity_mainform, get_project,			onity_project*		)( void )
+{
+	return (onity_project*)		xui_method_ptrcall(m_project,	get_data)();
+}
+xui_method_explain(onity_mainform, get_game,			onity_game*			)( void )
+{
+	return (onity_game*)		xui_method_ptrcall(m_game,		get_data)();
+}
+xui_method_explain(onity_mainform, get_animator,		onity_animator*		)( void )
+{
+	return (onity_animator*)	xui_method_ptrcall(m_animator,	get_data)();
 }
 
 /*
@@ -162,6 +179,14 @@ xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args 
 
 	//load config
 	on_clickload(NULL,  args);
+	//load res
+	xui_global::set_workpath(L"D:/BreezeGameBranchFlyMode_V26/art/res");
+	NPRender::Init();
+	NP2DSLib::Init();
+	onity_project* project = get_project();
+	onity_game*    game    = get_game();
+	xui_method_ptrcall(project, ini_pathtree)();
+	xui_method_ptrcall(game,	ini_game	)();
 }
 
 /*

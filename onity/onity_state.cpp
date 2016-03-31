@@ -2,7 +2,7 @@
 #include "NP2DSStateCtrl.h"
 
 #include "xui_desktop.h"
-#include "onity_animator.h"
+#include "onity_stateview.h"
 #include "onity_propstate.h"
 #include "onity_state.h"
 
@@ -44,13 +44,21 @@ xui_method_explain(onity_state, get_state,			NP2DSState*		)( void )
 {
 	return m_state;
 }
-xui_method_explain(onity_state, del_statelink,		void			)( NP2DSState* state )
+
+/*
+//notify
+*/
+xui_method_explain(onity_state, on_delstate,		void			)( NP2DSState* state )
 {
-	m_propstate->del_statelink(state);
+	m_propstate->on_delstate(state);
 }
-xui_method_explain(onity_state, del_paramlink,		void			)( NP2DSParam* param )
+xui_method_explain(onity_state, on_delparam,		void			)( NP2DSParam* param )
 {
-	m_propstate->del_paramlink(param);
+	m_propstate->on_delparam(param);
+}
+xui_method_explain(onity_state, on_addparam,		void			)( NP2DSParam* param )
+{
+	m_propstate->on_addparam(param);
 }
 
 /*
@@ -101,8 +109,12 @@ xui_method_explain(onity_state, on_keybddown,		void			)( xui_method_keybd& args 
 	{
 		if (m_parent)
 		{
-			onity_animator* animator = xui_dynamic_cast(onity_animator, m_parent->get_parent());
-			animator->del_state(m_state);
+			onity_stateview* stateview = xui_dynamic_cast(onity_stateview, m_parent);
+			stateview->del_statectrl(m_state);
+			stateview->on_delstate  (m_state);
+
+			NP2DSStateCtrl* stateCtrl = m_state->GetStateCtrl();
+			stateCtrl->DelState(m_state);
 		}
 	}
 }

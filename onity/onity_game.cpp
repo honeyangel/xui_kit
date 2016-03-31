@@ -5,6 +5,7 @@
 #include "NPGUIDesktop.h"
 #include "NPGUIImeManagerWin32.h"
 #include "m3eFrameWork.h"
+#include "Game/GameConfig.h"
 
 #include "xui_global.h"
 #include "xui_bitmap.h"
@@ -19,6 +20,7 @@ xui_implement_rtti(onity_game, xui_dockpage);
 
 std::string	g_strQQ;
 std::string	g_strPWD;
+extern bool gInitCompleted;
 
 /*
 //constructor
@@ -55,7 +57,6 @@ xui_create_explain(onity_game)( void )
 	xui_method_ptrcall(m_head,		add_child		)(m_aspect);
 
 	m_view = new onity_renderview(xui_vector<s32>(100));
-	xui_method_ptrcall(m_view,		xm_load			) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewload);
 	xui_method_ptrcall(m_view,		xm_updateself	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewupdateself);
 	xui_method_ptrcall(m_view,		xm_renderself	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewrenderself);
 	xui_method_ptrcall(m_view,		xm_setrendersz	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewsetrendersz);
@@ -73,18 +74,23 @@ xui_create_explain(onity_game)( void )
 }
 
 /*
-//event
+//method
 */
-xui_method_explain(onity_game, on_viewload,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_game, ini_game,			void)( void )
 {
-	xui_dockpage::on_load(args);
-	xui_global::set_workpath(L"D:/BreezeGameBranchFlyMode_V26/bin");
-	xui_vector<s32>   size = sender->get_rendersz();
+	xui_vector<s32>   size = m_view->get_rendersz();
 	m3eFrameWorkInit (size.w, size.h);
 	m3eFrameWorkStart();
 }
+
+/*
+//event
+*/
 xui_method_explain(onity_game, on_viewupdateself,	void)( xui_component* sender, xui_method_args&  args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
 	if (imeManager)
 		imeManager->Update();
@@ -93,20 +99,27 @@ xui_method_explain(onity_game, on_viewupdateself,	void)( xui_component* sender, 
 }
 xui_method_explain(onity_game, on_viewrenderself,	void)( xui_component* sender, xui_method_args&  args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	xui_vector<s32> size = sender->get_rendersz();
 	NPRender::GetIns()->SetResolutionW(size.w);
 	NPRender::GetIns()->SetResolutionH(size.h);
-	NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
 	m3eFrameWorkRender();
 }
 xui_method_explain(onity_game, on_viewsetrendersz,	void)( xui_component* sender, xui_method_args&  args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	xui_vector<s32> size = sender->get_rendersz();
+	NPRender::GetIns()->SetResolutionW((npu32)size.w);
+	NPRender::GetIns()->SetResolutionH((npu32)size.h);
+	NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
 	NPConfig::SetGUIDesktop(NPVector2((f32)size.w, (f32)size.h));
 	NPConfig::CalAdapterScaleValue();
-
-	if (NPGUIDesktop::GetIns())
-		NPGUIDesktop::GetIns()->Realign();
+	NPGUIDesktop::GetIns()->Realign();
+	BreezeGame::GameConfig::Instance()->InitAdaptation();
 }
 xui_method_explain(onity_game, on_viewmousedown,	void)( xui_component* sender, xui_method_mouse& args )
 {

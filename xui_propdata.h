@@ -28,6 +28,11 @@ public:
 	xui_propdata( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_propdata( void ){};
+
+	/*
 	//method
 	*/
 	xui_propkind*				get_kind		( void ) const;

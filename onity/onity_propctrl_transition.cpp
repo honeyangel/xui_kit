@@ -91,9 +91,9 @@ xui_method_explain(onity_propctrl_transition, on_editvalue,			void			)( xui_prop
 {}
 
 /*
-//method
+//notify
 */
-xui_method_explain(onity_propctrl_transition, del_statelink,		void			)( NP2DSState* state )
+xui_method_explain(onity_propctrl_transition, on_delstate,			void			)( NP2DSState* state )
 {
 	for (s32 i = (s32)m_sublst->get_itemcount()-1; i >= 0; --i)
 	{

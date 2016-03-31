@@ -55,6 +55,8 @@ protected:
 	//method
 	*/
 	xui_propdata_vec		get_propdataall			( u32 index );
+	virtual s32				get_elsectrlsize		( void );
+	virtual s32				get_prevctrlsize		( void );
 
 	/*
 	//member
@@ -67,15 +69,5 @@ protected:
 	xui_propkind_vec		m_propkindvec;
 	xui_propctrl_vec		m_propctrlvec;
 };
-
-#define xui_declare_kindctrl_func \
-public: \
-	static xui_kindctrl*	createkind				( xui_propkind* propkind );
-
-#define xui_explain_kindctrl_func(class_name) \
-xui_kindctrl*				class_name::createkind	( xui_propkind* propkind ) \
-{ \
-	return new xui_kindctrl(propkind); \
-}
 
 #endif//__xui_kindctrl_h__

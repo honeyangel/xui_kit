@@ -67,6 +67,14 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_treeview* treeview
 }
 
 /*
+//destructor
+*/
+xui_delete_explain(xui_treenode)( void )
+{
+	delete m_linkdata;
+}
+
+/*
 //static compare
 */
 xui_method_explain(xui_treenode, compare,			bool								)( xui_treenode* node1, xui_treenode* node2 )
@@ -468,8 +476,12 @@ xui_method_explain(xui_treenode, set_linktext,		void								)( void )
 {
 	u32 index = (u32)m_edittext->get_data();
 	m_edittext->set_visible(false);
-	m_linkdata->set_text(index, m_edittext->get_text());
-	use_linkdata();
+	std::wstring text = m_linkdata->get_text(index);
+	if (m_edittext->get_text() != text)
+	{
+		m_linkdata->set_text(index, m_edittext->get_text());
+		use_linkdata();
+	}
 }
 xui_method_explain(xui_treenode, set_leafsort,		void								)( void )
 {
@@ -530,13 +542,20 @@ xui_method_explain(xui_treenode, non_findtext,		void								)( void )
 */
 xui_method_explain(xui_treenode, on_textnonfocus,	void								)( xui_component* sender, xui_method_args&  args )
 {
-	set_linktext();
+	m_edittext->set_visible(false);
+	use_linkdata();
 }
 xui_method_explain(xui_treenode, on_textkeybddown,	void								)( xui_component* sender, xui_method_keybd& args )
 {
-	if (args.kcode == KEY_ENTER)
+	switch (args.kcode)
 	{
+	case KEY_ESC:
+		m_edittext->set_visible(false);
+		use_linkdata();
+		break;
+	case KEY_ENTER:
 		set_linktext();
+		break;
 	}
 }
 xui_method_explain(xui_treenode, on_nodeexpand,		void								)( xui_component* sender, xui_method_args&  args )

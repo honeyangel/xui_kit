@@ -172,23 +172,6 @@ xui_method_explain(onity_stateview, del_statectrl,		void			)( NP2DSState* state 
 		}
 	}
 }
-xui_method_explain(onity_stateview, del_statelink,		void			)( NP2DSState* state )
-{
-	if (m_seltrans && m_seltrans->GetNextState() == state)
-		m_seltrans  = NULL;
-
-	for (u32 i = 0; i < m_statectrl.size(); ++i)
-	{
-		m_statectrl[i]->del_statelink(state);
-	}
-}
-xui_method_explain(onity_stateview, del_paramlink,		void			)( NP2DSParam* param )
-{
-	for (u32 i = 0; i < m_statectrl.size(); ++i)
-	{
-		m_statectrl[i]->del_paramlink(param);
-	}
-}
 xui_method_explain(onity_stateview, del_statectrlall,	void			)( void )
 {
 	for (u32 i = 0; i < m_statectrl.size(); ++i)
@@ -212,6 +195,34 @@ xui_method_explain(onity_stateview, del_statectrlall,	void			)( void )
 	m_selstate = NULL;
 	m_seltrans = NULL;
 	invalid();
+}
+
+/*
+//notify
+*/
+xui_method_explain(onity_stateview, on_delstate,		void			)( NP2DSState* state )
+{
+	if (m_seltrans && m_seltrans->GetNextState() == state)
+		m_seltrans  = NULL;
+
+	for (u32 i = 0; i < m_statectrl.size(); ++i)
+	{
+		m_statectrl[i]->on_delstate(state);
+	}
+}
+xui_method_explain(onity_stateview, on_delparam,		void			)( NP2DSParam* param )
+{
+	for (u32 i = 0; i < m_statectrl.size(); ++i)
+	{
+		m_statectrl[i]->on_delparam(param);
+	}
+}
+xui_method_explain(onity_stateview, on_addparam,		void			)( NP2DSParam* param )
+{
+	for (u32 i = 0; i < m_statectrl.size(); ++i)
+	{
+		m_statectrl[i]->on_addparam(param);
+	}
 }
 
 /*
@@ -285,6 +296,11 @@ xui_method_explain(onity_stateview, choose_else,		xui_component*	)( const xui_ve
 /*
 //callback
 */
+xui_method_explain(onity_stateview, on_noncatch,		void			)( xui_method_args&  args )
+{
+	xui_control::on_noncatch(args);
+	m_mousedrag = false;
+}
 xui_method_explain(onity_stateview, on_invalid,			void			)( xui_method_args&  args )
 {
 	drag_view(xui_vector<s32>(0));
@@ -354,7 +370,6 @@ xui_method_explain(onity_stateview, on_keybddown,		void			)( xui_method_keybd& a
 		statectrl->get_state()->DelTransition(m_seltrans);
 		m_seltrans = NULL;
 	}
-
 }
 xui_method_explain(onity_stateview, on_mousedown,		void			)( xui_method_mouse& args )
 {
@@ -386,7 +401,6 @@ xui_method_explain(onity_stateview, on_mouserise,		void			)( xui_method_mouse& a
 	xui_control::on_mouserise(args);
 	if (args.mouse == MB_M)
 	{
-		m_mousedrag = false;
 		xui_desktop::get_ins()->set_catchctrl(NULL);	
 	}
 
@@ -418,11 +432,10 @@ xui_method_explain(onity_stateview, on_deleteclick,		void			)( xui_component* se
 {
 	if (m_actstate)
 	{
-		onity_animator* animator = xui_dynamic_cast(onity_animator, m_parent);
-		if (animator)
-		{
-			animator->del_state(m_actstate->get_state());
-		}
+		NP2DSState* state = m_actstate->get_state();
+		del_statectrl(state);
+		on_delstate  (state);
+		m_editfile->DelState(state);
 	}
 }
 xui_method_explain(onity_stateview, on_statemousedown,	void			)( xui_component* sender, xui_method_mouse& args )

@@ -311,7 +311,7 @@ xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_propkind* propki
 xui_method_explain(xui_propview, get_kindctrl,		xui_kindctrl*			)( xui_propkind* propkind )
 {
 	xui_kindctrl* kindctrl = NULL;
-	xui_kindctrl_map::iterator itor = m_kindctrlmap.find(propkind->get_func());
+	xui_kindctrl_map::iterator itor = m_kindctrlmap.find(propkind->get_type());
 	if (itor != m_kindctrlmap.end())
 	{
 		std::vector<xui_kindctrl*>& vec = (*itor).second;
@@ -327,10 +327,12 @@ xui_method_explain(xui_propview, get_kindctrl,		xui_kindctrl*			)( xui_propkind*
 
 	if (kindctrl == NULL)
 	{
+		std::string      type = propkind->get_type();
 		xui_kind_newctrl func = propkind->get_func();
 		kindctrl  = (*func)(propkind);
-		kindctrl->refresh();
-		m_kindctrlmap[func].push_back(kindctrl);
+		xui_method_ptrcall(kindctrl, set_name)(type);
+		xui_method_ptrcall(kindctrl, refresh )();
+		m_kindctrlmap[type].push_back(kindctrl);
 	}
 
 	xui_vector<s32> pt;

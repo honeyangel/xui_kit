@@ -17,8 +17,6 @@
 #include "onity_proptransition.h"
 #include "onity_propstate.h"
 
-xui_explain_kindctrl_func(onity_propstate);
-
 /*
 //constructor
 */
@@ -33,7 +31,7 @@ xui_create_explain(onity_propstate)( onity_state* statectrl )
 		m_proptransition.push_back(new onity_proptransition(vec[i]));
 	}
 
-	m_statekind		= new xui_propkind(this, xui_global::ascii_to_unicode(state->GetName()), onity_propstate::createkind, onity_resource::icon_state, true);
+	m_statekind		= new xui_propkind(this, xui_global::ascii_to_unicode(state->GetName()), "State", xui_kindctrl::create, onity_resource::icon_state, true);
 	xui_method_ptrcall(m_statekind, xm_namechanged) += new xui_method_member<xui_method_args, onity_propstate>(this, &onity_propstate::on_namechanged);
 	m_retarget		= new xui_propdata_bool(
 		m_statekind, 
@@ -109,19 +107,26 @@ xui_method_explain(onity_propstate, del_transition,		void					)( NP2DSTransition
 
 	m_transition->refresh();
 }
-xui_method_explain(onity_propstate, del_statelink,		void					)( NP2DSState* state )
+xui_method_explain(onity_propstate, on_delstate,		void					)( NP2DSState* state )
 {
 	onity_propctrl_transition* propctrl = xui_dynamic_cast(onity_propctrl_transition, m_transition->get_ctrl());
 	if (propctrl && propctrl->has_propdata(m_transition))
 	{
-		propctrl->del_statelink(state);
+		propctrl->on_delstate(state);
 	}
 }
-xui_method_explain(onity_propstate, del_paramlink,		void					)( NP2DSParam* param )
+xui_method_explain(onity_propstate, on_delparam,		void					)( NP2DSParam* param )
 {
 	for (u32 i = 0; i < m_proptransition.size(); ++i)
 	{
-		m_proptransition[i]->del_paramlink(param);
+		m_proptransition[i]->on_delparam(param);
+	}
+}
+xui_method_explain(onity_propstate, on_addparam,		void					)( NP2DSParam* param )
+{
+	for (u32 i = 0; i < m_proptransition.size(); ++i)
+	{
+		m_proptransition[i]->on_addparam(param);
 	}
 }
 

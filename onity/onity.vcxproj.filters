@@ -38,6 +38,33 @@
     <ClInclude Include="onity_condition.h">
       <Filter>animator</Filter>
     </ClInclude>
+    <ClInclude Include="onity_pathdata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proppath.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_filedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propfile.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propmodule.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propaction.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propsprite.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propimage.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_pathctrl.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -78,10 +105,40 @@
     <ClCompile Include="onity_condition.cpp">
       <Filter>animator</Filter>
     </ClCompile>
+    <ClCompile Include="onity_pathdata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proppath.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_filedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propfile.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propsprite.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propmodule.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propaction.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propimage.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_pathctrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">
       <UniqueIdentifier>{9037fe86-4bac-4b4e-9f4f-b35ed0b51827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project">
+      <UniqueIdentifier>{be1e9e13-da2c-4793-8342-e5cca01f25b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
