@@ -52,9 +52,11 @@ public:
 	*/
 	static std::wstring						get_workpath	( void );
 	static void								set_workpath	( const std::wstring& path );
+	static void								set_showfind	( const std::wstring& path );
 	static std::vector<std::wstring>		get_path		( const std::wstring& path );
 	static std::vector<std::wstring>		get_file		( const std::wstring& path );
 	static bool								has_path		( const std::wstring& path );
+	static bool								has_file		( const std::wstring& file );
 	static bool								add_path		( const std::wstring& path );
 	static bool								del_file		( const std::wstring& file );
 	static bool								mov_file		( const std::wstring& src, const std::wstring& dst );

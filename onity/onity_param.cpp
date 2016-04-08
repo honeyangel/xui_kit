@@ -8,6 +8,7 @@
 #include "xui_toggle.h"
 #include "onity_animator.h"
 #include "onity_stateview.h"
+#include "onity_propcontroller.h"
 #include "onity_param.h"
 
 xui_implement_rtti(onity_param, xui_control);
@@ -200,8 +201,7 @@ xui_method_explain(onity_param, on_deleteclick,			void)( xui_component* sender, 
 		{
 			onity_stateview* stateview = animator->get_stateview();
 			stateview->on_delparam(m_param);
-
-			animator->get_editfile()->DelParam(m_param);
+			animator->get_editprop()->get_statectrl()->DelParam(m_param);
 		}
 	}
 }

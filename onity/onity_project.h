@@ -21,7 +21,7 @@ public:
 	/*
 	//notify
 	*/
-	void			on_pathrename		( const std::wstring& last, const std::wstring& curr, const std::wstring& text );
+	void			ntf_rename			( const std::wstring& last, const std::wstring& curr );
 
 protected:
 	/*
@@ -40,6 +40,7 @@ protected:
 	void			on_controllerclick	( xui_component* sender, xui_method_args&  args );
 	void			on_pathitemclick	( xui_component* sender, xui_method_args&  args );
 	void			on_pathtogglerender	( xui_component* sender, xui_method_args&  args );
+	void			on_pathtoggleclick	( xui_component* sender, xui_method_args&  args );
 	void			on_sliderscroll		( xui_component* sender, xui_method_args&  args );
 
 	/*
@@ -47,6 +48,8 @@ protected:
 	*/
 	void			refresh_lineview	( void );
 	void			refresh_pathpane	( void );
+	//void			refresh_pathmeta	( u08 type, const std::string& lastpath, const std::string& currpath );
+	//void			refresh_filemeta	( u08 type, const std::string& lastfull, const std::string& currfull );
 
 	/*
 	//member

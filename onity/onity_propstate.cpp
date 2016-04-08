@@ -13,15 +13,20 @@
 #include "xui_propctrl_object.h"
 #include "onity_resource.h"
 #include "onity_state.h"
+#include "onity_savekind.h"
 #include "onity_propctrl_transition.h"
 #include "onity_proptransition.h"
+#include "onity_propcontroller.h"
 #include "onity_propstate.h"
+
+#include "onity_mainform.h"
+#include "onity_animator.h"
 
 /*
 //constructor
 */
 xui_create_explain(onity_propstate)( onity_state* statectrl )
-: xui_proproot()
+: onity_propasset()
 , m_statectrl(statectrl)
 {
 	NP2DSState* state = m_statectrl->get_state();
@@ -32,7 +37,8 @@ xui_create_explain(onity_propstate)( onity_state* statectrl )
 	}
 
 	m_statekind		= new xui_propkind(this, xui_global::ascii_to_unicode(state->GetName()), "State", xui_kindctrl::create, onity_resource::icon_state, true);
-	xui_method_ptrcall(m_statekind, xm_namechanged) += new xui_method_member<xui_method_args, onity_propstate>(this, &onity_propstate::on_namechanged);
+	xui_method_ptrcall(m_statekind, xm_namechanged) += new xui_method_member<xui_method_args,     onity_propstate>(this, &onity_propstate::on_namechanged);
+	xui_method_ptrcall(m_statekind, xm_propchanged) += new xui_method_member<xui_method_propdata, onity_propasset>(this, &onity_propasset::on_propchanged);
 	m_retarget		= new xui_propdata_bool(
 		m_statekind, 
 		L"Retarget", 
@@ -62,6 +68,10 @@ xui_create_explain(onity_propstate)( onity_state* statectrl )
 	m_statekind->add_propdata(m_actor);
 	m_statekind->add_propdata(m_transition);
 	add_propkind(m_statekind);
+
+	onity_propfile* propfile = onity_mainform::get_ptr()->get_animator()->get_editprop();
+	m_savekind = new onity_savekind(this, propfile);
+	add_propkind(m_savekind);
 }
 
 /*

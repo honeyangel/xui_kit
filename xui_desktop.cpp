@@ -582,11 +582,13 @@ xui_method_explain(xui_desktop, proc_settext,	void					)( void )
 {
 	if (m_focusctrl)
 	{
+		xui_component* component = m_focusctrl;
 		xui_method_keybd args;
 		for (u32 i = 0; i < m_inputtext.length(); ++i)
 		{
 			args.wchar = m_inputtext[i];
-			m_focusctrl->on_keybdchar(args);
+			component->on_keybdchar(			args);
+			component->xm_keybdchar(component,	args);
 		}
 	}
 

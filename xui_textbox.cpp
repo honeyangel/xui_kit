@@ -603,7 +603,11 @@ xui_method_explain(xui_textbox, get_selecttext,		std::wstring			)( void ) const
 */
 xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 {
-	xui_rect2d<s32> rt = get_renderrtins() + get_screenpt();
+	xui_rect2d<s32> textrt = get_rendertextrt();
+	xui_rect2d<s32> rt     = get_renderrtins ();
+	rt.ax = textrt.ax;
+	rt.bx = textrt.bx;
+
 	if (get_rendertext().length() > 0)
 	{
 		rt.oft_x(get_textwidth(m_text.substr(m_firstshowindex, m_caretcurrindex-m_firstshowindex)));
@@ -639,7 +643,7 @@ xui_method_explain(xui_textbox, set_caretrect,		void					)( void )
 	rt.set_w(2);
 	rt.set_h(height);
 
-	m_caretdrawer->set_caretrect(rt);
+	m_caretdrawer->set_caretrect(rt+get_screenpt());
 }
 xui_method_explain(xui_textbox, get_textwidth,		u32						)( const std::wstring& text ) const
 {

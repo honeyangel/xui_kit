@@ -1,13 +1,13 @@
 #ifndef __onity_propstate_h__
 #define __onity_propstate_h__
 
-#include "xui_proproot.h"
 #include "xui_kindctrl.h"
+#include "onity_propasset.h"
 
 class NP2DSState;
 class onity_state;
 class onity_proptransition;
-class onity_propstate : public xui_proproot
+class onity_propstate : public onity_propasset
 {
 public:
 	/*

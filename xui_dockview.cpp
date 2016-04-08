@@ -73,6 +73,16 @@ xui_method_explain(xui_dockview, set_showpage,			void								)( xui_dockpage* pa
 {
 	m_showpage = page;
 }
+xui_method_explain(xui_dockview, has_dockpage,			bool								)( xui_dockpage* page )
+{
+	for (u32 i = 0; i < m_pagelist.size(); ++i)
+	{
+		if (m_pagelist[i] == page)
+			return true;
+	}
+
+	return false;
+}
 xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>						)( void ) const
 {
 	xui_rect2d<s32> rt = get_renderrtins();

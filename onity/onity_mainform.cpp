@@ -169,6 +169,28 @@ xui_method_explain(onity_mainform, get_animator,		onity_animator*		)( void )
 {
 	return (onity_animator*)	xui_method_ptrcall(m_animator,	get_data)();
 }
+xui_method_explain(onity_mainform, get_console,			onity_console*		)( void )
+{
+	return (onity_console*)		xui_method_ptrcall(m_console,	get_data)();
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page )
+{
+	xui_dockview* view = xui_dynamic_cast(xui_dockview, page->get_parent());
+	if (view == NULL)
+	{
+		view = m_mainview;
+		view->add_dockpage(page, page->get_initdock(), false, true);
+	}
+
+	if (view->has_dockpage(page))
+	{
+		view->set_showpage(page);
+	}
+}
 
 /*
 //callback

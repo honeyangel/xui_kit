@@ -21,6 +21,7 @@ public:
 	xui_menu*							get_viewmenu			( void );
 	xui_dockpage*						get_showpage			( void );
 	void								set_showpage			( xui_dockpage* page );
+	bool								has_dockpage			( xui_dockpage* page );
 	const std::vector<xui_dockpage*>&	get_pagelist			( void ) const;
 	xui_rect2d<s32>						get_freerect			( void ) const;
 	xui_rect2d<s32>						get_namerect			( void ) const;

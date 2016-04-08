@@ -50,18 +50,14 @@ xui_create_explain(onity_paramview)( void )
 */
 xui_method_explain(onity_paramview, set_editfile,		void			)( NP2DSStateCtrl* editfile )
 {
-	if (m_editfile != editfile)
+	del_paramctrlall();
+	m_editfile = editfile;
+	if (m_editfile)
 	{
-		m_editfile  = editfile;
-		del_paramctrlall();
-
-		if (m_editfile)
+		const NP2DSStateCtrl::ParamVec& vec = m_editfile->GetParamVec();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			const NP2DSStateCtrl::ParamVec& vec = m_editfile->GetParamVec();
-			for (u32 i = 0; i < vec.size(); ++i)
-			{
-				add_paramctrl(vec[i]);
-			}
+			add_paramctrl(vec[i]);
 		}
 	}
 }

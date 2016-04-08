@@ -65,6 +65,24 @@
     <ClInclude Include="onity_pathctrl.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_prop2dsres.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_filectrl.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propcontroller.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_savectrl.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_savekind.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propasset.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -130,6 +148,24 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_pathctrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_prop2dsres.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_filectrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propcontroller.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_savectrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_savekind.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propasset.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>

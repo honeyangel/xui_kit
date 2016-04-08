@@ -21,6 +21,7 @@ class onity_inspector;
 class onity_project;
 class onity_game;
 class onity_animator;
+class onity_console;
 class onity_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -43,6 +44,12 @@ public:
 	onity_project*			get_project			( void );
 	onity_animator*			get_animator		( void );
 	onity_game*				get_game			( void );
+	onity_console*			get_console			( void );
+
+	/*
+	//method
+	*/
+	void					set_pageshow		( xui_dockpage* page );
 
 protected:
 	/*

@@ -9,6 +9,7 @@
 #include "xui_toolbar.h"
 #include "onity_resource.h"
 #include "onity_state.h"
+#include "onity_propcontroller.h"
 #include "onity_paramview.h"
 #include "onity_stateview.h"
 #include "onity_animator.h"
@@ -20,7 +21,7 @@ xui_implement_rtti(onity_animator, xui_dockpage);
 */
 xui_create_explain(onity_animator)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_A, 200, DOCKSTYLE_F)
-, m_editfile(NULL)
+, m_editprop(NULL)
 {
 	ini_namectrl(onity_resource::icon_animator, L"Animator");
 
@@ -53,6 +54,26 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_retarget,	ini_drawer		)(L"All Retarget");
 	xui_method_ptrcall(m_retarget,	set_menu		)(menu2);
 
+	m_revert		= new xui_button(xui_vector<s32>( 60, 20));
+	xui_method_ptrcall(m_revert,	xm_buttonclick	) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_revertclick);
+	xui_method_ptrcall(m_revert,	ini_component	)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_revert,	set_corner		)(3);
+	xui_method_ptrcall(m_revert,	set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_revert,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_revert,	set_textalign	)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_revert,	set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_revert,	ini_drawer		)(L"Revert");
+
+	m_apply		= new xui_button(xui_vector<s32>( 60, 20));
+	xui_method_ptrcall(m_apply,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_applyclick);
+	xui_method_ptrcall(m_apply,		ini_component	)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_apply,		set_corner		)(3);
+	xui_method_ptrcall(m_apply,		set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_apply,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_apply,		set_textalign	)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_apply,		set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_apply,		ini_drawer		)(L"Apply");
+
 	m_head		= new xui_toolbar(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
@@ -60,6 +81,9 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_head,		set_grap		)(4);
 	xui_method_ptrcall(m_head,		add_item		)(m_create);
 	xui_method_ptrcall(m_head,		add_item		)(m_retarget);
+	xui_method_ptrcall(m_head,		add_separate	)();
+	xui_method_ptrcall(m_head,		add_item		)(m_apply);
+	xui_method_ptrcall(m_head,		add_item		)(m_revert);
 
 	m_stateview = new onity_stateview;
 	xui_method_ptrcall(m_stateview,	ini_component	)(0, 0, DOCKSTYLE_F);
@@ -80,26 +104,20 @@ xui_create_explain(onity_animator)( void )
 	add_pagectrl(m_head);
 	add_pagectrl(m_stateview);
 	add_pagectrl(m_paramview);
-
-	//DEBUG
-	set_editfile(new NP2DSStateCtrl);
 }
 
 /*
 //method
 */
-xui_method_explain(onity_animator, get_editfile,		NP2DSStateCtrl*	)( void )
+xui_method_explain(onity_animator, get_editprop,		onity_propcontroller*	)( void )
 {
-	return m_editfile;
+	return m_editprop;
 }
-xui_method_explain(onity_animator, set_editfile,		void			)( NP2DSStateCtrl* editfile )
+xui_method_explain(onity_animator, set_editprop,		void			)( onity_propcontroller* editprop )
 {
-	if (m_editfile != editfile)
-	{
-		m_editfile  = editfile;
-		m_paramview->set_editfile(m_editfile);
-		m_stateview->set_editfile(m_editfile);
-	}
+	m_editprop  = editprop;
+	m_paramview->set_editfile(m_editprop->get_statectrl());
+	m_stateview->set_editfile(m_editprop->get_statectrl());
 }
 xui_method_explain(onity_animator, get_stateview,		onity_stateview*)( void )
 {
@@ -115,7 +133,7 @@ xui_method_explain(onity_animator, get_paramview,		onity_paramview*)( void )
 */
 xui_method_explain(onity_animator, on_stateclick,		void			)( xui_component* sender, xui_method_args& args )
 {
-	if (m_editfile)
+	if (m_editprop)
 	{
 		xui_vector<s32> pt;
 		pt.x = m_stateview->get_renderw()/2 - onity_state::default_width /2;
@@ -125,13 +143,27 @@ xui_method_explain(onity_animator, on_stateclick,		void			)( xui_component* send
 }
 xui_method_explain(onity_animator, on_retargetclick,	void			)( xui_component* sender, xui_method_args& args )
 {
-	if (m_editfile)
+	if (m_editprop)
 	{
 		bool flag = (sender == m_on);
-		const NP2DSStateCtrl::StateVec& vec = m_editfile->GetStateVec();
+		const NP2DSStateCtrl::StateVec& vec = m_editprop->get_statectrl()->GetStateVec();
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			vec[i]->SetRetarget(flag);
 		}
+	}
+}
+xui_method_explain(onity_animator, on_applyclick,		void			)( xui_component* sender, xui_method_args& args )
+{
+	if (m_editprop)
+	{
+		m_editprop->save();
+	}
+}
+xui_method_explain(onity_animator, on_revertclick,		void			)( xui_component* sender, xui_method_args& args )
+{
+	if (m_editprop)
+	{
+		m_editprop->load();
 	}
 }

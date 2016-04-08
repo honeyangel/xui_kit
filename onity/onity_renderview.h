@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_renderview( const xui_vector<s32>& size );
+	onity_renderview( const xui_vector<s32>& size, const xui_vector<s32>& buffersize );
 
 	/*
 	//destructor
@@ -28,7 +28,6 @@ protected:
 	//callback
 	*/
 	virtual void	on_load				( xui_method_args& args );
-	virtual void	on_setrendersz		( xui_method_args& args );
 
 	/*
 	//method
@@ -42,6 +41,7 @@ protected:
 	//member
 	*/
 	xui_bitmap*		m_colorbitmap;
+	xui_vector<s32> m_framebuffersize;
 	GLuint			m_framebuffername;
 	GLuint			m_depthbuffername;
 	GLuint			m_framebufferlast;

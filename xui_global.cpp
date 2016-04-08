@@ -228,6 +228,12 @@ xui_method_explain(xui_global, set_workpath,	void							)( const std::wstring& p
 	SetCurrentDirectory(temp.c_str());
 	g_workpath = path + L"/";
 }
+xui_method_explain(xui_global, set_showfind,	void							)( const std::wstring& path )
+{
+	std::wstring full = g_workpath + path;
+	std::wstring temp = L"/select," + pathstyle_replace(full, L'/', L'\\');
+	ShellExecute(gHWND, L"open", L"Explorer.exe", temp.c_str(), NULL, SW_SHOW);
+}
 xui_method_explain(xui_global, get_path,		std::vector<std::wstring>		)( const std::wstring& path )
 {
 	std::vector<std::wstring> result;
@@ -295,6 +301,18 @@ xui_method_explain(xui_global, has_path,		bool							)( const std::wstring& path
 	if (handle != INVALID_HANDLE_VALUE)
 	{
 		FindClose(handle);
+		return true;
+	}
+
+	return false;
+}
+xui_method_explain(xui_global, has_file,		bool							)( const std::wstring& file )
+{
+	std::string temp = unicode_to_ascii(file);
+	FILE* handle = fopen(temp.c_str(), "rb");
+	if (handle)
+	{
+		fclose(handle);
 		return true;
 	}
 

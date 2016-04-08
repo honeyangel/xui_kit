@@ -31,6 +31,7 @@ public:
 	/*
 	//item
 	*/
+	std::vector<xui_menuitem*>	get_itemall		( void );
 	xui_component*				add_separate	( void );
 	xui_menuitem*				add_item		( xui_bitmap* icon, const std::wstring& text, const std::wstring& hint = L"", const xui_family_render& draw = xui_family_render::default );
 	void						add_item		( xui_menuitem* item );

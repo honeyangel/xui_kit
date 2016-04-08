@@ -103,6 +103,7 @@ xui_create_explain(xui_propdata_bool)( xui_propkind* kind, const std::wstring& n
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(!(userget != NULL && userset == NULL));
 }
 
 /*
@@ -150,6 +151,7 @@ xui_create_explain(xui_propdata_string)( xui_propkind* kind, const std::wstring&
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(!(userget != NULL && userset == NULL));
 }
 
 /*
@@ -229,6 +231,7 @@ xui_create_explain(xui_propdata_number_func)( xui_propkind* kind, const std::wst
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(m_userset != NULL);
 }
 
 /*
@@ -276,6 +279,7 @@ xui_create_explain(xui_propdata_enum_func)( xui_propkind* kind, const std::wstri
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(m_userset != NULL);
 }
 
 /*
@@ -416,6 +420,7 @@ xui_create_explain(xui_propdata_vector)(xui_propkind* kind, const std::wstring& 
 	m_defvalue	= defvalue;
 	m_interval	= interval;
 	m_numbtype	= numbtype;
+	set_edit(m_userset != NULL);
 }
 
 /*
@@ -460,6 +465,7 @@ xui_create_explain(xui_propdata_rect2d)(xui_propkind* kind, const std::wstring& 
 	m_userptr	= userptr;
 	m_interval	= interval;
 	m_numbtype	= numbtype;
+	set_edit(m_userset != NULL);
 }
 
 /*
@@ -498,6 +504,7 @@ xui_create_explain(xui_propdata_colour)( xui_propkind* kind, const std::wstring&
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(m_userset != NULL);
 }
 
 /*
@@ -596,6 +603,7 @@ xui_create_explain(xui_propdata_object_func)(
 	m_userget = userget;
 	m_userset = userset;
 	m_userptr = userptr;
+	set_edit(m_userset != NULL);
 }
 
 /*

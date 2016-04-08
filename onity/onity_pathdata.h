@@ -1,24 +1,16 @@
 #ifndef __onity_pathdata_h__
 #define __onity_pathdata_h__
 
-#include "xui_treedata.h"
+#include "xui_propview.h"
+#include "onity_filedata.h"
 
-enum 
-{
-	META_NONE,
-	META_MODULE,
-	META_SPRITE,
-	META_ACTION,
-};
-
-class onity_proppath;
-class onity_pathdata : public xui_treedata
+class onity_pathdata : public onity_filedata
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_pathdata( const std::wstring& full, bool create_prop );
+	onity_pathdata( const std::wstring& full, xui_proproot* prop, xui_treenode* link );
 
 	/*
 	//destructor
@@ -28,24 +20,31 @@ public:
 	/*
 	//method
 	*/
-	xui_proproot*			get_prop		( void );
-	const std::wstring&		get_full		( void ) const;
-	void					set_full		( const std::wstring& full );
-	std::wstring			get_path		( void ) const;
+	const xui_proproot_vec&	get_leaf		( void ) const;
+	void					add_leaf		( xui_proproot* proproot );
+
+	/*
+	//override
+	*/
 	virtual std::wstring	get_text		( u32 index );
 	virtual void			set_text		( u32 index, const std::wstring& text );
 
 	/*
+	//override
+	*/
+	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
+
+	/*
 	//static
 	*/
-	static void				create_subnode	( xui_treenode* root );
-	static void				load_meta		( u08 type, const std::string& fullname );
+	static void				new_leafnode	( xui_treenode* root );
 
 protected:
 	/*
 	//member
 	*/
-	xui_proproot*			m_prop;	
+	xui_treenode*			m_link;
+	xui_proproot_vec		m_leaf;
 };
 
 #endif//__onity_pathdata_h__

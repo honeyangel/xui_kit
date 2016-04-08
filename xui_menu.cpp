@@ -9,7 +9,7 @@ xui_implement_rtti(xui_menu, xui_control);
 /*
 //static
 */
-xui_method_explain(xui_menu, create,			xui_menu*		)( s32 width )
+xui_method_explain(xui_menu, create,			xui_menu*					)( s32 width )
 {
 	xui_menu* menu = new xui_menu(xui_vector<s32>(width, 0));
 	xui_method_ptrcall(menu, set_backcolor	)(xui_colour::darkgray);
@@ -33,7 +33,7 @@ xui_create_explain(xui_menu)( const xui_vector<s32>& size )
 /*
 //method
 */
-xui_method_explain(xui_menu, was_series,		bool			)( xui_component* comp )
+xui_method_explain(xui_menu, was_series,		bool						)( xui_component* comp )
 {
 	if (comp == this)
 		return true;
@@ -49,19 +49,19 @@ xui_method_explain(xui_menu, was_series,		bool			)( xui_component* comp )
 
 	return false;
 }
-xui_method_explain(xui_menu, get_ownertoggle,	xui_toggle*		)( void )
+xui_method_explain(xui_menu, get_ownertoggle,	xui_toggle*					)( void )
 {
 	return m_ownertoggle;
 }
-xui_method_explain(xui_menu, set_ownertoggle,	void			)( xui_toggle* toggle )
+xui_method_explain(xui_menu, set_ownertoggle,	void						)( xui_toggle* toggle )
 {
 	m_ownertoggle = toggle;
 }
-xui_method_explain(xui_menu, get_showsubmenu,	xui_menu*		)( void )
+xui_method_explain(xui_menu, get_showsubmenu,	xui_menu*					)( void )
 {
 	return m_showsubmenu;
 }
-xui_method_explain(xui_menu, set_showsubmenu,	void			)( xui_menu* submenu )
+xui_method_explain(xui_menu, set_showsubmenu,	void						)( xui_menu* submenu )
 {
 	if (m_showsubmenu != submenu)
 	{
@@ -77,7 +77,19 @@ xui_method_explain(xui_menu, set_showsubmenu,	void			)( xui_menu* submenu )
 /*
 //item
 */
-xui_method_explain(xui_menu, add_separate,		xui_component*	)( void )
+xui_method_explain(xui_menu, get_itemall,		std::vector<xui_menuitem*>	)( void )
+{
+	std::vector<xui_menuitem*> result;
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
+	{
+		xui_menuitem* item = xui_dynamic_cast(xui_menuitem, m_widgetvec[i]);
+		if (item)
+			result.push_back(item);
+	}
+
+	return result;
+}
+xui_method_explain(xui_menu, add_separate,		xui_component*				)( void )
 {
 	xui_separate* separate = new xui_separate(xui_vector<s32>(8), FLOWSTYLE_V);
 	separate->set_parent(this);
@@ -86,7 +98,7 @@ xui_method_explain(xui_menu, add_separate,		xui_component*	)( void )
 
 	return separate;
 }
-xui_method_explain(xui_menu, add_item,			xui_menuitem*	)( xui_bitmap* icon, const std::wstring& text, const std::wstring& hint, const xui_family_render& draw )
+xui_method_explain(xui_menu, add_item,			xui_menuitem*				)( xui_bitmap* icon, const std::wstring& text, const std::wstring& hint, const xui_family_render& draw )
 {
 	xui_menuitem* item = new xui_menuitem();
 	xui_method_ptrcall(item, ini_drawer	)(icon);
@@ -97,7 +109,7 @@ xui_method_explain(xui_menu, add_item,			xui_menuitem*	)( xui_bitmap* icon, cons
 
 	return item;
 }
-xui_method_explain(xui_menu, add_item,			void			)( xui_menuitem* item )
+xui_method_explain(xui_menu, add_item,			void						)( xui_menuitem* item )
 {
 	if (item->get_parent())
 		return;
@@ -113,7 +125,7 @@ xui_method_explain(xui_menu, add_item,			void			)( xui_menuitem* item )
 	m_widgetvec.push_back(item);
 	invalid();
 }
-xui_method_explain(xui_menu, del_item,			void			)( xui_menuitem* item )
+xui_method_explain(xui_menu, del_item,			void						)( xui_menuitem* item )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -132,7 +144,7 @@ xui_method_explain(xui_menu, del_item,			void			)( xui_menuitem* item )
 /*
 //override
 */
-xui_method_explain(xui_menu, choose,			xui_component*	)( const xui_vector<s32>& pt )
+xui_method_explain(xui_menu, choose,			xui_component*				)( const xui_vector<s32>& pt )
 {
 	if (m_showsubmenu)
 	{
@@ -143,7 +155,7 @@ xui_method_explain(xui_menu, choose,			xui_component*	)( const xui_vector<s32>& 
 
 	return xui_control::choose(pt);
 }
-xui_method_explain(xui_menu, render,			void			)( void )
+xui_method_explain(xui_menu, render,			void						)( void )
 {
 	xui_control::render();
 	if (m_showsubmenu)
@@ -153,7 +165,7 @@ xui_method_explain(xui_menu, render,			void			)( void )
 /*
 //callback
 */
-xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
+xui_method_explain(xui_menu, on_nonfocus,		void						)( xui_method_args& args )
 {
 	xui_control::on_nonfocus(args);
 	xui_menu* menu = xui_dynamic_cast(xui_menu, xui_desktop::get_ins()->get_floatctrl());
@@ -166,7 +178,7 @@ xui_method_explain(xui_menu, on_nonfocus,		void			)( xui_method_args& args )
 			toggle->ini_toggle(false);
 	}
 }
-xui_method_explain(xui_menu, on_invalid,		void			)( xui_method_args& args )
+xui_method_explain(xui_menu, on_invalid,		void						)( xui_method_args& args )
 {
 	s32 maxw = 0;
 	s32 curh = 0;
@@ -192,7 +204,7 @@ xui_method_explain(xui_menu, on_invalid,		void			)( xui_method_args& args )
 	}
 
 }
-xui_method_explain(xui_menu, on_perform,		void			)( xui_method_args& args )
+xui_method_explain(xui_menu, on_perform,		void						)( xui_method_args& args )
 {
 	xui_vector<s32> pt(m_border.ax, m_border.ay);
 	xui_rect2d<s32> rt = get_renderrtins();

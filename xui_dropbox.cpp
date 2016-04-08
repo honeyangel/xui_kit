@@ -84,7 +84,7 @@ xui_delete_explain(xui_dropbox)( void )
 */
 xui_method_explain(xui_dropbox, ini_dropbox,			void			)( u32 selectedindex )
 {
-	if (selectedindex == -1)
+	if (selectedindex == -1 || selectedindex >= m_itemvec.size())
 	{
 		m_selitem	= NULL;
 		m_text		= L"";

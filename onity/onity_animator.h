@@ -3,12 +3,9 @@
 
 #include "xui_dockpage.h"
 
-class NP2DSState;
-class NP2DSParam;
-class NP2DSStateCtrl;
+class onity_propcontroller;
 class onity_paramview;
 class onity_stateview;
-
 class onity_animator : public xui_dockpage
 {
 	xui_declare_rtti
@@ -22,32 +19,34 @@ public:
 	/*
 	//method
 	*/
-	onity_stateview*	get_stateview		( void );
-	onity_paramview*	get_paramview		( void );
-	NP2DSStateCtrl*		get_editfile		( void );
-	void				set_editfile		( NP2DSStateCtrl* editfile );
-	//void				del_param			( NP2DSParam* param );
-	//void				del_state			( NP2DSState* state );
+	onity_stateview*		get_stateview		( void );
+	onity_paramview*		get_paramview		( void );
+	onity_propcontroller*	get_editprop		( void );
+	void					set_editprop		( onity_propcontroller* editprop );
 
 protected:
 	/*
 	//event
 	*/
-	void				on_stateclick		( xui_component* sender, xui_method_args& args );
-	void				on_retargetclick	( xui_component* sender, xui_method_args& args );
+	void					on_stateclick		( xui_component* sender, xui_method_args& args );
+	void					on_retargetclick	( xui_component* sender, xui_method_args& args );
+	void					on_revertclick		( xui_component* sender, xui_method_args& args );
+	void					on_applyclick		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
 	*/
-	xui_toggle*			m_create;
-	xui_toggle*			m_retarget;
-	xui_menuitem*		m_state;
-	xui_menuitem*		m_on;
-	xui_menuitem*		m_off;
-	xui_toolbar*		m_head;
-	onity_stateview*	m_stateview;
-	onity_paramview*	m_paramview;
-	NP2DSStateCtrl*		m_editfile;
+	xui_toggle*				m_create;
+	xui_toggle*				m_retarget;
+	xui_button*				m_revert;
+	xui_button*				m_apply;
+	xui_menuitem*			m_state;
+	xui_menuitem*			m_on;
+	xui_menuitem*			m_off;
+	xui_toolbar*			m_head;
+	onity_stateview*		m_stateview;
+	onity_paramview*		m_paramview;
+	onity_propcontroller*	m_editprop;
 };
 
 #endif//__onity_animator_h__

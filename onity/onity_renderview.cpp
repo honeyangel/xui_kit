@@ -9,10 +9,11 @@ xui_implement_rtti(onity_renderview, xui_control);
 /*
 //constructor
 */
-xui_create_explain(onity_renderview)( const xui_vector<s32>& size )
+xui_create_explain(onity_renderview)( const xui_vector<s32>& size, const xui_vector<s32>& buffersize )
 : xui_control(size)
 {
 	m_colorbitmap		= NULL;
+	m_framebuffersize	= buffersize;
 	m_framebuffername	= -1;
 	m_depthbuffername	= -1;
 	m_framebufferlast	= -1;
@@ -47,8 +48,8 @@ xui_method_explain(onity_renderview, render,				void)( void )
 
 	xui_rect2d<s32> src;
 	src.ax = 0;
-	src.bx = m_colorbitmap->get_size().w;
-	src.ay = m_colorbitmap->get_size().h;
+	src.bx = get_renderw();
+	src.ay = get_renderh();
 	src.by = 0;
 	xui_rect2d<s32> dst = get_renderrtabs();
 	xui_convas::get_ins()->draw_image(m_colorbitmap, src, dst, get_vertexcolor());
@@ -64,12 +65,6 @@ xui_method_explain(onity_renderview, on_load,				void)( xui_method_args& args )
 	xui_control::on_load(args);
 	create_framebuffer();
 }
-xui_method_explain(onity_renderview, on_setrendersz,		void)( xui_method_args& args )
-{
-	xui_control::on_setrendersz(args);
-	delete_framebuffer();
-	create_framebuffer();
-}
 
 /*
 //method
@@ -83,7 +78,7 @@ xui_method_explain(onity_renderview, create_framebuffer,	void)( void )
 		attach_framebuffer();
 
 		xui_vector<s32> size = get_rendersz();
-		m_colorbitmap = new xui_bitmap(size, xui_bitmap_format::R8G8B8, NULL);
+		m_colorbitmap = new xui_bitmap(m_framebuffersize, xui_bitmap_format::R8G8B8, NULL);
 		glFramebufferTexture2D(
 			GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0,
@@ -92,7 +87,7 @@ xui_method_explain(onity_renderview, create_framebuffer,	void)( void )
 			0);
 
 		glBindRenderbuffer			(GL_RENDERBUFFER, m_depthbuffername);
-		glRenderbufferStorage		(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, size.w, size.h);
+		glRenderbufferStorage		(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_framebuffersize.w, m_framebuffersize.h);
 		glFramebufferRenderbuffer	(GL_FRAMEBUFFER,  GL_DEPTH_ATTACHMENT,  GL_RENDERBUFFER, m_depthbuffername);
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

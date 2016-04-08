@@ -5,15 +5,10 @@
 /*
 //constructor
 */
-xui_create_explain(onity_proppath)( xui_proproot* root, const std::wstring& name, onity_pathdata* pathdata )
-: xui_propkind(root, name, "Path", onity_pathctrl::create, onity_resource::icon_folder, true)
-, m_pathdata(pathdata)
-{}
-
-/*
-//method
-*/
-xui_method_explain(onity_proppath, get_pathdata, onity_pathdata*)( void ) const
+xui_create_explain(onity_proppath)( const std::wstring& full )
+: onity_propfile(full)
 {
-	return m_pathdata;
+	m_basekind->set_icon(onity_resource::icon_folder);
+	m_pathkind = new xui_propkind(this, L"", "Path", onity_pathctrl::create, NULL, true, false);
+	add_propkind(m_pathkind);
 }

@@ -1,8 +1,9 @@
 #ifndef __onity_pathctrl_h__
 #define __onity_pathctrl_h__
 
-#include "xui_kindctrl.h"
+#include "onity_filectrl.h"
 
+class NP2DSAssetFile;
 class onity_pathctrl : public xui_kindctrl
 {
 	xui_declare_rtti
@@ -35,6 +36,12 @@ protected:
 	*/
 	virtual s32				get_elsectrlsize	( void );
 	virtual s32				get_prevctrlsize	( void );
+
+	/*
+	//method
+	*/
+	void					set_freetype		( u08 type, const std::string& pathname, u32 style );
+	void					set_loadtype		( u08 type, const std::string& pathname, bool flag );
 
 	/*
 	//member

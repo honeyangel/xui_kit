@@ -291,6 +291,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	GetClientRect(gHWND, &rect);
 	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
 	xui_desktop::get_ins()->add_child(new onity_mainform());
+	xui_desktop::get_ins()->update(0.0f);
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 
 	MSG msg;

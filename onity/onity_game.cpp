@@ -8,6 +8,7 @@
 #include "Game/GameConfig.h"
 
 #include "xui_global.h"
+#include "xui_convas.h"
 #include "xui_bitmap.h"
 #include "xui_toggle.h"
 #include "xui_panel.h"
@@ -56,7 +57,7 @@ xui_create_explain(onity_game)( void )
 	xui_method_ptrcall(m_head,		set_hscrollauto	)(false);
 	xui_method_ptrcall(m_head,		add_child		)(m_aspect);
 
-	m_view = new onity_renderview(xui_vector<s32>(100));
+	m_view = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048));
 	xui_method_ptrcall(m_view,		xm_updateself	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewupdateself);
 	xui_method_ptrcall(m_view,		xm_renderself	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewrenderself);
 	xui_method_ptrcall(m_view,		xm_setrendersz	) += new xui_method_member<xui_method_args,  onity_game>(this, &onity_game::on_viewsetrendersz);
@@ -115,7 +116,6 @@ xui_method_explain(onity_game, on_viewsetrendersz,	void)( xui_component* sender,
 	xui_vector<s32> size = sender->get_rendersz();
 	NPRender::GetIns()->SetResolutionW((npu32)size.w);
 	NPRender::GetIns()->SetResolutionH((npu32)size.h);
-	NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
 	NPConfig::SetGUIDesktop(NPVector2((f32)size.w, (f32)size.h));
 	NPConfig::CalAdapterScaleValue();
 	NPGUIDesktop::GetIns()->Realign();
@@ -123,6 +123,9 @@ xui_method_explain(onity_game, on_viewsetrendersz,	void)( xui_component* sender,
 }
 xui_method_explain(onity_game, on_viewmousedown,	void)( xui_component* sender, xui_method_mouse& args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	if (args.mouse != MB_L)
 		return;
 
@@ -131,11 +134,17 @@ xui_method_explain(onity_game, on_viewmousedown,	void)( xui_component* sender, x
 }
 xui_method_explain(onity_game, on_viewmousemove,	void)( xui_component* sender, xui_method_mouse& args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	xui_vector<s32> pt = sender->get_renderpt(args.point);
 	m3eFrameWorkTouch(M3E_Touch_MOUSEMOVED, 0, (s16)pt.x, (s16)pt.y);
 }
 xui_method_explain(onity_game, on_viewmouserise,	void)( xui_component* sender, xui_method_mouse& args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	if (args.mouse != MB_L)
 		return;
 
@@ -144,17 +153,34 @@ xui_method_explain(onity_game, on_viewmouserise,	void)( xui_component* sender, x
 }
 xui_method_explain(onity_game, on_viewkeybddown,	void)( xui_component* sender, xui_method_keybd& args )
 {
-	//NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
-	//if (imeManager)
-	//	imeManager->OnKeyDown(wParam, lParam);
+	if (gInitCompleted == false)
+		return;
 
 	if (args.kcode == KEY_SHIFT)
 	{
 		m3eFrameWorkTouch(M3E_Touch_MOUSEBEGAN, 2, 10, 480);
 	}
+
+	NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
+	if (imeManager->GetTextField() == NULL)
+		return;
+
+	switch(args.kcode)
+	{
+	case KEY_LARROW:	imeManager->DoLeft	();	break;
+	case KEY_RARROW:	imeManager->DoRight	();	break;
+	case KEY_BACK:		imeManager->DoBack	();	break;
+	case KEY_ENTER:		imeManager->DoEnter	();	break;
+	case KEY_DELETE: 	imeManager->DoDelete();	break;
+	}
+
+
 }
 xui_method_explain(onity_game, on_viewkeybdrise,	void)( xui_component* sender, xui_method_keybd& args )
 {
+	if (gInitCompleted == false)
+		return;
+
 	if (args.kcode == KEY_SHIFT)
 	{
 		m3eFrameWorkTouch(M3E_Touch_MOUSEENDED, 2, 10, 480);
@@ -162,7 +188,13 @@ xui_method_explain(onity_game, on_viewkeybdrise,	void)( xui_component* sender, x
 }
 xui_method_explain(onity_game, on_viewkeybdchar,	void)( xui_component* sender, xui_method_keybd& args )
 {
-	//NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
-	//if (imeManager)
-	//	imeManager->OnKeyChar(wParam, lParam);
+	if (gInitCompleted == false)
+		return;
+
+	std::wstring text;
+	text.push_back((wchar_t)args.wchar);
+	std::string  temp = xui_global::unicode_to_ascii(text);
+	NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
+	for (u32 i = 0; i < temp.length(); ++i)
+		imeManager->OnKeyChar(temp[i], 0);
 }

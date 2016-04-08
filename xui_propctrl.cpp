@@ -83,6 +83,11 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 
 	return depth * xui_propview::default_nodeindent;
 }
+xui_method_explain(xui_propctrl,		on_lock,			void					)( xui_method_args& args )
+{
+	xui_control::on_lock(args);
+	m_maskcolor = xui_colour(1.0f, 0.7f);
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_base

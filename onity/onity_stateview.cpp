@@ -16,6 +16,8 @@
 #include "onity_state.h"
 #include "onity_propstate.h"
 #include "onity_proptransition.h"
+#include "onity_filedata.h"
+#include "onity_propcontroller.h"
 #include "onity_stateview.h"
 
 xui_implement_rtti(onity_stateview, xui_control);
@@ -58,19 +60,19 @@ xui_delete_explain(onity_stateview)( void )
 */
 xui_method_explain(onity_stateview, set_editfile,		void			)( NP2DSStateCtrl* editfile )
 {
-	if (m_editfile != editfile)
-	{
-		m_editfile  = editfile;
-		del_statectrlall();
+	del_statectrlall();
 
-		if (m_editfile)
+	m_actstate = NULL;
+	m_selstate = NULL;
+	m_seltrans = NULL;
+	m_editfile = editfile;
+	if (m_editfile)
+	{
+		const NP2DSStateCtrl::StateVec& vec = m_editfile->GetStateVec();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			const NP2DSStateCtrl::StateVec& vec = m_editfile->GetStateVec();
-			for (u32 i = 0; i < vec.size(); ++i)
-			{
-				NPVector2 position = vec[i]->GetPosition();
-				add_statectrl(vec[i], xui_vector<s32>((s32)position.x, (s32)position.y));
-			}
+			NPVector2 position = vec[i]->GetPosition();
+			add_statectrl(vec[i], xui_vector<s32>((s32)position.x, (s32)position.y));
 		}
 	}
 }
@@ -313,26 +315,54 @@ xui_method_explain(onity_stateview, on_renderself,		void			)( xui_method_args&  
 	xui_vector<s32> p1;
 	xui_vector<s32> p2;
 
-	s32 xvalue = m_dragvalue.x;
-	s32 xstart = xvalue / 10;
-	s32 xfinal = xstart + get_renderw() / 10 + 1;
-	for (s32 i = xstart; i <= xfinal; ++i)
+	s32 value;
+	s32 start;
+	s32 final;
+
+	value = m_dragvalue.x;
+	start = value / 10;
+	final = start + get_renderw() / 10 + 1;
+	for (s32 i = start; i <= final; ++i)
 	{
-		xui_colour color = (i%10 == 0) ? xui_colour::black : xui_colour(1.0f, 0.1f);
-		p1 = pt + xui_vector<s32>(i *10 - xvalue, 0);
-		p2 = pt + xui_vector<s32>(i *10 - xvalue, get_renderh());
-		xui_convas::get_ins()->draw_line(p1, p2, color);
+		if (i%10 == 0)
+			continue;
+
+		p1 = pt + xui_vector<s32>(i *10 - value, 0);
+		p2 = pt + xui_vector<s32>(i *10 - value, get_renderh());
+		xui_convas::get_ins()->draw_line(p1, p2, xui_colour(1.0f, 0.1f));
 	}
-	s32 yvalue = m_dragvalue.y;
-	s32 ystart = yvalue / 10;
-	s32 yfinal = ystart + get_renderh() / 10 + 1;
-	for (s32 i = ystart; i <= yfinal; ++i)
+	value = m_dragvalue.y;
+	start = value / 10;
+	final = start + get_renderh() / 10 + 1;
+	for (s32 i = start; i <= final; ++i)
 	{
-		xui_colour color = (i%10 == 0) ? xui_colour::black : xui_colour(1.0f, 0.1f);
-		p1 = pt + xui_vector<s32>(0,			 i* 10 - yvalue);
-		p2 = pt + xui_vector<s32>(get_renderw(), i* 10 - yvalue);
-		xui_convas::get_ins()->draw_line(p1, p2, color);
+		if (i%10 == 0)
+			continue;
+
+		p1 = pt + xui_vector<s32>(0,			 i* 10 - value);
+		p2 = pt + xui_vector<s32>(get_renderw(), i* 10 - value);
+		xui_convas::get_ins()->draw_line(p1, p2, xui_colour(1.0f, 0.1f));
 	}
+
+	value = m_dragvalue.x;
+	start = value / 100;
+	final = start + get_renderw() / 100 + 1;
+	for (s32 i = start; i <= final; ++i)
+	{
+		p1 = pt + xui_vector<s32>(i *100 - value, 0);
+		p2 = pt + xui_vector<s32>(i *100 - value, get_renderh());
+		xui_convas::get_ins()->draw_line(p1, p2, xui_colour::black);
+	}
+	value = m_dragvalue.y;
+	start = value / 100;
+	final = start + get_renderh() / 100 + 1;
+	for (s32 i = start; i <= final; ++i)
+	{
+		p1 = pt + xui_vector<s32>(0,			 i* 100 - value);
+		p2 = pt + xui_vector<s32>(get_renderw(), i* 100 - value);
+		xui_convas::get_ins()->draw_line(p1, p2, xui_colour::black);
+	}
+
 
 	for (std::vector<onity_state*>::iterator itor = m_statectrl.begin(); itor != m_statectrl.end(); ++itor)
 	{

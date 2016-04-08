@@ -217,14 +217,17 @@ xui_method_explain(xui_propview, render_else,		void					)( void )
 		s32 bx = (m_vscroll == NULL) ? rt.bx : get_renderrtins().bx;
 		xui_vector<s32> p1 = get_screenpt();
 		xui_vector<s32> p2 = p1 + xui_vector<s32>(bx, 0);
-		for (u32 i = 0; i < m_ascrollitem.size()-1; ++i)
+		for (u32 i = 1; i < m_ascrollitem.size(); ++i)
 		{
 			xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
+			xui_propkind* propkind = kindctrl->get_propkind();
 			if (kindctrl->was_visible() == false)
 				continue;
+			if (propkind && propkind->was_headshow() == false)
+				continue;
 
-			p1.y = kindctrl->get_renderrtabs().by;
-			p2.y = kindctrl->get_renderrtabs().by;
+			p1.y = kindctrl->get_renderrtabs().ay;
+			p2.y = kindctrl->get_renderrtabs().ay;
 			xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
 		}
 	}

@@ -36,6 +36,11 @@ public:
 
 protected:
 	/*
+	//callback
+	*/
+	virtual void			on_lock			( xui_method_args& args );
+
+	/*
 	//member
 	*/
 	xui_propdata*			m_propdata;
