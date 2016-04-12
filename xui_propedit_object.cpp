@@ -15,7 +15,6 @@ xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* ico
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
-	xui_method_ptrcall(textctrl, set_corner		)(3);
 	xui_method_ptrcall(textctrl, set_icon		)(icon);
 	xui_method_ptrcall(textctrl, set_iconsize	)(xui_vector<s32>(16));
 	xui_method_ptrcall(textctrl, set_iconalign	)(IMAGE_FRONT_TEXT);

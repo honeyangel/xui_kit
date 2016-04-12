@@ -3,6 +3,7 @@
 
 #include "xui_drawer.h"
 
+class onity_propfile;
 class onity_propstate;
 class onity_state : public xui_drawer
 {
@@ -18,7 +19,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_state( NP2DSState* state );
+	onity_state( onity_propfile* propfile, NP2DSState* state );
 
 	/*
 	//destructor

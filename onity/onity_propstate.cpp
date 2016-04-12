@@ -25,20 +25,19 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propstate)( onity_state* statectrl )
-: onity_propasset()
+xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* statectrl )
+: onity_propasset(propfile)
 , m_statectrl(statectrl)
 {
 	NP2DSState* state = m_statectrl->get_state();
 	const NP2DSState::TransitionVec& vec = state->GetTransitionVec();
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		m_proptransition.push_back(new onity_proptransition(vec[i]));
+		m_proptransition.push_back(new onity_proptransition(propfile, vec[i]));
 	}
 
 	m_statekind		= new xui_propkind(this, xui_global::ascii_to_unicode(state->GetName()), "State", xui_kindctrl::create, onity_resource::icon_state, true);
 	xui_method_ptrcall(m_statekind, xm_namechanged) += new xui_method_member<xui_method_args,     onity_propstate>(this, &onity_propstate::on_namechanged);
-	xui_method_ptrcall(m_statekind, xm_propchanged) += new xui_method_member<xui_method_propdata, onity_propasset>(this, &onity_propasset::on_propchanged);
 	m_retarget		= new xui_propdata_bool(
 		m_statekind, 
 		L"Retarget", 
@@ -68,10 +67,6 @@ xui_create_explain(onity_propstate)( onity_state* statectrl )
 	m_statekind->add_propdata(m_actor);
 	m_statekind->add_propdata(m_transition);
 	add_propkind(m_statekind);
-
-	onity_propfile* propfile = onity_mainform::get_ptr()->get_animator()->get_editprop();
-	m_savekind = new onity_savekind(this, propfile);
-	add_propkind(m_savekind);
 }
 
 /*
@@ -100,7 +95,7 @@ xui_method_explain(onity_propstate, get_proptransition,	onity_proptransition*	)(
 }
 xui_method_explain(onity_propstate, add_transition,		void					)( NP2DSTransition* transition )
 {
-	m_proptransition.push_back(new onity_proptransition(transition));
+	m_proptransition.push_back(new onity_proptransition(m_savekind->get_propfile(), transition));
 	m_transition->refresh();
 }
 xui_method_explain(onity_propstate, del_transition,		void					)( NP2DSTransition* transition )
@@ -169,7 +164,18 @@ xui_method_explain(onity_propstate, on_namechanged,		void					)( xui_component* 
 			std::stringstream temp;
 			temp << ((name.length() == 0) ? "New State" : name.c_str());
 			temp << number;
-			if (editfile->HasState(temp.str()) == false)
+
+			has_same = false;
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				if (vec[i] != m_statectrl->get_state() && vec[i]->GetName() == temp.str())
+				{
+					has_same = true;
+					break;
+				}
+			}
+
+			if (has_same == false)
 			{
 				name = temp.str();
 				text = xui_global::ascii_to_unicode(name);
@@ -181,9 +187,13 @@ xui_method_explain(onity_propstate, on_namechanged,		void					)( xui_component* 
 		}
 	}
 
-	m_statekind->set_name(text);
-	m_statectrl->set_text(text);
-	m_statectrl->get_state()->SetName(name);
+	if (m_statectrl->get_state()->GetName() != name)
+	{
+		m_statekind->set_name(text);
+		m_statectrl->set_text(text);
+		m_statectrl->get_state()->SetName(name);
+		m_statectrl->get_state()->GetStateCtrl()->SetNeedSave(true);
+	}
 }
 
 /*

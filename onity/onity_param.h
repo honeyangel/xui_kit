@@ -18,7 +18,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_param( NP2DSParam* param );
+	onity_param( NP2DSParam* param, bool reqfocus );
 
 	/*
 	//method

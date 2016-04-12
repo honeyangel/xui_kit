@@ -22,7 +22,7 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_invalid		( xui_method_args& args );
+	virtual void			on_updateself	( xui_method_args& args );
 	virtual void			on_perform		( xui_method_args& args );
 
 	/*

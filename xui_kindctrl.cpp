@@ -196,6 +196,7 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	m_iconctrl->on_perform_pt(pt);
 	//flag
 	pt.x += m_iconctrl->get_renderw()+4;
+	pt.y  = rt.ay + (height-m_flagctrl->get_renderh())/2;
 	m_flagctrl->on_perform_pt(pt);
 	//name
 	pt.x += m_flagctrl->get_renderw()+4;

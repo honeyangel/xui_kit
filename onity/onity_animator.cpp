@@ -54,26 +54,6 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_retarget,	ini_drawer		)(L"All Retarget");
 	xui_method_ptrcall(m_retarget,	set_menu		)(menu2);
 
-	m_revert		= new xui_button(xui_vector<s32>( 60, 20));
-	xui_method_ptrcall(m_revert,	xm_buttonclick	) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_revertclick);
-	xui_method_ptrcall(m_revert,	ini_component	)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_revert,	set_corner		)(3);
-	xui_method_ptrcall(m_revert,	set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_revert,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_revert,	set_textalign	)(TEXTALIGN_CC);
-	xui_method_ptrcall(m_revert,	set_iconsize	)(xui_vector<s32>(0));
-	xui_method_ptrcall(m_revert,	ini_drawer		)(L"Revert");
-
-	m_apply		= new xui_button(xui_vector<s32>( 60, 20));
-	xui_method_ptrcall(m_apply,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_animator>(this, &onity_animator::on_applyclick);
-	xui_method_ptrcall(m_apply,		ini_component	)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_apply,		set_corner		)(3);
-	xui_method_ptrcall(m_apply,		set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_apply,		set_drawcolor	)(true);
-	xui_method_ptrcall(m_apply,		set_textalign	)(TEXTALIGN_CC);
-	xui_method_ptrcall(m_apply,		set_iconsize	)(xui_vector<s32>(0));
-	xui_method_ptrcall(m_apply,		ini_drawer		)(L"Apply");
-
 	m_head		= new xui_toolbar(xui_vector<s32>(28));
 	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
@@ -82,8 +62,6 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_head,		add_item		)(m_create);
 	xui_method_ptrcall(m_head,		add_item		)(m_retarget);
 	xui_method_ptrcall(m_head,		add_separate	)();
-	xui_method_ptrcall(m_head,		add_item		)(m_apply);
-	xui_method_ptrcall(m_head,		add_item		)(m_revert);
 
 	m_stateview = new onity_stateview;
 	xui_method_ptrcall(m_stateview,	ini_component	)(0, 0, DOCKSTYLE_F);
@@ -115,9 +93,12 @@ xui_method_explain(onity_animator, get_editprop,		onity_propcontroller*	)( void 
 }
 xui_method_explain(onity_animator, set_editprop,		void			)( onity_propcontroller* editprop )
 {
-	m_editprop  = editprop;
-	m_paramview->set_editfile(m_editprop->get_statectrl());
-	m_stateview->set_editfile(m_editprop->get_statectrl());
+	if (m_editprop != editprop)
+	{
+		m_editprop  = editprop;
+		m_paramview->set_editprop(m_editprop);
+		m_stateview->set_editprop(m_editprop);
+	}
 }
 xui_method_explain(onity_animator, get_stateview,		onity_stateview*)( void )
 {
@@ -151,19 +132,5 @@ xui_method_explain(onity_animator, on_retargetclick,	void			)( xui_component* se
 		{
 			vec[i]->SetRetarget(flag);
 		}
-	}
-}
-xui_method_explain(onity_animator, on_applyclick,		void			)( xui_component* sender, xui_method_args& args )
-{
-	if (m_editprop)
-	{
-		m_editprop->save();
-	}
-}
-xui_method_explain(onity_animator, on_revertclick,		void			)( xui_component* sender, xui_method_args& args )
-{
-	if (m_editprop)
-	{
-		m_editprop->load();
 	}
 }

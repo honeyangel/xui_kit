@@ -33,7 +33,7 @@ xui_create_explain(onity_stateview)( void )
 , m_actstate(NULL)
 , m_selstate(NULL)
 , m_seltrans(NULL)
-, m_editfile(NULL)
+, m_editprop(NULL)
 {
 	m_menu			= xui_menu::create(80);
 	m_create		= m_menu->add_item(NULL, L"Create State");
@@ -58,28 +58,30 @@ xui_delete_explain(onity_stateview)( void )
 /*
 //method
 */
-xui_method_explain(onity_stateview, set_editfile,		void			)( NP2DSStateCtrl* editfile )
+xui_method_explain(onity_stateview, set_editprop,		void			)( onity_propcontroller* editprop )
 {
-	del_statectrlall();
-
-	m_actstate = NULL;
-	m_selstate = NULL;
-	m_seltrans = NULL;
-	m_editfile = editfile;
-	if (m_editfile)
+	if (m_editprop != editprop)
 	{
-		const NP2DSStateCtrl::StateVec& vec = m_editfile->GetStateVec();
-		for (u32 i = 0; i < vec.size(); ++i)
+		del_statectrlall();
+		m_editprop  = editprop;
+		m_actstate  = NULL;
+		m_selstate  = NULL;
+		m_seltrans  = NULL;
+		if (m_editprop)
 		{
-			NPVector2 position = vec[i]->GetPosition();
-			add_statectrl(vec[i], xui_vector<s32>((s32)position.x, (s32)position.y));
+			const NP2DSStateCtrl::StateVec& vec = m_editprop->get_statectrl()->GetStateVec();
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				NPVector2 position = vec[i]->GetPosition();
+				add_statectrl(vec[i], xui_vector<s32>((s32)position.x, (s32)position.y));
+			}
 		}
 	}
 }
 xui_method_explain(onity_stateview, add_state,			void			)( const xui_vector<s32>& pt )
 {
 	std::stringstream temp("New State");
-	if (m_editfile->HasState(temp.str()))
+	if (m_editprop->get_statectrl()->HasState(temp.str()))
 	{
 		s32 number = 0;
 		while (true)
@@ -87,20 +89,20 @@ xui_method_explain(onity_stateview, add_state,			void			)( const xui_vector<s32>
 			temp.str("");
 			temp << "New State";
 			temp << number;
-			if (m_editfile->HasState(temp.str()) == false)
+			if (m_editprop->get_statectrl()->HasState(temp.str()) == false)
 				break;
 
 			++number;
 		}
 	}
 
-	add_statectrl(m_editfile->AddState(temp.str()), pt);
+	add_statectrl(m_editprop->get_statectrl()->AddState(temp.str()), pt);
 }
 
 xui_method_explain(onity_stateview, add_statectrl,		void			)( NP2DSState* state, const xui_vector<s32>& pt )
 {
 	xui_vector<s32> finalpt = (pt+m_dragvalue)/10*10;
-	onity_state*  statectrl = new onity_state(state);
+	onity_state*  statectrl = new onity_state(m_editprop, state);
 	xui_method_ptrcall(statectrl, set_parent	)(this);
 	xui_method_ptrcall(statectrl, set_drawcolor	)(true);
 	xui_method_ptrcall(statectrl, set_backcolor	)(xui_colour(1.0f, 0.25f));
@@ -451,7 +453,7 @@ xui_method_explain(onity_stateview, on_defaultclick,	void			)( xui_component* se
 {
 	if (m_actstate)
 	{
-		m_editfile->SetDefState(m_actstate->get_state());
+		m_editprop->get_statectrl()->SetDefState(m_actstate->get_state());
 	}
 }
 xui_method_explain(onity_stateview, on_transitionclick, void			)( xui_component* sender, xui_method_args&  args )
@@ -465,7 +467,7 @@ xui_method_explain(onity_stateview, on_deleteclick,		void			)( xui_component* se
 		NP2DSState* state = m_actstate->get_state();
 		del_statectrl(state);
 		on_delstate  (state);
-		m_editfile->DelState(state);
+		m_editprop->get_statectrl()->DelState(state);
 	}
 }
 xui_method_explain(onity_stateview, on_statemousedown,	void			)( xui_component* sender, xui_method_mouse& args )

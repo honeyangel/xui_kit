@@ -35,6 +35,13 @@ xui_method_explain(onity_propcontroller, get_statectrl, NP2DSStateCtrl*	)( void 
 
 	return m_statectrl;
 }
+xui_method_explain(onity_propcontroller, was_modify,	bool			)( void )
+{
+	if (m_statectrl)
+		return m_statectrl->WasNeedSave();
+
+	return false;
+}
 xui_method_explain(onity_propcontroller, save,			void			)( void )
 {
 	onity_propfile::save();
@@ -54,5 +61,8 @@ xui_method_explain(onity_propcontroller, load,			void			)( void )
 
 	onity_animator* animator = onity_mainform::get_ptr()->get_animator();
 	if (animator->get_editprop() == this)
+	{
+		animator->set_editprop(NULL);
 		animator->set_editprop(this);
+	}
 }

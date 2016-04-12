@@ -815,8 +815,6 @@ xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_
 xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse& args )
 {
 	xui_container::on_mousedown(args);
-	if (args.ctrl == false && args.shift == false)
-		non_selectednode(false);
 
 	std::vector<xui_treenode*> nodes = get_entirenode(false);
 	u32 selectedindex = -1;
@@ -831,35 +829,44 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 
 	xui_treenode* node = choose_node(get_renderpt(args.point));
 	if (node == NULL)
-		return;
-
-	if (args.ctrl)
 	{
-		set_selectednode(node, !node->was_selected());
+		non_selectednode(true);
 	}
 	else
-	if (args.shift && selectedindex != -1)
 	{
-		u32 index = -1;
-		xui_vecptr_addloop(nodes)
+		if (args.ctrl)
 		{
-			if (nodes[i] == node)
-			{
-				index = i;
-				break;
-			}
+			set_selectednode(node, !node->was_selected());
 		}
-		u32 start = xui_min(index, selectedindex);
-		u32 final = xui_max(index, selectedindex);
-		std::vector<xui_treenode*> selectednodes;
-		for (u32 i = start; i <= final && i < nodes.size(); ++i)
-			selectednodes.push_back(nodes[i]);
+		else
+		if (args.shift && selectedindex != -1)
+		{
+			u32 index = -1;
+			xui_vecptr_addloop(nodes)
+			{
+				if (nodes[i] == node)
+				{
+					index = i;
+					break;
+				}
+			}
+			u32 start = xui_min(index, selectedindex);
+			u32 final = xui_max(index, selectedindex);
+			std::vector<xui_treenode*> selectednodes;
+			for (u32 i = start; i <= final && i < nodes.size(); ++i)
+				selectednodes.push_back(nodes[i]);
 
-		set_selectednode(selectednodes);
-	}
-	else
-	{
-		set_selectednode(node, true);
+			set_selectednode(selectednodes);
+		}
+		if (node->was_selected() == false)
+		{
+			non_selectednode(false);
+			set_selectednode(node, true);
+		}
+		else
+		{
+			node->ini_holdtime();
+		}
 	}
 
 	if (args.mouse == MB_L && m_searchtext.empty() && m_columnsort == TREESORT_NONE)
@@ -908,7 +915,6 @@ xui_method_explain(xui_treeview, on_mouserise,			void								)( xui_method_mouse
 			m_mousecatch == choose_node(get_renderpt(args.point)))
 		{
 			m_mousecatch->req_focus();
-			m_mousecatch->ini_holdtime();
 		}
 
 		m_mousecatch = NULL;

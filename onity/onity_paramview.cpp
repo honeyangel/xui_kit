@@ -8,6 +8,7 @@
 #include "xui_menuitem.h"
 #include "onity_animator.h"
 #include "onity_stateview.h"
+#include "onity_propcontroller.h"
 #include "onity_param.h"
 #include "onity_paramview.h"
 
@@ -18,7 +19,7 @@ xui_implement_rtti(onity_paramview, xui_control);
 */
 xui_create_explain(onity_paramview)( void )
 : xui_control(xui_vector<s32>(0))
-, m_editfile(NULL)
+, m_editprop(NULL)
 {
 	xui_menu* menu = xui_menu::create(60);
 	m_bool	= menu->add_item(NULL, L"Bool" );
@@ -48,22 +49,25 @@ xui_create_explain(onity_paramview)( void )
 /*
 //method
 */
-xui_method_explain(onity_paramview, set_editfile,		void			)( NP2DSStateCtrl* editfile )
+xui_method_explain(onity_paramview, set_editprop,		void			)( onity_propcontroller* editprop )
 {
-	del_paramctrlall();
-	m_editfile = editfile;
-	if (m_editfile)
+	if (m_editprop != editprop)
 	{
-		const NP2DSStateCtrl::ParamVec& vec = m_editfile->GetParamVec();
-		for (u32 i = 0; i < vec.size(); ++i)
+		del_paramctrlall();
+		m_editprop  = editprop;
+		if (m_editprop)
 		{
-			add_paramctrl(vec[i]);
+			const NP2DSStateCtrl::ParamVec& vec = m_editprop->get_statectrl()->GetParamVec();
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				add_paramctrl(vec[i], false);
+			}
 		}
 	}
 }
-xui_method_explain(onity_paramview, add_paramctrl,		void			)( NP2DSParam* param )
+xui_method_explain(onity_paramview, add_paramctrl,		void			)( NP2DSParam* param, bool reqfocus )
 {
-	onity_param* paramctrl = new onity_param(param);
+	onity_param* paramctrl = new onity_param(param, reqfocus);
 	paramctrl->set_parent(this);
 	m_widgetvec.push_back(paramctrl);
 	m_paramctrl.push_back(paramctrl);
@@ -161,7 +165,7 @@ xui_method_explain(onity_paramview, on_perform,			void			)( xui_method_args& arg
 */
 xui_method_explain(onity_paramview, on_menuitemclick,	void			)( xui_component* sender, xui_method_args& args )
 {
-	if (m_editfile)
+	if (m_editprop)
 	{
 		npu08 type;
 		if		(sender == m_bool ) type = DT_BOOL ;
@@ -169,7 +173,7 @@ xui_method_explain(onity_paramview, on_menuitemclick,	void			)( xui_component* s
 		else if (sender == m_float) type = DT_FLOAT;
 
 		std::stringstream temp("New Param");
-		if (m_editfile->HasParam(temp.str()))
+		if (m_editprop->get_statectrl()->HasParam(temp.str()))
 		{
 			s32 number = 0;
 			while (true)
@@ -177,15 +181,15 @@ xui_method_explain(onity_paramview, on_menuitemclick,	void			)( xui_component* s
 				temp.str("");
 				temp << "New Param";
 				temp << number;
-				if (m_editfile->HasParam(temp.str()) == false)
+				if (m_editprop->get_statectrl()->HasParam(temp.str()) == false)
 					break;
 
 				++number;
 			}
 		}
 
-		NP2DSParam* param = m_editfile->AddParam(temp.str(), type);
-		add_paramctrl(param);
+		NP2DSParam* param = m_editprop->get_statectrl()->AddParam(temp.str(), type);
+		add_paramctrl(param, true);
 
 		onity_animator* animator = xui_dynamic_cast(onity_animator, m_parent);
 		if (animator)

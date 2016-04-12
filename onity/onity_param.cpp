@@ -22,14 +22,15 @@ const s32 onity_param::default_height =  20;
 /*
 //constructor
 */
-xui_create_explain(onity_param)( NP2DSParam* param )
+xui_create_explain(onity_param)( NP2DSParam* param, bool reqfocus )
 : xui_control(xui_vector<s32>(default_width, default_height))
 , m_param(param)
 {
 	m_namectrl	= new xui_textbox(xui_vector<s32>(120, 18));
 	xui_method_ptrcall(m_namectrl,	xm_nonfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlnonfocus);
 	xui_method_ptrcall(m_namectrl,	xm_getfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlgetfocus);
-	xui_method_ptrcall(m_namectrl,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_namectrltextchanged);
+	xui_method_ptrcall(m_namectrl,	xm_nonfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_namectrltextchanged);
+	xui_method_ptrcall(m_namectrl,	xm_textenter	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_namectrltextchanged);
 	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
 	xui_method_ptrcall(m_namectrl,	set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_namectrl,	set_drawcolor	)(true);
@@ -38,8 +39,6 @@ xui_create_explain(onity_param)( NP2DSParam* param )
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_namectrl,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_namectrl,	ini_drawer		)(xui_global::ascii_to_unicode(param->GetName()));
-	xui_method_ptrcall(m_namectrl,	set_selecttext	)(0, m_namectrl->get_text().length());
-	xui_method_ptrcall(m_namectrl,	req_focus		)();
 
 	m_boolctrl	= xui_toggle::create();
 	xui_method_ptrcall(m_boolctrl,	xm_toggleclick	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_boolctrlclick);
@@ -83,6 +82,12 @@ xui_create_explain(onity_param)( NP2DSParam* param )
 	m_widgetvec.push_back(m_numbctrl);
 	m_widgetvec.push_back(m_delete);
 	invalid();
+
+	if (reqfocus)
+	{
+		xui_method_ptrcall(m_namectrl,	set_selecttext	)(0, m_namectrl->get_text().length());
+		xui_method_ptrcall(m_namectrl,	req_focus		)();
+	}
 }
 
 /*
@@ -111,39 +116,6 @@ xui_method_explain(onity_param, on_editctrlnonfocus,	void)( xui_component* sende
 {
 	xui_control* control = xui_dynamic_cast(xui_control, sender);
 	control->set_sidecolor(xui_control::default_sidecolor);
-	if (sender == m_namectrl)
-	{
-		NP2DSStateCtrl* stateCtrl = m_param->GetStateCtrl();
-		bool has_same = false;
-		const NP2DSStateCtrl::ParamVec& vec = stateCtrl->GetParamVec();
-		for (u32 i = 0; i < vec.size(); ++i)
-		{
-			if (vec[i] != m_param && vec[i]->GetName() == m_param->GetName())
-			{
-				has_same = true;
-				break;
-			}
-		}
-
-		if (has_same)
-		{
-			std::stringstream temp;
-			s32 number = 0;
-			while (true)
-			{
-				temp.str("");
-				temp << m_param->GetName().c_str();
-				temp << number;
-				if (stateCtrl->HasParam(temp.str()) == false)
-					break;
-
-				++number;
-			}
-
-			m_param->SetName(temp.str());
-			m_namectrl->ini_textbox(xui_global::ascii_to_unicode(temp.str()));
-		}
-	}
 }
 xui_method_explain(onity_param, on_editctrlgetfocus,	void)( xui_component* sender, xui_method_args& args )
 {
@@ -153,7 +125,56 @@ xui_method_explain(onity_param, on_editctrlgetfocus,	void)( xui_component* sende
 xui_method_explain(onity_param, on_namectrltextchanged, void)( xui_component* sender, xui_method_args& args )
 {
 	std::wstring text = m_namectrl->get_text();
-	m_param->SetName(xui_global::unicode_to_ascii(text));
+	std::string  name = xui_global::unicode_to_ascii(text);
+
+	NP2DSStateCtrl* stateCtrl = m_param->GetStateCtrl();
+	bool has_same = false;
+	const NP2DSStateCtrl::ParamVec& vec = stateCtrl->GetParamVec();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i] != m_param && vec[i]->GetName() == name)
+		{
+			has_same = true;
+			break;
+		}
+	}
+
+	if (has_same || name.length() == 0)
+	{
+		s32 number = 0;
+		while (true)
+		{
+			std::stringstream temp;
+			temp << ((name.length() == 0) ? "New Param" : name.c_str());;
+			temp << number;
+
+			has_same = false;
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				if (vec[i] != m_param && vec[i]->GetName() == temp.str())
+				{
+					has_same = true;
+					break;
+				}
+			}
+
+			if (has_same == false)
+			{
+				name = temp.str();
+				text = xui_global::ascii_to_unicode(name);
+				m_namectrl->ini_textbox(text);
+				break;
+			}
+
+			++number;
+		}
+	}
+
+	if (m_param->GetName() != name)
+	{
+		m_param->SetName(name);
+		stateCtrl->SetNeedSave(true);
+	}
 }
 xui_method_explain(onity_param, on_numbctrltextchanged, void)( xui_component* sender, xui_method_args& args )
 {

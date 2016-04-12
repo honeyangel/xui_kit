@@ -30,16 +30,12 @@ protected:
 	*/
 	void					on_stateclick		( xui_component* sender, xui_method_args& args );
 	void					on_retargetclick	( xui_component* sender, xui_method_args& args );
-	void					on_revertclick		( xui_component* sender, xui_method_args& args );
-	void					on_applyclick		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
 	*/
 	xui_toggle*				m_create;
 	xui_toggle*				m_retarget;
-	xui_button*				m_revert;
-	xui_button*				m_apply;
 	xui_menuitem*			m_state;
 	xui_menuitem*			m_on;
 	xui_menuitem*			m_off;

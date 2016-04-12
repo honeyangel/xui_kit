@@ -17,12 +17,12 @@ const s32 onity_state::default_height =  32;
 /*
 //constructor
 */
-xui_create_explain(onity_state)( NP2DSState* state )
+xui_create_explain(onity_state)( onity_propfile* propfile, NP2DSState* state )
 : xui_drawer(xui_vector<s32>(default_width, default_height))
 , m_state(state)
 , m_mousedown(xui_vector<s32>(0))
 {
-	m_propstate = new onity_propstate(this);
+	m_propstate = new onity_propstate(propfile, this);
 }
 
 /*

@@ -351,7 +351,7 @@ void xui_demo::test_propview( xui_window* window )
 	window->add_child(propview);
 
 	xui_proproot* proproot = new xui_proproot();
-	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", "Transform", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true, xui_family(12));
+	xui_propkind* headkind = new xui_propkind(proproot, L"Transform", "Transform", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true);
 	headkind->xm_flagchanged += new xui_method_static<xui_method_args>(kind_flagchanged);
 	//headkind->xm_namechanged += new xui_method_static<xui_method_args>(kind_textchanged);
 	headkind->add_propdata(new xui_propdata_vector(headkind, L"P", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1));

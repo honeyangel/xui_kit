@@ -7,6 +7,7 @@ class NP2DSStateCtrl;
 class NP2DSState;
 class NP2DSParam;
 class onity_state;
+class onity_propcontroller;
 class onity_stateview : public xui_control
 {
 	xui_declare_rtti
@@ -25,7 +26,7 @@ public:
 	/*
 	//method
 	*/
-	void						set_editfile		( NP2DSStateCtrl* editfile );
+	void						set_editprop		( onity_propcontroller* editprop );
 	void						add_state			( const xui_vector<s32>& pt );
 
 	void						add_statectrl		( NP2DSState* state, const xui_vector<s32>& pt );
@@ -99,7 +100,7 @@ protected:
 	onity_state*				m_actstate;
 	onity_state*				m_selstate;
 	NP2DSTransition*			m_seltrans;
-	NP2DSStateCtrl*				m_editfile;
+	onity_propcontroller*		m_editprop;
 };
 
 #endif//__onity_stateview_h__

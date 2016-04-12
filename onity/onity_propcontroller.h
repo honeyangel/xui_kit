@@ -25,6 +25,7 @@ public:
 	/*
 	//override
 	*/
+	virtual bool		was_modify		( void );
 	virtual void		save			( void );
 	virtual void		load			( void );
 

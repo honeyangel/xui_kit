@@ -20,7 +20,6 @@ public:
 	//virtual
 	*/
 	virtual bool			was_modify	( void );
-	virtual void			set_modify	( bool flag );
 	virtual void			ntf_rename	( const std::wstring& last, const std::wstring& curr );
 	virtual void			load		( void );
 	virtual void			save		( void );
@@ -29,7 +28,6 @@ protected:
 	/*
 	//member
 	*/
-	bool					m_modify;
 	std::wstring			m_fullname;
 	xui_propkind*			m_basekind;
 };

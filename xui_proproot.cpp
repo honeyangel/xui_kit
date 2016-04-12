@@ -40,7 +40,21 @@ xui_method_explain(xui_proproot, has_propkind, bool						)( xui_propkind* propki
 }
 xui_method_explain(xui_proproot, add_propkind, void						)( xui_propkind* propkind )
 {
-	m_propkind.push_back(propkind);
+	if (propkind->was_tail())
+	{
+		m_propkind.push_back(propkind);
+	}
+	else
+	{
+		xui_propkind_vec::iterator itor = m_propkind.begin();
+		for (; itor != m_propkind.end(); ++itor)
+		{
+			if ((*itor)->was_tail())
+				break;
+		}
+
+		m_propkind.insert(itor, propkind);
+	}
 }
 xui_method_explain(xui_proproot, non_ctrl,		void					)( void )
 {

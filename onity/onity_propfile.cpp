@@ -8,7 +8,6 @@
 */
 xui_create_explain(onity_propfile)( const std::wstring& full )
 : xui_proproot()
-, m_modify(false)
 , m_fullname(full)
 {
 	m_basekind = new xui_propkind(this, onity_filedata::get_safe(full), "File", onity_filectrl::create, onity_resource::icon_file, true);
@@ -28,20 +27,12 @@ xui_method_explain(onity_propfile, get_full,	const std::wstring&	)( void ) const
 */
 xui_method_explain(onity_propfile, was_modify,	bool				)( void )
 {
-	return m_modify;
-}
-xui_method_explain(onity_propfile, set_modify,	void				)( bool flag )
-{
-	m_modify = true;
+	return false;
 }
 xui_method_explain(onity_propfile, load,		void				)( void )
-{
-	m_modify = false;
-}
+{}
 xui_method_explain(onity_propfile, save,		void				)( void )
-{
-	m_modify = false;
-}
+{}
 xui_method_explain(onity_propfile, ntf_rename,	void				)( const std::wstring& last, const std::wstring& curr )
 {
 	int npos = m_fullname.find(last);

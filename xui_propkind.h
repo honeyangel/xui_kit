@@ -13,7 +13,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propkind( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow = true, const xui_family& textfont = xui_family(12), const xui_family_render& textdraw = xui_family_render::default);
+	xui_propkind( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow = true, bool tail = false, const xui_family& textfont = xui_family(12), const xui_family_render& textdraw = xui_family_render::default);
 
 	/*
 	//destructor
@@ -26,6 +26,7 @@ public:
 	xui_proproot*					get_root	( void ) const;
 	xui_kind_newctrl				get_func	( void ) const;
 	const std::string&				get_type	( void ) const;
+	bool							was_tail	( void ) const;
 	bool							was_headshow( void ) const;
 	const xui_family&				get_textfont( void ) const;
 	const xui_family_render&		get_textdraw( void ) const;
@@ -66,6 +67,7 @@ protected:
 	std::wstring					m_name;
 	xui_bitmap*						m_icon;
 	bool							m_flag;
+	bool							m_tail;
 	bool							m_headshow;
 	xui_family						m_textfont;
 	xui_family_render				m_textdraw;

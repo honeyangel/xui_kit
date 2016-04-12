@@ -13,8 +13,8 @@
 /*
 //constructor
 */
-xui_create_explain(onity_proptransition)( NP2DSTransition* transition )
-: xui_proproot()
+xui_create_explain(onity_proptransition)( onity_propfile* propfile, NP2DSTransition* transition )
+: onity_propasset(propfile)
 , m_transition(transition)
 {
 	std::string text;

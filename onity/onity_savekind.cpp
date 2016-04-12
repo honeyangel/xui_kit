@@ -6,7 +6,7 @@
 //constructor
 */
 xui_create_explain(onity_savekind)( xui_proproot* root, onity_propfile* propfile )
-: xui_propkind(root, L"", "Save&Load", onity_savectrl::create, NULL, true, false)
+: xui_propkind(root, L"", "Save&Load", onity_savectrl::create, NULL, true, false, true)
 , m_propfile(propfile)
 {}
 

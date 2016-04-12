@@ -1,18 +1,18 @@
 #ifndef __onity_proptransition_h__
 #define __onity_proptransition_h__
 
-#include "xui_proproot.h"
 #include "xui_kindctrl.h"
+#include "onity_propasset.h"
 
 class NP2DSParam;
 class NP2DSTransition;
-class onity_proptransition : public xui_proproot
+class onity_proptransition : public onity_propasset
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_proptransition( NP2DSTransition* transition );
+	onity_proptransition( onity_propfile* propfile, NP2DSTransition* transition );
 
 	/*
 	//method

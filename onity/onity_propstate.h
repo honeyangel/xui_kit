@@ -13,7 +13,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_propstate( onity_state* statectrl );
+	onity_propstate( onity_propfile* propfile, onity_state* statectrl );
 
 	/*
 	//destructor

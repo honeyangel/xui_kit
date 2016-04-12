@@ -19,8 +19,8 @@ public:
 	/*
 	//method
 	*/
-	void						set_editfile		( NP2DSStateCtrl* editfile );
-	void						add_paramctrl		( NP2DSParam* param );
+	void						set_editprop		( onity_propcontroller* editprop );
+	void						add_paramctrl		( NP2DSParam* param, bool reqfocus );
 	void						del_paramctrl		( NP2DSParam* param );
 	void						del_paramctrlall	( void );
 
@@ -51,7 +51,7 @@ protected:
 	xui_menuitem*				m_int;
 	xui_menuitem*				m_float;
 	std::vector<onity_param*>	m_paramctrl;
-	NP2DSStateCtrl*				m_editfile;
+	onity_propcontroller*		m_editprop;
 };
 
 #endif//__onity_paramview_h__
