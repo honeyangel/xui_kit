@@ -157,22 +157,6 @@ xui_method_explain(onity_console, del_logall,			void)( void )
 }
 
 /*
-//callback
-*/
-//DEBUG
-xui_method_explain(onity_console, on_load,				void)( xui_method_args& args )
-{
-	xui_dockpage::on_load(args);
-	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
-	add_log(LOGTYPE_MESSAGE,	L"Asset/Script/func.lua",			L"print lua function");
-	add_log(LOGTYPE_ERROR,		L"Asset/Script/main.lua",			L"lua compiler");
-	add_log(LOGTYPE_WARNING,	L"Asset/Script/func.lua",			L"function idle has not call");
-	add_log(LOGTYPE_ERROR,		L"Asset/Particle/fire.particle",	L"texture not find");
-	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
-	add_log(LOGTYPE_MESSAGE,	L"Asset/Action/pet.npModule",		L"module has not texture");
-}
-
-/*
 //event
 */
 xui_method_explain(onity_console, on_toggletextchanged, void)( xui_component* sender, xui_method_args& args )

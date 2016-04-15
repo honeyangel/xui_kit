@@ -873,7 +873,7 @@ xui_method_explain(xui_convas, draw_circle,			void					)( const xui_vector<s32>&
 	rt.bx = center.x + radius;
 	rt.ay = center.y - radius;
 	rt.by = center.y + radius;
-	draw_arc(rt, color, start, sweep, 1);
+	draw_arc(rt, color, start, sweep, 1, true);
 }
 
 xui_method_explain(xui_convas, fill_circle,			void					)( const xui_vector<s32>&	center, 
@@ -897,13 +897,14 @@ xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt
 																			   const xui_colour&		color,
 																			   s32						start,
 																			   s32						sweep,
-																			   s32						precision )
+																			   s32						precision,
+																			   bool						smooth )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
 
-
-	glDisable(GL_LINE_SMOOTH);
+	if (smooth)		glEnable (GL_LINE_SMOOTH);
+	else			glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_LINE_STRIP);
 	glColor4fv(color.value);

@@ -14,6 +14,7 @@ public:
 	/*
 	//override
 	*/
+	virtual xui_proproot*		new_subprop		( u32 id );
 	virtual NP2DSAssetFile*		get_resfile		( void );
 };
 

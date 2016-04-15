@@ -49,13 +49,52 @@ xui_create_explain(onity_prop2dsres)( const std::wstring& full )
 }
 
 /*
+//destructor
+*/
+xui_delete_explain(onity_prop2dsres)( void )
+{
+	for (u32 i = 0; i < m_subprop.size(); ++i)
+		delete m_subprop[i];
+}
+
+/*
 //method
 */
-xui_method_explain(onity_prop2dsres, get_resfile,	NP2DSAssetFile*	)( void )
+xui_method_explain(onity_prop2dsres, get_subprop,	std::vector<xui_proproot*>	)( void )
+{
+	if (m_subprop.empty())
+	{
+		NP2DSAssetFile* file = get_resfile();
+		if (file)
+		{
+			for (npu16 i = 0; i < file->GetAssetCount(); ++i)
+			{
+				npu32 id = file->GetAssetID(i);
+				xui_proproot* prop = new_subprop(id);
+				m_subprop.push_back(prop);
+			}
+		}
+	}
+
+	return m_subprop;
+}
+xui_method_explain(onity_prop2dsres, new_subprop,	xui_proproot*				)( u32 id )
 {
 	return NULL;
 }
-xui_method_explain(onity_prop2dsres, ntf_rename,	void			)( const std::wstring& last, const std::wstring& curr )
+xui_method_explain(onity_prop2dsres, get_resfile,	NP2DSAssetFile*				)( void )
+{
+	return NULL;
+}
+xui_method_explain(onity_prop2dsres, was_modify,	bool						)( void )
+{
+	NP2DSAssetFile* file = get_resfile();
+	if (file)
+		return file->WasNeedSave();
+
+	return false;
+}
+xui_method_explain(onity_prop2dsres, ntf_rename,	void						)( const std::wstring& last, const std::wstring& curr )
 {
 	std::string  lastfull = xui_global::unicode_to_ascii(m_fullname);
 	std::string  lastpath = NPFileNameHelper::PathName(lastfull);
@@ -91,11 +130,21 @@ xui_method_explain(onity_prop2dsres, ntf_rename,	void			)( const std::wstring& l
 	if (lastfile != currfile)
 		xui_global::del_file(last+L".meta");
 }
+xui_method_explain(onity_prop2dsres, load,			void						)( void )
+{
+	//TODO
+}
+xui_method_explain(onity_prop2dsres, save,			void						)( void )
+{
+	NP2DSAssetFile* file = get_resfile();
+	if (file)
+		file->SaveXml(xui_global::unicode_to_ascii(m_fullname));
+}
 
 /*
 //static
 */
-xui_method_explain(onity_prop2dsres, load_meta,		void			)( u08 type, const std::string& fullname )
+xui_method_explain(onity_prop2dsres, load_meta,		void						)( u08 type, const std::string& fullname )
 {
 	NPFile file;
 	if (file.Open(fullname+".meta", NPFile::OM_READ))
@@ -141,7 +190,7 @@ xui_method_explain(onity_prop2dsres, load_meta,		void			)( u08 type, const std::
 		}
 	}
 }
-xui_method_explain(onity_prop2dsres, save_meta,		void			)( u08 type, u32 id )
+xui_method_explain(onity_prop2dsres, save_meta,		void						)( u08 type, u32 id )
 {
 	NP2DSAssetFileMgr* file_mgr = NULL;
 	switch (type)
@@ -173,7 +222,7 @@ xui_method_explain(onity_prop2dsres, save_meta,		void			)( u08 type, u32 id )
 /*
 //static
 */
-xui_method_explain(onity_prop2dsres, get_freetype,	s32				)( void* userptr )
+xui_method_explain(onity_prop2dsres, get_freetype,	s32							)( void* userptr )
 {
 	onity_prop2dsres* prop = (onity_prop2dsres*)userptr;
 	NP2DSAssetFile*   file = prop->get_resfile();
@@ -199,7 +248,7 @@ xui_method_explain(onity_prop2dsres, get_freetype,	s32				)( void* userptr )
 
 	return -1;
 }
-xui_method_explain(onity_prop2dsres, set_freetype,	void			)( void* userptr, s32 value )
+xui_method_explain(onity_prop2dsres, set_freetype,	void						)( void* userptr, s32 value )
 {
 	onity_prop2dsres* prop = (onity_prop2dsres*)userptr;
 	NP2DSAssetFile*   file = prop->get_resfile();
@@ -214,7 +263,7 @@ xui_method_explain(onity_prop2dsres, set_freetype,	void			)( void* userptr, s32 
 		}
 	}
 }
-xui_method_explain(onity_prop2dsres, get_loadtype,	bool			)( void* userptr )
+xui_method_explain(onity_prop2dsres, get_loadtype,	bool						)( void* userptr )
 {
 	onity_prop2dsres* prop = (onity_prop2dsres*)userptr;
 	NP2DSAssetFile*   file = prop->get_resfile();
@@ -223,7 +272,7 @@ xui_method_explain(onity_prop2dsres, get_loadtype,	bool			)( void* userptr )
 
 	return false;
 }
-xui_method_explain(onity_prop2dsres, set_loadtype,	void			)( void* userptr, bool value )
+xui_method_explain(onity_prop2dsres, set_loadtype,	void						)( void* userptr, bool value )
 {
 	onity_prop2dsres* prop = (onity_prop2dsres*)userptr;
 	NP2DSAssetFile*   file = prop->get_resfile();

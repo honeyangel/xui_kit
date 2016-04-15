@@ -18,18 +18,15 @@
 //constructor
 */
 xui_create_explain(onity_filedata)( const std::wstring& full, xui_proproot* prop )
-: xui_treedata(full, onity_resource::icon_file)
+: onity_treedata(prop)
 {
-	m_prop = prop;
+	m_text = full;
+	m_icon = onity_resource::icon_file;
 }
 
 /*
 //method
 */
-xui_method_explain(onity_filedata, get_prop,		xui_proproot*		)( void )
-{
-	return m_prop;
-}
 xui_method_explain(onity_filedata, get_path,		std::wstring		)( void ) const
 {
 	return get_path(m_text);
@@ -118,11 +115,11 @@ xui_method_explain(onity_filedata, get_file,		std::wstring		)( const std::wstrin
 xui_method_explain(onity_filedata, get_suff,		std::wstring		)( const std::wstring& full )
 {
 	std::wstring temp = full;
-	int index  = temp.find_last_of('.');
-	if (index == -1)
+	int npos  = temp.find_last_of('.');
+	if (npos == -1)
 		temp = L"";
 	else
-		temp.erase(0, index);
+		temp.erase(0, npos);
 
 	return temp;
 }

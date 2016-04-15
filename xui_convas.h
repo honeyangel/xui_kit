@@ -186,7 +186,8 @@ public:
 												  const xui_colour&			color,
 												  s32						start, 
 												  s32						sweep,
-												  s32						precision );
+												  s32						precision,
+												  bool						smooth = false );
 
 	void					fill_arc			( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color,

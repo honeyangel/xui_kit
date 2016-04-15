@@ -12,10 +12,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="onity_animator.h" />
+    <ClInclude Include="onity_2dsassetdata.h" />
     <ClInclude Include="onity_condition.h" />
     <ClInclude Include="onity_console.h" />
     <ClInclude Include="onity_filectrl.h" />
     <ClInclude Include="onity_filedata.h" />
+    <ClInclude Include="onity_fileview.h" />
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
@@ -25,9 +27,12 @@
     <ClInclude Include="onity_pathctrl.h" />
     <ClInclude Include="onity_pathdata.h" />
     <ClInclude Include="onity_project.h" />
+    <ClInclude Include="onity_prop2dsasset.h" />
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
+    <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propasset.h" />
+    <ClInclude Include="onity_propframe.h" />
     <ClInclude Include="onity_savectrl.h" />
     <ClInclude Include="onity_propcontroller.h" />
     <ClInclude Include="onity_propctrl_condition.h" />
@@ -43,16 +48,20 @@
     <ClInclude Include="onity_savekind.h" />
     <ClInclude Include="onity_state.h" />
     <ClInclude Include="onity_stateview.h" />
+    <ClInclude Include="onity_tileview.h" />
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
+    <ClInclude Include="onity_treedata.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="onity_animator.cpp" />
+    <ClCompile Include="onity_2dsassetdata.cpp" />
     <ClCompile Include="onity_condition.cpp" />
     <ClCompile Include="onity_console.cpp" />
     <ClCompile Include="onity_filectrl.cpp" />
     <ClCompile Include="onity_filedata.cpp" />
+    <ClCompile Include="onity_fileview.cpp" />
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
@@ -62,9 +71,12 @@
     <ClCompile Include="onity_pathctrl.cpp" />
     <ClCompile Include="onity_pathdata.cpp" />
     <ClCompile Include="onity_project.cpp" />
+    <ClCompile Include="onity_prop2dsasset.cpp" />
     <ClCompile Include="onity_prop2dsres.cpp" />
     <ClCompile Include="onity_propaction.cpp" />
+    <ClCompile Include="onity_propactor.cpp" />
     <ClCompile Include="onity_propasset.cpp" />
+    <ClCompile Include="onity_propframe.cpp" />
     <ClCompile Include="onity_savectrl.cpp" />
     <ClCompile Include="onity_propcontroller.cpp" />
     <ClCompile Include="onity_propctrl_condition.cpp" />
@@ -80,8 +92,10 @@
     <ClCompile Include="onity_savekind.cpp" />
     <ClCompile Include="onity_state.cpp" />
     <ClCompile Include="onity_stateview.cpp" />
+    <ClCompile Include="onity_tileview.cpp" />
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
+    <ClCompile Include="onity_treedata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\engine\build\Win32\NPEngine_VC10.vcxproj">

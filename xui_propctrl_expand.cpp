@@ -117,6 +117,17 @@ xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_arg
 		}
 	}
 
+	bool plusvisible = false;
+	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+	{
+		if (m_propctrlvec[i]->was_visible())
+		{
+			plusvisible = true;
+			break;
+		}
+	}
+	m_propplus->set_visible(plusvisible);
+
 	if (get_rendersz() != sz)
 	{
 		set_rendersz(sz);
@@ -275,8 +286,8 @@ xui_create_explain(xui_propctrl_expand_bool)( xui_propdata* propdata )
 	xui_control* textctrl = editbool->get_editctrl();
 	namectrl->set_parent(this);
 	textctrl->set_parent(this);
-	m_widgetvec.push_back(namectrl);
-	m_widgetvec.push_back(textctrl);
+	m_widgetvec.insert(m_widgetvec.begin(), namectrl);
+	m_widgetvec.insert(m_widgetvec.begin(), textctrl);
 
 	m_propedit = editbool;
 	m_namectrl->set_visible(false);
@@ -378,8 +389,8 @@ xui_create_explain(xui_propctrl_expand_enum)( xui_propdata* propdata )
 	xui_control* textctrl = editenum->get_editctrl();
 	namectrl->set_parent(this);
 	textctrl->set_parent(this);
-	m_widgetvec.push_back(namectrl);
-	m_widgetvec.push_back(textctrl);
+	m_widgetvec.insert(m_widgetvec.begin(), namectrl);
+	m_widgetvec.insert(m_widgetvec.begin(), textctrl);
 
 	m_propedit = editenum;
 	m_namectrl->set_visible(false);

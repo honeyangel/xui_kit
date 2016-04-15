@@ -4,6 +4,7 @@
 
 #include "xui_global.h"
 #include "onity_filedata.h"
+#include "onity_propframe.h"
 #include "onity_propsprite.h"
 
 /*
@@ -16,7 +17,7 @@ xui_create_explain(onity_propsprite)( const std::wstring& full )
 /*
 //override
 */
-xui_method_explain(onity_propsprite, get_resfile, NP2DSAssetFile*)( void )
+xui_method_explain(onity_propsprite, get_resfile, NP2DSAssetFile*	)( void )
 {
 	if (m_resfile == -1)
 	{
@@ -32,4 +33,8 @@ xui_method_explain(onity_propsprite, get_resfile, NP2DSAssetFile*)( void )
 	}
 
 	return NULL;
+}
+xui_method_explain(onity_propsprite, new_subprop, xui_proproot*		)( u32 id )
+{
+	return new onity_propframe(this, id);
 }

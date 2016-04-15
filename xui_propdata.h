@@ -472,7 +472,7 @@ public:
 		xui_propkind*								kind, 
 		const std::wstring&							name, 
 		xui_prop_newctrl							func, 
-		bool*										ptr, 
+		//bool*										ptr, 
 		const xui_propdata_vec&						subprop, 
 		get_func									userget,
 		set_func									userset,

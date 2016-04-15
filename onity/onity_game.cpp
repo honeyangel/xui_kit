@@ -106,6 +106,9 @@ xui_method_explain(onity_game, on_viewrenderself,	void)( xui_component* sender, 
 	xui_vector<s32> size = sender->get_rendersz();
 	NPRender::GetIns()->SetResolutionW(size.w);
 	NPRender::GetIns()->SetResolutionH(size.h);
+	NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
+	NP2DSRenderStep::GetIns()->SetEntryLocalT(NPVector3::Zero);
+	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	m3eFrameWorkRender();
 }
 xui_method_explain(onity_game, on_viewsetrendersz,	void)( xui_component* sender, xui_method_args&  args )

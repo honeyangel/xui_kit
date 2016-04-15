@@ -21,10 +21,20 @@ public:
 	onity_prop2dsres( const std::wstring& full );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_prop2dsres( void );
+
+	/*
 	//virtual
 	*/
+	std::vector<xui_proproot*>	get_subprop		( void );
 	virtual NP2DSAssetFile*		get_resfile		( void );
+	virtual xui_proproot*		new_subprop		( u32 id );
+	virtual bool				was_modify		( void );
 	virtual void				ntf_rename		( const std::wstring& last, const std::wstring& curr );
+	virtual void				load			( void );
+	virtual void				save			( void );
 
 	/*
 	//meta
@@ -46,6 +56,7 @@ protected:
 	*/
 	xui_propkind*				m_reskind;
 	u32							m_resfile;
+	std::vector<xui_proproot*>	m_subprop;
 };
 
 #endif//__onity_prop2dsres_h__

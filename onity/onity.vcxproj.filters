@@ -83,6 +83,27 @@
     <ClInclude Include="onity_propasset.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_tileview.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_fileview.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_prop2dsasset.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_2dsassetdata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_treedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propframe.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propactor.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -166,6 +187,27 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_propasset.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_tileview.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_fileview.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_prop2dsasset.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_2dsassetdata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_treedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propframe.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propactor.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>

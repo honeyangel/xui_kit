@@ -4,6 +4,7 @@
 
 #include "xui_global.h"
 #include "onity_filedata.h"
+#include "onity_propactor.h"
 #include "onity_propaction.h"
 
 /*
@@ -16,7 +17,11 @@ xui_create_explain(onity_propaction)( const std::wstring& full )
 /*
 //override
 */
-xui_method_explain(onity_propaction, get_resfile, NP2DSAssetFile*)( void )
+xui_method_explain(onity_propaction, new_subprop, xui_proproot*		)( u32 id )
+{
+	return new onity_propactor(this, id);
+}
+xui_method_explain(onity_propaction, get_resfile, NP2DSAssetFile*	)( void )
 {
 	if (m_resfile == -1)
 	{

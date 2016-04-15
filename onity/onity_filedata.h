@@ -1,9 +1,9 @@
 #ifndef __onity_filedata_h__
 #define __onity_filedata_h__
 
-#include "xui_treedata.h"
+#include "onity_treedata.h"
 
-class onity_filedata : public xui_treedata
+class onity_filedata : public onity_treedata
 {
 public:
 	/*
@@ -14,7 +14,6 @@ public:
 	/*
 	//method
 	*/
-	xui_proproot*			get_prop		( void );
 	std::wstring			get_path		( void ) const;
 	std::wstring			get_file		( void ) const;
 	std::wstring			get_suff		( void ) const;
@@ -40,12 +39,6 @@ public:
 	static std::wstring		get_suff		( const std::wstring& full );
 	static std::wstring		get_safe		( const std::wstring& full );
 	static xui_proproot*	new_fileprop	( const std::wstring& full );
-
-protected:
-	/*
-	//member
-	*/
-	xui_proproot*			m_prop;
 };
 
 #endif//__onity_filedata_h__

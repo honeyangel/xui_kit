@@ -56,9 +56,7 @@ xui_method_explain(xui_textbox, ini_textbox,		void					)( const std::wstring& te
 {
 	m_text = text;
 	non_selecttext();
-
-	if (m_readonly == false)
-		set_caretindex(m_text.length());
+	set_caretindex(0);
 }
 
 /*

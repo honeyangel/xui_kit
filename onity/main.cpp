@@ -280,7 +280,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 
-	xui_global::add_fontfile("arial.ttf");
+	xui_global::add_fontfile("DEJA VU SANS MONO.TTF");
 	xui_render_window* render_window = new xui_render_window(gHWND);
 	xui_static_inscall(xui_convas,		init)();
 	xui_static_inscall(xui_timermgr,	init)();

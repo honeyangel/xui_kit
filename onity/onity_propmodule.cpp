@@ -14,6 +14,7 @@
 #include "xui_propctrl_vector.h"
 #include "onity_resource.h"
 #include "onity_filedata.h"
+#include "onity_propimage.h"
 #include "onity_propmodule.h"
 
 /*
@@ -42,14 +43,6 @@ xui_create_explain(onity_propmodule)( const std::wstring& full )
 		get_texfile,
 		set_texfile,
 		this));
-	m_texkind->add_propdata(new xui_propdata_vector(
-		m_texkind,
-		L"Texture Size",
-		xui_propctrl_vector::create,
-		get_texsize,
-		NULL,
-		this, 
-		NT_UNSIGNEDINT));
 	m_texkind->add_propdata(new xui_propdata_bool(
 		m_texkind,
 		L"Texture Split",
@@ -65,6 +58,22 @@ xui_create_explain(onity_propmodule)( const std::wstring& full )
 		get_texformat,
 		set_texformat,
 		this));
+	m_texkind->add_propdata(new xui_propdata_number_func(
+		m_texkind,
+		L"Texture Width",
+		xui_propctrl_number::create,
+		get_texwidth,
+		NULL,
+		this, 
+		NT_UNSIGNEDINT));
+	m_texkind->add_propdata(new xui_propdata_number_func(
+		m_texkind,
+		L"Texture Height",
+		xui_propctrl_number::create,
+		get_texheight,
+		NULL,
+		this, 
+		NT_UNSIGNEDINT));
 
 	add_propkind(m_texkind);
 }
@@ -72,6 +81,10 @@ xui_create_explain(onity_propmodule)( const std::wstring& full )
 /*
 //override
 */
+xui_method_explain(onity_propmodule, new_subprop,	xui_proproot*	)( u32 id )
+{
+	return new onity_propimage(this, id);
+}
 xui_method_explain(onity_propmodule, get_resfile,	NP2DSAssetFile*	)( void )
 {
 	if (m_resfile == -1)
@@ -110,7 +123,7 @@ xui_method_explain(onity_propmodule, get_texname,	std::wstring	)( xui_propdata* 
 
 	return L"None";
 }
-xui_method_explain(onity_propmodule, get_texsize,	xui_vector<f64>	)( void* userptr )
+xui_method_explain(onity_propmodule, get_texwidth,	f64				)( void* userptr )
 {
 	onity_propmodule* prop = (onity_propmodule*)userptr;
 	NP2DSImageFile*   file = (NP2DSImageFile*)prop->get_resfile();
@@ -118,10 +131,23 @@ xui_method_explain(onity_propmodule, get_texsize,	xui_vector<f64>	)( void* userp
 	{
 		NPTexture* texture = file->GetSCTex();
 		if (texture)
-			return xui_vector<f64>((f64)texture->GetWidth(), (f64)texture->GetHeight());
+			return (f64)texture->GetPixelWidth();
 	}
 
-	return xui_vector<f64>(0);
+	return 0;
+}
+xui_method_explain(onity_propmodule, get_texheight,	f64				)( void* userptr )
+{
+	onity_propmodule* prop = (onity_propmodule*)userptr;
+	NP2DSImageFile*   file = (NP2DSImageFile*)prop->get_resfile();
+	if (file)
+	{
+		NPTexture* texture = file->GetSCTex();
+		if (texture)
+			return (f64)texture->GetPixelHeight();
+	}
+
+	return 0;
 }
 xui_method_explain(onity_propmodule, get_texfile,	void*			)( void* userptr )
 {

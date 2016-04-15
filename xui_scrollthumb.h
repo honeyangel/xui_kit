@@ -17,12 +17,14 @@ protected:
 	/*
 	//callback
 	*/
+	virtual void	on_mousedown	( xui_method_mouse& args );
 	virtual void	on_mousemove	( xui_method_mouse& args );
 	virtual void	on_mouserise	( xui_method_mouse& args );
 
 	/*
 	//member
 	*/
+	xui_vector<s32>	m_mouserela;
 	u08				m_flowstyle;
 };
 

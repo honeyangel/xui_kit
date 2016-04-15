@@ -15,6 +15,7 @@ public:
 	//override
 	*/
 	virtual NP2DSAssetFile*		get_resfile		( void );
+	virtual xui_proproot*		new_subprop		( u32 id );
 
 protected:
 	/*
@@ -22,7 +23,8 @@ protected:
 	*/
 	static xui_bitmap*			get_texicon		( xui_propdata* propdata );
 	static std::wstring			get_texname		( xui_propdata* propdata );
-	static xui_vector<f64>		get_texsize		( void* userptr );
+	static f64					get_texwidth	( void* userptr );
+	static f64					get_texheight	( void* userptr );
 	static void*				get_texfile		( void* userptr );
 	static void					set_texfile		( void* userptr, void* value );
 	static bool					get_texsplit	( void* userptr );

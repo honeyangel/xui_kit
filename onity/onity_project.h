@@ -3,6 +3,7 @@
 
 #include "xui_dockpage.h"
 
+class onity_fileview;
 class onity_project : public xui_dockpage
 {
 	xui_declare_rtti
@@ -34,8 +35,9 @@ protected:
 	void			on_fillperform		( xui_component* sender, xui_method_args&  args );
 	void			on_fillrenderelse	( xui_component* sender, xui_method_args&  args );
 	void			on_sizectrlmousemove( xui_component* sender, xui_method_mouse& args );
-	void			on_lineviewdclick	( xui_component* sender, xui_method_mouse& args );
-	void			on_treeviewselection( xui_component* sender, xui_method_args&  args );
+	void			on_pathviewselection( xui_component* sender, xui_method_args&  args );
+	void			on_fileviewselection( xui_component* sender, xui_method_args&  args );
+	void			on_fileviewdoubleclk( xui_component* sender, xui_method_mouse& args );
 	void			on_folderclick		( xui_component* sender, xui_method_args&  args );
 	void			on_controllerclick	( xui_component* sender, xui_method_args&  args );
 	void			on_pathitemclick	( xui_component* sender, xui_method_args&  args );
@@ -48,8 +50,6 @@ protected:
 	*/
 	void			refresh_lineview	( void );
 	void			refresh_pathpane	( void );
-	//void			refresh_pathmeta	( u08 type, const std::string& lastpath, const std::string& currpath );
-	//void			refresh_filemeta	( u08 type, const std::string& lastfull, const std::string& currfull );
 
 	/*
 	//member
@@ -64,8 +64,7 @@ protected:
 	xui_panel*		m_fill;
 	xui_control*	m_sizectrl;
 	xui_treeview*	m_pathview;
-	xui_treeview*	m_lineview;
-	xui_panel*		m_drawview;
+	onity_fileview*	m_fileview;
 	xui_panel*		m_pathpane;
 	xui_panel*		m_toolpane;
 	xui_slider*		m_slider;

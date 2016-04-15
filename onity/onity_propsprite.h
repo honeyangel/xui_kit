@@ -15,6 +15,7 @@ public:
 	//override
 	*/
 	virtual NP2DSAssetFile*		get_resfile		( void );
+	virtual xui_proproot*		new_subprop		( u32 id );
 };
 
 #endif//__onity_propsprite_h__
