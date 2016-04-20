@@ -23,9 +23,11 @@ public:
 	/*
 	//method
 	*/
+	const xui_proproot_vec&				get_proptransitions	( void ) const;
 	onity_proptransition*				get_proptransition	( NP2DSTransition* transition );
 	void								add_transition		( NP2DSTransition* transition );
 	void								del_transition		( NP2DSTransition* transition );
+	onity_state*						get_statectrl		( void );
 
 	/*
 	//notify
@@ -44,6 +46,8 @@ protected:
 	static void							set_actor			( void* userptr, void* value );
 	static xui_bitmap*					get_actoricon		( xui_propdata* propdata );
 	static std::wstring					get_actorname		( xui_propdata* propdata );
+	static xui_proproot_vec				get_transitions		( void* userptr );
+	static void							del_transition		( void* userptr, xui_proproot* root );
 
 	/*
 	//event
@@ -58,7 +62,7 @@ protected:
 	xui_propdata*						m_retarget;
 	xui_propdata*						m_actor;
 	xui_propdata*						m_transition;
-	std::vector<onity_proptransition*>	m_proptransition;
+	std::vector<xui_proproot*>			m_proptransition;
 };
 
 #endif//__onity_propstate_h__

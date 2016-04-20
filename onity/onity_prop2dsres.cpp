@@ -13,6 +13,7 @@
 #include "xui_propctrl.h"
 #include "onity_console.h"
 #include "onity_mainform.h"
+#include "onity_project.h"
 #include "onity_filedata.h"
 #include "onity_resource.h"
 #include "onity_prop2dsres.h"
@@ -132,7 +133,34 @@ xui_method_explain(onity_prop2dsres, ntf_rename,	void						)( const std::wstring
 }
 xui_method_explain(onity_prop2dsres, load,			void						)( void )
 {
-	//TODO
+	if (m_resfile != -1)
+	{
+		std::wstring suffname = onity_filedata::get_suff(m_fullname);
+		u08 type;
+		NP2DSAssetFileMgr* file_mgr;
+		if		(suffname == L".npModule") type = META_MODULE;
+		else if (suffname == L".npSprite") type = META_SPRITE;
+		else if (suffname == L".npAction") type = META_ACTION;
+		else
+		{}
+
+		switch (type)
+		{
+		case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
+		case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
+		case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
+		}
+
+		file_mgr->ResFile(m_resfile);
+
+		for (u32 i = 0; i < m_subprop.size(); ++i)
+			delete m_subprop[i];
+
+		m_subprop.clear();
+
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->ntf_load(this);
+	}
 }
 xui_method_explain(onity_prop2dsres, save,			void						)( void )
 {

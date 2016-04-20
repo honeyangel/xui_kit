@@ -32,11 +32,11 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_widgetvec.push_back(m_iconctrl);
 
 	//name
-	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 24));
+	m_namectrl	= new xui_textbox (xui_vector<s32>(128, 20));
 	m_namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrlnonfocus);
 	m_namectrl->xm_textenter	+= new xui_method_member<xui_method_args, xui_kindctrl>(this, &xui_kindctrl::on_namectrltextenter);
 	xui_method_ptrcall(m_namectrl, set_parent		)(this);
-	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 2, 2));
+	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 0, 2, 0));
 	xui_method_ptrcall(m_namectrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_namectrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_namectrl, ini_component	)(true, propkind->was_headshow());

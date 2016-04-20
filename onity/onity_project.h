@@ -4,6 +4,7 @@
 #include "xui_dockpage.h"
 
 class onity_fileview;
+class onity_propfile;
 class onity_project : public xui_dockpage
 {
 	xui_declare_rtti
@@ -22,6 +23,7 @@ public:
 	/*
 	//notify
 	*/
+	void			ntf_load			( onity_propfile* propfile );
 	void			ntf_rename			( const std::wstring& last, const std::wstring& curr );
 
 protected:

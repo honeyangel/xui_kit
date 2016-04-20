@@ -35,6 +35,7 @@ xui_create_explain(onity_tileview)( void )
 	m_drawview = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 1024));
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,  onity_tileview>(this, &onity_tileview::on_drawviewinvalid);
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,  onity_tileview>(this, &onity_tileview::on_drawviewrenderself);
+	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd, onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
 	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousedown);
 	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousewheel);
 	xui_method_ptrcall(m_drawview, xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousedclick);
@@ -66,12 +67,20 @@ xui_method_explain(onity_tileview, get_drawview,			onity_renderview*	)( void )
 {
 	return m_drawview;
 }
-xui_method_explain(onity_tileview, set_viewfile,			void				)( onity_propfile* propfile )
+xui_method_explain(onity_tileview, get_viewroll,			xui_scroll*			)( void )
 {
-	if (m_viewfile != propfile)
+	return m_viewroll;
+}
+xui_method_explain(onity_tileview, get_viewfile,			xui_treenode*		)( void )
+{
+	return m_viewfile;
+}
+xui_method_explain(onity_tileview, set_viewfile,			void				)( xui_treenode* viewfile )
+{
+	if (m_viewfile != viewfile)
 	{
-		m_viewfile  = propfile;
-		m_drawview->invalid();
+		m_viewfile  = viewfile;
+		m_drawview->refresh();
 	}
 }
 xui_method_explain(onity_tileview, set_tilesize,			void				)( s32 size )
@@ -79,7 +88,7 @@ xui_method_explain(onity_tileview, set_tilesize,			void				)( s32 size )
 	if (m_tilesize != size)
 	{
 		m_tilesize  = size;
-		m_drawview->invalid();
+		m_drawview->refresh();
 	}
 }
 xui_method_explain(onity_tileview, get_tileinfo,			void				)( s32& s, s32& c, s32& g, s32& w, s32& h )
@@ -91,9 +100,73 @@ xui_method_explain(onity_tileview, get_tileinfo,			void				)( s32& s, s32& c, s3
 	w = s + g;
 	h = m_tilesize + name_size + vert_grap;
 }
+xui_method_explain(onity_tileview, get_tilenode,			xui_treenode*		)( const xui_vector<s32>& mouse, xui_rect2d<s32>& tilert )
+{
+	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
+	xui_vector<s32> pt = m_drawview->get_renderpt(mouse);
+	s32 s, c, g, w, h;
+	get_tileinfo(s, c, g, w, h);
+	s32 ic = (pt.x-rt.ax)							/ w;
+	s32 ir = (pt.y-rt.ay+m_viewroll->get_value())	/ h;
+	u32 i  = (u32)(ir*c + ic);
+
+	tilert.ax = rt.ax + ic*w;
+	tilert.ay = rt.ay + ir*h - m_viewroll->get_value();
+	tilert.set_w(s);
+	tilert.set_h(m_tilesize+name_size);
+
+	xui_treeview* lineview = get_lineview();
+	if (lineview)
+	{
+		std::vector<xui_treenode*> nodes;
+		if (m_viewfile)
+		{
+			nodes = m_viewfile->get_leafnodearray();
+		}
+		else
+		{
+			nodes = lineview->get_entirenode(false);
+		}
+
+		if (i < nodes.size() && tilert.was_inside(pt))
+			return nodes[i];
+	}
+
+	return NULL;
+}
 xui_method_explain(onity_tileview, set_tilevisible,			void				)( xui_treenode* node )
 {
+	xui_treeview* lineview = get_lineview();
+	if (lineview)
+	{
+		s32 s, c, g, w, h;
+		get_tileinfo(s, c, g, w, h);
 
+		std::vector<xui_treenode*> nodes;
+		if (m_viewfile)
+		{
+			nodes = m_viewfile->get_leafnodearray();
+		}
+		else
+		{
+			nodes = lineview->get_entirenode(false);
+		}
+
+		for (u32 i = 0; i < nodes.size(); ++i)
+		{
+			if (nodes[i] == node)
+			{
+				s32 maxvalue = (i/c) * h;
+				s32 minvalue = maxvalue - m_drawview->get_renderrtins().get_sz().h + h;
+				if (m_viewroll->get_value() < minvalue)
+					m_viewroll->set_value(minvalue);
+				if (m_viewroll->get_value() > maxvalue)
+					m_viewroll->set_value(maxvalue);
+
+				break;
+			}
+		}
+	}
 }
 
 /*
@@ -107,7 +180,7 @@ xui_method_explain(onity_tileview, on_drawviewinvalid,		void				)( xui_component
 		u32 count = 0;
 		if (m_viewfile)
 		{
-
+			count = m_viewfile->get_leafnodecount();
 		}
 		else
 		{
@@ -150,9 +223,21 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,	void				)( xui_compone
 		s32 ic = 0;
 		s32 ir = 0;
 		xui_rect2d<s32> tilert;
-		for (u32 i = 0; i < lineview->get_upmostnodecount(); ++i)
+
+		std::vector<xui_treenode*> nodes;
+		if (m_viewfile)
 		{
-			xui_treenode* node = lineview->get_upmostnode(i);
+			nodes = m_viewfile->get_leafnodearray();
+			draw_background(0, 0, c, g, w, h, nodes.size());
+		}
+		else
+		{
+			nodes = lineview->get_upmostnodearray();
+		}
+
+		for (u32 i = 0; i < nodes.size(); ++i)
+		{
+			xui_treenode* node = nodes[i];
 			if (rt.ay + ir*h - m_viewroll->get_value() > rt.by)
 				break;
 
@@ -162,8 +247,9 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,	void				)( xui_compone
 
 			if (node->was_expanded())
 			{
-				draw_background(ic, ir, c, g, w, h, node);
-				for (u32 isub = 0; isub < node->get_leafnodecount(); ++isub)
+				u32 leafcount = node->get_leafnodecount();
+				draw_background(ic, ir, c, g, w, h, leafcount);
+				for (u32 isub = 0; isub < leafcount; ++isub)
 				{
 					xui_treenode* subnode = node->get_leafnode(isub);
 					if (rt.ay + ir*h - m_viewroll->get_value() > rt.by)
@@ -185,42 +271,34 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,	void				)( xui_compone
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
+xui_method_explain(onity_tileview, on_drawviewkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
+{
+	if (args.kcode == KEY_BACK)
+	{
+		set_viewfile(NULL);
+
+		xui_treeview* lineview = get_lineview();
+		if (lineview)
+		{
+			std::vector<xui_treenode*> nodes = lineview->get_selectednode();
+			if (nodes.size() > 0)
+			{
+				set_tilevisible(nodes.front());
+			}
+		}
+	}
+}
 xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (args.mouse == MB_L)
 	{
-		xui_rect2d<s32> rt = m_drawview->get_renderrtins();
+		xui_rect2d<s32> rt;
 		xui_vector<s32> pt = m_drawview->get_renderpt(args.point);
-		s32 s, c, g, w, h;
-		get_tileinfo(s, c, g, w, h);
-		s32 ic = (pt.x-rt.ax)							/ w;
-		s32 ir = (pt.y-rt.ay+m_viewroll->get_value())	/ h;
-		u32 i  = (u32)(ir*c + ic);
-
-		xui_rect2d<s32> tilert;
-		tilert.ax = rt.ax + ic*w;
-		tilert.ay = rt.ay + ir*h - m_viewroll->get_value();
-		tilert.set_w(s);
-		tilert.set_h(m_tilesize+name_size);
-
-		xui_treeview* lineview = get_lineview();
-		if (lineview == NULL)
-			return;
-
-		std::vector<xui_treenode*> nodes;
-		if (m_viewfile)
-		{
-
-		}
-		else
-		{
-			nodes = lineview->get_entirenode(false);
-		}
-
-		if (i < nodes.size() && tilert.was_inside(pt))
+		xui_treenode* node = get_tilenode(args.point, rt);
+		if (node)
 		{
 			s32 half   = m_tilesize / 20;
-			xui_rect2d<s32> drawrt = tilert;
+			xui_rect2d<s32> drawrt = rt;
 			drawrt.ax += m_tilesize / 5;
 			drawrt.bx -= m_tilesize / 5;
 			drawrt.by -= name_size;
@@ -231,7 +309,6 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_componen
 			plusrt.ay = center.y-half*2-3;
 			plusrt.by = center.y+half*2+3;
 
-			xui_treenode* node = nodes[i];
 			if (node->get_rootnode() == NULL && node->get_leafnodecount() > 0 && plusrt.was_inside(pt))
 			{
 				node->set_expanded(!node->was_expanded());
@@ -239,6 +316,7 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_componen
 			}
 			else
 			{
+				xui_treeview* lineview = get_lineview();
 				lineview->set_selectednode(node, true);
 				lineview->set_nodevisible (node);
 			}
@@ -247,7 +325,25 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_componen
 }
 xui_method_explain(onity_tileview, on_drawviewmousedclick,	void				)( xui_component* sender, xui_method_mouse& args )
 {
+	if (args.mouse == MB_L)
+	{
+		xui_rect2d<s32> rt;
+		xui_treenode* node = get_tilenode(args.point, rt);
+		if (node)
+		{
+			xui_treeview*   lineview = get_lineview();
+			xui_vector<s32> pt = node->get_screenpt() + xui_vector<s32>(lineview->get_renderw()/2, lineview->get_lineheight()/2);
+			onity_fileview* fileview = xui_dynamic_cast(onity_fileview, m_parent);
 
+			xui_method_mouse other_args;
+			other_args.mouse = MB_L;
+			other_args.point = pt;
+			other_args.alt	 = args.alt  ;
+			other_args.ctrl  = args.ctrl ;
+			other_args.shift = args.shift;
+			fileview->xm_lineviewdoubleclk(lineview, other_args);
+		}
+	}
 }
 xui_method_explain(onity_tileview, on_drawviewmousewheel,	void				)( xui_component* sender, xui_method_mouse& args )
 {
@@ -513,12 +609,12 @@ xui_method_explain(onity_tileview, draw_node,				void				)( s32 ic, s32 ir, s32 
 		draw_name(tilert, node);
 	}
 }
-xui_method_explain(onity_tileview, draw_background,			void				)( s32 ic, s32 ir, s32 c, s32 g, s32 w, s32 h, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_background,			void				)( s32 ic, s32 ir, s32 c, s32 g, s32 w, s32 h, u32 count )
 {
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 
 	s32 half = m_tilesize/20*2;
-	s32 cnt  = (s32)node->get_leafnodecount();
+	s32 cnt  = (s32)count;
 	while (cnt > 0)
 	{
 		s32 lc = xui_min(cnt, c-ic);
@@ -557,8 +653,7 @@ xui_method_explain(onity_tileview, trim_string,				std::wstring		)( const std::w
 		std::wstring dot = L"...";
 		s32 dotwidth = xui_convas::get_ins()->calc_size(dot, font, maxwidth, true).w;
 
-		std::wstring result;
-		xui_convas::get_ins()->calc_word(text, font, maxwidth-dotwidth, result);
+		std::wstring result = xui_convas::get_ins()->calc_text(text, font, maxwidth-dotwidth);
 		result += dot;
 		return result;
 	}

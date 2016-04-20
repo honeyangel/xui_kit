@@ -44,7 +44,7 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_create,	ini_drawer		)(L"Create");
 	xui_method_ptrcall(m_create,	set_menu		)(menu1);
 
-	m_retarget	= new xui_toggle(xui_vector<s32>(100, 20), TOGGLE_BUTTON);
+	m_retarget	= new xui_toggle(xui_vector<s32>(128, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_retarget,	ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_retarget,	set_corner		)(3);
 	xui_method_ptrcall(m_retarget,	set_borderrt	)(xui_rect2d<s32>(4));
@@ -61,7 +61,6 @@ xui_create_explain(onity_animator)( void )
 	xui_method_ptrcall(m_head,		set_grap		)(4);
 	xui_method_ptrcall(m_head,		add_item		)(m_create);
 	xui_method_ptrcall(m_head,		add_item		)(m_retarget);
-	xui_method_ptrcall(m_head,		add_separate	)();
 
 	m_stateview = new onity_stateview;
 	xui_method_ptrcall(m_stateview,	ini_component	)(0, 0, DOCKSTYLE_F);

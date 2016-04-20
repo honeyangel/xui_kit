@@ -32,6 +32,7 @@
     <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propasset.h" />
+    <ClInclude Include="onity_propcollider.h" />
     <ClInclude Include="onity_propframe.h" />
     <ClInclude Include="onity_savectrl.h" />
     <ClInclude Include="onity_propcontroller.h" />
@@ -76,6 +77,7 @@
     <ClCompile Include="onity_propaction.cpp" />
     <ClCompile Include="onity_propactor.cpp" />
     <ClCompile Include="onity_propasset.cpp" />
+    <ClCompile Include="onity_propcollider.cpp" />
     <ClCompile Include="onity_propframe.cpp" />
     <ClCompile Include="onity_savectrl.cpp" />
     <ClCompile Include="onity_propcontroller.cpp" />

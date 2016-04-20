@@ -57,11 +57,14 @@ xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* stat
 		set_actor, 
 		state);
 
-	m_transition	= new onity_propdata_transition(
+	m_transition	= new xui_propdata_stdvec_root(
 		m_statekind,
-		L"",
+		L"Transitions",
 		onity_propctrl_transition::create,
-		m_statectrl);
+		NULL, 
+		del_transition,
+		get_transitions,
+		this);
 
 	m_statekind->add_propdata(m_retarget);
 	m_statekind->add_propdata(m_actor);
@@ -83,12 +86,21 @@ xui_delete_explain(onity_propstate)( void )
 /*
 //method
 */
+xui_method_explain(onity_propstate,	get_statectrl,		onity_state*			)( void )
+{
+	return m_statectrl;
+}
+xui_method_explain(onity_propstate, get_proptransitions,const xui_proproot_vec&	)( void ) const
+{
+	return m_proptransition;
+}
 xui_method_explain(onity_propstate, get_proptransition,	onity_proptransition*	)( NP2DSTransition* transition )
 {
 	for (u32 i = 0; i < m_proptransition.size(); ++i)
 	{
-		if (m_proptransition[i]->get_transition() == transition)
-			return m_proptransition[i];
+		onity_proptransition* proptransition = dynamic_cast<onity_proptransition*>(m_proptransition[i]);
+		if (proptransition->get_transition() == transition)
+			return proptransition;
 	}
 
 	return NULL;
@@ -102,9 +114,10 @@ xui_method_explain(onity_propstate, del_transition,		void					)( NP2DSTransition
 {
 	for (u32 i = 0; i < m_proptransition.size(); ++i)
 	{
-		if (m_proptransition[i]->get_transition() == transition)
+		onity_proptransition* proptransition = dynamic_cast<onity_proptransition*>(m_proptransition[i]);
+		if (proptransition->get_transition() == transition)
 		{
-			delete m_proptransition[i];
+			delete proptransition;
 			m_proptransition.erase(m_proptransition.begin()+i);
 			break;
 		}
@@ -119,19 +132,31 @@ xui_method_explain(onity_propstate, on_delstate,		void					)( NP2DSState* state 
 	{
 		propctrl->on_delstate(state);
 	}
+
+	for (s32 i = (s32)m_proptransition.size()-1; i >= 0; --i)
+	{
+		onity_proptransition* proptransition = dynamic_cast<onity_proptransition*>(m_proptransition[i]);
+		if (proptransition->get_transition()->GetNextState() == state)
+		{
+			delete proptransition;
+			m_proptransition.erase(m_proptransition.begin()+i);
+		}
+	}
 }
 xui_method_explain(onity_propstate, on_delparam,		void					)( NP2DSParam* param )
 {
 	for (u32 i = 0; i < m_proptransition.size(); ++i)
 	{
-		m_proptransition[i]->on_delparam(param);
+		onity_proptransition* proptransition = dynamic_cast<onity_proptransition*>(m_proptransition[i]);
+		proptransition->on_delparam(param);
 	}
 }
 xui_method_explain(onity_propstate, on_addparam,		void					)( NP2DSParam* param )
 {
 	for (u32 i = 0; i < m_proptransition.size(); ++i)
 	{
-		m_proptransition[i]->on_addparam(param);
+		onity_proptransition* proptransition = dynamic_cast<onity_proptransition*>(m_proptransition[i]);
+		proptransition->on_addparam(param);
 	}
 }
 
@@ -236,4 +261,19 @@ xui_method_explain(onity_propstate, get_actorname,		std::wstring			)( xui_propda
 	}
 
 	return L"None";
+}
+xui_method_explain(onity_propstate, get_transitions,	xui_proproot_vec		)( void* userptr )
+{
+	onity_propstate* propstate = (onity_propstate*)userptr;
+	return propstate->get_proptransitions();
+}
+xui_method_explain(onity_propstate, del_transition,		void					)( void* userptr, xui_proproot* root )
+{
+	onity_propstate*		propstate		= (onity_propstate*)userptr;
+	onity_state*			statectrl		= propstate->get_statectrl();
+	onity_proptransition*	proptransition	= dynamic_cast<onity_proptransition*>(root);
+	NP2DSTransition*		transition		= proptransition->get_transition();
+
+	propstate->del_transition(transition);
+	statectrl->get_state()->DelTransition(transition);
 }

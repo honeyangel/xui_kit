@@ -34,8 +34,8 @@ public:
 	const xui_proproot_vec&	get_proproot	( void ) const;
 	void					set_proproot	( xui_proproot* proproot );
 	void					set_proproot	( const xui_proproot_vec& proproot );
-	void					add_propelse	( xui_proproot* propelse );
-	void					del_propelse	( void );
+	void					add_propelse	( const xui_proproot_vec& lastroot, xui_proproot* propelse );
+	void					del_propelse	( const xui_proproot_vec& lastroot );
 	void					del_proproot	( xui_proproot* proproot );
 
 	/*
@@ -53,6 +53,7 @@ protected:
 	/*
 	//method
 	*/
+	void					del_kindctrl	( xui_proproot* proproot );
 	void					del_kindctrl	( xui_propkind* propkind );
 	void					del_kindctrlall	( void );
 	xui_kindctrl*			get_kindctrl	( xui_propkind* propkind );

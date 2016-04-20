@@ -74,4 +74,53 @@ protected:
 	xui_propctrl_vec		m_propctrlvec;
 };
 
+class xui_propctrl_stdvec_root : public xui_propctrl
+{
+	xui_declare_rtti
+
+public:
+	/*
+	//static
+	*/
+	static xui_propctrl*	create					( xui_propdata* propdata );
+
+	/*
+	//constructor
+	*/
+	xui_propctrl_stdvec_root( xui_propdata* propdata );
+
+	/*
+	//override
+	*/
+	virtual void			on_linkpropdata			( void );
+	virtual void			on_editvalue			( xui_propedit* sender );
+
+protected:
+	/*
+	//callback
+	*/
+	virtual void			on_renderback			( xui_method_args& args );
+	virtual void			on_invalid				( xui_method_args& args );
+	virtual void			on_perform				( xui_method_args& args );
+
+	/*
+	//event
+	*/
+	void					on_middleinvalid		( xui_component* sender, xui_method_args& args );
+	void					on_middleselection		( xui_component* sender, xui_method_args& args );
+	void					on_deleteclick			( xui_component* sender, xui_method_args& args );
+	void					on_deleterenderself		( xui_component* sender, xui_method_args& args );
+	void					on_insertclick			( xui_component* sender, xui_method_args& args );
+	void					on_insertrenderself		( xui_component* sender, xui_method_args& args );
+
+	/*
+	//member
+	*/
+	xui_drawer*				m_header;
+	xui_listview*			m_middle;
+	xui_drawer*				m_nontip;
+	xui_button*				m_insert;
+	xui_button*				m_delete;
+};
+
 #endif//__xui_propctrl_stdvec_h__

@@ -407,6 +407,49 @@ xui_method_explain(xui_propdata_stdvec,			non_ctrl,			void					)( void )
 		m_propvec[i]->non_ctrl();
 }
 
+/*
+//constructor
+*/
+xui_create_explain(xui_propdata_stdvec_root)( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, add_root addfunc, del_root delfunc, get_func userget, void* userptr )
+: xui_propdata(kind, name, func)
+, m_addfunc(addfunc)
+, m_delfunc(delfunc)
+, m_userget(userget)
+, m_userptr(userptr)
+{}
+
+/*
+//method
+*/
+xui_method_explain(xui_propdata_stdvec_root,	get_rootvec,		xui_proproot_vec		)( void )
+{
+	return (*m_userget)(m_userptr);
+}
+xui_method_explain(xui_propdata_stdvec_root,	set_rootadd,		void					)( void )
+{
+	if (m_addfunc)
+	{
+		(*m_addfunc)(m_userptr);
+		refresh();
+	}
+}
+xui_method_explain(xui_propdata_stdvec_root,	set_rootdel,		void					)( xui_proproot* root )
+{
+	if (m_delfunc)
+	{
+		(*m_delfunc)(m_userptr, root);
+		refresh();
+	}
+}
+xui_method_explain(xui_propdata_stdvec_root,	can_rootadd,		bool					)( void )
+{
+	return m_addfunc != NULL;
+}
+xui_method_explain(xui_propdata_stdvec_root,	can_rootdel,		bool					)( void )
+{
+	return m_delfunc != NULL;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //propdata_vector
 //////////////////////////////////////////////////////////////////////////

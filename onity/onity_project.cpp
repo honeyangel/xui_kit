@@ -30,6 +30,7 @@
 #include "onity_2dsassetdata.h"
 #include "onity_propcontroller.h"
 #include "onity_resource.h"
+#include "onity_renderview.h"
 #include "onity_mainform.h"
 #include "onity_animator.h"
 #include "onity_project.h"
@@ -169,6 +170,30 @@ xui_method_explain(onity_project, ini_pathtree,				void)( void )
 /*
 //notify
 */
+xui_method_explain(onity_project, ntf_load,					void)( onity_propfile* propfile )
+{
+	xui_treeview* lineview = m_fileview->get_lineview();
+	const std::vector<xui_treenode*>& nodes = lineview->get_upmostnodearray();
+	for (u32 i = 0; i < nodes.size(); ++i)
+	{
+		xui_treenode*   node = nodes[i];
+		onity_filedata* data = (onity_filedata*)node->get_linkdata();
+		if (data->get_prop() == propfile)
+		{
+			node->del_leafnodeall();
+
+			onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
+			if (prop2dsres)
+			{
+				std::vector<xui_proproot*> subprop = prop2dsres->get_subprop();
+				for (u32 isub = 0; isub < subprop.size(); ++isub)
+				{
+					node->add_leafnode(isub, new onity_2dsassetdata(subprop[isub]));
+				}
+			}
+		}
+	}
+}
 xui_method_explain(onity_project, ntf_rename,				void)( const std::wstring& last, const std::wstring& curr )
 {
 	//lineview
@@ -301,11 +326,24 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void)( xui_component* s
 			else
 			{
 				onity_filedata* file = (onity_filedata*)node->get_linkdata();
-				if (file->get_suff() == L".controller")
+				std::wstring    suff = file->get_suff();
+				if (suff == L".controller")
 				{
 					onity_animator* animator = onity_mainform::get_ptr()->get_animator();
 					onity_mainform::get_ptr()->set_pageshow(animator);
 					animator->set_editprop((onity_propcontroller*)file->get_prop());
+				}
+				else
+				if (suff == L".npModule" ||
+					suff == L".npSprite" ||
+					suff == L".npAction")
+				{
+					m_slider->set_data((void*)m_slider->get_value());
+					if (m_slider->get_value() == 0)
+						m_slider->set_value(10);
+
+					onity_tileview* tileview = m_fileview->get_tileview();
+					tileview->set_viewfile(node);
 				}
 			}
 		}
@@ -406,7 +444,29 @@ xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sen
 xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* sender, xui_method_args&  args )
 {
 	xui_treenode* node = (xui_treenode*)sender->get_data();
-	if (node)
+	if (node->was_selected())
+	{
+		onity_tileview* tileview = m_fileview->get_tileview();
+		if (tileview->get_viewfile())
+		{
+			tileview->set_viewfile(NULL);
+
+			s32 value = (s32)m_slider->get_data();
+			m_slider->set_value(value);
+			m_slider->set_data (NULL);
+
+			if (tileview->was_visible())
+			{
+				xui_treeview* lineview = m_fileview->get_lineview();
+				std::vector<xui_treenode*> nodes = lineview->get_selectednode();
+				if (nodes.size() > 0)
+				{
+					tileview->set_tilevisible(nodes.front());
+				}
+			}
+		}
+	}
+	else
 	{
 		xui_method_ptrcall(m_pathview, set_selectednode	)(node, true);
 		xui_method_ptrcall(m_pathview, set_nodevisible	)(node);
@@ -467,11 +527,13 @@ xui_method_explain(onity_project, refresh_lineview,			void)( void )
 {
 	m_status->set_data(NULL);
 
-	xui_treeview* lineview = m_fileview->get_lineview();
-	lineview->del_upmostnodeall();
+	m_fileview->clear();
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
 	{
+		xui_treeview*   lineview = m_fileview->get_lineview();
+		onity_tileview*	tileview = m_fileview->get_tileview();
+
 		u32 index = 0;
 		xui_treenode*   rootnode = nodevec.front();
 		onity_pathdata* rootdata = (onity_pathdata*)rootnode->get_linkdata();
@@ -500,8 +562,10 @@ xui_method_explain(onity_project, refresh_lineview,			void)( void )
 				}
 			}
 		}
+
+		lineview->refresh();
+		tileview->get_drawview()->refresh();
 	}
-	lineview->refresh();
 }
 xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 {
@@ -523,19 +587,16 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 		{
 			xui_treenode*    pathnode = pathvec[i];
 			onity_pathdata*  pathdata = (onity_pathdata*)pathnode->get_linkdata();
-			xui_drawer*        drawer = (i == 0) ? new xui_drawer(xui_vector<s32>(0, 20)) : new xui_button(xui_vector<s32>(0, 20));
-			xui_method_ptrcall(drawer, ini_component)(0, 0, DOCKSTYLE_L);
-			xui_method_ptrcall(drawer, ini_drawer	)(pathdata->get_text(0));
-			xui_method_ptrcall(drawer, set_backcolor)(xui_colour::transparent);
-			xui_method_ptrcall(drawer, set_drawcolor)(true);
-			xui_method_ptrcall(drawer, set_textcolor)(i == 0 ? xui_colour(1.0f, 0.5f) : xui_colour(1.0f, 0.8f));
-			xui_method_ptrcall(drawer, set_data		)(pathnode);
-			xui_method_ptrcall(drawer, on_perform_w	)(xui_convas::get_ins()->calc_size(drawer->get_text(), drawer->get_textfont(), 0, true).w);
-			m_pathpane->add_child(drawer);
-
-			xui_button* button = xui_dynamic_cast(xui_button, drawer);
-			if (button)
-				button->xm_buttonclick += new xui_method_member<xui_method_args, onity_project>(this, &onity_project::on_pathitemclick);
+			xui_button*        button = new xui_button(xui_vector<s32>(0, 20));
+			xui_method_ptrcall(button, ini_component	)(0, 0, DOCKSTYLE_L);
+			xui_method_ptrcall(button, ini_drawer		)(pathdata->get_text(0));
+			xui_method_ptrcall(button, set_backcolor	)(xui_colour::transparent);
+			xui_method_ptrcall(button, set_drawcolor	)(true);
+			xui_method_ptrcall(button, set_textcolor	)(xui_colour(1.0f, 0.8f));
+			xui_method_ptrcall(button, set_data			)(pathnode);
+			xui_method_ptrcall(button, on_perform_w		)(xui_convas::get_ins()->calc_size(button->get_text(), button->get_textfont(), 0, true).w);
+			xui_method_ptrcall(button, xm_buttonclick	) += new xui_method_member<xui_method_args, onity_project>(this, &onity_project::on_pathitemclick);
+			m_pathpane->add_child(button);
 
 			if (pathnode->get_leafnodecount() == 0)
 				continue;

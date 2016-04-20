@@ -132,22 +132,46 @@ xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_v
 		refresh();
 	}
 }
-xui_method_explain(xui_propview, add_propelse,		void					)( xui_proproot* propelse )
+xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_vec& lastroot, xui_proproot* propelse )
 {
-	if (propelse)
+	u32 repidx = -1;
+	for (u32 i = 0; i < m_propelsevec.size(); ++i)
+	{
+		xui_proproot_vec::const_iterator itor = std::find(
+			lastroot.begin(),
+			lastroot.end(), 
+			m_propelsevec[i]);
+
+		if (itor != lastroot.end())
+		{
+			repidx = i;
+			break;
+		}
+	}
+
+	if (repidx != -1)
 	{
 		for (u32 i = 0; i < m_propelsevec.size(); ++i)
-		{
-			if (m_propelsevec[i] == propelse)
-				return;
-		}
+			del_kindctrl(m_propelsevec[i]);
 
-		propelse->set_ctrl(this);
+		m_propelsevec[repidx] = propelse;
+	}
+	else
+	{
 		m_propelsevec.push_back(propelse);
-		const xui_propkind_vec& vec = propelse->get_propkind();
-		for (u32 i = 0; i < vec.size(); ++i)
+	}
+
+	for (u32 i = 0; i < m_propelsevec.size(); ++i)
+	{
+		xui_proproot* proproot = m_propelsevec[i];
+		if (proproot->get_ctrl())
+			continue;
+
+		proproot->set_ctrl(this);
+		const xui_propkind_vec& vec = proproot->get_propkind();
+		for (xui_propkind_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
 		{
-			xui_propkind* propkind = vec[i];
+			xui_propkind* propkind = (*itor);
 			xui_kindctrl* kindctrl = get_kindctrl(propkind);
 			if (kindctrl)
 			{
@@ -156,22 +180,27 @@ xui_method_explain(xui_propview, add_propelse,		void					)( xui_proproot* propel
 			}
 		}
 
-		refresh();
-	}
-}
-xui_method_explain(xui_propview, del_propelse,		void					)( void )
-{
-	for (xui_proproot_vec::iterator itor = m_propelsevec.begin(); itor != m_propelsevec.end(); ++itor)
-	{
-		const xui_propkind_vec& vec = (*itor)->get_propkind();
-		for (u32 i = 0; i < vec.size(); ++i)
-			del_kindctrl(vec[i]);
-
-		(*itor)->non_ctrl();
 	}
 
-	m_propelsevec.clear();
 	refresh();
+}
+xui_method_explain(xui_propview, del_propelse,		void					)( const xui_proproot_vec& lastroot )
+{
+	for (u32 i = 0; i < m_propelsevec.size(); ++i)
+	{
+		xui_proproot_vec::const_iterator itor = std::find(
+			lastroot.begin(),
+			lastroot.end(),
+			m_propelsevec[i]);
+
+		if (itor != lastroot.end())
+		{
+			m_propelsevec.erase(m_propelsevec.begin()+i);
+			del_kindctrl(m_propelsevec[i]);
+			refresh();
+			break;
+		}
+	}
 }
 xui_method_explain(xui_propview, del_proproot,		void					)( xui_proproot* proproot )
 {
@@ -191,11 +220,8 @@ xui_method_explain(xui_propview, del_proproot,		void					)( xui_proproot* propro
 		itor = std::find(m_propelsevec.begin(), m_propelsevec.end(), proproot);
 		if (itor != m_propelsevec.end())
 		{
-			const xui_propkind_vec& vec = (*itor)->get_propkind();
-			for (u32 i = 0; i < vec.size(); ++i)
-				del_kindctrl(vec[i]);
-
 			m_propelsevec.erase(itor);
+			del_kindctrl((*itor));
 			refresh();
 		}
 	}
@@ -297,6 +323,14 @@ xui_method_explain(xui_propview, del_kindctrlall,	void					)( void )
 		m_ascrollitem[i]->set_parent(NULL);
 
 	m_ascrollitem.clear();
+}
+xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_proproot* proproot )
+{
+	const xui_propkind_vec& vec = proproot->get_propkind();
+	for (u32 i = 0; i < vec.size(); ++i)
+		del_kindctrl(vec[i]);
+
+	proproot->non_ctrl();
 }
 xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_propkind* propkind )
 {

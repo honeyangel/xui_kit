@@ -52,11 +52,6 @@ public:
 	virtual void			on_linkpropdata		( void );
 	virtual void			on_editvalue		( xui_propedit* sender );
 
-	/*
-	//method
-	*/
-	//void					del_paramlink		( NP2DSParam* param );
-
 protected:
 	/*
 	//callback

@@ -15,6 +15,7 @@ typedef std::wstring	(*xui_prop_getname)( xui_propdata* propdata );
 
 typedef std::map<s32, std::wstring> xui_propenum_map;
 typedef std::vector<xui_propdata*>  xui_propdata_vec;
+typedef std::vector<xui_proproot*>	xui_proproot_vec;
 
 /*
 //propdata
@@ -644,6 +645,36 @@ protected:
 	xui_prop_delitem			m_delitem;
 	xui_prop_newprop			m_newprop;
 	xui_propdata_vec			m_propvec;
+};
+class xui_propdata_stdvec_root : public xui_propdata
+{
+public:
+	typedef xui_proproot_vec	(*get_func)( void* userptr );
+	typedef void				(*add_root)( void* userptr );
+	typedef void				(*del_root)( void* userptr, xui_proproot* root );
+
+	/*
+	//constructor
+	*/
+	xui_propdata_stdvec_root( xui_propkind* kind, const std::wstring& name, xui_prop_newctrl func, add_root addfunc, del_root delfunc, get_func userget, void* userptr );
+
+	/*
+	//method
+	*/
+	xui_proproot_vec			get_rootvec		( void );
+	void						set_rootadd		( void );
+	void						set_rootdel		( xui_proproot* root );
+	bool						can_rootadd		( void );
+	bool						can_rootdel		( void );
+
+protected:
+	/*
+	//member
+	*/
+	get_func					m_userget;
+	void*						m_userptr;
+	add_root					m_addfunc;
+	del_root					m_delfunc;
 };
 template<typename T>
 class xui_propdata_stdvec_func : public xui_propdata_stdvec

@@ -101,32 +101,35 @@ xui_method_explain(xui_propctrl_expand,			on_invalid,			void			)( xui_method_arg
 	sz.w = get_renderw();
 	sz.h = xui_propview::default_lineheight + m_border.ay + m_border.by;
 
-	if (m_propdata && m_propplus->was_expanded())
+	if (m_propdata)
 	{
 		xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
 		const xui_propdata_vec& vec = dataexpand->get_subprop();
-		for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+		bool plusvisible = false;
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			xui_propctrl* propctrl = m_propctrlvec[i];
-			xui_method_ptrcall(propctrl, set_enable )(vec[i]->can_edit());
-			xui_method_ptrcall(propctrl, set_visible)(vec[i]->can_show());
-			if (vec[i]->can_show() == false)
-				continue;
+			if (vec[i]->can_show())
+			{
+				plusvisible = true;
+				break;
+			}
+		}
+		m_propplus->set_visible(plusvisible);
 
-			sz.h += propctrl->get_renderh();
+		if (m_propplus->was_expanded())
+		{
+			for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+			{
+				xui_propctrl* propctrl = m_propctrlvec[i];
+				xui_method_ptrcall(propctrl, set_enable )(vec[i]->can_edit());
+				xui_method_ptrcall(propctrl, set_visible)(vec[i]->can_show());
+				if (vec[i]->can_show() == false)
+					continue;
+
+				sz.h += propctrl->get_renderh();
+			}
 		}
 	}
-
-	bool plusvisible = false;
-	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
-	{
-		if (m_propctrlvec[i]->was_visible())
-		{
-			plusvisible = true;
-			break;
-		}
-	}
-	m_propplus->set_visible(plusvisible);
 
 	if (get_rendersz() != sz)
 	{

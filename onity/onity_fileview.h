@@ -19,6 +19,7 @@ public:
 	*/
 	xui_treeview*					get_lineview			( void );
 	onity_tileview*					get_tileview			( void );
+	void							clear					( void );
 
 	/*
 	//method
@@ -30,6 +31,8 @@ protected:
 	/*
 	//event
 	*/
+	void							on_lineviewshow			( xui_component* sender, xui_method_args&  args );
+	void							on_tileviewshow			( xui_component* sender, xui_method_args&  args );
 	void							on_lineviewselection	( xui_component* sender, xui_method_args&  args );
 	void							on_lineviewdoubleclk	( xui_component* sender, xui_method_mouse& args );
 
