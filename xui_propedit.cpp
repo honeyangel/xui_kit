@@ -1,7 +1,7 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_toggle.h"
-#include "xui_textbox.h"
+#include "xui_numbbox.h"
 #include "xui_dropbox.h"
 #include "xui_propctrl.h"
 #include "xui_propedit.h"
@@ -205,13 +205,12 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f
 	m_namectrl->set_cursor(CURSOR_WE);
 	m_namectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_namectrlmousemove);
 
-	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18));
+	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, (s32)interval);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(textctrl, set_numbtype	)(numbtype);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlgetfocus);
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_textctrltextchanged);

@@ -210,6 +210,39 @@ std::wstring pathstyle_replace( const std::wstring& path, wchar_t src, wchar_t d
 	return result;
 }
 
+INT CALLBACK BrowseCallbackProc(HWND hwnd,  UINT uMsg, LPARAM lp,  LPARAM pData) 
+{
+	switch(uMsg) 
+	{
+	case BFFM_INITIALIZED: 
+		{
+			// WParam is TRUE since you are passing a path.
+			// It would be FALSE if you were passing a pidl.
+			TCHAR szDir[MAX_PATH]={0};
+			GetCurrentDirectory(sizeof(szDir)/sizeof(TCHAR), szDir);
+			SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)szDir);
+		}
+		break;
+	}
+	return 0;
+}
+xui_method_explain(xui_global, get_openpath,	std::wstring					)( void )
+{
+	BROWSEINFO info;
+	memset(&info, 0, sizeof(BROWSEINFO));
+	info.hwndOwner	= gHWND;
+	info.lpszTitle	= L"Select Path";
+	info.ulFlags	= BIF_RETURNONLYFSDIRS;
+	info.lpfn		= BrowseCallbackProc;
+	LPITEMIDLIST lpitem = SHBrowseForFolder(&info);
+	if (lpitem == NULL)
+		return std::wstring();
+
+	wchar_t buffer[MAX_PATH];
+	SHGetPathFromIDList(lpitem, buffer);
+	return std::wstring(buffer);
+}
+
 std::wstring g_workpath;
 xui_method_explain(xui_global, get_workpath,	std::wstring					)( void )
 {

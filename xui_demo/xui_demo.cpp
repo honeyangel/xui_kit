@@ -1,6 +1,10 @@
 #include "xui_global.h"
 #include "xui_demo.h"
 
+static void test_openfolder(xui_component* sender, xui_method_args& args)
+{
+	std::wstring path = xui_global::get_openpath();
+}
 void xui_demo::test_button( xui_window* window )
 {
 	xui_button* button = NULL;
@@ -10,6 +14,7 @@ void xui_demo::test_button( xui_window* window )
 	button = xui_button::create(xui_bitmap::create("icon/edit.png"), L"Translate", 110);
 	button->set_renderpt(xui_vector<s32>(50, 10));
 	window->add_child(button);
+	button->xm_buttonclick += new xui_method_static<xui_method_args>(test_openfolder);
 }
 
 void xui_demo::test_toggle( xui_window* window )
@@ -367,7 +372,7 @@ void xui_demo::test_propview( xui_window* window )
 	xui_propdata* propdata = new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_number::create, &prop_value, NT_INT);
 	propkind->add_propdata(propdata);
 	propkind->add_propdata(new xui_propdata_bool(propkind, L"bool", xui_propctrl_bool::create, NULL, NULL, &bool_value));
-	propkind->add_propdata(new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
+	propkind->add_propdata(new xui_propdata_number_impl<s32>(propkind, L"s32", xui_propctrl_slider::create, &prop_value, NT_INT, 2, -50, 50));
 	enum_map[TEXTALIGN_LT] = L"LeftTop";
 	enum_map[TEXTALIGN_LC] = L"LeftCenter";
 	enum_map[TEXTALIGN_LB] = L"LeftBottom";

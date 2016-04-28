@@ -405,6 +405,9 @@
     <ClInclude Include="xui_family_create.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="xui_numbbox.h">
+      <Filter>LibGUI\textbox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -829,6 +832,9 @@
     </ClCompile>
     <ClCompile Include="xui_family_create.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_numbbox.cpp">
+      <Filter>LibGUI\textbox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
