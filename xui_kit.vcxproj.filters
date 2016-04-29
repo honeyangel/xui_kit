@@ -405,6 +405,9 @@
     <ClInclude Include="xui_family_create.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="xui_propedit_colour.h">
+      <Filter>LibGUI\propview\edit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -829,6 +832,9 @@
     </ClCompile>
     <ClCompile Include="xui_family_create.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_propedit_colour.cpp">
+      <Filter>LibGUI\propview\edit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

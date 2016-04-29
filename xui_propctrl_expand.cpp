@@ -266,6 +266,109 @@ xui_method_explain(xui_propctrl_expand_plus,	on_linkpropdata,	void			)( void )
 }
 
 //////////////////////////////////////////////////////////////////////////
+//propctrl_expandstring
+//////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_expand_string, xui_propctrl_expand);
+/*
+//create
+*/
+xui_method_explain(xui_propctrl_expand_string,	create,				xui_propctrl*	)( xui_propdata* propdata )
+{
+	return new xui_propctrl_expand_string(propdata);
+}
+
+/*
+//constructor
+*/
+xui_create_explain(xui_propctrl_expand_string)( xui_propdata* propdata )
+: xui_propctrl_expand(propdata)
+{
+	xui_propedit_string* editstring = new xui_propedit_string(this);
+
+	xui_drawer*  namectrl = editstring->get_namectrl();
+	xui_control* textctrl = editstring->get_editctrl();
+	namectrl->set_parent(this);
+	textctrl->set_parent(this);
+	m_widgetvec.insert(m_widgetvec.begin(), namectrl);
+	m_widgetvec.insert(m_widgetvec.begin(), textctrl);
+
+	m_propedit = editstring;
+	m_namectrl->set_visible(false);
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(xui_propctrl_expand_string)( void )
+{
+	delete m_propedit;
+}
+
+/*
+//propdata
+*/
+xui_method_explain(xui_propctrl_expand_string,	on_linkpropdata,	void			)( void )
+{
+	xui_propctrl_expand::on_linkpropdata();
+	m_propedit->reset();
+	xui_drawer* namectrl = m_propedit->get_namectrl();
+	namectrl->set_text(m_propdata->get_name());
+
+	bool same = true;
+	xui_propdata_string* datastring = dynamic_cast<xui_propdata_string*>(m_propdata);
+	std::wstring value = datastring->get_value();
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata_string* data = dynamic_cast<xui_propdata_string*>(m_propdatavec[i]);
+		if (data->get_value() != value)
+		{
+			same = false;
+			break;
+		}
+	}
+
+	if (same)
+	{
+		m_propedit->set_value(value);
+	}
+}
+xui_method_explain(xui_propctrl_expand_string,	on_editvalue,		void			)( xui_propedit* sender )
+{
+	std::wstring value = m_propedit->get_value();
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata_string* data = dynamic_cast<xui_propdata_string*>(m_propdatavec[i]);
+		data->set_value(value);
+	}
+
+	refresh();
+}
+
+/*
+//override
+*/
+xui_method_explain(xui_propctrl_expand_string,	on_perform,			void			)( xui_method_args& args )
+{
+	xui_propctrl_expand::on_perform(args);
+	s32 height = xui_propview::default_lineheight;
+
+	xui_drawer*  namectrl = m_propedit->get_namectrl();
+	xui_control* textctrl = m_propedit->get_editctrl();
+	xui_rect2d<s32> rt = get_renderrtins();
+	xui_vector<s32> pt;
+	//textctrl
+	pt.x = rt.get_w()/2;
+	pt.y = rt.ay + height/2 - textctrl->get_renderh()/2;
+	textctrl->on_perform_pt(pt);
+	textctrl->on_perform_w (rt.get_w()/2);
+	//namectrl
+	s32 indent = get_indent();
+	namectrl->on_perform_y (rt.ay);
+	namectrl->on_perform_w (rt.get_w()/2);
+	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
+}
+
+//////////////////////////////////////////////////////////////////////////
 //propctrl_expandbool
 //////////////////////////////////////////////////////////////////////////
 xui_implement_rtti(xui_propctrl_expand_bool, xui_propctrl_expand);

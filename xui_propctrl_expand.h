@@ -77,6 +77,44 @@ public:
 	virtual void			on_linkpropdata	( void );
 };
 
+class xui_propctrl_expand_string : public xui_propctrl_expand
+{
+	xui_declare_rtti
+
+public:
+	/*
+	//create
+	*/
+	static xui_propctrl*	create			( xui_propdata* propdata );
+
+	/*
+	//constructor
+	*/
+	xui_propctrl_expand_string( xui_propdata* propdata );
+
+	/*
+	//destructor
+	*/
+	virtual ~xui_propctrl_expand_string( void );
+
+	/*
+	//propdata
+	*/
+	virtual void			on_linkpropdata	( void );
+	virtual void			on_editvalue	( xui_propedit* sender );
+
+protected:
+	/*
+	//override
+	*/
+	virtual void			on_perform		( xui_method_args& args );
+
+	/*
+	//member
+	*/
+	xui_propedit_string*	m_propedit;
+};
+
 class xui_propctrl_expand_bool : public xui_propctrl_expand
 {
 	xui_declare_rtti

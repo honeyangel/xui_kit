@@ -106,6 +106,7 @@
     <ClInclude Include="xui_propctrl_rect2d.h" />
     <ClInclude Include="xui_propctrl_slider.h" />
     <ClInclude Include="xui_propctrl_vector.h" />
+    <ClInclude Include="xui_propedit_colour.h" />
     <ClInclude Include="xui_propedit_object.h" />
     <ClInclude Include="xui_propedit_slider.h" />
     <ClInclude Include="xui_propedit_stdvec.h" />
@@ -310,6 +311,7 @@
     <ClCompile Include="xui_propedit.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xui_propedit_colour.cpp" />
     <ClCompile Include="xui_propedit_object.cpp" />
     <ClCompile Include="xui_propedit_slider.cpp" />
     <ClCompile Include="xui_propedit_stdvec.cpp" />

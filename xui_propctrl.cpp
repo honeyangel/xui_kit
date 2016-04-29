@@ -3,6 +3,7 @@
 #include "xui_toggle.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
+#include "xui_propedit_colour.h"
 #include "xui_propctrl.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -293,6 +294,39 @@ xui_propctrl_implement_edit(xui_propctrl_string, xui_propedit_string, xui_propda
 //override
 */
 xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_args& args )
+{
+	xui_propctrl_base::on_perform(args);
+	xui_control* textctrl = m_propedit->get_editctrl();
+
+	xui_rect2d<s32> rt = get_renderrt();
+	xui_vector<s32> pt;
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
+	textctrl->on_perform_pt(pt);
+	textctrl->on_perform_w (rt.get_w()/2);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//propctrl_colour
+//////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(xui_propctrl_colour, xui_propctrl_base);
+/*
+//constructor
+*/
+xui_create_explain(xui_propctrl_colour)( xui_propdata* propdata )
+: xui_propctrl_base()
+{
+	xui_propdata_colour* datacolour = dynamic_cast<xui_propdata_colour*>(propdata);
+	xui_propedit_colour* editcolour = new xui_propedit_colour(this);
+	xui_propctrl_implement_attach(editcolour)
+}
+xui_propctrl_implement_link(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
+xui_propctrl_implement_edit(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
+
+/*
+//override
+*/
+xui_method_explain(xui_propctrl_colour, on_perform,			void					)( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 	xui_control* textctrl = m_propedit->get_editctrl();

@@ -107,6 +107,12 @@
     <ClInclude Include="onity_propcollider.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_proptransref.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propimageref.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -214,6 +220,12 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_propcollider.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proptransref.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propimageref.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>

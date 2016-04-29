@@ -447,6 +447,37 @@ public:
 	*/
 	virtual void				non_ctrl		( void );
 };
+class xui_propdata_expand_number : public xui_propdata_number_func, public xui_expandbase
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_propdata_expand_number( 
+		xui_propkind*								kind, 
+		const std::wstring&							name, 
+		xui_prop_newctrl							func, 
+		const xui_propdata_vec&						subprop, 
+		get_func									userget,
+		set_func									userset,
+		void*										userptr,
+		u08											numbtype,
+		f64											interval = 1.0,
+		f64											minvalue = 0.0,
+		f64											maxvalue = 0.0 )
+		: xui_propdata_number_func(kind, name, func, userget, userset, userptr, numbtype, interval, minvalue, maxvalue), xui_expandbase(subprop)
+	{}
+
+	/*
+	//override
+	*/
+	virtual void				non_ctrl		( void )
+	{
+		xui_propdata_number_func::non_ctrl();
+		for (u32 i = 0; i < m_subprop.size(); ++i)
+			m_subprop[i]->non_ctrl();
+	}
+};
 class xui_propdata_expand_plus : public xui_propdata_expand
 {
 public:
