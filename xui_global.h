@@ -50,6 +50,7 @@ public:
 	/*
 	//file
 	*/
+	static std::wstring						get_openpath	( void );
 	static std::wstring						get_workpath	( void );
 	static void								set_workpath	( const std::wstring& path );
 	static void								set_showfind	( const std::wstring& path );

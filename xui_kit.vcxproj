@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -99,6 +99,7 @@
     <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_menu.h" />
     <ClInclude Include="xui_menuitem.h" />
+    <ClInclude Include="xui_numbbox.h" />
     <ClInclude Include="xui_propctrl_object.h" />
     <ClInclude Include="xui_propctrl_simple.h" />
     <ClInclude Include="xui_propctrl_stdvec.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="xui_kindctrl.cpp" />
     <ClCompile Include="xui_menu.cpp" />
     <ClCompile Include="xui_menuitem.cpp" />
+    <ClCompile Include="xui_numbbox.cpp" />
     <ClCompile Include="xui_propctrl_object.cpp" />
     <ClCompile Include="xui_propctrl_simple.cpp" />
     <ClCompile Include="xui_propctrl_stdvec.cpp" />
