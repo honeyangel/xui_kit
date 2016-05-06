@@ -22,6 +22,8 @@ xui_method_explain(xui_propctrl_expand,			create,				xui_propctrl*	)( xui_propda
 xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 : xui_propctrl()
 {
+	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(propdata);
+
 	//name
 	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
 	xui_method_ptrcall(m_namectrl, set_parent	)(this);
@@ -29,13 +31,12 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 	m_widgetvec.push_back(m_namectrl);
 
 	//plus
-	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, true);
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, !dataexpand->can_subfold());
 	xui_method_ptrcall(m_propplus, set_parent	)(this);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_expand>(this, &xui_propctrl_expand::on_propexpand);
 	m_widgetvec.push_back(m_propplus);
 
 	//prop
-	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(propdata);
 	const xui_propdata_vec& vec = dataexpand->get_subprop();
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
@@ -71,7 +72,18 @@ xui_method_explain(xui_propctrl_expand,			on_linkpropdata,	void			)( void )
 {
 	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
 	xui_method_ptrcall(m_namectrl, set_text		)(m_propdata->get_name());
-	xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
+
+	bool plusvisible = false;
+	const xui_propdata_vec& vec = dataexpand->get_subprop();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i]->can_show() && dataexpand->can_subfold())
+		{
+			plusvisible = true;
+			break;
+		}
+	}
+	m_propplus->set_visible(plusvisible);
 
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 	{
@@ -268,38 +280,39 @@ xui_method_explain(xui_propctrl_expand_plus,	on_linkpropdata,	void			)( void )
 //////////////////////////////////////////////////////////////////////////
 //propctrl_expandstring
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_expand_string, xui_propctrl_expand);
+xui_implement_rtti(xui_propctrl_expand_number, xui_propctrl_expand);
 /*
 //create
 */
-xui_method_explain(xui_propctrl_expand_string,	create,				xui_propctrl*	)( xui_propdata* propdata )
+xui_method_explain(xui_propctrl_expand_number,	create,				xui_propctrl*	)( xui_propdata* propdata )
 {
-	return new xui_propctrl_expand_string(propdata);
+	return new xui_propctrl_expand_number(propdata);
 }
 
 /*
 //constructor
 */
-xui_create_explain(xui_propctrl_expand_string)( xui_propdata* propdata )
+xui_create_explain(xui_propctrl_expand_number)( xui_propdata* propdata )
 : xui_propctrl_expand(propdata)
 {
-	xui_propedit_string* editstring = new xui_propedit_string(this);
+	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
+	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval());
 
-	xui_drawer*  namectrl = editstring->get_namectrl();
-	xui_control* textctrl = editstring->get_editctrl();
+	xui_drawer*  namectrl = editnumber->get_namectrl();
+	xui_control* textctrl = editnumber->get_editctrl();
 	namectrl->set_parent(this);
 	textctrl->set_parent(this);
 	m_widgetvec.insert(m_widgetvec.begin(), namectrl);
 	m_widgetvec.insert(m_widgetvec.begin(), textctrl);
 
-	m_propedit = editstring;
+	m_propedit = editnumber;
 	m_namectrl->set_visible(false);
 }
 
 /*
 //destructor
 */
-xui_delete_explain(xui_propctrl_expand_string)( void )
+xui_delete_explain(xui_propctrl_expand_number)( void )
 {
 	delete m_propedit;
 }
@@ -307,7 +320,7 @@ xui_delete_explain(xui_propctrl_expand_string)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_expand_string,	on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_expand_number,	on_linkpropdata,	void			)( void )
 {
 	xui_propctrl_expand::on_linkpropdata();
 	m_propedit->reset();
@@ -315,11 +328,11 @@ xui_method_explain(xui_propctrl_expand_string,	on_linkpropdata,	void			)( void )
 	namectrl->set_text(m_propdata->get_name());
 
 	bool same = true;
-	xui_propdata_string* datastring = dynamic_cast<xui_propdata_string*>(m_propdata);
-	std::wstring value = datastring->get_value();
+	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(m_propdata);
+	f64 value = datanumber->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_string* data = dynamic_cast<xui_propdata_string*>(m_propdatavec[i]);
+		xui_propdata_number* data = dynamic_cast<xui_propdata_number*>(m_propdatavec[i]);
 		if (data->get_value() != value)
 		{
 			same = false;
@@ -332,12 +345,12 @@ xui_method_explain(xui_propctrl_expand_string,	on_linkpropdata,	void			)( void )
 		m_propedit->set_value(value);
 	}
 }
-xui_method_explain(xui_propctrl_expand_string,	on_editvalue,		void			)( xui_propedit* sender )
+xui_method_explain(xui_propctrl_expand_number,	on_editvalue,		void			)( xui_propedit* sender )
 {
-	std::wstring value = m_propedit->get_value();
+	f64 value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		xui_propdata_string* data = dynamic_cast<xui_propdata_string*>(m_propdatavec[i]);
+		xui_propdata_number* data = dynamic_cast<xui_propdata_number*>(m_propdatavec[i]);
 		data->set_value(value);
 	}
 
@@ -347,7 +360,7 @@ xui_method_explain(xui_propctrl_expand_string,	on_editvalue,		void			)( xui_prop
 /*
 //override
 */
-xui_method_explain(xui_propctrl_expand_string,	on_perform,			void			)( xui_method_args& args )
+xui_method_explain(xui_propctrl_expand_number,	on_perform,			void			)( xui_method_args& args )
 {
 	xui_propctrl_expand::on_perform(args);
 	s32 height = xui_propview::default_lineheight;

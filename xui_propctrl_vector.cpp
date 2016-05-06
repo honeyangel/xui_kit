@@ -128,12 +128,12 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	pt.x = rt.get_w()/2;
 	pt.y = 0;
 	sz.w = namewidth;
-	sz.h = rt.get_h();
+	sz.h = xui_propview::default_lineheight;
 	subxname->on_perform_pt(pt);
 	subxname->on_perform_sz(sz);
 	//subxedit
 	pt.x = pt.x + subxname->get_renderw() + 4;
-	pt.y = rt.get_h()/2 - subxedit->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - subxedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subxedit->get_renderh();
 	subxedit->on_perform_pt(pt);
@@ -142,12 +142,12 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	pt.x = pt.x + subxedit->get_renderw() + 4;
 	pt.y = 0;
 	sz.w = namewidth;
-	sz.h = rt.get_h();
+	sz.h = xui_propview::default_lineheight;
 	subyname->on_perform_pt(pt);
 	subyname->on_perform_sz(sz);
 	//subyedit
 	pt.x = pt.x + subyname->get_renderw() + 4;
-	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - subyedit->get_renderh()/2;
 	sz.w = rt.get_w()-pt.x;
 	sz.h = subyedit->get_renderh();
 	subyedit->on_perform_pt(pt);
@@ -214,7 +214,7 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 	xui_vector<s32> pt;
 	xui_vector<s32> sz;
 	pt.x = indent;
-	pt.y = rt.get_h()/2 - m_zeroctrl->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - m_zeroctrl->get_renderh()/2;
 	m_zeroctrl->on_perform_pt(pt);
 
 	xui_drawer*  subxname = m_subxedit->get_namectrl();
@@ -226,11 +226,11 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 	pt.x = pt.x + m_zeroctrl->get_renderw();
 	pt.y = 0;
 	sz.w = 16;
-	sz.h = rt.get_h();
+	sz.h = xui_propview::default_lineheight;
 	subxname->on_perform_pt(pt);
 	subxname->on_perform_sz(sz);
 	pt.x = pt.x +   subxname->get_renderw();
-	pt.y = rt.get_h()/2 - subxedit->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - subxedit->get_renderh()/2;
 	sz.w = editwidth;
 	sz.h = subxedit->get_renderh();
 	subxedit->on_perform_pt(pt);
@@ -239,11 +239,11 @@ xui_method_explain(xui_propctrl_vector_button,	on_perform,			void			)( xui_metho
 	pt.x = pt.x + editwidth;
 	pt.y = 0;
 	sz.w = 16;
-	sz.h = rt.get_h();
+	sz.h = xui_propview::default_lineheight;
 	subyname->on_perform_pt(pt);
 	subyname->on_perform_sz(sz);
 	pt.x = pt.x +   subyname->get_renderw();
-	pt.y = rt.get_h()/2 - subyedit->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - subyedit->get_renderh()/2;
 	sz.w = rt.get_w()-pt.x;
 	sz.h = subyedit->get_renderh();
 	subyedit->on_perform_pt(pt);

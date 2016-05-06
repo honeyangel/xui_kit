@@ -52,6 +52,10 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 	on_linkpropdata();
 }
 
+xui_method_explain(xui_propctrl,		get_ctrlelse,		xui_component*			)( void )
+{
+	return m_widgetvec.back();
+}
 xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* component )
 {
 	component->set_parent(this);

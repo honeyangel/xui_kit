@@ -3,7 +3,7 @@
 
 #include "xui_convas.h"
 #include "xui_global.h"
-#include "xui_textbox.h"
+#include "xui_numbbox.h"
 #include "xui_button.h"
 #include "xui_toggle.h"
 #include "onity_animator.h"
@@ -54,7 +54,7 @@ xui_create_explain(onity_param)( NP2DSParam* param, bool reqfocus )
 	case DT_FLOAT:		text << param->GetValueFloat();	break;
 	}
 
-	m_numbctrl	= new xui_textbox(xui_vector<s32>(52, 18));
+	m_numbctrl	= new xui_numbbox(xui_vector<s32>(52, 18), param->GetType() == DT_INT ? NT_INT : NT_FLOAT, 1);
 	xui_method_ptrcall(m_numbctrl,	xm_nonfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlnonfocus);
 	xui_method_ptrcall(m_numbctrl,	xm_getfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlgetfocus);
 	xui_method_ptrcall(m_numbctrl,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_numbctrltextchanged);
@@ -67,7 +67,6 @@ xui_create_explain(onity_param)( NP2DSParam* param, bool reqfocus )
 	xui_method_ptrcall(m_numbctrl,	ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_numbctrl,	ini_component	)(true, param->GetType() != DT_BOOL);
 	xui_method_ptrcall(m_numbctrl,	ini_drawer		)(text.str());
-	xui_method_ptrcall(m_numbctrl,	set_numbtype	)(param->GetType() == DT_INT ? NT_INT : NT_FLOAT);
 
 	m_delete	= new xui_button(xui_vector<s32>(16));
 	xui_method_ptrcall(m_delete,	xm_renderself	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_deleterenderself);

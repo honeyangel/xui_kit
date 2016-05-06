@@ -54,6 +54,7 @@ protected:
 	/*
 	//event
 	*/
+	void					on_propctrlperform		( xui_component* sender, xui_method_args&  args );
 	void					on_sortctrlupdateself	( xui_component* sender, xui_method_args&  args );
 	void					on_sortctrlrenderself	( xui_component* sender, xui_method_args&  args );
 	void					on_sortctrltopdraw		( xui_component* sender, xui_method_args&  args );

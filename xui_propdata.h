@@ -4,9 +4,9 @@
 #include "xui_component.h"
 
 typedef xui_propctrl*	(*xui_prop_newctrl)( xui_propdata* propdata );
-typedef void			(*xui_prop_additem)( void* vec );
-typedef void			(*xui_prop_delitem)( void* vec );
-typedef xui_propdata*	(*xui_prop_newprop)( void* ptr, xui_propkind* kind );
+typedef void			(*xui_prop_additem)( void* userptr );
+typedef void			(*xui_prop_delitem)( void* userptr );
+typedef xui_propdata*	(*xui_prop_newprop)( void* userptr, u32 index, xui_propkind* kind );
 
 class   xui_pickwnd;
 typedef xui_pickwnd*	(*xui_prop_newpick)( xui_propctrl* propctrl );
@@ -739,7 +739,7 @@ public:
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)(&vec[i]), m_kind);
+			xui_propdata* propdata = (*m_newprop)(m_userptr, i, m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
@@ -766,7 +766,7 @@ public:
 			{
 				if (m_additem)
 				{
-					(*m_additem)((void*)(&vec));
+					(*m_additem)(m_userptr);
 				}
 				else
 				{
@@ -784,7 +784,7 @@ public:
 			{
 				if (m_delitem)
 				{
-					(*m_delitem)((void*)(&vec));
+					(*m_delitem)(m_userptr);
 				}
 				else
 				{
@@ -853,7 +853,7 @@ public:
 			std::wstringstream name;
 			name << "Element_";
 			name << i;
-			xui_propdata* propdata = (*m_newprop)((void*)itor, m_kind);
+			xui_propdata* propdata = (*m_newprop)(m_userptr, i, m_kind);
 			propdata->set_name(name.str());
 
 			m_propvec.push_back(propdata);
@@ -880,7 +880,7 @@ public:
 			{
 				if (m_additem)
 				{
-					(*m_additem)((void*)(&lst));
+					(*m_additem)(m_userptr);
 				}
 				else
 				{
@@ -898,7 +898,7 @@ public:
 			{
 				if (m_delitem)
 				{
-					(*m_delitem)((void*)(&lst));
+					(*m_delitem)(m_userptr);
 				}
 				else
 				{

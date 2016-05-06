@@ -196,7 +196,7 @@ xui_method_explain(xui_propview, del_propelse,		void					)( const xui_proproot_v
 		if (itor != lastroot.end())
 		{
 			m_propelsevec.erase(m_propelsevec.begin()+i);
-			del_kindctrl(m_propelsevec[i]);
+			del_kindctrl((*itor));
 			refresh();
 			break;
 		}

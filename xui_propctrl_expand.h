@@ -77,7 +77,7 @@ public:
 	virtual void			on_linkpropdata	( void );
 };
 
-class xui_propctrl_expand_string : public xui_propctrl_expand
+class xui_propctrl_expand_number : public xui_propctrl_expand
 {
 	xui_declare_rtti
 
@@ -90,12 +90,12 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propctrl_expand_string( xui_propdata* propdata );
+	xui_propctrl_expand_number( xui_propdata* propdata );
 
 	/*
 	//destructor
 	*/
-	virtual ~xui_propctrl_expand_string( void );
+	virtual ~xui_propctrl_expand_number( void );
 
 	/*
 	//propdata
@@ -112,7 +112,7 @@ protected:
 	/*
 	//member
 	*/
-	xui_propedit_string*	m_propedit;
+	xui_propedit_number*	m_propedit;
 };
 
 class xui_propctrl_expand_bool : public xui_propctrl_expand

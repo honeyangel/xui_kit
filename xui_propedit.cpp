@@ -208,7 +208,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f
 	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, (s32)interval);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
+	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 4, 2));
 	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);

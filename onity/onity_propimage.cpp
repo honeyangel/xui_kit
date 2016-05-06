@@ -52,48 +52,56 @@ xui_create_explain(onity_propimage)( onity_propfile* propfile, u32 id )
 }
 
 /*
+//method
+*/
+xui_method_explain(onity_propimage, get_image,		NP2DSImage*		)( void )
+{
+	return NPDynamicCast(NP2DSImage, get_asset());
+}
+
+/*
 //static
 */
 xui_method_explain(onity_propimage, get_splitmode,	s32				)( void* userptr )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	return (s32)image->GetSplitMode();
 }
 xui_method_explain(onity_propimage, set_splitmode,	void			)( void* userptr, s32  value )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	image->SetSplitMode((npu32)value);
 }
 xui_method_explain(onity_propimage, was_alphablend, bool			)( void* userptr )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	return image->WasAlphablend();
 }
 xui_method_explain(onity_propimage, set_alphablend, void			)( void* userptr, bool value )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	image->SetAlphablend(value);
 }
 xui_method_explain(onity_propimage, was_scalestyle, bool			)( void* userptr )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	return image->WasScalestyle();
 }
 xui_method_explain(onity_propimage, set_scalestyle, void			)( void* userptr, bool value )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	image->SetScalestyle(value);
 }
 xui_method_explain(onity_propimage, get_rectangle,	xui_rect2d<f64>	)( void* userptr )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	f64 x = (f64)image->GetSrcX();
 	f64 y = (f64)image->GetSrcY();
 	f64 w = (f64)image->GetSrcW();
@@ -103,7 +111,7 @@ xui_method_explain(onity_propimage, get_rectangle,	xui_rect2d<f64>	)( void* user
 xui_method_explain(onity_propimage, set_rectangle,	void			)( void* userptr, const xui_rect2d<f64>& value )
 {
 	onity_propimage* propimage = (onity_propimage*)userptr;
-	NP2DSImage* image = (NP2DSImage*)propimage->get_asset();
+	NP2DSImage* image = propimage->get_image();
 	image->SetSrcX((nps32)value.ax);
 	image->SetSrcY((nps32)value.ay);
 	image->SetSrcW((nps32)value.get_w());

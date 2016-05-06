@@ -3,7 +3,7 @@
 
 #include "onity_propasset.h"
 
-enum BlendMode
+enum
 {
 	BM_USER,
 	BM_DARK,
@@ -36,19 +36,20 @@ protected:
 	/*
 	//static
 	*/
-	static u08					get_localflip		( void* userptr );//new ctrl
-	static void					set_localflip		( void* userptr, u08  value );
+	static f64					get_localflip		( void* userptr );
+	static void					set_localflip		( void* userptr, f64  value );
 	static f64					get_localangle		( void* userptr );
 	static void					set_localangle		( void* userptr, f64  value );
 	static f64					get_localscaleunit	( void* userptr );
 	static void					set_localscaleunit	( void* userptr, f64  value );
 	static xui_vector<f64>		get_localscale		( void* userptr );
 	static void					set_localscale		( void* userptr, const xui_vector<f64>& value );
-	static xui_vector<f64>		get_localpivot		( void* userptr );//new ctrl
+	static xui_vector<f64>		get_localpivot		( void* userptr );
 	static void					set_localpivot		( void* userptr, const xui_vector<f64>& value );
+	static xui_rect2d<f64>		get_pivotboundbox	( void* userptr );
 
-	static u08					get_worldflip		( void* userptr );
-	static void					set_worldflip		( void* userptr, u08  value );
+	static f64					get_worldflip		( void* userptr );
+	static void					set_worldflip		( void* userptr, f64  value );
 	static f64					get_worldangle		( void* userptr );
 	static void					set_worldangle		( void* userptr, f64  value );
 	static f64					get_worldscaleunit	( void* userptr );

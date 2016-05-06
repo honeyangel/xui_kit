@@ -408,6 +408,9 @@
     <ClInclude Include="xui_propedit_colour.h">
       <Filter>LibGUI\propview\edit</Filter>
     </ClInclude>
+    <ClInclude Include="xui_numbbox.h">
+      <Filter>LibGUI\textbox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -835,6 +838,9 @@
     </ClCompile>
     <ClCompile Include="xui_propedit_colour.cpp">
       <Filter>LibGUI\propview\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_numbbox.cpp">
+      <Filter>LibGUI\textbox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

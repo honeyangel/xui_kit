@@ -29,6 +29,8 @@ xui_bitmap*	onity_resource::icon_warning	= NULL;
 xui_bitmap*	onity_resource::icon_world		= NULL;
 xui_bitmap* onity_resource::icon_state		= NULL;
 xui_bitmap* onity_resource::icon_transition = NULL;
+xui_bitmap* onity_resource::icon_leftright	= NULL;
+xui_bitmap* onity_resource::icon_topbottom	= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -61,4 +63,6 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_world		= xui_bitmap::create("icon/world.png");
 	icon_state		= xui_bitmap::create("icon/state.png");
 	icon_transition = xui_bitmap::create("icon/transition.png");
+	icon_leftright	= xui_bitmap::create("icon/leftright.png");
+	icon_topbottom	= xui_bitmap::create("icon/topbottom.png");
 }

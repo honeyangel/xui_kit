@@ -8,6 +8,8 @@
 #include "xui_propctrl_expand.h"
 #include "xui_propctrl_vector.h"
 #include "xui_propctrl_slider.h"
+#include "onity_propctrl_pivot.h"
+#include "onity_propctrl_flip.h"
 #include "onity_propfile.h"
 #include "onity_proptransref.h"
 
@@ -33,26 +35,28 @@ xui_method_explain(onity_proptransref, get_transref,		NP2DSTransRef*	)( void )
 
 xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 {
-	m_localkind = new xui_propkind(this, L"Local Transform", "LocalTransform", xui_kindctrl::create, NULL, true);
-	m_localkind->add_propdata(new onity_propdata_flip(
+	m_localkind = new xui_propkind(this, L"LocalTransform", "LocalTransform", xui_kindctrl::create, NULL, true);
+	m_localkind->add_propdata(new xui_propdata_number_func(
 		m_localkind,
-		L"Local Flip",
-		NULL, //TODO
+		L"Flip",
+		onity_propctrl_flip::create,
 		get_localflip,
 		set_localflip,
-		this));
-	m_localkind->add_propdata(new xui_propdata_vector(
+		this,
+		NT_UNSIGNEDINT));
+	m_localkind->add_propdata(new onity_propdata_pivot(
 		m_localkind,
-		L"Local Pivot",
-		NULL, //TODO
+		L"Pivot",
+		onity_propctrl_pivot::create,
 		get_localpivot,
 		set_localpivot,
+		get_pivotboundbox,
 		this,
 		NT_INT));
 
 	m_localkind->add_propdata(new xui_propdata_number_func(
 		m_localkind,
-		L"Local Rotation",
+		L"Rotation",
 		xui_propctrl_number::create,
 		get_localangle,
 		set_localangle,
@@ -71,8 +75,8 @@ xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 		0.01));
 	m_localkind->add_propdata(new xui_propdata_expand_number(
 		m_localkind,
-		L"Local Scaling",
-		xui_propctrl_expand_string::create,
+		L"Scaling",
+		xui_propctrl_expand_number::create,
 		subprop,
 		get_localscaleunit,
 		set_localscaleunit,
@@ -84,17 +88,26 @@ xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 }
 xui_method_explain(onity_proptransref, add_worldkind,		void			)( void )
 {
-	m_worldkind = new xui_propkind(this, L"World Transform", "WorldTransform", xui_kindctrl::create, NULL, true);
-	m_worldkind->add_propdata(new onity_propdata_flip(
-		m_worldkind,
-		L"World Flip",
-		NULL, //TODO
-		get_worldflip,
-		set_worldflip,
-		this));
+	m_worldkind = new xui_propkind(this, L"WorldTransform", "WorldTransform", xui_kindctrl::create, NULL, true);
 	m_worldkind->add_propdata(new xui_propdata_number_func(
 		m_worldkind,
-		L"World Rotation",
+		L"Flip",
+		onity_propctrl_flip::create,
+		get_worldflip,
+		set_worldflip,
+		this,
+		NT_UNSIGNEDINT));
+	m_worldkind->add_propdata(new xui_propdata_vector(
+		m_worldkind,
+		L"Translate",
+		xui_propctrl_vector::create,
+		get_worldscale,
+		set_worldscale,
+		this,
+		NT_INT));
+	m_worldkind->add_propdata(new xui_propdata_number_func(
+		m_worldkind,
+		L"Rotation",
 		xui_propctrl_number::create,
 		get_worldangle,
 		set_worldangle,
@@ -113,22 +126,14 @@ xui_method_explain(onity_proptransref, add_worldkind,		void			)( void )
 		0.01));
 	m_worldkind->add_propdata(new xui_propdata_expand_number(
 		m_worldkind,
-		L"World Scaling",
-		xui_propctrl_expand_string::create,
+		L"Scaling",
+		xui_propctrl_expand_number::create,
 		subprop,
 		get_worldscaleunit,
 		set_worldscaleunit,
 		this,
 		NT_FLOAT,
 		0.01));
-	m_worldkind->add_propdata(new xui_propdata_vector(
-		m_worldkind,
-		L"World Translate",
-		xui_propctrl_vector::create,
-		get_worldscale,
-		set_worldscale,
-		this,
-		NT_INT));
 
 	add_propkind(m_worldkind);
 }
@@ -214,13 +219,10 @@ xui_method_explain(onity_proptransref, add_graphkind,		void			)( void )
 		set_blenddst,
 		this));
 	textmap.clear();
-	showmap.clear();
 	textmap[0] = L"User";
 	textmap[1] = L"Dark";
 	textmap[2] = L"Add";
 	textmap[3] = L"Default";
-	showmap[0].push_back(0);
-	showmap[0].push_back(1);
 	m_graphkind->add_propdata(new xui_propdata_expand_enum_func(
 		m_graphkind,
 		L"Alpha Blend",
@@ -230,8 +232,7 @@ xui_method_explain(onity_proptransref, add_graphkind,		void			)( void )
 		set_blendmode,
 		this,
 		subprop,
-		true,
-		showmap));
+		true));
 
 	//outline
 	subprop.clear();
@@ -241,14 +242,11 @@ xui_method_explain(onity_proptransref, add_graphkind,		void			)( void )
 	subprop.push_back(new xui_propdata_number_func(
 		m_graphkind,
 		L"Outline Width",
-		xui_propctrl_slider::create,
+		xui_propctrl_number::create,
 		get_outlinewidth,
 		set_outlinewidth,
 		this,
-		NT_UNSIGNEDINT,
-		1,
-		0,
-		3));
+		NT_UNSIGNEDINT));
 	subprop.push_back(new xui_propdata_colour(
 		m_graphkind,
 		L"Outline Colour",
@@ -273,15 +271,15 @@ xui_method_explain(onity_proptransref, add_graphkind,		void			)( void )
 /*
 //static
 */
-xui_method_explain(onity_proptransref, get_localflip,		u08				)( void* userptr )
+xui_method_explain(onity_proptransref, get_localflip,		f64				)( void* userptr )
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
-	return prop->get_transref()->GetLocalFlips();
+	return (f64)prop->get_transref()->GetLocalFlips();
 }
-xui_method_explain(onity_proptransref, set_localflip,		void			)( void* userptr, u08 value )
+xui_method_explain(onity_proptransref, set_localflip,		void			)( void* userptr, f64 value )
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
-	prop->get_transref()->SetLocalFlips(value);
+	prop->get_transref()->SetLocalFlips((npu08)value);
 }
 xui_method_explain(onity_proptransref, get_localangle,		f64				)( void* userptr )
 {
@@ -292,6 +290,12 @@ xui_method_explain(onity_proptransref, set_localangle,		void			)( void* userptr,
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
 	prop->get_transref()->SetLocalAngle((npf32)value);
+}
+xui_method_explain(onity_proptransref, get_pivotboundbox,	xui_rect2d<f64>	)( void* userptr )
+{
+	onity_proptransref* prop = (onity_proptransref*)userptr;
+	NPRect rect = prop->get_transref()->GetOrignBounding();
+	return xui_rect2d<f64>((f64)rect.LT, (f64)rect.TP, (f64)rect.RT, (f64)rect.BM);
 }
 xui_method_explain(onity_proptransref, get_localscaleunit,	f64				)( void* userptr )
 {
@@ -326,15 +330,15 @@ xui_method_explain(onity_proptransref, set_localpivot,		void			)( void* userptr,
 	prop->get_transref()->SetLocalAnglePivot(NPVector3((f32)value.x, (f32)value.y, 0.0f));
 }
 
-xui_method_explain(onity_proptransref, get_worldflip,		u08				)( void* userptr )
+xui_method_explain(onity_proptransref, get_worldflip,		f64				)( void* userptr )
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
-	return prop->get_transref()->GetWorldFlips();
+	return (f64)prop->get_transref()->GetWorldFlips();
 }
-xui_method_explain(onity_proptransref, set_worldflip,		void			)( void* userptr, u08 value )
+xui_method_explain(onity_proptransref, set_worldflip,		void			)( void* userptr, f64 value )
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
-	prop->get_transref()->SetWorldFlips(value);
+	prop->get_transref()->SetWorldFlips((npu08)value);
 }
 xui_method_explain(onity_proptransref, get_worldangle,		f64				)( void* userptr )
 {
@@ -442,7 +446,9 @@ xui_method_explain(onity_proptransref, set_blendmode,		void			)( void* userptr, 
 		dst = NPPropertyA::BM_ZERO;
 		break;
 	case BM_USER:
-		return;
+		src = NPPropertyA::BM_ONE;
+		dst = NPPropertyA::BM_ZERO;
+		break;
 	}
 
 	onity_proptransref* prop = (onity_proptransref*)userptr;

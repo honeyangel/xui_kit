@@ -32,6 +32,7 @@ public:
 	s32						get_indent		( void );
 	xui_kindctrl*			get_kindctrl	( void );
 	xui_propview*			get_propview	( void );
+	xui_component*			get_ctrlelse	( void );
 	void					add_ctrlelse	( xui_component* component );
 
 protected:

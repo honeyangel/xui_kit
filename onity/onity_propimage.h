@@ -3,6 +3,7 @@
 
 #include "onity_prop2dsasset.h"
 
+class NP2DSImage;
 class onity_propimage : public onity_prop2dsasset
 {
 public:
@@ -10,6 +11,11 @@ public:
 	//constructor
 	*/
 	onity_propimage( onity_propfile* propfile, u32 id );
+
+	/*
+	//method
+	*/
+	NP2DSImage*				get_image		( void );
 
 protected:
 	/*
