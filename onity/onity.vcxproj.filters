@@ -122,6 +122,7 @@
     <ClInclude Include="onity_propctrl_transref.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_recent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -246,6 +247,7 @@
     <ClCompile Include="onity_propctrl_transref.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="onity_recent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">

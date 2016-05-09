@@ -232,7 +232,7 @@ xui_method_explain(xui_global, get_openpath,	std::wstring					)( void )
 	memset(&info, 0, sizeof(BROWSEINFO));
 	info.hwndOwner	= gHWND;
 	info.lpszTitle	= L"Select Path";
-	info.ulFlags	= BIF_RETURNONLYFSDIRS;
+	info.ulFlags	= BIF_USENEWUI;
 	info.lpfn		= BrowseCallbackProc;
 	LPITEMIDLIST lpitem = SHBrowseForFolder(&info);
 	if (lpitem == NULL)
@@ -272,7 +272,7 @@ xui_method_explain(xui_global, get_path,		std::vector<std::wstring>		)( const st
 	std::vector<std::wstring> result;
 
 	WIN32_FIND_DATAW findData;
-	std::wstring full = g_workpath + ((path.length() == 0) ? L"*.*" : path+L"/*.*");
+	std::wstring full = (path.length() == 0) ? L"*.*" : path+L"/*.*";
 	std::wstring temp = pathstyle_replace(full, L'/', L'\\');
 	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
 	if (handle != INVALID_HANDLE_VALUE)
@@ -295,12 +295,12 @@ xui_method_explain(xui_global, get_path,		std::vector<std::wstring>		)( const st
 
 	return result;
 }
-xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const std::wstring& path )
+xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const std::wstring& path, const std::wstring& filter )
 {
 	std::vector<std::wstring> result;
 
 	WIN32_FIND_DATAW findData;
-	std::wstring full = g_workpath + ((path.length() == 0) ? L"*.*" : path+L"/*.*");
+	std::wstring full = (path.length() == 0) ? filter : path+L"/"+filter;
 	std::wstring temp = pathstyle_replace(full, L'/', L'\\');
 	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
 	if (handle != INVALID_HANDLE_VALUE)
@@ -328,7 +328,7 @@ xui_method_explain(xui_global, get_file,		std::vector<std::wstring>		)( const st
 xui_method_explain(xui_global, has_path,		bool							)( const std::wstring& path )
 {
 	WIN32_FIND_DATAW findData;
-	std::wstring full = g_workpath + ((path.length() == 0) ? L"*.*" : path+L"/*.*");
+	std::wstring full = (path.length() == 0) ? L"*.*" : path+L"/*.*";
 	std::wstring temp = pathstyle_replace(full, L'/', L'\\');
 	HANDLE handle = FindFirstFile(temp.c_str(), &findData);
 	if (handle != INVALID_HANDLE_VALUE)
@@ -353,13 +353,13 @@ xui_method_explain(xui_global, has_file,		bool							)( const std::wstring& file
 }
 xui_method_explain(xui_global, add_path,		bool							)( const std::wstring& path )
 {
-	std::wstring full = g_workpath + path;
+	std::wstring full = path;
 	std::wstring temp = pathstyle_replace(full, L'/', L'\\');
 	return CreateDirectory(temp.c_str(), NULL) != 0;
 }
 xui_method_explain(xui_global, del_file,		bool							)( const std::wstring& path )
 {
-	std::wstring temp = pathstyle_replace(g_workpath+path+L'\0', L'/', L'\\');
+	std::wstring temp = pathstyle_replace(path+L'\0', L'/', L'\\');
 	SHFILEOPSTRUCTW fileOP;
 	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
 	fileOP.hwnd		= gHWND;
@@ -371,8 +371,8 @@ xui_method_explain(xui_global, del_file,		bool							)( const std::wstring& path
 }
 xui_method_explain(xui_global, mov_file,		bool							)( const std::wstring& src, const std::wstring& dst )
 {
-	std::wstring tempsrc = pathstyle_replace(g_workpath+src+L'\0', L'/', L'\\');
-	std::wstring tempdst = pathstyle_replace(g_workpath+dst+L'\0', L'/', L'\\');
+	std::wstring tempsrc = pathstyle_replace(src+L'\0', L'/', L'\\');
+	std::wstring tempdst = pathstyle_replace(dst+L'\0', L'/', L'\\');
 	SHFILEOPSTRUCTW fileOP;
 	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
 	fileOP.hwnd		= gHWND;
@@ -384,8 +384,8 @@ xui_method_explain(xui_global, mov_file,		bool							)( const std::wstring& src,
 }
 xui_method_explain(xui_global, cpy_file,		bool							)( const std::wstring& src, const std::wstring& dst )
 {
-	std::wstring tempsrc = pathstyle_replace(g_workpath+src+L'\0', L'/', L'\\');
-	std::wstring tempdst = pathstyle_replace(g_workpath+dst+L'\0', L'/', L'\\');
+	std::wstring tempsrc = pathstyle_replace(src+L'\0', L'/', L'\\');
+	std::wstring tempdst = pathstyle_replace(dst+L'\0', L'/', L'\\');
 	SHFILEOPSTRUCTW fileOP;
 	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
 	fileOP.hwnd		= gHWND;
@@ -397,8 +397,8 @@ xui_method_explain(xui_global, cpy_file,		bool							)( const std::wstring& src,
 }
 xui_method_explain(xui_global, rna_file,		bool							)( const std::wstring& src, const std::wstring& dst )
 {
-	std::wstring tempsrc = pathstyle_replace(g_workpath+src+L'\0', L'/', L'\\');
-	std::wstring tempdst = pathstyle_replace(g_workpath+dst+L'\0', L'/', L'\\');
+	std::wstring tempsrc = pathstyle_replace(src+L'\0', L'/', L'\\');
+	std::wstring tempdst = pathstyle_replace(dst+L'\0', L'/', L'\\');
 	SHFILEOPSTRUCTW fileOP;
 	memset(&fileOP, 0, sizeof(SHFILEOPSTRUCTW));
 	fileOP.hwnd		= gHWND;

@@ -60,16 +60,17 @@ protected:
 	/*
 	//event
 	*/
-	virtual void			on_paintdebug		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clicktransform	( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickanchor		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickcoordinate	( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickdebug		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickwndmenu		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clicksave		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickload		( xui_component* sender, xui_method_args& args );
-	virtual void			on_clickreset		( xui_component* sender, xui_method_args& args );
-	virtual void			on_mainviewinvalid	( xui_component* sender, xui_method_args& args );
+	void					on_paintdebug		( xui_component* sender, xui_method_args& args );
+	void					on_clicktransform	( xui_component* sender, xui_method_args& args );
+	void					on_clickanchor		( xui_component* sender, xui_method_args& args );
+	void					on_clickcoordinate	( xui_component* sender, xui_method_args& args );
+	void					on_clickdebug		( xui_component* sender, xui_method_args& args );
+	void					on_clickwndmenu		( xui_component* sender, xui_method_args& args );
+	void					on_clicksave		( xui_component* sender, xui_method_args& args );
+	void					on_clickload		( xui_component* sender, xui_method_args& args );
+	void					on_clickreset		( xui_component* sender, xui_method_args& args );
+	void					on_mainviewinvalid	( xui_component* sender, xui_method_args& args );
+	void					on_recentaccept		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//method
