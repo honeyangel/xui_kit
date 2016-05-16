@@ -28,6 +28,7 @@ protected:
 	//callback
 	*/
 	virtual void	on_load				( xui_method_args& args );
+	virtual void	on_setrendersz		( xui_method_args& args );
 
 	/*
 	//method

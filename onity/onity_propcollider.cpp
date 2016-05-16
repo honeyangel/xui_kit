@@ -6,6 +6,9 @@
 #include "xui_kindctrl.h"
 #include "xui_propkind.h"
 #include "xui_propctrl_rect2d.h"
+#include "onity_mainform.h"
+#include "onity_inspector.h"
+#include "onity_preview.h"
 #include "onity_propasset.h"
 #include "onity_propcollider.h"
 
@@ -17,7 +20,8 @@ xui_create_explain(onity_propcollider)( onity_propfile* propfile, NP2DSCollider*
 , m_collider(collider)
 {
 	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(collider->GetName()), "Collider", xui_kindctrl::create, NULL, true);
-	m_basekind->xm_namechanged += new xui_method_member<xui_method_args, onity_propcollider>(this, &onity_propcollider::on_namechanged);
+	m_basekind->xm_namechanged += new xui_method_member<xui_method_args,     onity_propcollider>(this, &onity_propcollider::on_namechanged);
+	m_basekind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_propcollider>(this, &onity_propcollider::on_propchanged);
 
 	m_basekind->add_propdata(new xui_propdata_number_func(
 		m_basekind,
@@ -55,9 +59,17 @@ xui_method_explain(onity_propcollider, get_collider,	NP2DSCollider*	)( void )
 }
 
 /*
+//override
+*/
+xui_method_explain(onity_propcollider, on_attach,		void			)( void )
+{
+	set_drawrect();
+}
+
+/*
 //event
 */
-xui_method_explain(onity_propcollider, on_namechanged,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propcollider, on_namechanged,	void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
 	std::wstring text = textbox->get_text();
@@ -70,6 +82,23 @@ xui_method_explain(onity_propcollider, on_namechanged,	void			)( xui_component* 
 		collider->SetName(name);
 		collider->GetOwnedFile()->SetNeedSave(true);
 	}
+}
+xui_method_explain(onity_propcollider, on_propchanged,	void			)( xui_component* sender, xui_method_propdata& args )
+{
+	if (args.propdata->get_name() == L"Rectangle")
+	{
+		set_drawrect();
+	}
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_propcollider, set_drawrect,	void			)( void )
+{
+	NPRect rect = m_collider->GetRect();
+	onity_preview* preview = onity_mainform::get_ptr()->get_inspector()->get_preview();
+	preview->set_drawrect(xui_rect2d<s32>(rect.LT, rect.TP, rect.RT, rect.BM));
 }
 
 /*

@@ -16,7 +16,7 @@ xui_method_explain(xui_propview, create,			xui_propview*			)( void )
 {
 	xui_propview* propview = new xui_propview(xui_vector<s32>(480, 380));
 	xui_method_ptrcall(propview, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(propview, set_borderrt	)(4);
+	xui_method_ptrcall(propview, set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(propview, set_corner		)(3);
 	return propview;
 }
@@ -59,10 +59,12 @@ xui_method_explain(xui_propview, get_proproot,		const xui_proproot_vec&	)( void 
 xui_method_explain(xui_propview, set_proproot,		void					)( xui_proproot* proproot )
 {
 	//detach
-	for (u32 i = 0; i < m_proprootvec.size(); ++i)
-		m_proprootvec[i]->non_ctrl();
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
 		m_propelsevec[i]->non_ctrl();
+	for (u32 i = 0; i < m_proprootvec.size(); ++i)
+		m_proprootvec[i]->non_ctrl();
+	for (u32 i = 0; i < m_proprootvec.size(); ++i)
+		m_proprootvec[i]->on_detach(proproot);
 
 	//remove
 	del_kindctrlall();
@@ -74,6 +76,7 @@ xui_method_explain(xui_propview, set_proproot,		void					)( xui_proproot* propro
 	if (m_proproot)
 	{
 		m_proproot->set_ctrl(this);
+		m_proproot->on_attach();
 		m_proprootvec.push_back(m_proproot);
 
 		const xui_propkind_vec& vec = m_proproot->get_propkind();
@@ -98,10 +101,12 @@ xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_v
 	else
 	{
 		//detach
-		for (u32 i = 0; i < m_proprootvec.size(); ++i)
-			m_proprootvec[i]->non_ctrl();
 		for (u32 i = 0; i < m_propelsevec.size(); ++i)
 			m_propelsevec[i]->non_ctrl();
+		for (u32 i = 0; i < m_proprootvec.size(); ++i)
+			m_proprootvec[i]->non_ctrl();
+		for (u32 i = 0; i < m_proprootvec.size(); ++i)
+			m_proprootvec[i]->on_detach(proproot);
 
 		//remove
 		del_kindctrlall();
@@ -112,6 +117,8 @@ xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_v
 		m_propelsevec.clear();
 		for (u32 i = 0; i < m_proprootvec.size(); ++i)
 			m_proprootvec[i]->set_ctrl(this);
+		for (u32 i = 0; i < m_proprootvec.size(); ++i)
+			m_proprootvec[i]->on_attach();
 
 		xui_propkind_vec vec = get_samekind();
 		for (u32 i = 0; i < vec.size(); ++i)
@@ -149,6 +156,7 @@ xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_v
 		}
 	}
 
+	//detach
 	if (repidx != -1)
 	{
 		for (u32 i = 0; i < m_propelsevec.size(); ++i)
@@ -161,6 +169,8 @@ xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_v
 		m_propelsevec.push_back(propelse);
 	}
 
+	//attach
+	propelse->on_attach();
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
 	{
 		xui_proproot* proproot = m_propelsevec[i];
@@ -179,7 +189,6 @@ xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_v
 				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
 			}
 		}
-
 	}
 
 	refresh();

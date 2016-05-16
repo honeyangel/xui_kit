@@ -17,11 +17,22 @@ public:
 	*/
 	NP2DSCollider*			get_collider	( void );
 
+	/*
+	//override
+	*/
+	virtual void			on_attach		( void );
+
 protected:
 	/*
 	//event
 	*/
-	void					on_namechanged	( xui_component* sender, xui_method_args& args );
+	void					on_namechanged	( xui_component* sender, xui_method_args&     args );
+	void					on_propchanged	( xui_component* sender, xui_method_propdata& args );
+
+	/*
+	//method
+	*/
+	void					set_drawrect	( void );
 
 	/*
 	//static

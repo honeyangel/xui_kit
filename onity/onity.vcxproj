@@ -26,6 +26,7 @@
     <ClInclude Include="onity_paramview.h" />
     <ClInclude Include="onity_pathctrl.h" />
     <ClInclude Include="onity_pathdata.h" />
+    <ClInclude Include="onity_preview.h" />
     <ClInclude Include="onity_project.h" />
     <ClInclude Include="onity_prop2dsasset.h" />
     <ClInclude Include="onity_prop2dsres.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="onity_paramview.cpp" />
     <ClCompile Include="onity_pathctrl.cpp" />
     <ClCompile Include="onity_pathdata.cpp" />
+    <ClCompile Include="onity_preview.cpp" />
     <ClCompile Include="onity_project.cpp" />
     <ClCompile Include="onity_prop2dsasset.cpp" />
     <ClCompile Include="onity_prop2dsres.cpp" />

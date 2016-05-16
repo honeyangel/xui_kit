@@ -54,14 +54,30 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 }
 
 /*
+//method
+*/
+xui_method_explain(xui_dialog, set_text,	void		)( u32 index, const std::wstring& text )
+{
+	switch (index)
+	{
+	case 0:
+		m_accept->set_text(text);
+		break;
+	case 1:
+		m_cancel->set_text(text);
+		break;
+	}
+}
+
+/*
 //callback
 */
-xui_method_explain(xui_dialog, on_accept, void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_dialog, on_accept,	void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_window::on_accept(sender, args);
 	xui_desktop::get_ins()->del_child(this);
 }
-xui_method_explain(xui_dialog, on_cancel, void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_dialog, on_cancel,	void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_window::on_cancel(sender, args);
 	xui_desktop::get_ins()->del_child(this);

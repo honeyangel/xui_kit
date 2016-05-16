@@ -13,6 +13,11 @@ public:
 	*/
 	xui_dialog( const std::wstring& text, s32 num_button );
 
+	/*
+	//method
+	*/
+	void			set_text	( u32 index, const std::wstring& text );
+
 protected:
 	/*
 	//callback

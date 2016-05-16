@@ -65,6 +65,20 @@ xui_method_explain(onity_renderview, on_load,				void)( xui_method_args& args )
 	xui_control::on_load(args);
 	create_framebuffer();
 }
+xui_method_explain(onity_renderview, on_setrendersz,		void)( xui_method_args& args )
+{
+	xui_control::on_setrendersz(args);
+	if (m_colorbitmap)
+	{
+		if (m_framebuffersize.w < get_renderw() ||
+			m_framebuffersize.h < get_renderh())
+		{
+			m_framebuffersize *= 2;
+			delete_framebuffer();
+			create_framebuffer();
+		}
+	}
+}
 
 /*
 //method
@@ -77,7 +91,6 @@ xui_method_explain(onity_renderview, create_framebuffer,	void)( void )
 		glGenRenderbuffers(1, &m_depthbuffername);
 		attach_framebuffer();
 
-		xui_vector<s32> size = get_rendersz();
 		m_colorbitmap = new xui_bitmap(m_framebuffersize, xui_bitmap_format::R8G8B8, NULL);
 		glFramebufferTexture2D(
 			GL_FRAMEBUFFER,

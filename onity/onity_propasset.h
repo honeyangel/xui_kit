@@ -13,6 +13,16 @@ public:
 	*/
 	onity_propasset( onity_propfile* propfile );
 
+	/*
+	//method
+	*/
+	onity_propfile*		get_propfile	( void );
+
+	/*
+	//override
+	*/
+	virtual void		on_detach		( const xui_proproot_vec& proproot );
+
 protected:
 	/*
 	//member

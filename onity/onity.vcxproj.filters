@@ -123,6 +123,9 @@
       <Filter>project</Filter>
     </ClInclude>
     <ClInclude Include="onity_recent.h" />
+    <ClInclude Include="onity_preview.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -248,6 +251,9 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_recent.cpp" />
+    <ClCompile Include="onity_preview.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">
@@ -255,6 +261,9 @@
     </Filter>
     <Filter Include="project">
       <UniqueIdentifier>{be1e9e13-da2c-4793-8342-e5cca01f25b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inspector">
+      <UniqueIdentifier>{6dcb6ad3-0991-4a99-9b8c-8501caf9f1fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

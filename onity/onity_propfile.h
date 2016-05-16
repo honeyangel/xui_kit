@@ -3,6 +3,7 @@
 
 #include "xui_proproot.h"
 
+class onity_savekind;
 class onity_propfile : public xui_proproot
 {
 public:
@@ -14,15 +15,26 @@ public:
 	/*
 	//method
 	*/
-	const std::wstring&		get_full	( void ) const;
+	const std::wstring&		get_full		( void ) const;
 
 	/*
 	//virtual
 	*/
-	virtual bool			was_modify	( void );
-	virtual void			ntf_rename	( const std::wstring& last, const std::wstring& curr );
-	virtual void			load		( void );
-	virtual void			save		( void );
+	virtual bool			was_modify		( void );
+	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
+	virtual void			load			( void );
+	virtual void			save			( void );
+
+	/*
+	//override
+	*/
+	virtual void			on_detach		( const xui_proproot_vec& proproot );
+
+	/*
+	//static
+	*/
+	static void				on_notify_accept( xui_component* sender, xui_method_args& args );
+	static void				on_notify_cancel( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*
@@ -30,6 +42,7 @@ protected:
 	*/
 	std::wstring			m_fullname;
 	xui_propkind*			m_basekind;
+	onity_savekind*			m_savekind;
 };
 
 #endif//__onity_propfile_h__

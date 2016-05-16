@@ -23,11 +23,11 @@ xui_delete_explain(xui_proproot)( void )
 /*
 //method
 */
-xui_method_explain(xui_proproot, get_propkind, const xui_propkind_vec&	)( void ) const
+xui_method_explain(xui_proproot, get_propkind,	const xui_propkind_vec&	)( void ) const
 {
 	return m_propkind;
 }
-xui_method_explain(xui_proproot, has_propkind, bool						)( xui_propkind* propkind ) const
+xui_method_explain(xui_proproot, has_propkind,	bool					)( xui_propkind* propkind ) const
 {
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
@@ -38,7 +38,7 @@ xui_method_explain(xui_proproot, has_propkind, bool						)( xui_propkind* propki
 
 	return false;
 }
-xui_method_explain(xui_proproot, add_propkind, void						)( xui_propkind* propkind )
+xui_method_explain(xui_proproot, add_propkind,	void					)( xui_propkind* propkind )
 {
 	if (propkind->was_tail())
 	{
@@ -69,4 +69,26 @@ xui_method_explain(xui_proproot, get_ctrl,		xui_propview*			)( void )
 xui_method_explain(xui_proproot, set_ctrl,		void					)( xui_propview* propview )
 {
 	m_ctrl = propview;
+}
+
+/*
+//virtual
+*/
+xui_method_explain(xui_proproot, on_detach,		void					)( xui_proproot* proproot )
+{
+	xui_proproot_vec vec;
+	if (proproot)    
+	{
+		vec.push_back(proproot);
+	}
+
+	on_detach(vec);
+}
+xui_method_explain(xui_proproot, on_detach,		void					)( const xui_proproot_vec& proproot )
+{
+
+}
+xui_method_explain(xui_proproot, on_attach,		void					)( void )
+{
+
 }

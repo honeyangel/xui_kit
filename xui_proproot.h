@@ -26,6 +26,13 @@ public:
 	xui_propview*			get_ctrl		( void );
 	void					set_ctrl		( xui_propview* propview );
 
+	/*
+	//virtual
+	*/
+	void					on_detach		( xui_proproot* proproot );
+	virtual void			on_detach		( const xui_proproot_vec& proproot );
+	virtual void			on_attach		( void );
+
 protected:
 	/*
 	//member
