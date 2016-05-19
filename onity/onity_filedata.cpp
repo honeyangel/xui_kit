@@ -8,6 +8,8 @@
 #include "onity_mainform.h"
 #include "onity_resource.h"
 #include "onity_propfile.h"
+#include "onity_proptexture.h"
+#include "onity_propparticle.h"
 #include "onity_propmodule.h"
 #include "onity_propsprite.h"
 #include "onity_propaction.h"
@@ -147,12 +149,12 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	if (type != META_NONE)
 		onity_prop2dsres::load_meta(type, xui_global::unicode_to_ascii(full));
 
-	if		(suff == L".png")			return new onity_propfile		(full);
-	else if (suff == L".PNG")			return new onity_propfile		(full);
+	if		(suff == L".png")			return new onity_proptexture	(full);
+	else if (suff == L".PNG")			return new onity_proptexture	(full);
 	else if (suff == L".npModule")		return new onity_propmodule		(full);
 	else if (suff == L".npSprite")		return new onity_propsprite		(full);
 	else if (suff == L".npAction")		return new onity_propaction		(full);
-	else if (suff == L".particle")		return new onity_propfile		(full);
+	else if (suff == L".particle")		return new onity_propparticle	(full);
 	else if (suff == L".controller")	return new onity_propcontroller	(full);
 	else
 	{

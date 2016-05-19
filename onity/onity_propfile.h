@@ -20,6 +20,8 @@ public:
 	/*
 	//virtual
 	*/
+	virtual std::string		get_dragtype	( void );
+	virtual void*			get_dragdata	( void );
 	virtual bool			was_modify		( void );
 	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
 	virtual void			load			( void );

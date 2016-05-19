@@ -17,7 +17,7 @@
 #include "onity_filedata.h"
 #include "onity_propactor.h"
 #include "onity_propframe.h"
-#include "onity_propfile.h"
+#include "onity_propparticle.h"
 #include "onity_renderview.h"
 #include "onity_resource.h"
 #include "onity_preview.h"
@@ -118,13 +118,12 @@ xui_method_explain(onity_preview, set_viewprop,			void)( xui_proproot* prop )
 		m_node = NULL;
 	}
 
-	onity_propfile*  propfile  = dynamic_cast<onity_propfile* >(prop);
-	onity_propframe* propframe = dynamic_cast<onity_propframe*>(prop);
-	onity_propactor* propactor = dynamic_cast<onity_propactor*>(prop);
-	if (propfile && onity_filedata::get_suff(propfile->get_full()) == L".particle")
+	onity_propparticle* propparticle = dynamic_cast<onity_propparticle*>(prop);
+	onity_propframe*    propframe    = dynamic_cast<onity_propframe*   >(prop);
+	onity_propactor*    propactor    = dynamic_cast<onity_propactor*   >(prop);
+	if (propparticle && propparticle->get_particle())
 	{
-		NPParticleSFX* particle = new NPParticleSFX;
-		particle->LoadFromXML(xui_global::unicode_to_ascii(propfile->get_full()));
+		NPParticleSFX* particle = propparticle->get_particle()->CreateInstance();
 		particle->SetFlag(PARTICLESFX_LOOPPLAY, true);
 		particle->Active();
 		m_node = particle;

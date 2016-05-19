@@ -5,7 +5,32 @@
 #include "xui_propctrl_object.h"
 
 class onity_proptransref;
-class onity_propdata_transref : public xui_propdata_object_func
+
+class onity_propdata_2dsasset : public xui_propdata_object_func
+{
+public:
+	/*
+	//constructor
+	*/
+	onity_propdata_2dsasset( 
+		xui_propkind*			kind,
+		const std::wstring&		name,
+		xui_prop_newctrl		func,
+		const std::string&		droptype,
+		get_func				userget,
+		set_func				userset,
+		void*					userptr );
+
+
+protected:
+	/*
+	//static
+	*/
+	static xui_bitmap*			get_icon		( xui_propdata* propdata );
+	static std::wstring			get_name		( xui_propdata* propdata );
+};
+
+class onity_propdata_transref : public onity_propdata_2dsasset
 {
 public:
 	/*
@@ -35,8 +60,6 @@ protected:
 	/*
 	//static
 	*/
-	static xui_bitmap*			get_icon		( xui_propdata* propdata );
-	static std::wstring			get_name		( xui_propdata* propdata );
 	static void*				get_asset		( void* userptr );
 	static void					set_asset		( void* userptr, void* value );		
 

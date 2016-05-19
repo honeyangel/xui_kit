@@ -2,12 +2,12 @@
 #define __onity_propstate_h__
 
 #include "xui_kindctrl.h"
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 
 class NP2DSState;
 class onity_state;
 class onity_proptransition;
-class onity_propstate : public onity_propasset
+class onity_propstate : public onity_propleaf
 {
 public:
 	/*
@@ -44,8 +44,6 @@ protected:
 	static void							set_retarget		( void* userptr, bool  value );
 	static void*						get_actor			( void* userptr );
 	static void							set_actor			( void* userptr, void* value );
-	static xui_bitmap*					get_actoricon		( xui_propdata* propdata );
-	static std::wstring					get_actorname		( xui_propdata* propdata );
 	static xui_proproot_vec				get_transitions		( void* userptr );
 	static void							del_transition		( void* userptr, xui_proproot* root );
 

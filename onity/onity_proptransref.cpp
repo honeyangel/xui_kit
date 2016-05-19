@@ -17,7 +17,7 @@
 //constructor
 */
 xui_create_explain(onity_proptransref)( onity_propfile* propfile, NP2DSTransRef* transref )
-: onity_propasset(propfile)
+: onity_propleaf(propfile)
 , m_transref(transref)
 {
 	add_localkind();

@@ -9,14 +9,14 @@
 #include "onity_mainform.h"
 #include "onity_inspector.h"
 #include "onity_preview.h"
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 #include "onity_propcollider.h"
 
 /*
 //constructor
 */
 xui_create_explain(onity_propcollider)( onity_propfile* propfile, NP2DSCollider* collider )
-: onity_propasset(propfile)
+: onity_propleaf(propfile)
 , m_collider(collider)
 {
 	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(collider->GetName()), "Collider", xui_kindctrl::create, NULL, true);

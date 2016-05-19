@@ -1,10 +1,10 @@
 #ifndef __onity_propcollider_h__
 #define __onity_propcollider_h__
 
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 
 class NP2DSCollider;
-class onity_propcollider : public onity_propasset
+class onity_propcollider : public onity_propleaf
 {
 public:
 	/*

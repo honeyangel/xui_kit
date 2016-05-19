@@ -13,6 +13,37 @@
 /*
 //constructor
 */
+xui_create_explain(onity_propdata_2dsasset)( 
+	xui_propkind*			kind, 
+	const std::wstring&		name, 
+	xui_prop_newctrl		func, 
+	const std::string&		droptype, 
+	get_func				userget, 
+	set_func				userset, 
+	void*					userptr )
+: xui_propdata_object_func(kind, name, func, droptype, NULL, get_icon, get_name, userget, userset, userptr)
+{}
+/*
+//static
+*/
+xui_method_explain(onity_propdata_2dsasset, get_icon,			xui_bitmap*			)( xui_propdata* propdata )
+{
+	return onity_resource::icon_animator;
+}
+xui_method_explain(onity_propdata_2dsasset, get_name,			std::wstring		)( xui_propdata* propdata )
+{
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
+	NP2DSAsset* asset = (NP2DSAsset*)dataobject->get_value();
+	std::string name  = asset->GetName();
+
+	char temp[256];
+	sprintf(temp, "%03d#%s", asset->GetKey(), name.c_str());
+	return xui_global::ascii_to_unicode(std::string(temp));
+}
+
+/*
+//constructor
+*/
 xui_create_explain(onity_propdata_transref)( 
 	xui_propkind*			kind, 
 	const std::wstring&		name, 
@@ -21,7 +52,7 @@ xui_create_explain(onity_propdata_transref)(
 	onity_proptransref*		proptransref,
 	get_total				usergettotal, 
 	void*					userptrtotal )
-: xui_propdata_object_func(kind, name, func, droptype, NULL, get_icon, get_name, get_asset, set_asset, proptransref)
+: onity_propdata_2dsasset(kind, name, func, droptype, get_asset, set_asset, proptransref)
 , m_proptransref(proptransref)
 , m_usergettotal(usergettotal)
 , m_userptrtotal(userptrtotal)
@@ -45,20 +76,6 @@ xui_method_explain(onity_propdata_transref, get_proptotal,		xui_proproot_vec	)( 
 /*
 //static
 */
-xui_method_explain(onity_propdata_transref, get_icon,			xui_bitmap*			)( xui_propdata* propdata )
-{
-	return onity_resource::icon_animator;
-}
-xui_method_explain(onity_propdata_transref, get_name,			std::wstring		)( xui_propdata* propdata )
-{
-	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
-	NP2DSAsset* asset = (NP2DSAsset*)dataobject->get_value();
-	std::string name  = asset->GetName();
-
-	char temp[256];
-	sprintf(temp, "%03d#%s", asset->GetKey(), name.c_str());
-	return xui_global::ascii_to_unicode(std::string(temp));
-}
 xui_method_explain(onity_propdata_transref, get_asset,			void*				)( void* userptr )
 {
 	onity_proptransref* proptransref = (onity_proptransref*)userptr;

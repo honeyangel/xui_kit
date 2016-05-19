@@ -80,9 +80,6 @@
     <ClInclude Include="onity_savekind.h">
       <Filter>project</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propasset.h">
-      <Filter>project</Filter>
-    </ClInclude>
     <ClInclude Include="onity_tileview.h">
       <Filter>project</Filter>
     </ClInclude>
@@ -125,6 +122,15 @@
     <ClInclude Include="onity_recent.h" />
     <ClInclude Include="onity_preview.h">
       <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propleaf.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proptexture.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propparticle.h">
+      <Filter>project</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -208,9 +214,6 @@
     <ClCompile Include="onity_savekind.cpp">
       <Filter>project</Filter>
     </ClCompile>
-    <ClCompile Include="onity_propasset.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
     <ClCompile Include="onity_tileview.cpp">
       <Filter>project</Filter>
     </ClCompile>
@@ -253,6 +256,15 @@
     <ClCompile Include="onity_recent.cpp" />
     <ClCompile Include="onity_preview.cpp">
       <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propleaf.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proptexture.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propparticle.cpp">
+      <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

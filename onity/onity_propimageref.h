@@ -21,8 +21,8 @@ protected:
 	/*
 	//static
 	*/
-	void*					get_image		( void* userptr );
-	void					set_image		( void* userptr, void* value );
+	static void*			get_image		( void* userptr );
+	static void				set_image		( void* userptr, void* value );
 
 	/*
 	//member

@@ -18,6 +18,7 @@
 #include "onity_proptransition.h"
 #include "onity_propcontroller.h"
 #include "onity_propstate.h"
+#include "onity_propctrl_transref.h"
 
 #include "onity_mainform.h"
 #include "onity_animator.h"
@@ -26,7 +27,7 @@
 //constructor
 */
 xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* statectrl )
-: onity_propasset(propfile)
+: onity_propleaf(propfile)
 , m_statectrl(statectrl)
 {
 	NP2DSState* state = m_statectrl->get_state();
@@ -45,14 +46,11 @@ xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* stat
 		get_retarget, 
 		set_retarget, 
 		state);
-	m_actor			= new xui_propdata_object_func(
+	m_actor			= new onity_propdata_2dsasset(
 		m_statekind, 
 		L"Action", 
 		xui_propctrl_object::create, 
 		"NP2DSActor", 
-		NULL, 
-		get_actoricon, 
-		get_actorname, 
 		get_actor, 
 		set_actor, 
 		state);
@@ -246,21 +244,6 @@ xui_method_explain(onity_propstate, set_actor,			void					)( void* userptr, void
 	npu32 resfile = (actor == NULL) ? -1 : actor->GetOwnedFile()->GetKey();
 	npu32 actorid = (actor == NULL) ? -1 : actor->GetKey();
 	state->SetActor(resfile, actorid);
-}
-xui_method_explain(onity_propstate, get_actoricon,		xui_bitmap*				)( xui_propdata* propdata )
-{
-	return onity_resource::icon_animator;
-}
-xui_method_explain(onity_propstate, get_actorname,		std::wstring			)( xui_propdata* propdata )
-{
-	xui_propdata_object* dataobject = (xui_propdata_object*)propdata;
-	NP2DSActor* actor = (NP2DSActor*)dataobject->get_value();
-	if (actor)
-	{
-		return xui_global::ascii_to_unicode(actor->GetName());
-	}
-
-	return L"None";
 }
 xui_method_explain(onity_propstate, get_transitions,	xui_proproot_vec		)( void* userptr )
 {

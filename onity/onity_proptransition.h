@@ -2,11 +2,11 @@
 #define __onity_proptransition_h__
 
 #include "xui_kindctrl.h"
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 
 class NP2DSParam;
 class NP2DSTransition;
-class onity_proptransition : public onity_propasset
+class onity_proptransition : public onity_propleaf
 {
 public:
 	/*

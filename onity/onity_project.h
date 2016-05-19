@@ -30,22 +30,23 @@ protected:
 	/*
 	//event
 	*/
-	void			on_clearclick		( xui_component* sender, xui_method_args&  args );
-	void			on_searchtextchanged( xui_component* sender, xui_method_args&  args );
-	void			on_searchtextenter	( xui_component* sender, xui_method_args&  args );
-	void			on_headperform		( xui_component* sender, xui_method_args&  args );
-	void			on_fillperform		( xui_component* sender, xui_method_args&  args );
-	void			on_fillrenderelse	( xui_component* sender, xui_method_args&  args );
-	void			on_sizectrlmousemove( xui_component* sender, xui_method_mouse& args );
-	void			on_pathviewselection( xui_component* sender, xui_method_args&  args );
-	void			on_fileviewselection( xui_component* sender, xui_method_args&  args );
-	void			on_fileviewdoubleclk( xui_component* sender, xui_method_mouse& args );
-	void			on_folderclick		( xui_component* sender, xui_method_args&  args );
-	void			on_controllerclick	( xui_component* sender, xui_method_args&  args );
-	void			on_pathitemclick	( xui_component* sender, xui_method_args&  args );
-	void			on_pathtogglerender	( xui_component* sender, xui_method_args&  args );
-	void			on_pathtoggleclick	( xui_component* sender, xui_method_args&  args );
-	void			on_sliderscroll		( xui_component* sender, xui_method_args&  args );
+	void			on_clearclick		( xui_component* sender, xui_method_args&	  args );
+	void			on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
+	void			on_searchtextenter	( xui_component* sender, xui_method_args&	  args );
+	void			on_headperform		( xui_component* sender, xui_method_args&	  args );
+	void			on_fillperform		( xui_component* sender, xui_method_args&	  args );
+	void			on_fillrenderelse	( xui_component* sender, xui_method_args&	  args );
+	void			on_sizectrlmousemove( xui_component* sender, xui_method_mouse&	  args );
+	void			on_pathviewselection( xui_component* sender, xui_method_args&	  args );
+	void			on_folderclick		( xui_component* sender, xui_method_args&	  args );
+	void			on_controllerclick	( xui_component* sender, xui_method_args&	  args );
+	void			on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
+	void			on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
+	void			on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
+	void			on_sliderscroll		( xui_component* sender, xui_method_args&	  args );
+	void			on_fileviewnodeclick( xui_component* sender, xui_method_mouse&	  args );
+	void			on_fileviewdoubleclk( xui_component* sender, xui_method_mouse&	  args );
+	void			on_fileviewassetdrag( xui_component* sender, xui_method_dragdrop& args );
 
 	/*
 	//method

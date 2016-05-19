@@ -1,9 +1,9 @@
 #ifndef __onity_prop2dsasset_h__
 #define __onity_prop2dsasset_h__
 
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 
-class onity_prop2dsasset : public onity_propasset
+class onity_prop2dsasset : public onity_propleaf
 {
 public:
 	/*
@@ -16,6 +16,12 @@ public:
 	*/
 	u32					get_assetid		( void ) const;
 	NP2DSAsset*			get_asset		( void );
+
+	/*
+	//override
+	*/
+	virtual std::string	get_dragtype	( void );
+	virtual void*		get_dragdata	( void );
 
 protected:
 	/*

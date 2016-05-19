@@ -1,6 +1,6 @@
 #include "xui_desktop.h"
 #include "xui_dialog.h"
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 #include "onity_filedata.h"
 #include "onity_filectrl.h"
 #include "onity_resource.h"
@@ -31,6 +31,14 @@ xui_method_explain(onity_propfile, get_full,			const std::wstring&	)( void ) con
 /*
 //virtual
 */
+xui_method_explain(onity_propfile, get_dragtype,		std::string			)( void )
+{
+	return "";
+}
+xui_method_explain(onity_propfile, get_dragdata,		void*				)( void )
+{
+	return NULL;
+}
 xui_method_explain(onity_propfile, was_modify,			bool				)( void )
 {
 	return false;
@@ -63,9 +71,9 @@ xui_method_explain(onity_propfile, on_detach,			void				)( const xui_proproot_ve
 			onity_propfile* propfile = dynamic_cast<onity_propfile*>(proproot[i]);
 			if (propfile == NULL)
 			{
-				onity_propasset* propasset = dynamic_cast<onity_propasset*>(proproot[i]);
-				if (propasset)
-					propfile = propasset->get_propfile();
+				onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(proproot[i]);
+				if (propleaf)
+					propfile = propleaf->get_propfile();
 			}
 
 			if (propfile && propfile == this)

@@ -14,7 +14,7 @@
 //constructor
 */
 xui_create_explain(onity_prop2dsasset)( onity_propfile* propfile, u32 id )
-: onity_propasset(propfile)
+: onity_propleaf(propfile)
 , m_assetid(id)
 {
 	NP2DSAsset* asset = get_asset();
@@ -48,6 +48,22 @@ xui_method_explain(onity_prop2dsasset, get_asset,		NP2DSAsset*	)( void )
 xui_method_explain(onity_prop2dsasset, get_assetid,		u32			)( void ) const
 {
 	return m_assetid;
+}
+
+/*
+//override
+*/
+xui_method_explain(onity_prop2dsasset, get_dragtype,	std::string	)( void )
+{
+	NP2DSAsset* asset = get_asset();
+	if (asset)
+		return asset->GetRTTI()->GetName();
+
+	return "";
+}
+xui_method_explain(onity_prop2dsasset, get_dragdata,	void*		)( void )
+{
+	return get_asset();
 }
 
 /*

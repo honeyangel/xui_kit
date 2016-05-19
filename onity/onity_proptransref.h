@@ -1,7 +1,7 @@
 #ifndef __onity_proptransref_h__
 #define __onity_proptransref_h__
 
-#include "onity_propasset.h"
+#include "onity_propleaf.h"
 
 enum
 {
@@ -12,7 +12,7 @@ enum
 };
 
 class NP2DSTransRef;
-class onity_proptransref : public onity_propasset
+class onity_proptransref : public onity_propleaf
 {
 public:
 	/*

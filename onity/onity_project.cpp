@@ -49,8 +49,8 @@ xui_create_explain(onity_project)( void )
 	m_folder		= menu->add_item(onity_resource::icon_folder,	L"Folder");
 	menu->add_separate();
 	m_controller	= menu->add_item(onity_resource::icon_animator, L"Animation Controller");
-	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_folderclick);
-	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_controllerclick);
+	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
+	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
 
 	m_create = new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -63,8 +63,8 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_create,	set_menu			)(menu);
 
 	m_search = new xui_textbox(xui_vector<s32>(100, 20));
-	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_searchtextchanged);
-	xui_method_ptrcall(m_search,	xm_textenter		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_searchtextenter);
+	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_searchtextchanged);
+	xui_method_ptrcall(m_search,	xm_textenter		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_searchtextenter);
 	xui_method_ptrcall(m_search,	ini_component		)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_search,	ini_drawer			)(onity_resource::icon_search);
 	xui_method_ptrcall(m_search,	set_backcolor		)(xui_colour(1.0f, 0.20f));
@@ -77,7 +77,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_search,	set_hintdraw		)(xui_family_render(xui_colour::gray));
 
 	m_clear = new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_clear,		xm_buttonclick		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_clearclick);
+	xui_method_ptrcall(m_clear,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_clearclick);
 	xui_method_ptrcall(m_clear,		ini_component		)(true, false);
 	xui_method_ptrcall(m_clear,		ini_component		)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_clear,		set_corner			)(8);
@@ -85,7 +85,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_clear,		ini_drawer			)(onity_resource::icon_clear);
 
 	m_head  = new xui_panel(xui_vector<s32>(28));
-	xui_method_ptrcall(m_head,		xm_perform			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_headperform);
+	xui_method_ptrcall(m_head,		xm_perform			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_headperform);
 	xui_method_ptrcall(m_head,		ini_component		)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_head,		set_drawcolor		)(false);
 	xui_method_ptrcall(m_head,		set_borderrt		)(xui_rect2d<s32>(8, 4, 8, 4));
@@ -97,13 +97,16 @@ xui_create_explain(onity_project)( void )
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
 	m_pathview = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
-	xui_method_ptrcall(m_pathview,	xm_selectedchange	) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_pathviewselection);
+	xui_method_ptrcall(m_pathview,	xm_selectedchange	) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_pathviewselection);
 	xui_method_ptrcall(m_pathview,	ini_component		)(0, 0, DOCKSTYLE_L);
+	xui_method_ptrcall(m_pathview,	set_acceptdrag		)(false);
+	xui_method_ptrcall(m_pathview,	set_allowmulti		)(false);
 	xui_method_ptrcall(m_pathview,	set_hscrollauto		)(false);
 
 	m_fileview = new onity_fileview;
-	xui_method_ptrcall(m_fileview,	xm_lineviewselection) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_fileviewselection);
-	xui_method_ptrcall(m_fileview,	xm_lineviewdoubleclk) += new xui_method_member<xui_method_mouse, onity_project>(this, &onity_project::on_fileviewdoubleclk);
+	xui_method_ptrcall(m_fileview,	xm_fileviewnodeclick) += new xui_method_member<xui_method_mouse,	onity_project>(this, &onity_project::on_fileviewnodeclick);
+	xui_method_ptrcall(m_fileview,	xm_fileviewdoubleclk) += new xui_method_member<xui_method_mouse,	onity_project>(this, &onity_project::on_fileviewdoubleclk);
+	xui_method_ptrcall(m_fileview,	xm_fileviewassetdrag) += new xui_method_member<xui_method_dragdrop, onity_project>(this, &onity_project::on_fileviewassetdrag);
 	xui_method_ptrcall(m_fileview,	ini_component		)(0, 0, DOCKSTYLE_F);
 
 	m_pathpane = new xui_panel(xui_vector<s32>(20));
@@ -117,7 +120,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_slider,	set_borderrt		)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_slider,	ini_component		)(0, 0, DOCKSTYLE_R);
 	xui_method_ptrcall(m_slider,	ini_scroll			)(60, 0);
-	xui_method_ptrcall(m_slider,	xm_scroll			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_sliderscroll);
+	xui_method_ptrcall(m_slider,	xm_scroll			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_sliderscroll);
 
 	m_status = new xui_drawer(xui_vector<s32>(200, 20)); 
 	xui_method_ptrcall(m_status,	ini_component		)(0, 0, DOCKSTYLE_F);
@@ -132,13 +135,13 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_toolpane,	add_child			)(m_status);
 
 	m_sizectrl = new xui_control(xui_vector<s32>(4));
-	xui_method_ptrcall(m_sizectrl,	xm_mousemove		) += new xui_method_member<xui_method_mouse, onity_project>(this, &onity_project::on_sizectrlmousemove);
+	xui_method_ptrcall(m_sizectrl,	xm_mousemove		) += new xui_method_member<xui_method_mouse,	onity_project>(this, &onity_project::on_sizectrlmousemove);
 	xui_method_ptrcall(m_sizectrl,	ini_component		)(0, 0, DOCKSTYLE_U);
 	xui_method_ptrcall(m_sizectrl,	set_cursor			)(CURSOR_WE);
 
 	m_fill = new xui_panel(xui_vector<s32>(100));
-	xui_method_ptrcall(m_fill,		xm_perform			) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_fillperform);
-	xui_method_ptrcall(m_fill,		xm_renderelse		) += new xui_method_member<xui_method_args,  onity_project>(this, &onity_project::on_fillrenderelse);
+	xui_method_ptrcall(m_fill,		xm_perform			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_fillperform);
+	xui_method_ptrcall(m_fill,		xm_renderelse		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_fillrenderelse);
 	xui_method_ptrcall(m_fill,		ini_component		)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_fill,		set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_fill,		set_sidecolor		)(xui_colour::black);
@@ -237,20 +240,20 @@ xui_method_explain(onity_project, ntf_rename,				void)( const std::wstring& last
 /*
 //event
 */
-xui_method_explain(onity_project, on_clearclick,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_clearclick,			void)( xui_component* sender, xui_method_args&     args )
 {
 	m_search->set_text(L"");
 }
-xui_method_explain(onity_project, on_searchtextchanged,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_searchtextchanged,		void)( xui_component* sender, xui_method_args&     args )
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
 	//TODO
 }
-xui_method_explain(onity_project, on_searchtextenter,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_searchtextenter,		void)( xui_component* sender, xui_method_args&     args )
 {
 	//TODO
 }
-xui_method_explain(onity_project, on_headperform,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_headperform,			void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt = m_head->get_renderrtins();
 	s32 w = rt.get_w()-m_create->get_renderw()-6;
@@ -258,14 +261,14 @@ xui_method_explain(onity_project, on_headperform,			void)( xui_component* sender
 	xui_method_ptrcall(m_search, on_perform_x)(rt.ax+m_create->get_renderw()+6);
 	xui_method_ptrcall(m_clear,  on_perform_x)(rt.ax+m_create->get_renderw()+6+m_search->get_renderw()-m_clear->get_renderw()-2);
 }
-xui_method_explain(onity_project, on_fillperform,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_fillperform,			void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt = m_pathview->get_renderrt()+m_pathview->get_renderpt();
 	m_sizectrl->on_perform_h(rt.get_h());
 	m_sizectrl->on_perform_x(rt.bx-m_sizectrl->get_renderw());
 	m_sizectrl->on_perform_y(rt.ay);
 }
-xui_method_explain(onity_project, on_fillrenderelse,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_fillrenderelse,		void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt;
 	rt = m_pathview->get_renderrtabs();
@@ -275,7 +278,7 @@ xui_method_explain(onity_project, on_fillrenderelse,		void)( xui_component* send
 	rt = m_toolpane->get_renderrtabs();
 	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay), xui_colour::black);
 }
-xui_method_explain(onity_project, on_sizectrlmousemove,		void)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_project, on_sizectrlmousemove,		void)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -286,12 +289,12 @@ xui_method_explain(onity_project, on_sizectrlmousemove,		void)( xui_component* s
 		m_pathview->set_renderw(width);		
 	}
 }
-xui_method_explain(onity_project, on_pathviewselection,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_pathviewselection,		void)( xui_component* sender, xui_method_args&     args )
 {
 	refresh_lineview();
 	refresh_pathpane();
 }
-xui_method_explain(onity_project, on_fileviewselection,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_fileviewnodeclick,		void)( xui_component* sender, xui_method_mouse&    args )
 {
 	std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
 	if (nodevec.size() > 0)
@@ -310,14 +313,15 @@ xui_method_explain(onity_project, on_fileviewselection,		void)( xui_component* s
 		}
 	}
 }
-xui_method_explain(onity_project, on_fileviewdoubleclk,		void)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_project, on_fileviewdoubleclk,		void)( xui_component* sender, xui_method_mouse&	   args )
 {
 	if (args.mouse == MB_L)
 	{
-		xui_treenode* node = m_fileview->get_lineview()->choose_node(m_fileview->get_renderpt(args.point));
-		if (node && node->get_rootnode() == NULL)
+		std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
+		if (nodevec.size() > 0)
 		{
-			if (node->get_data())
+			xui_treenode* node = nodevec.front();
+			if (node->get_rootnode() == NULL && node->get_data())
 			{
 				xui_treenode* pathnode = (xui_treenode*)node->get_data();
 				xui_method_ptrcall(m_pathview, set_selectednode	)(pathnode, true);
@@ -349,7 +353,41 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void)( xui_component* s
 		}
 	}
 }
-xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_fileviewassetdrag,		void)( xui_component* sender, xui_method_dragdrop& args )
+{
+	std::string dragtype;
+	void*       dragdata = NULL;
+
+	std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*   node = nodevec.front();
+		onity_treedata* data = (onity_treedata*)node->get_linkdata();
+		xui_proproot*   prop = data->get_prop();
+
+		onity_propfile* propfile = dynamic_cast<onity_propfile*>(prop);
+		onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(prop);
+		if (propfile)
+		{
+			dragtype  = propfile->get_dragtype();
+			dragdata  = propfile->get_dragdata();
+		}
+		if (propleaf)
+		{
+			dragtype  = propleaf->get_dragtype();
+			dragdata  = propleaf->get_dragdata();
+		}
+	}
+
+	if (dragdata != NULL && dragtype.length() > 0)
+	{
+		args.drag  = sender;
+		args.type  = dragtype;
+		args.data  = dragdata;
+		args.allow = true;
+	}
+}
+xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender, xui_method_args&     args )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	std::wstring path = xui_global::get_workpath();
@@ -402,7 +440,7 @@ xui_method_explain(onity_project, on_folderclick,			void)( xui_component* sender
 		pathnode->set_edittext(0);
 	}
 }
-xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sender, xui_method_args&	   args )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
@@ -441,7 +479,7 @@ xui_method_explain(onity_project, on_controllerclick,		void)( xui_component* sen
 		linenode->set_edittext(0);
 	}
 }
-xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode* node = (xui_treenode*)sender->get_data();
 	if (node->was_selected())
@@ -472,7 +510,7 @@ xui_method_explain(onity_project, on_pathitemclick,			void)( xui_component* send
 		xui_method_ptrcall(m_pathview, set_nodevisible	)(node);
 	}
 }
-xui_method_explain(onity_project, on_pathtogglerender,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_pathtogglerender,		void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_toggle*     toggle = xui_dynamic_cast(xui_toggle, sender);
 	xui_colour      color  = toggle->get_rendercolor() * toggle->get_vertexcolor();
@@ -480,7 +518,7 @@ xui_method_explain(onity_project, on_pathtogglerender,		void)( xui_component* se
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 	xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
 }
-xui_method_explain(onity_project, on_pathtoggleclick,		void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_pathtoggleclick,		void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
 	if (toggle->was_push())
@@ -501,7 +539,7 @@ xui_method_explain(onity_project, on_pathtoggleclick,		void)( xui_component* sen
 		}
 	}
 }
-xui_method_explain(onity_project, on_sliderscroll,			void)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_project, on_sliderscroll,			void)( xui_component* sender, xui_method_args&     args )
 {
 	xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
 

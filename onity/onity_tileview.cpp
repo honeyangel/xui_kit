@@ -1,6 +1,6 @@
 #include "NPFileName.h"
 #include "NPRender.h"
-#include "NPTexture.h"
+#include "NPSourceTexture.h"
 #include "NP2DSImage.h"
 #include "NP2DSFrame.h"
 #include "NP2DSActor.h"
@@ -16,6 +16,7 @@
 #include "xui_treenode.h"
 #include "xui_treeview.h"
 #include "onity_prop2dsasset.h"
+#include "onity_proptexture.h"
 #include "onity_filedata.h"
 #include "onity_propfile.h"
 #include "onity_renderview.h"
@@ -33,12 +34,14 @@ xui_create_explain(onity_tileview)( void )
 , m_viewfile(NULL)
 {
 	m_drawview = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 1024));
-	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,  onity_tileview>(this, &onity_tileview::on_drawviewinvalid);
-	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,  onity_tileview>(this, &onity_tileview::on_drawviewrenderself);
-	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd, onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
-	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousedown);
-	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousewheel);
-	xui_method_ptrcall(m_drawview, xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse, onity_tileview>(this, &onity_tileview::on_drawviewmousedclick);
+	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewinvalid);
+	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewrenderself);
+	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
+	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousedown);
+	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousewheel);
+	xui_method_ptrcall(m_drawview, xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmouseclick);
+	xui_method_ptrcall(m_drawview, xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousedoubleclick);
+	xui_method_ptrcall(m_drawview, xm_mousedragitem		) += new xui_method_member<xui_method_dragdrop, onity_tileview>(this, &onity_tileview::on_drawviewmousedragitem);
 	xui_method_ptrcall(m_drawview, set_parent			)(this);
 	xui_method_ptrcall(m_drawview, set_borderrt			)(xui_rect2d<s32>(20));
 	xui_method_ptrcall(m_drawview, ini_component		)(0, 0, DOCKSTYLE_F);
@@ -55,7 +58,7 @@ xui_create_explain(onity_tileview)( void )
 /*
 //method
 */
-xui_method_explain(onity_tileview, get_lineview,			xui_treeview*		)( void )
+xui_method_explain(onity_tileview, get_lineview,				xui_treeview*		)( void )
 {
 	onity_fileview* fileview = xui_dynamic_cast(onity_fileview, m_parent);
 	if (fileview)
@@ -63,27 +66,28 @@ xui_method_explain(onity_tileview, get_lineview,			xui_treeview*		)( void )
 
 	return NULL;
 }
-xui_method_explain(onity_tileview, get_drawview,			onity_renderview*	)( void )
+xui_method_explain(onity_tileview, get_drawview,				onity_renderview*	)( void )
 {
 	return m_drawview;
 }
-xui_method_explain(onity_tileview, get_viewroll,			xui_scroll*			)( void )
+xui_method_explain(onity_tileview, get_viewroll,				xui_scroll*			)( void )
 {
 	return m_viewroll;
 }
-xui_method_explain(onity_tileview, get_viewfile,			xui_treenode*		)( void )
+xui_method_explain(onity_tileview, get_viewfile,				xui_treenode*		)( void )
 {
 	return m_viewfile;
 }
-xui_method_explain(onity_tileview, set_viewfile,			void				)( xui_treenode* viewfile )
+xui_method_explain(onity_tileview, set_viewfile,				void				)( xui_treenode* viewfile )
 {
 	if (m_viewfile != viewfile)
 	{
 		m_viewfile  = viewfile;
 		m_drawview->refresh();
+		m_viewroll->set_value(0);
 	}
 }
-xui_method_explain(onity_tileview, set_tilesize,			void				)( s32 size )
+xui_method_explain(onity_tileview, set_tilesize,				void				)( s32 size )
 {
 	if (m_tilesize != size)
 	{
@@ -91,7 +95,7 @@ xui_method_explain(onity_tileview, set_tilesize,			void				)( s32 size )
 		m_drawview->refresh();
 	}
 }
-xui_method_explain(onity_tileview, get_tileinfo,			void				)( s32& s, s32& c, s32& g, s32& w, s32& h )
+xui_method_explain(onity_tileview, get_tileinfo,				void				)( s32& s, s32& c, s32& g, s32& w, s32& h )
 {
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 	s = m_tilesize + m_tilesize/5*2;
@@ -100,7 +104,7 @@ xui_method_explain(onity_tileview, get_tileinfo,			void				)( s32& s, s32& c, s3
 	w = s + g;
 	h = m_tilesize + name_size + vert_grap;
 }
-xui_method_explain(onity_tileview, get_tilenode,			xui_treenode*		)( const xui_vector<s32>& mouse, xui_rect2d<s32>& tilert )
+xui_method_explain(onity_tileview, get_tilenode,				xui_treenode*		)( const xui_vector<s32>& mouse, xui_rect2d<s32>& tilert )
 {
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 	xui_vector<s32> pt = m_drawview->get_renderpt(mouse);
@@ -134,7 +138,7 @@ xui_method_explain(onity_tileview, get_tilenode,			xui_treenode*		)( const xui_v
 
 	return NULL;
 }
-xui_method_explain(onity_tileview, set_tilevisible,			void				)( xui_treenode* node )
+xui_method_explain(onity_tileview, set_tilevisible,				void				)( xui_treenode* node )
 {
 	xui_treeview* lineview = get_lineview();
 	if (lineview)
@@ -172,7 +176,7 @@ xui_method_explain(onity_tileview, set_tilevisible,			void				)( xui_treenode* n
 /*
 //event
 */
-xui_method_explain(onity_tileview, on_drawviewinvalid,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_tileview, on_drawviewinvalid,			void				)( xui_component* sender, xui_method_args&     args )
 {
 	xui_treeview* lineview = get_lineview();
 	if (lineview)
@@ -206,7 +210,7 @@ xui_method_explain(onity_tileview, on_drawviewinvalid,		void				)( xui_component
 		refresh();
 	}
 }
-xui_method_explain(onity_tileview, on_drawviewrenderself,	void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_tileview, on_drawviewrenderself,		void				)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.25f));
 	extern bool gInitCompleted;
@@ -271,7 +275,7 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,	void				)( xui_compone
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
-xui_method_explain(onity_tileview, on_drawviewkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
+xui_method_explain(onity_tileview, on_drawviewkeybddown,		void				)( xui_component* sender, xui_method_keybd&    args )
 {
 	if (args.kcode == KEY_BACK)
 	{
@@ -288,7 +292,7 @@ xui_method_explain(onity_tileview, on_drawviewkeybddown,	void				)( xui_componen
 		}
 	}
 }
-xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -323,29 +327,7 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,	void				)( xui_componen
 		}
 	}
 }
-xui_method_explain(onity_tileview, on_drawviewmousedclick,	void				)( xui_component* sender, xui_method_mouse& args )
-{
-	if (args.mouse == MB_L)
-	{
-		xui_rect2d<s32> rt;
-		xui_treenode* node = get_tilenode(args.point, rt);
-		if (node)
-		{
-			xui_treeview*   lineview = get_lineview();
-			xui_vector<s32> pt = node->get_screenpt() + xui_vector<s32>(lineview->get_renderw()/2, lineview->get_lineheight()/2);
-			onity_fileview* fileview = xui_dynamic_cast(onity_fileview, m_parent);
-
-			xui_method_mouse other_args;
-			other_args.mouse = MB_L;
-			other_args.point = pt;
-			other_args.alt	 = args.alt  ;
-			other_args.ctrl  = args.ctrl ;
-			other_args.shift = args.shift;
-			fileview->xm_lineviewdoubleclk(lineview, other_args);
-		}
-	}
-}
-xui_method_explain(onity_tileview, on_drawviewmousewheel,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_tileview, on_drawviewmousewheel,		void				)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (m_viewroll->was_visible())
 	{
@@ -353,11 +335,23 @@ xui_method_explain(onity_tileview, on_drawviewmousewheel,	void				)( xui_compone
 		args.handle = true;
 	}
 }
+xui_method_explain(onity_tileview, on_drawviewmouseclick,		void				)( xui_component* sender, xui_method_mouse&    args )
+{
+	xm_mouseclick(sender, args);
+}
+xui_method_explain(onity_tileview, on_drawviewmousedoubleclick, void				)( xui_component* sender, xui_method_mouse&	   args )
+{
+	xm_mousedoubleclick(sender, args);
+}
+xui_method_explain(onity_tileview, on_drawviewmousedragitem,	void				)( xui_component* sender, xui_method_dragdrop& args )
+{
+	xm_mousedragitem(sender, args);
+}
 
 /*
 //method
 */
-xui_method_explain(onity_tileview, draw_file,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	xui_rect2d<s32> drawrt = rt;
 	drawrt.ax += m_tilesize/5;
@@ -383,13 +377,13 @@ xui_method_explain(onity_tileview, draw_file,				void				)( const xui_rect2d<s32
 		xui_convas::get_ins()->fill_triangle(center, half, (node->was_expanded() ? TRIANGLE_LEFT : TRIANGLE_RIGHT), xui_colour::white);
 	}
 }
-xui_method_explain(onity_tileview, draw_icon,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_icon,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	onity_filedata* filedata = (onity_filedata*)node->get_linkdata();
 	xui_colour color =  node->was_selected() ? xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_colour::white;
 	xui_convas::get_ins()->draw_image(filedata->get_icon(0), rt, color);
 }
-xui_method_explain(onity_tileview, draw_name,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_name,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	xui_rect2d<s32> drawrt = rt;
 	drawrt.ay += m_tilesize;
@@ -404,7 +398,7 @@ xui_method_explain(onity_tileview, draw_name,				void				)( const xui_rect2d<s32
 	xui_rect2d<s32> textrt = xui_convas::get_ins()->calc_draw(text, xui_family::default, drawrt, TEXTALIGN_CC, true);
 	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default);
 }
-xui_method_explain(onity_tileview, draw_leaf,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_leaf,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	xui_rect2d<s32> drawrt = rt;
 	drawrt.ax += m_tilesize/5;
@@ -426,45 +420,39 @@ xui_method_explain(onity_tileview, draw_leaf,				void				)( const xui_rect2d<s32
 		{}
 	}
 }
-xui_method_explain(onity_tileview, draw_texture,			void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_texture,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	NPVector2 p1((npf32)rt.ax, (npf32)rt.ay);
 	NPVector2 p2((npf32)rt.bx, (npf32)rt.by);
 	NP2DSRenderUtil::GetIns()->DrawRect(p1, p2, NPMatrix4x4::Identity, NPColor(90.0f/255.0f, 90.0f/255.0f, 90.0f/255.0f));
 
-	onity_filedata* filedata = (onity_filedata*)node->get_linkdata();
-	std::string fullname = xui_global::unicode_to_ascii(filedata->get_full());
-	std::string pathname = NPFileNameHelper::PathName(fullname);
-	std::string filename = NPFileNameHelper::FileName(fullname);
-	u32 id = NP2DSTextureCache::GetIns()->GetTextureID(pathname, filename, true);
-	if (id != -1)
+	onity_filedata*    filedata = (onity_filedata*)node->get_linkdata();
+	onity_proptexture* fileprop = dynamic_cast<onity_proptexture*>(filedata->get_prop());
+	NPSourceTexture*   texture  = fileprop->get_texture();
+	if (texture)
 	{
-		NPTexture* texture = NP2DSTextureCache::GetIns()->GetTexture(id);
-		if (texture)
-		{
-			npu32 w = texture->GetWidth ();
-			npu32 h = texture->GetHeight();
-			npf32 s = (npf32)(m_tilesize) / xui_max(w, h);
-			npf32 x = p1.x;
-			npf32 y = p1.y;
-			NPTransform t;
-			t.SetIdentity();
-			t.SetS(NPVector3(s, s, 1.0f));
-			t.SetT(NPVector3(x, y, 0.0f));
-			NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
-			NP2DSRenderUtil::GetIns()->DrawImage(
-				&image, 
-				t.GetMatrix(),
-				NPColor::White, 
-				0,
-				0,
-				0,
-				0,
-				id);
-		}
+		npu32 w = texture->GetWidth ();
+		npu32 h = texture->GetHeight();
+		npf32 s = (npf32)(m_tilesize) / xui_max(w, h);
+		npf32 x = p1.x;
+		npf32 y = p1.y;
+		NPTransform t;
+		t.SetIdentity();
+		t.SetS(NPVector3(s, s, 1.0f));
+		t.SetT(NPVector3(x, y, 0.0f));
+		NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
+		NP2DSRenderUtil::GetIns()->DrawImage(
+			&image, 
+			t.GetMatrix(),
+			NPColor::White, 
+			0,
+			0,
+			0,
+			0,
+			texture->GetKey());
 	}
 }
-xui_method_explain(onity_tileview, draw_image,				void				)( const xui_rect2d<s32>& rt, NP2DSImage* image )
+xui_method_explain(onity_tileview, draw_image,					void				)( const xui_rect2d<s32>& rt, NP2DSImage* image )
 {
 	f32 sw = (f32)m_tilesize / (f32)image->GetSrcW();
 	f32 sh = (f32)m_tilesize / (f32)image->GetSrcH();
@@ -495,7 +483,7 @@ xui_method_explain(onity_tileview, draw_image,				void				)( const xui_rect2d<s3
 		0,
 		0);
 }
-xui_method_explain(onity_tileview, draw_frame,				void				)( const xui_rect2d<s32>& rt, NP2DSFrame* frame )
+xui_method_explain(onity_tileview, draw_frame,					void				)( const xui_rect2d<s32>& rt, NP2DSFrame* frame )
 {
 	NPRect bound = frame->GetBounding();
 
@@ -548,7 +536,7 @@ xui_method_explain(onity_tileview, draw_frame,				void				)( const xui_rect2d<s3
 			0);
 	}
 }
-xui_method_explain(onity_tileview, draw_actor,				void				)( const xui_rect2d<s32>& rt, NP2DSActor* actor )
+xui_method_explain(onity_tileview, draw_actor,					void				)( const xui_rect2d<s32>& rt, NP2DSActor* actor )
 {
 	NPRect bound = NPRect::Empty;
 	for (s32 i = (s32)actor->GetLayerCount()-1; i >= 0; --i)
@@ -588,7 +576,7 @@ xui_method_explain(onity_tileview, draw_actor,				void				)( const xui_rect2d<s3
 		frameKey->GetTransRef()->Render(scale, trans);
 	}
 }
-xui_method_explain(onity_tileview, draw_node,				void				)( s32 ic, s32 ir, s32 x, s32 y, s32 w, s32 s, xui_treenode* node )
+xui_method_explain(onity_tileview, draw_node,					void				)( s32 ic, s32 ir, s32 x, s32 y, s32 w, s32 s, xui_treenode* node )
 {
 	xui_rect2d<s32> tilert;
 	tilert.ax = x + ic*w;
@@ -609,7 +597,7 @@ xui_method_explain(onity_tileview, draw_node,				void				)( s32 ic, s32 ir, s32 
 		draw_name(tilert, node);
 	}
 }
-xui_method_explain(onity_tileview, draw_background,			void				)( s32 ic, s32 ir, s32 c, s32 g, s32 w, s32 h, u32 count )
+xui_method_explain(onity_tileview, draw_background,				void				)( s32 ic, s32 ir, s32 c, s32 g, s32 w, s32 h, u32 count )
 {
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 
@@ -645,7 +633,7 @@ xui_method_explain(onity_tileview, draw_background,			void				)( s32 ic, s32 ir,
 		++ir; ic = 0;
 	}
 }
-xui_method_explain(onity_tileview, trim_string,				std::wstring		)( const std::wstring& text, const xui_family& font, s32 maxwidth )
+xui_method_explain(onity_tileview, trim_string,					std::wstring		)( const std::wstring& text, const xui_family& font, s32 maxwidth )
 {
 	s32 w = xui_convas::get_ins()->calc_size(text, font, maxwidth, true).w;
 	if (w > maxwidth)
