@@ -13,11 +13,17 @@
 xui_create_explain(onity_propfile)( const std::wstring& full )
 : xui_proproot()
 , m_fullname(full)
+, m_savekind(NULL)
 {
 	m_basekind = new xui_propkind(this, onity_filedata::get_safe(full), "File", onity_filectrl::create, onity_resource::icon_file, true);
-	m_savekind = new onity_savekind(this, this);
 	add_propkind(m_basekind);
-	add_propkind(m_savekind);
+
+	std::wstring suff = onity_filedata::get_suff(full);
+	if (suff.length() > 0)
+	{
+		m_savekind = new onity_savekind(this, this);
+		add_propkind(m_savekind);
+	}
 }
 
 /*

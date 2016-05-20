@@ -1,5 +1,8 @@
 #include "NPFileName.h"
 #include "NP2DSStateCtrl.h"
+#include "NP2DSImageFile.h"
+#include "NP2DSFrameFile.h"
+#include "NP2DSActorFile.h"
 #include "NP2DSImageFileMgr.h"
 #include "NP2DSFrameFileMgr.h"
 #include "NP2DSActorFileMgr.h"
@@ -29,6 +32,7 @@
 #include "onity_prop2dsasset.h"
 #include "onity_2dsassetdata.h"
 #include "onity_propcontroller.h"
+#include "onity_proppath.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_mainform.h"
@@ -45,10 +49,10 @@ xui_create_explain(onity_project)( void )
 {
 	ini_namectrl(onity_resource::icon_project, L"Project");
 
-	xui_menu* menu	= xui_menu::create(80);
-	m_folder		= menu->add_item(onity_resource::icon_folder,	L"Folder");
-	menu->add_separate();
-	m_controller	= menu->add_item(onity_resource::icon_animator, L"Animation Controller");
+	xui_menu* menu1	= xui_menu::create(80);
+	m_folder		= menu1->add_item(onity_resource::icon_folder,	 L"Folder");
+	menu1->add_separate();
+	m_controller	= menu1->add_item(onity_resource::icon_animator, L"Animation Controller");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
 	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
 
@@ -60,7 +64,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_create,	set_textalign		)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_create,	set_iconsize		)(xui_vector<s32>(0));
 	xui_method_ptrcall(m_create,	ini_drawer			)(L"Create");
-	xui_method_ptrcall(m_create,	set_menu			)(menu);
+	xui_method_ptrcall(m_create,	set_menu			)(menu1);
 
 	m_search = new xui_textbox(xui_vector<s32>(100, 20));
 	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_searchtextchanged);
@@ -94,6 +98,29 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_head,		add_child			)(m_search);
 	xui_method_ptrcall(m_head,		add_child			)(m_clear );
 
+	xui_menu* menu2	= xui_menu::create(80);
+	m_showfind		= menu2->add_item(NULL, L"Show in Finder");
+	m_loadtype		= menu2->add_item(NULL, L"Modify All LoadType");
+	m_freetype		= menu2->add_item(NULL, L"Modify All FreeType");
+	menu2->add_separate();
+	m_property		= menu2->add_item(NULL, L"Property");
+	xui_menu* menu3 = xui_menu::create(80);
+	m_auto			= menu3->add_item(NULL, L"Auto");
+	m_never			= menu3->add_item(NULL, L"Never");
+	m_immediate		= menu3->add_item(NULL, L"Immediate");
+	xui_menu* menu4 = xui_menu::create(80);
+	m_on			= menu4->add_item(NULL, L"On");
+	m_off			= menu4->add_item(NULL, L"Off");
+	xui_method_ptrcall(m_loadtype,	set_submenu			)(menu3);
+	xui_method_ptrcall(m_freetype,	set_submenu			)(menu4);
+	xui_method_ptrcall(m_showfind,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_showfindclick);
+	xui_method_ptrcall(m_property,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_propertyclick);
+	xui_method_ptrcall(m_auto,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
+	xui_method_ptrcall(m_never,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
+	xui_method_ptrcall(m_immediate, xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
+	xui_method_ptrcall(m_on,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_loadtypeclick);
+	xui_method_ptrcall(m_off,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_loadtypeclick);
+
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
 	m_pathview = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
@@ -102,6 +129,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_pathview,	set_acceptdrag		)(false);
 	xui_method_ptrcall(m_pathview,	set_allowmulti		)(false);
 	xui_method_ptrcall(m_pathview,	set_hscrollauto		)(false);
+	xui_method_ptrcall(m_pathview,	set_contextmenu		)(menu2);
 
 	m_fileview = new onity_fileview;
 	xui_method_ptrcall(m_fileview,	xm_fileviewnodeclick) += new xui_method_member<xui_method_mouse,	onity_project>(this, &onity_project::on_fileviewnodeclick);
@@ -301,8 +329,12 @@ xui_method_explain(onity_project, on_fileviewnodeclick,		void)( xui_component* s
 	{
 		xui_treenode*   node = nodevec.front();
 		onity_treedata* data = (onity_treedata*)node->get_linkdata();
-		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-		inspector->set_proproot(data->get_prop());
+		onity_proppath* prop = dynamic_cast<onity_proppath*>(data->get_prop());
+		if (prop == NULL)
+		{
+			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+			inspector->set_proproot(data->get_prop());
+		}
 
 		if (node->get_rootnode() == NULL)
 		{
@@ -558,6 +590,63 @@ xui_method_explain(onity_project, on_sliderscroll,			void)( xui_component* sende
 	m_fileview->refresh();
 }
 
+xui_method_explain(onity_project, on_showfindclick,			void)( xui_component* sender, xui_method_args&	   args )
+{
+	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+	if (vec.size() > 0)
+	{
+		onity_pathdata* pathdata = (onity_pathdata*)vec.front()->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+		xui_global::set_showfind(proppath->get_full());
+	}
+}
+xui_method_explain(onity_project, on_propertyclick,			void)( xui_component* sender, xui_method_args&	   args )
+{
+	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+	if (vec.size() > 0)
+	{
+		onity_pathdata* pathdata = (onity_pathdata*)vec.front()->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->set_proproot(proppath);
+	}
+}
+xui_method_explain(onity_project, on_freetypeclick,			void)( xui_component* sender, xui_method_args&	   args )
+{
+	npu32 style = 0;
+	if		(sender == m_auto)		style = FS_AUTO;
+	else if (sender == m_never)		style = FS_NEVER;
+	else if (sender == m_immediate) style = FS_IMMEDIATE;
+	else
+	{}
+
+	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_full()) + "/";
+		set_freetype(META_MODULE, pathname, style);
+		set_freetype(META_SPRITE, pathname, style);
+		set_freetype(META_ACTION, pathname, style);
+	}
+}
+xui_method_explain(onity_project, on_loadtypeclick,			void)( xui_component* sender, xui_method_args&	   args )
+{
+	bool flag = (sender == m_on);
+	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_full()) + "/";
+		set_loadtype(META_MODULE, pathname, flag);
+		set_loadtype(META_SPRITE, pathname, flag);
+		set_loadtype(META_ACTION, pathname, flag);
+	}
+}
+
 /*
 //method
 */
@@ -661,6 +750,74 @@ xui_method_explain(onity_project, refresh_pathpane,			void)( void )
 		}
 	}
 }
+xui_method_explain(onity_project, set_freetype,				void)( u08 type, const std::string& pathname, u32 style )
+{
+	NP2DSAssetFileMgr* file_mgr = NULL;
+	switch (type)
+	{
+	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
+	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
+	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
+	}
+
+	for (npu32 i = 0; i < file_mgr->GetFileCount(); ++i)
+	{
+		std::string temppath = file_mgr->GetFilePH(i);
+		std::string tempfile = file_mgr->GetFileFN(i);
+		int index = temppath.find(pathname);
+		if (index != -1)
+		{
+			NP2DSAssetFile*   file = NULL;
+			switch (type)
+			{
+			case META_MODULE: file = NP2DSImageFileMgr::GetIns()->GetFile(i); break;
+			case META_SPRITE: file = NP2DSFrameFileMgr::GetIns()->GetFile(i); break;
+			case META_ACTION: file = NP2DSActorFileMgr::GetIns()->GetFile(i); break;
+			}
+
+			for (npu16 index = 0; index < file->GetAssetCount(); ++index)
+			{
+				npu32 id = file->GetAssetID(index);
+				NP2DSAsset* asset = file->GetAsset(id);
+				if (asset)
+					asset->SetFree(style);
+			}
+
+			file->SaveXml(temppath+tempfile);
+		}
+	}
+}
+xui_method_explain(onity_project, set_loadtype,				void)( u08 type, const std::string& pathname, bool flag )
+{
+	NP2DSAssetFileMgr* file_mgr = NULL;
+	switch (type)
+	{
+	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
+	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
+	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
+	}
+
+	for (npu32 i = 0; i < file_mgr->GetFileCount(); ++i)
+	{
+		std::string temppath = file_mgr->GetFilePH(i);
+		std::string tempfile = file_mgr->GetFileFN(i);
+		int index = temppath.find(pathname);
+		if (index != -1)
+		{
+			NP2DSAssetFile*   file = NULL;
+			switch (type)
+			{
+			case META_MODULE: file = NP2DSImageFileMgr::GetIns()->GetFile(i); break;
+			case META_SPRITE: file = NP2DSFrameFileMgr::GetIns()->GetFile(i); break;
+			case META_ACTION: file = NP2DSActorFileMgr::GetIns()->GetFile(i); break;
+			}
+
+			file->SetEntireLoad(flag);
+			file->SaveXml(temppath+tempfile);
+		}
+	}
+}
+
 //xui_method_explain(onity_project, refresh_pathmeta, void)( u08 type, const std::string& lastpath, const std::string& currpath )
 //{
 //	NP2DSAssetFileMgr* file_mgr = NULL;

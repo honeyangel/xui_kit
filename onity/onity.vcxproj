@@ -145,13 +145,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -179,6 +179,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga/Libs;../../BreezeGameBranchFlyMode_V26/omiga;../../BreezeGameBranchFlyMode_V26/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -197,6 +199,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga/Libs;../../BreezeGameBranchFlyMode_V26/omiga;../../BreezeGameBranchFlyMode_V26/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
