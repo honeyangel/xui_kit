@@ -61,7 +61,13 @@ public:
 	/*
 	//constructor
 	*/
-	xui_pickwnd( xui_propctrl* propctrl );
+	xui_pickwnd( void );
+
+	/*
+	//method
+	*/
+	xui_propctrl*			get_propctrl			( void );
+	void					set_propctrl			( xui_propctrl* propctrl );
 
 	/*
 	//virtual

@@ -45,6 +45,12 @@ public:
 	static xui_bitmap*	icon_transition;
 	static xui_bitmap*	icon_leftright;
 	static xui_bitmap*	icon_topbottom;
+	static xui_bitmap*	icon_small;
+	static xui_bitmap*	icon_large;
+	static xui_bitmap*	icon_reset;
+	static xui_bitmap*	icon_play;
+	static xui_bitmap*	icon_left;
+	static xui_bitmap*	icon_right;
 };
 
 #endif//__onity_resource_h__

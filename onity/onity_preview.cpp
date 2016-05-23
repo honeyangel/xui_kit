@@ -36,7 +36,7 @@ xui_create_explain(onity_preview)( void )
 	xui_method_ptrcall(m_play,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_play,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_play,	set_iconalign	)(IMAGE_C);
-	xui_method_ptrcall(m_play,	ini_drawer		)(onity_resource::icon_animator, xui_vector<s32>(16));
+	xui_method_ptrcall(m_play,	ini_drawer		)(onity_resource::icon_play, xui_vector<s32>(16));
 
 	xui_method_ptrcall(m_play,	xm_buttonclick	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_buttonclick);
 	m_speed	= xui_slider::create(FLOWSTYLE_H);
@@ -62,19 +62,19 @@ xui_create_explain(onity_preview)( void )
 	xui_method_ptrcall(m_small,	ini_component	)(0, 0, DOCKSTYLE_R);
 	xui_method_ptrcall(m_small,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_small,	set_iconalign	)(IMAGE_C);
-	xui_method_ptrcall(m_small,	ini_drawer		)(onity_resource::icon_animator, xui_vector<s32>(16));
+	xui_method_ptrcall(m_small,	ini_drawer		)(onity_resource::icon_small, xui_vector<s32>(16));
 	xui_method_ptrcall(m_small,	xm_buttonclick	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_buttonclick);
 	m_large	= new xui_button(xui_vector<s32>(24));
 	xui_method_ptrcall(m_large,	ini_component	)(0, 0, DOCKSTYLE_R);
 	xui_method_ptrcall(m_large,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_large,	set_iconalign	)(IMAGE_C);
-	xui_method_ptrcall(m_large,	ini_drawer		)(onity_resource::icon_animator, xui_vector<s32>(16));
+	xui_method_ptrcall(m_large,	ini_drawer		)(onity_resource::icon_large, xui_vector<s32>(16));
 	xui_method_ptrcall(m_large,	xm_buttonclick	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_buttonclick);
 	m_reset	= new xui_button(xui_vector<s32>(24));
 	xui_method_ptrcall(m_reset,	ini_component	)(0, 0, DOCKSTYLE_R);
 	xui_method_ptrcall(m_reset,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_reset,	set_iconalign	)(IMAGE_C);
-	xui_method_ptrcall(m_reset,	ini_drawer		)(onity_resource::icon_animator, xui_vector<s32>(16));
+	xui_method_ptrcall(m_reset,	ini_drawer		)(onity_resource::icon_reset, xui_vector<s32>(16));
 	xui_method_ptrcall(m_reset,	xm_buttonclick	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_buttonclick);
 
 	m_tool	= new xui_panel(xui_vector<s32>(200, 24));

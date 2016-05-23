@@ -31,6 +31,12 @@ xui_bitmap* onity_resource::icon_state		= NULL;
 xui_bitmap* onity_resource::icon_transition = NULL;
 xui_bitmap* onity_resource::icon_leftright	= NULL;
 xui_bitmap* onity_resource::icon_topbottom	= NULL;
+xui_bitmap* onity_resource::icon_large		= NULL;
+xui_bitmap* onity_resource::icon_small		= NULL;
+xui_bitmap* onity_resource::icon_reset		= NULL;
+xui_bitmap* onity_resource::icon_play		= NULL;
+xui_bitmap* onity_resource::icon_left		= NULL;
+xui_bitmap* onity_resource::icon_right		= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -65,4 +71,10 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_transition = xui_bitmap::create("icon/transition.png");
 	icon_leftright	= xui_bitmap::create("icon/leftright.png");
 	icon_topbottom	= xui_bitmap::create("icon/topbottom.png");
+	icon_small		= xui_bitmap::create("icon/small.png");
+	icon_large		= xui_bitmap::create("icon/large.png");
+	icon_reset		= xui_bitmap::create("icon/reset.png");
+	icon_play		= xui_bitmap::create("icon/play.png");
+	icon_left		= xui_bitmap::create("icon/left.png");
+	icon_right		= xui_bitmap::create("icon/right.png");
 }

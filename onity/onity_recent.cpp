@@ -58,9 +58,9 @@ xui_create_explain(onity_recent)( void )
 	xui_method_ptrcall(m_browse, set_textalign		)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_browse, ini_drawer			)(L"Open Other ...");
 
-	m_bottom	= new xui_panel(xui_vector<s32>(128, 34));
+	m_bottom	= new xui_panel(xui_vector<s32>(128, 32));
 	xui_method_ptrcall(m_bottom, ini_component		)(0, 0, DOCKSTYLE_B);
-	xui_method_ptrcall(m_bottom, set_borderrt		)(xui_rect2d<s32>(0, 10, 0, 0));
+	xui_method_ptrcall(m_bottom, set_borderrt		)(xui_rect2d<s32>(0, 8, 0, 0));
 	xui_method_ptrcall(m_bottom, add_child			)(m_accept);
 	xui_method_ptrcall(m_bottom, add_child			)(m_browse);
 

@@ -9,7 +9,7 @@ typedef void			(*xui_prop_delitem)( void* userptr );
 typedef xui_propdata*	(*xui_prop_newprop)( void* userptr, u32 index, xui_propkind* kind );
 
 class   xui_pickwnd;
-typedef xui_pickwnd*	(*xui_prop_newpick)( xui_propctrl* propctrl );
+typedef xui_pickwnd*	(*xui_prop_newpick)( void );
 typedef xui_bitmap*		(*xui_prop_geticon)( xui_propdata* propdata );
 typedef std::wstring	(*xui_prop_getname)( xui_propdata* propdata );
 

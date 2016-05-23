@@ -105,10 +105,11 @@ xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* 
 	xui_prop_newpick pickfunc = dataobject->get_pickfunc();
 	if (pickfunc)
 	{
-		xui_pickwnd* wnd = pickfunc(this);
-		wnd->set_value(dataobject->get_value());
-		wnd->set_modal(true);
-		xui_desktop::get_ins()->add_child(wnd);
+		xui_pickwnd* wnd = pickfunc();
+		xui_method_ptrcall(wnd, set_propctrl)(this);
+		xui_method_ptrcall(wnd, set_modal	)(true);
+		xui_method_ptrcall(wnd, set_visible	)(true);
+		xui_method_ptrcall(wnd, set_value	)(dataobject->get_value());
 	}
 }
 
@@ -225,15 +226,22 @@ xui_implement_rtti(xui_pickwnd, xui_window);
 /*
 //constructor
 */
-xui_create_explain(xui_pickwnd)( xui_propctrl* propctrl )
+xui_create_explain(xui_pickwnd)( void )
 : xui_window(xui_vector<s32>(320, 240))
-{
-	m_propctrl = propctrl;
-}
+, m_propctrl(NULL)
+{}
 
 /*
 //method
 */
+xui_method_explain(xui_pickwnd,	get_propctrl,	xui_propctrl*	)( void )
+{
+	return m_propctrl;
+}
+xui_method_explain(xui_pickwnd,	set_propctrl,	void			)( xui_propctrl* propctrl )
+{
+	m_propctrl = propctrl;
+}
 xui_method_explain(xui_pickwnd, on_accept, void)( xui_component* sender, xui_method_args& args )
 {
 	void* value = get_value();

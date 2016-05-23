@@ -27,7 +27,6 @@ xui_create_explain(onity_fileview)( void )
 	xui_method_ptrcall(m_lineview,	set_parent			)(this);
 	xui_method_ptrcall(m_lineview,	ini_component		)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_lineview,	ini_component		)(true, true);
-	xui_method_ptrcall(m_lineview,	set_drawcolor		)(false);
 	xui_method_ptrcall(m_lineview,	set_acceptdrag		)(false);
 	xui_method_ptrcall(m_lineview,	set_allowmulti		)(false);
 	xui_method_ptrcall(m_lineview,	set_hscrollauto		)(false);

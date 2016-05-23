@@ -132,6 +132,9 @@
     <ClInclude Include="onity_propparticle.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_selector.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -265,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="onity_propparticle.cpp">
       <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_selector.cpp">
+      <Filter>inspector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
