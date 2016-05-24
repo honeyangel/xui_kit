@@ -594,6 +594,10 @@ xui_create_explain(xui_propdata_object)(
 /*
 //method
 */
+xui_method_explain(xui_propdata_object,			get_droptype,		const xui_droptype_vec& )( void ) const
+{
+	return m_droptype;
+}
 xui_method_explain(xui_propdata_object,			has_droptype,		bool					)( const std::string& type ) const
 {
 	for (u32 i = 0; i < m_droptype.size(); ++i)

@@ -172,6 +172,7 @@ public:
 	/*
 	//selected node
 	*/
+	void								ini_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( const std::vector<xui_treenode*>& nodes );
 	void								non_selectednode	( bool fireMethod = true );

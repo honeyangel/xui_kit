@@ -148,7 +148,7 @@ xui_method_explain(onity_recent, on_buttonclick,		void		)( xui_component* sender
 xui_method_explain(onity_recent, load_config,			void		)( void )
 {
 	NPFile file;
-	if (file.Open("recent.txt", NPFile::OM_READ))
+	if (file.Open("onity.recent", NPFile::OM_READ))
 	{
 		u32 index = 0;
 		while (file.End() == false)
@@ -168,7 +168,7 @@ xui_method_explain(onity_recent, load_config,			void		)( void )
 xui_method_explain(onity_recent, save_config,			void		)( void )
 {
 	NPFile file;
-	if (file.Open("recent.txt", NPFile::OM_WRITE))
+	if (file.Open("onity.recent", NPFile::OM_WRITE))
 	{
 		file.WriteLine(xui_global::unicode_to_ascii(get_selectpath()));
 		for (u32 i = 0; i < m_recent->get_upmostnodecount(); ++i)

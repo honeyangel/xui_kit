@@ -20,7 +20,7 @@ xui_create_explain(onity_fileview)( void )
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
 	m_lineview = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_lineview,	xm_show				) += new xui_method_member<xui_method_args,		onity_fileview>(this, &onity_fileview::on_lineviewshow);
-	xui_method_ptrcall(m_lineview,	xm_selectedchange	) += new xui_method_member<xui_method_args,		onity_fileview>(this, &onity_fileview::on_lineviewselection);
+	xui_method_ptrcall(m_lineview,	xm_selectedchange	) += new xui_method_member<xui_method_args,		onity_fileview>(this, &onity_fileview::on_fileviewselection);
 	xui_method_ptrcall(m_lineview,	xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_fileview>(this, &onity_fileview::on_fileviewnodeclick);
 	xui_method_ptrcall(m_lineview,	xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse,	onity_fileview>(this, &onity_fileview::on_fileviewdoubleclk);
 	xui_method_ptrcall(m_lineview,	xm_mousedragitem	) += new xui_method_member<xui_method_dragdrop, onity_fileview>(this, &onity_fileview::on_fileviewassetdrag);
@@ -32,7 +32,6 @@ xui_create_explain(onity_fileview)( void )
 	xui_method_ptrcall(m_lineview,	set_hscrollauto		)(false);
 
 	m_tileview = new onity_tileview;
-	xui_method_ptrcall(m_tileview,	xm_show				) += new xui_method_member<xui_method_args,		onity_fileview>(this, &onity_fileview::on_tileviewshow);
 	xui_method_ptrcall(m_tileview,	xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_fileview>(this, &onity_fileview::on_fileviewnodeclick);
 	xui_method_ptrcall(m_tileview,	xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse,	onity_fileview>(this, &onity_fileview::on_fileviewdoubleclk);
 	xui_method_ptrcall(m_tileview,	xm_mousedragitem	) += new xui_method_member<xui_method_dragdrop, onity_fileview>(this, &onity_fileview::on_fileviewassetdrag);
@@ -72,24 +71,10 @@ xui_method_explain(onity_fileview, clear,					void			)( void )
 xui_method_explain(onity_fileview, on_lineviewshow,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	m_tileview->set_viewfile(NULL);
-
-	std::vector<xui_treenode*> nodes = m_lineview->get_selectednode();
-	if (nodes.size() > 0)
-	{
-		m_lineview->set_nodevisible(nodes.front());
-	}
 }
-xui_method_explain(onity_fileview, on_tileviewshow,			void			)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_fileview, on_fileviewselection,	void			)( xui_component* sender, xui_method_args&     args )
 {
-	std::vector<xui_treenode*> nodes = m_lineview->get_selectednode();
-	if (nodes.size() > 0)
-	{
-		m_tileview->set_tilevisible(nodes.front());
-	}
-}
-xui_method_explain(onity_fileview, on_lineviewselection,	void			)( xui_component* sender, xui_method_args&     args )
-{
-	xm_lineviewselection(this, args);
+	xm_fileviewselection(this, args);
 }
 xui_method_explain(onity_fileview, on_fileviewnodeclick,	void			)( xui_component* sender, xui_method_mouse&    args )
 {

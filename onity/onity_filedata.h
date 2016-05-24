@@ -23,6 +23,7 @@ public:
 	/*
 	//override
 	*/
+	virtual xui_bitmap*		get_icon		( u32 index );
 	virtual std::wstring	get_text		( u32 index );
 	virtual void			set_text		( u32 index, const std::wstring& text );
 

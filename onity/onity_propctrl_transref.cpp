@@ -7,6 +7,7 @@
 #include "xui_global.h"
 #include "xui_propview.h"
 #include "onity_resource.h"
+#include "onity_selector.h"
 #include "onity_proptransref.h"
 #include "onity_propctrl_transref.h"
 
@@ -21,7 +22,7 @@ xui_create_explain(onity_propdata_2dsasset)(
 	get_func				userget, 
 	set_func				userset, 
 	void*					userptr )
-: xui_propdata_object_func(kind, name, func, droptype, NULL, get_icon, get_name, userget, userset, userptr)
+: xui_propdata_object_func(kind, name, func, droptype, onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
 {}
 /*
 //static

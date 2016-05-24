@@ -13,7 +13,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_pickwnd*		get_ptr		( void );
+	static xui_pickwnd*		get_ptr					( void );
 
 	/*
 	//constructor
@@ -23,15 +23,42 @@ public:
 	/*
 	//override
 	*/
-	virtual void*			get_value	( void );
-	virtual void			set_value	( void* value );
+	virtual void*			get_value				( void );
+	virtual void			set_value				( void* value );
 
 protected:
+	/*
+	//callback
+	*/
+	virtual void			on_perform				( xui_method_args& args );
+
+	/*
+	//event
+	*/
+	void					on_searchtextchanged	( xui_component* sender, xui_method_args&  args );
+	void					on_assetclick			( xui_component* sender, xui_method_args&  args );
+	void					on_sceneclick			( xui_component* sender, xui_method_args&  args );
+	void					on_sliderscroll			( xui_component* sender, xui_method_args&  args );
+	void					on_fileviewselection	( xui_component* sender, xui_method_args&  args );
+	void					on_fileviewdoubleclk	( xui_component* sender, xui_method_mouse& args );
+	void					on_sizectrlmousemove	( xui_component* sender, xui_method_mouse& args );
+	void					on_clearclick			( xui_component* sender, xui_method_args&  args );
+	void					on_headerperform		( xui_component* sender, xui_method_args&  args );
+	void					on_bottomperform		( xui_component* sender, xui_method_args&  args );
+
+	/*
+	//method
+	*/
+	void					refresh_fileview		( void );
+	std::wstring			convert_dropsuff		( const std::string& droptype );
+
 	/*
 	//member
 	*/
 	xui_drawer*				m_title;
 	xui_textbox*			m_search;
+	xui_button*				m_clear;
+	xui_panel*				m_header;
 	xui_panel*				m_middle;
 	xui_toggle*				m_asset;
 	xui_toggle*				m_scene;

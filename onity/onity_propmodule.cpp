@@ -166,7 +166,7 @@ xui_method_explain(onity_propmodule, set_texfile,	void			)( void* userptr, void*
 	if (file)
 	{
 		NPSourceTexture* texture = (NPSourceTexture*)value;
-		file->SetSCTexID(texture->GetKey());
+		file->SetSCTexID(texture == NULL ? -1 : texture->GetKey());
 	}
 }
 xui_method_explain(onity_propmodule, get_texsplit,	bool			)( void* userptr )

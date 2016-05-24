@@ -69,7 +69,6 @@ xui_create_explain(onity_project)( void )
 
 	m_search = new xui_textbox(xui_vector<s32>(100, 20));
 	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_searchtextchanged);
-	xui_method_ptrcall(m_search,	xm_textenter		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_searchtextenter);
 	xui_method_ptrcall(m_search,	ini_component		)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_search,	ini_drawer			)(onity_resource::icon_search);
 	xui_method_ptrcall(m_search,	set_backcolor		)(xui_colour(1.0f, 0.20f));
@@ -126,7 +125,6 @@ xui_create_explain(onity_project)( void )
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
 	m_pathview = new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_pathview,	xm_selectedchange	) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_pathviewselection);
-	xui_method_ptrcall(m_pathview,	xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_project>(this, &onity_project::on_pathviewnodeclick);
 	xui_method_ptrcall(m_pathview,	ini_component		)(0, 0, DOCKSTYLE_L);
 	xui_method_ptrcall(m_pathview,	set_acceptdrag		)(false);
 	xui_method_ptrcall(m_pathview,	set_allowmulti		)(false);
@@ -221,6 +219,21 @@ xui_method_explain(onity_project, ini_pathtree,				void)( void )
 		onity_pathdata::new_leafnode(node);
 	}
 }
+xui_method_explain(onity_project, get_pathfile,				void)( const std::wstring& suff, xui_proproot_vec& filevec )
+{
+	std::vector<xui_treenode*> nodevec = m_pathview->get_entirenode();
+	for (u32 i = 0; i < nodevec.size(); ++i)
+	{
+		onity_pathdata* pathdata = (onity_pathdata*)nodevec[i]->get_linkdata();
+		const xui_proproot_vec& leafvec = pathdata->get_leaf();
+		for (xui_proproot_vec::const_iterator itor = leafvec.begin(); itor != leafvec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (onity_filedata::get_suff(propfile->get_full()) == suff)
+				filevec.push_back((*itor));
+		}
+	}
+}
 
 /*
 //notify
@@ -299,11 +312,7 @@ xui_method_explain(onity_project, on_clearclick,			void)( xui_component* sender,
 xui_method_explain(onity_project, on_searchtextchanged,		void)( xui_component* sender, xui_method_args&     args )
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
-	//TODO
-}
-xui_method_explain(onity_project, on_searchtextenter,		void)( xui_component* sender, xui_method_args&     args )
-{
-	//TODO
+	refresh_lineview();
 }
 xui_method_explain(onity_project, on_headperform,			void)( xui_component* sender, xui_method_args&     args )
 {
@@ -347,31 +356,27 @@ xui_method_explain(onity_project, on_pathviewselection,		void)( xui_component* s
 {
 	refresh_lineview();
 	refresh_pathpane();
-}
-xui_method_explain(onity_project, on_pathviewnodeclick,		void)( xui_component* sender, xui_method_mouse&    args )
-{
-	if (args.mouse == MB_L)
-	{
-		xui_treenode* node = m_pathview->choose_node(m_pathview->get_renderpt(args.point));
-		if (node && node->was_selected())
-		{
-			if (m_histroy.empty() || m_histroy[m_curridx] != node)
-			{
-				m_histroy.insert(m_histroy.begin()+m_curridx, node);
-				if (m_curridx > 0)
-				{
-					m_histroy.erase(m_histroy.begin(), m_histroy.begin()+m_curridx);
-					m_curridx = 0;
-				}
-				else
-				{
-					static const u32 max_stack = 64;
-					if (m_histroy.size() > max_stack)
-						m_histroy.erase(m_histroy.begin()+max_stack);
-				}
 
-				refresh_pathtool();
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode* node = nodevec.front();
+		if (m_histroy.empty() || m_histroy[m_curridx] != node)
+		{
+			m_histroy.insert(m_histroy.begin()+m_curridx, node);
+			if (m_curridx > 0)
+			{
+				m_histroy.erase(m_histroy.begin(), m_histroy.begin()+m_curridx);
+				m_curridx = 0;
 			}
+			else
+			{
+				static const u32 max_stack = 64;
+				if (m_histroy.size() > max_stack)
+					m_histroy.erase(m_histroy.begin()+max_stack);
+			}
+
+			refresh_pathtool();
 		}
 	}
 }
@@ -637,10 +642,21 @@ xui_method_explain(onity_project, on_sliderscroll,			void)( xui_component* sende
 
 	xui_treeview*      lineview = m_fileview->get_lineview();
 	onity_tileview*	   tileview = m_fileview->get_tileview();
+	bool               lineshow = m_fileview->get_lineview()->was_visible();
+	bool               tileshow = m_fileview->get_tileview()->was_visible();
 	xui_method_ptrcall(lineview, set_visible	)(value == 0);
 	xui_method_ptrcall(tileview, set_visible	)(value >  0);
 	xui_method_ptrcall(tileview, set_tilesize	)(xui_max(10, value) + 40);
 	m_fileview->refresh();
+
+	std::vector<xui_treenode*> nodevec = lineview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		if (tileview->was_visible() && tileshow == false)
+			tileview->set_tilevisible(nodevec.front());
+		if (lineview->was_visible() && lineshow == false)
+			lineview->set_nodevisible(nodevec.front());
+	}
 }
 
 xui_method_explain(onity_project, on_showfindclick,			void)( xui_component* sender, xui_method_args&	   args )
@@ -707,8 +723,10 @@ xui_method_explain(onity_project, on_pathtoolclick,			void)( xui_component* send
 	if (m_curridx <= (s32)m_histroy.size()-1)
 	{
 		xui_treenode* node = m_histroy[m_curridx];
-		m_pathview->set_selectednode(node, true);
-		m_pathview->set_nodevisible(node);
+		xui_method_ptrcall(m_pathview, ini_selectednode)(node, true);
+		xui_method_ptrcall(m_pathview, set_nodevisible )(node);
+		refresh_lineview();
+		refresh_pathpane();
 		refresh_pathtool();
 	}
 }

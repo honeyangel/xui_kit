@@ -24,7 +24,7 @@ public:
 	/*
 	//method
 	*/
-	xui_method<xui_method_args >	xm_lineviewselection;
+	xui_method<xui_method_args >	xm_fileviewselection;
 	xui_method<xui_method_mouse>	xm_fileviewdoubleclk;
 	xui_method<xui_method_mouse>	xm_fileviewnodeclick;
 	xui_method<xui_method_dragdrop>	xm_fileviewassetdrag;
@@ -33,9 +33,8 @@ protected:
 	/*
 	//event
 	*/
-	void							on_tileviewshow			( xui_component* sender, xui_method_args&	  args );
 	void							on_lineviewshow			( xui_component* sender, xui_method_args&	  args );
-	void							on_lineviewselection	( xui_component* sender, xui_method_args&	  args );
+	void							on_fileviewselection	( xui_component* sender, xui_method_args&	  args );
 	void							on_fileviewnodeclick	( xui_component* sender, xui_method_mouse&	  args );
 	void							on_fileviewdoubleclk	( xui_component* sender, xui_method_mouse&	  args );
 	void							on_fileviewassetdrag	( xui_component* sender, xui_method_dragdrop& args );

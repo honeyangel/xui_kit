@@ -16,6 +16,7 @@ typedef std::wstring	(*xui_prop_getname)( xui_propdata* propdata );
 typedef std::map<s32, std::wstring> xui_propenum_map;
 typedef std::vector<xui_propdata*>  xui_propdata_vec;
 typedef std::vector<xui_proproot*>	xui_proproot_vec;
+typedef std::vector<std::string>	xui_droptype_vec;
 
 /*
 //propdata
@@ -1045,6 +1046,7 @@ protected:
 class xui_propdata_object : public xui_propdata
 {
 public:
+
 	/*
 	//constructor
 	*/
@@ -1060,6 +1062,7 @@ public:
 	/*
 	//method
 	*/
+	const xui_droptype_vec&		get_droptype( void ) const;
 	bool						has_droptype( const std::string& type ) const;
 	void						add_droptype( const std::string& type );
 	xui_prop_newpick			get_pickfunc( void ) const;
@@ -1083,7 +1086,7 @@ protected:
 	/*
 	//member
 	*/
-	std::vector<std::string>	m_droptype;
+	xui_droptype_vec			m_droptype;
 	xui_prop_newpick			m_pickfunc;
 	xui_prop_geticon			m_iconfunc;
 	xui_prop_getname			m_namefunc;

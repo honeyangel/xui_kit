@@ -283,6 +283,22 @@ xui_method_explain(xui_treeview, set_searchtext,		void								)( const std::wstr
 /*
 //selected node
 */
+xui_method_explain(xui_treeview, ini_selectednode,		void								)( xui_treenode* node, bool selected )
+{
+	if (node->was_selected() != selected)
+	{
+		node->set_selected(selected);
+		if (selected && m_allowmulti == false)
+		{
+			xui_vecptr_addloop(m_ascrollitem)
+			{
+				xui_treenode* temp = xui_dynamic_cast(xui_treenode, m_ascrollitem[i]);
+				if (temp != node)
+					temp->set_selected(false);
+			}
+		}
+	}
+}
 xui_method_explain(xui_treeview, set_selectednode,		void								)( xui_treenode* node, bool selected )
 {
 	if (node->was_selected() != selected)

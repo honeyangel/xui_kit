@@ -57,12 +57,14 @@ xui_method_explain(onity_inspector, set_proproot,			void			)( xui_proproot* prop
 {
 	m_propview->set_proproot(proproot);
 	m_drawview->set_viewprop(proproot);
+	m_drawview->set_needshow();
 	refresh();
 }
 xui_method_explain(onity_inspector, set_proproot,			void			)( const xui_proproot_vec& proproot )
 {
 	m_propview->set_proproot(proproot);
 	m_drawview->set_viewprop(proproot.size() > 0 ? proproot.front() : NULL);
+	m_drawview->set_needshow();
 	refresh();
 }
 

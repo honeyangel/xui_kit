@@ -54,6 +54,13 @@ xui_method_explain(onity_filedata, set_full,		void				)( const std::wstring& ful
 /*
 //override
 */
+xui_method_explain(onity_filedata, get_icon,		xui_bitmap*			)( u32 index )
+{
+	if (m_text == L"None")
+		return NULL;
+
+	return m_icon;
+}
 xui_method_explain(onity_filedata, get_text,		std::wstring		)( u32 index )
 {
 	return get_safe(m_text);
@@ -123,6 +130,9 @@ xui_method_explain(onity_filedata, get_suff,		std::wstring		)( const std::wstrin
 	else
 		temp.erase(0, npos);
 
+	if (temp == L".PNG" || temp == L".Png")
+		temp =  L".png";
+
 	return temp;
 }
 xui_method_explain(onity_filedata, get_safe,		std::wstring		)( const std::wstring& full )
@@ -149,8 +159,10 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	if (type != META_NONE)
 		onity_prop2dsres::load_meta(type, xui_global::unicode_to_ascii(full));
 
+	if (suff == L".png" && full.find(L"MODULE") != -1 && full.find(L"BIG") == -1)
+		return NULL;
+
 	if		(suff == L".png")			return new onity_proptexture	(full);
-	else if (suff == L".PNG")			return new onity_proptexture	(full);
 	else if (suff == L".npModule")		return new onity_propmodule		(full);
 	else if (suff == L".npSprite")		return new onity_propsprite		(full);
 	else if (suff == L".npAction")		return new onity_propaction		(full);

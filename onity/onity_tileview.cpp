@@ -360,8 +360,8 @@ xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s3
 
 	onity_filedata* filedata = (onity_filedata*)node->get_linkdata();
 	std::wstring suff = filedata->get_suff();
-	if (suff == L".PNG" || suff == L".png") draw_texture(drawrt, node);
-	else									draw_icon	(drawrt, node);
+	if (suff == L".png")	draw_texture(drawrt, node);
+	else					draw_icon	(drawrt, node);
 
 	if (node->get_leafnodecount() > 0)
 	{
@@ -380,8 +380,12 @@ xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s3
 xui_method_explain(onity_tileview, draw_icon,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
 	onity_filedata* filedata = (onity_filedata*)node->get_linkdata();
-	xui_colour color =  node->was_selected() ? xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_colour::white;
-	xui_convas::get_ins()->draw_image(filedata->get_icon(0), rt, color);
+	xui_bitmap* icon = filedata->get_icon(0);
+	if (icon)
+	{
+		xui_colour color =  node->was_selected() ? xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_colour::white;
+		xui_convas::get_ins()->draw_image(icon, rt, color);
+	}
 }
 xui_method_explain(onity_tileview, draw_name,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
