@@ -373,7 +373,7 @@ xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s3
 		plusrt.ay = center.y-half*2-3;
 		plusrt.by = center.y+half*2+3;
 		xui_convas::get_ins()->fill_round   (plusrt, xui_colour::gray,  xui_rect2d<s32>(3));
-		xui_convas::get_ins()->draw_round   (plusrt, xui_colour::white, xui_rect2d<s32>(3));
+		//xui_convas::get_ins()->draw_round   (plusrt, xui_colour::white, xui_rect2d<s32>(3));
 		xui_convas::get_ins()->fill_triangle(center, half, (node->was_expanded() ? TRIANGLE_LEFT : TRIANGLE_RIGHT), xui_colour::white);
 	}
 }

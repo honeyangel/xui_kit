@@ -51,6 +51,8 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 	m_droptog->xm_renderself	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droptogrenderself);
 	m_droptog->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
 	xui_method_ptrcall(m_droptog, set_parent	)(this);
+	xui_method_ptrcall(m_droptog, set_backcolor )(xui_colour::white);
+	xui_method_ptrcall(m_droptog, set_movecolor )(xui_button::default_downcolor);
 	xui_method_ptrcall(m_droptog, ini_component	)(0, 0, DOCKSTYLE_R);
 	m_widgetvec.push_back(m_droptog);
 

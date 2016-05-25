@@ -3,6 +3,17 @@
 
 #include "xui_dockpage.h"
 
+enum
+{
+	FILTER_ALL,
+	FILTER_TEXTURE,
+	FILTER_MODULE,
+	FILTER_SPRITE,
+	FILTER_ACTION,
+	FILTER_PARTICLE,
+	FILTER_CONTROLLER,
+};
+
 class onity_fileview;
 class onity_propfile;
 class onity_proppath;
@@ -34,6 +45,7 @@ protected:
 	*/
 	void						on_clearclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
+	void						on_filterselection	( xui_component* sender, xui_method_args&	  args );
 	void						on_headperform		( xui_component* sender, xui_method_args&	  args );
 	void						on_fillperform		( xui_component* sender, xui_method_args&	  args );
 	void						on_fillrenderelse	( xui_component* sender, xui_method_args&	  args );
@@ -57,9 +69,10 @@ protected:
 	/*
 	//method
 	*/
-	void						refresh_lineview	( void );
+	void						refresh_fileview	( void );
 	void						refresh_pathpane	( void );
 	void						refresh_pathtool	( void );
+	std::wstring				convert_filesuff	( void );
 	void						set_freetype		( u08 type, const std::string& pathname, u32 style );
 	void						set_loadtype		( u08 type, const std::string& pathname, bool flag );
 
@@ -77,11 +90,12 @@ protected:
 	xui_control*				m_sizectrl;
 	xui_treeview*				m_pathview;
 	onity_fileview*				m_fileview;
-	xui_panel*					m_fillhead;
 	xui_button*					m_backpath;
 	xui_button*					m_forepath;
 	xui_panel*					m_pathpane;
 	xui_panel*					m_toolpane;
+	xui_linebox*				m_browse;
+	xui_dropbox*				m_filter;
 	xui_slider*					m_slider;
 	xui_drawer*					m_status;
 
