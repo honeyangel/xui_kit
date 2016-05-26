@@ -54,14 +54,14 @@ protected:
 	/*
 	//event
 	*/
-	void					on_propctrlperform		( xui_component* sender, xui_method_args&  args );
-	void					on_sortctrlupdateself	( xui_component* sender, xui_method_args&  args );
-	void					on_sortctrlrenderself	( xui_component* sender, xui_method_args&  args );
-	void					on_sortctrltopdraw		( xui_component* sender, xui_method_args&  args );
-	void					on_sortctrlmousedown	( xui_component* sender, xui_method_mouse& args );
-	void					on_sortctrlmousemove	( xui_component* sender, xui_method_mouse& args );
-	void					on_sortctrlmouserise	( xui_component* sender, xui_method_mouse& args );
-	void					on_propexpand			( xui_component* sender, xui_method_args&  args );
+	void					on_propctrlperform		( xui_component* sender, xui_method_args&	args );
+	void					on_sortctrlupdateself	( xui_component* sender, xui_method_update& args );
+	void					on_sortctrlrenderself	( xui_component* sender, xui_method_args&	args );
+	void					on_sortctrltopdraw		( xui_component* sender, xui_method_args&	args );
+	void					on_sortctrlmousedown	( xui_component* sender, xui_method_mouse&	args );
+	void					on_sortctrlmousemove	( xui_component* sender, xui_method_mouse&	args );
+	void					on_sortctrlmouserise	( xui_component* sender, xui_method_mouse&	args );
+	void					on_propexpand			( xui_component* sender, xui_method_args&	args );
 
 	/*
 	//member

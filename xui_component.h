@@ -234,7 +234,7 @@ public:
 	xui_method<xui_method_dragdrop>	xm_mousedragover;
 	xui_method<xui_method_dragdrop>	xm_mousedragdrop;
 
-	xui_method<xui_method_args>		xm_updateself;
+	xui_method<xui_method_update>	xm_updateself;
 	xui_method<xui_method_args>		xm_renderself;
 	xui_method<xui_method_args>		xm_topdraw;
 	xui_method<xui_method_args>		xm_invalid;

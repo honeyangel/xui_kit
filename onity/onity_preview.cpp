@@ -89,10 +89,10 @@ xui_create_explain(onity_preview)( void )
 	m_view	= new onity_renderview(xui_vector<s32>(200), xui_vector<s32>(512));
 	xui_method_ptrcall(m_view,	set_parent		)(this);
 	xui_method_ptrcall(m_view,	ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_view,  xm_setrendersz	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_viewsetrendersz);
-	xui_method_ptrcall(m_view,	xm_updateself	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_viewupdateself);
-	xui_method_ptrcall(m_view,	xm_renderself	) += new xui_method_member<xui_method_args,  onity_preview>(this, &onity_preview::on_viewrenderself);
-	xui_method_ptrcall(m_view,	xm_mousewheel	) += new xui_method_member<xui_method_mouse, onity_preview>(this, &onity_preview::on_viewmousewheel);
+	xui_method_ptrcall(m_view,  xm_setrendersz	) += new xui_method_member<xui_method_args,   onity_preview>(this, &onity_preview::on_viewsetrendersz);
+	xui_method_ptrcall(m_view,	xm_updateself	) += new xui_method_member<xui_method_update, onity_preview>(this, &onity_preview::on_viewupdateself);
+	xui_method_ptrcall(m_view,	xm_renderself	) += new xui_method_member<xui_method_args,   onity_preview>(this, &onity_preview::on_viewrenderself);
+	xui_method_ptrcall(m_view,	xm_mousewheel	) += new xui_method_member<xui_method_mouse,  onity_preview>(this, &onity_preview::on_viewmousewheel);
 
 	m_widgetvec.push_back(m_head);
 	m_widgetvec.push_back(m_tool);
@@ -165,7 +165,7 @@ xui_method_explain(onity_preview, set_drawrect,			void	)( const xui_rect2d<s32>&
 /*
 //event
 */
-xui_method_explain(onity_preview, on_buttonclick,		void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_buttonclick,		void	)( xui_component* sender, xui_method_args&   args )
 {
 	if (sender == m_play)
 	{
@@ -202,25 +202,23 @@ xui_method_explain(onity_preview, on_buttonclick,		void	)( xui_component* sender
 		m_scale = 1.0f;
 	}
 }
-xui_method_explain(onity_preview, on_speedscroll,		void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_speedscroll,		void	)( xui_component* sender, xui_method_args&   args )
 {
 	f32 speed = get_speed();
 	char temp[32];
 	sprintf(temp, "%3.1fx", speed);
 	m_text->set_text(xui_global::ascii_to_unicode(temp));
 }
-xui_method_explain(onity_preview, on_headperform,		void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_headperform,		void	)( xui_component* sender, xui_method_args&	 args )
 {
 	m_text->on_perform_x(m_speed->get_renderx()-m_text->get_renderw());
 }
-xui_method_explain(onity_preview, on_viewupdateself,	void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_viewupdateself,	void	)( xui_component* sender, xui_method_update& args )
 {
 	if (m_node)
-	{
-		m_node->Update(0.016f*get_speed());
-	}
+		m_node->Update(args.delta * get_speed());
 }
-xui_method_explain(onity_preview, on_viewrenderself,	void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_viewrenderself,	void	)( xui_component* sender, xui_method_args&   args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.15f));
 	extern bool gInitCompleted;
@@ -270,7 +268,7 @@ xui_method_explain(onity_preview, on_viewrenderself,	void	)( xui_component* send
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
-xui_method_explain(onity_preview, on_viewsetrendersz,	void	)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(onity_preview, on_viewsetrendersz,	void	)( xui_component* sender, xui_method_args&   args )
 {
 	xui_vector<s32> size = m_view->get_rendersz();
 	if (m_node)
@@ -346,7 +344,7 @@ xui_method_explain(onity_preview, on_viewsetrendersz,	void	)( xui_component* sen
 		}
 	}
 }
-xui_method_explain(onity_preview, on_viewmousewheel,	void	)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_preview, on_viewmousewheel,	void	)( xui_component* sender, xui_method_mouse&  args )
 {
 	xui_method_args other_args;
 	if (args.wheel > 0) on_buttonclick(m_large, other_args);

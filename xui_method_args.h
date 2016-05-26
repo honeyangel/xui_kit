@@ -173,6 +173,23 @@ public:
 	}
 };
 
+xui_declare_args(update)
+{
+public:
+	/*
+	//member
+	*/
+	f32				delta;
+
+	/*
+	//constructor
+	*/
+	xui_method_update( void )
+	{
+		delta = 0.0f;
+	}
+};
+
 xui_declare_args(propdata)
 {
 public:

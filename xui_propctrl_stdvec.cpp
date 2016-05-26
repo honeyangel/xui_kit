@@ -241,13 +241,13 @@ xui_method_explain(xui_propctrl_stdvec,			add_propctrl,			void			)( xui_propdata
 		xui_prop_newctrl func	 = propdata->get_func();
 		propctrl = (*func)(propdata);
 		xui_drawer* sortctrl	 = new xui_drawer(xui_vector<s32>(20));
-		sortctrl->xm_updateself += new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlupdateself);
-		sortctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlrenderself);
-		sortctrl->xm_topdraw	+= new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrltopdraw);
-		sortctrl->xm_mousedown	+= new xui_method_member<xui_method_mouse, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmousedown);
-		sortctrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmousemove);
-		sortctrl->xm_mouserise	+= new xui_method_member<xui_method_mouse, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmouserise);
-		propctrl->xm_perform	+= new xui_method_member<xui_method_args,  xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_propctrlperform);
+		sortctrl->xm_updateself += new xui_method_member<xui_method_update, xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlupdateself);
+		sortctrl->xm_renderself += new xui_method_member<xui_method_args,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlrenderself);
+		sortctrl->xm_topdraw	+= new xui_method_member<xui_method_args,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrltopdraw);
+		sortctrl->xm_mousedown	+= new xui_method_member<xui_method_mouse,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmousedown);
+		sortctrl->xm_mousemove	+= new xui_method_member<xui_method_mouse,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmousemove);
+		sortctrl->xm_mouserise	+= new xui_method_member<xui_method_mouse,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_sortctrlmouserise);
+		propctrl->xm_perform	+= new xui_method_member<xui_method_args,	xui_propctrl_stdvec>(this, &xui_propctrl_stdvec::on_propctrlperform);
 		xui_method_ptrcall(propctrl, add_ctrlelse	)(sortctrl);
 		xui_method_ptrcall(propctrl, refresh		)();
 	}
@@ -289,7 +289,7 @@ xui_method_explain(xui_propctrl_stdvec,			get_propdataall,		xui_propdata_vec)( u
 /*
 //event
 */
-xui_method_explain(xui_propctrl_stdvec,			on_propctrlperform,		void			)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec,			on_propctrlperform,		void			)( xui_component* sender, xui_method_args&	 args )
 {
 	xui_propctrl*  propctrl = xui_dynamic_cast(xui_propctrl, sender);
 	xui_component* sortctrl = propctrl->get_ctrlelse();
@@ -299,7 +299,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_propctrlperform,		void			)( xui_com
 	pt.y = rt.get_h()/2 - sortctrl->get_renderh() / 2;
 	sortctrl->on_perform_pt(pt);
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrlupdateself,	void			)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrlupdateself,	void			)( xui_component* sender, xui_method_update& args )
 {
 	if (sender->has_catch())
 	{
@@ -328,7 +328,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlupdateself,	void			)( xui_c
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrlrenderself,	void			)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrlrenderself,	void			)( xui_component* sender, xui_method_args&   args )
 {
 	xui_rect2d<s32> rt     = sender->get_renderrtabs();
 	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_button::default_backcolor;
@@ -343,7 +343,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlrenderself,	void			)( xui_c
 	rt.oft_y(3);
 	xui_convas::get_ins()->fill_rectangle(rt, color);
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrltopdraw,		void			)( xui_component* sender, xui_method_args&  args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrltopdraw,		void			)( xui_component* sender, xui_method_args&   args )
 {
 	xui_propctrl::on_topdraw(args);
 	if (m_dropelem != -1 && m_dropelem != m_dragelem)
@@ -372,7 +372,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrltopdraw,		void			)( xui_com
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousedown,	void			)( xui_component* sender, xui_method_mouse&  args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -387,7 +387,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousedown,	void			)( xui_co
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousemove,	void			)( xui_component* sender, xui_method_mouse&  args )
 {
 	if (sender->has_catch())
 	{
@@ -408,7 +408,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmousemove,	void			)( xui_co
 		}
 	}
 }
-xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmouserise,	void			)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmouserise,	void			)( xui_component* sender, xui_method_mouse&  args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -428,7 +428,7 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmouserise,	void			)( xui_co
 		m_dropelem = -1;
 	}
 }
-xui_method_explain(xui_propctrl_stdvec,			on_propexpand,			void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_propctrl_stdvec,			on_propexpand,			void			)( xui_component* sender, xui_method_args&   args )
 {
 	invalid();
 }

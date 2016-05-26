@@ -27,9 +27,9 @@ protected:
 	/*
 	//event
 	*/
-	void					on_arrowupdateself	( xui_component* sender, xui_method_args& args );
-	void					on_arrowrenderself	( xui_component* sender, xui_method_args& args );
-	void					on_arrowclick		( xui_component* sender, xui_method_args& args );
+	void					on_arrowupdateself	( xui_component* sender, xui_method_update& args );
+	void					on_arrowrenderself	( xui_component* sender, xui_method_args&	args );
+	void					on_arrowclick		( xui_component* sender, xui_method_args&	args );
 
 	/*
 	//member

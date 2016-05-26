@@ -31,13 +31,13 @@ protected:
 	/*
 	//event
 	*/
-	void				on_buttonclick		( xui_component* sender, xui_method_args&  args );
-	void				on_speedscroll		( xui_component* sender, xui_method_args&  args );
-	void				on_headperform		( xui_component* sender, xui_method_args&  args );
-	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&  args );
-	void				on_viewupdateself	( xui_component* sender, xui_method_args&  args );
-	void				on_viewrenderself	( xui_component* sender, xui_method_args&  args );
-	void				on_viewmousewheel	( xui_component* sender, xui_method_mouse& args );
+	void				on_buttonclick		( xui_component* sender, xui_method_args&	args );
+	void				on_speedscroll		( xui_component* sender, xui_method_args&	args );
+	void				on_headperform		( xui_component* sender, xui_method_args&	args );
+	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&	args );
+	void				on_viewupdateself	( xui_component* sender, xui_method_update& args );
+	void				on_viewrenderself	( xui_component* sender, xui_method_args&	args );
+	void				on_viewmousewheel	( xui_component* sender, xui_method_mouse&	args );
 
 	/*
 	//method

@@ -130,12 +130,12 @@ protected:
 	/*
 	//event
 	*/
-	void						on_timetreesetclientsz	( xui_component* sender, xui_method_args& args );
-	void						on_timetreeinvalid		( xui_component* sender, xui_method_args& args );
-	void						on_timeviewdraghorz		( xui_component* sender, xui_method_args& args );
-	void						on_timeviewdragvert		( xui_component* sender, xui_method_args& args );
-	void						on_timerectdraghorz		( xui_component* sender, xui_method_args& args );
-	void						on_kssliderscroll		( xui_component* sender, xui_method_args& args );
+	void						on_timetreesetclientsz	( xui_component* sender, xui_method_args&   args );
+	void						on_timetreeinvalid		( xui_component* sender, xui_method_args&   args );
+	void						on_timeviewdraghorz		( xui_component* sender, xui_method_update& args );
+	void						on_timeviewdragvert		( xui_component* sender, xui_method_update& args );
+	void						on_timerectdraghorz		( xui_component* sender, xui_method_update& args );
+	void						on_kssliderscroll		( xui_component* sender, xui_method_args&   args );
 
 	/*
 	//member

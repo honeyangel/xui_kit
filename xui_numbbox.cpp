@@ -20,14 +20,14 @@ xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, s32 i
 	{
 		m_incarrow = new xui_button(xui_vector<s32>(16, 8));
 		m_incarrow->set_parent(this);
-		m_incarrow->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowclick);
-		m_incarrow->xm_renderself	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowrenderself);
-		m_incarrow->xm_updateself	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowupdateself);
+		m_incarrow->xm_buttonclick	+= new xui_method_member<xui_method_args,	xui_numbbox>(this, &xui_numbbox::on_arrowclick);
+		m_incarrow->xm_renderself	+= new xui_method_member<xui_method_args,	xui_numbbox>(this, &xui_numbbox::on_arrowrenderself);
+		m_incarrow->xm_updateself	+= new xui_method_member<xui_method_update, xui_numbbox>(this, &xui_numbbox::on_arrowupdateself);
 		m_decarrow = new xui_button(xui_vector<s32>(16, 8));
 		m_decarrow->set_parent(this);
-		m_decarrow->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowclick);
-		m_decarrow->xm_renderself	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowrenderself);
-		m_decarrow->xm_updateself	+= new xui_method_member<xui_method_args, xui_numbbox>(this, &xui_numbbox::on_arrowupdateself);
+		m_decarrow->xm_buttonclick	+= new xui_method_member<xui_method_args,	xui_numbbox>(this, &xui_numbbox::on_arrowclick);
+		m_decarrow->xm_renderself	+= new xui_method_member<xui_method_args,	xui_numbbox>(this, &xui_numbbox::on_arrowrenderself);
+		m_decarrow->xm_updateself	+= new xui_method_member<xui_method_update, xui_numbbox>(this, &xui_numbbox::on_arrowupdateself);
 
 		m_widgetvec.push_back(m_incarrow);
 		m_widgetvec.push_back(m_decarrow);
@@ -64,12 +64,12 @@ xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args& args )
 /*
 //event
 */
-xui_method_explain(xui_numbbox, on_arrowupdateself, void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_numbbox, on_arrowupdateself, void			)( xui_component* sender, xui_method_update& args )
 {
 	if (m_incarrow->has_catch() ||
 		m_decarrow->has_catch())
 	{
-		m_holdtime += 0.016f;
+		m_holdtime += args.delta;
 		if (m_holdtime > 0.5f && sender->has_catch())
 		{
 			xui_button* button = xui_dynamic_cast(xui_button, sender);

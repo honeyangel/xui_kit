@@ -445,7 +445,8 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 			m_clicktime =-1.0f;
 	}
 
-	xui_method_args     args; 
+	xui_method_update   args ;
+	args.delta = delta;
 	on_updateself(      args);
 	xm_updateself(this, args);
 }
