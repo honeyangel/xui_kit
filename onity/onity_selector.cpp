@@ -84,12 +84,22 @@ xui_create_explain(onity_selector)( void )
 	xui_method_ptrcall(m_scene,		set_textalign		)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_scene,		ini_drawer			)(L"Scene");
 
-	xui_linebox* linebox = new xui_linebox(xui_vector<s32>(24), FLOWSTYLE_H);
-	xui_method_ptrcall(linebox,		ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
-	xui_method_ptrcall(linebox,		set_corner			)(3);
-	xui_method_ptrcall(linebox,		set_sidestyle		)(SIDESTYLE_S);
-	xui_method_ptrcall(linebox,		add_linectrl		)(m_asset);
-	xui_method_ptrcall(linebox,		add_linectrl		)(m_scene);
+	m_filter	= new xui_linebox(xui_vector<s32>(24), FLOWSTYLE_H);
+	xui_method_ptrcall(m_filter,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_filter,	set_corner			)(3);
+	xui_method_ptrcall(m_filter,	set_sidestyle		)(SIDESTYLE_S);
+	xui_method_ptrcall(m_filter,	add_linectrl		)(m_asset);
+	xui_method_ptrcall(m_filter,	add_linectrl		)(m_scene);
+
+	m_backpath	= new xui_button(xui_vector<s32>(24));
+	xui_method_ptrcall(m_backpath,	ini_component		)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_backpath,	ini_drawer			)(onity_resource::icon_left);
+	xui_method_ptrcall(m_backpath,	set_drawcolor		)(true);
+	xui_method_ptrcall(m_backpath,	set_sidestyle		)(SIDESTYLE_S);
+	xui_method_ptrcall(m_backpath,	set_enable			)(false);
+	xui_method_ptrcall(m_backpath,	set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_backpath,	set_corner			)(3);
+	xui_method_ptrcall(m_backpath,	xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_selector>(this, &onity_selector::on_backpathclick);
 
 	m_slider	= new xui_slider(xui_vector<s32>(64, 16), FLOWSTYLE_H, ARROWDRAW_NONE);
 	xui_method_ptrcall(m_slider,	xm_scroll			) += new xui_method_member<xui_method_args,		onity_selector>(this, &onity_selector::on_sliderscroll);
@@ -99,9 +109,11 @@ xui_create_explain(onity_selector)( void )
 	xui_method_ptrcall(m_slider,	ini_scroll			)(60, 0);
 
 	m_middle	= new xui_panel(xui_vector<s32>(32));
+	xui_method_ptrcall(m_middle,	xm_perform			) += new xui_method_member<xui_method_args,		onity_selector>(this, &onity_selector::on_middleperform);
 	xui_method_ptrcall(m_middle,	ini_component		)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_middle,	set_drawcolor		)(false);
-	xui_method_ptrcall(m_middle,	add_child			)(linebox);
+	xui_method_ptrcall(m_middle,	add_child			)(m_filter);
+	xui_method_ptrcall(m_middle,	add_child			)(m_backpath);
 	xui_method_ptrcall(m_middle,	add_child			)(m_slider);
 
 	m_fileview	= new onity_fileview;
@@ -263,6 +275,18 @@ xui_method_explain(onity_selector, on_searchtextchanged,	void		)( xui_component*
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
 	refresh_fileview();
+	refresh_backpath();
+}
+xui_method_explain(onity_selector, on_backpathclick,		void		)( xui_component* sender, xui_method_args& args )
+{
+	if (m_fileview->get_tileview()->get_viewfile())
+	{
+		m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
+		m_fileview->get_tileview()->set_viewfile(NULL);
+	}
+
+	m_slider->set_value((s32)m_slider->get_data());
+	refresh_backpath();
 }
 xui_method_explain(onity_selector, on_assetclick,			void		)( xui_component* sender, xui_method_args& args )
 {
@@ -323,8 +347,24 @@ xui_method_explain(onity_selector, on_fileviewdoubleclk,	void		)( xui_component*
 		std::vector<xui_treenode*> vec = m_fileview->get_lineview()->get_selectednode();
 		if (vec.size() > 0)
 		{
-			xui_method_args other_args;
-			on_accept(this, other_args);
+			xui_treenode*   node = vec.front();
+			onity_treedata* data = (onity_treedata*)node->get_linkdata();
+			onity_propfile* prop = dynamic_cast<onity_propfile*>(data->get_prop());
+			if (prop && prop->get_dragtype().length() == 0)
+			{
+				onity_tileview* tileview = m_fileview->get_tileview();
+				tileview->set_viewfile(node);
+				refresh_backpath();
+
+				m_slider->set_data((void*)m_slider->get_value());
+				if (m_slider->get_value() == 0)
+					m_slider->set_value(10);
+			}
+			else
+			{
+				xui_method_args other_args;
+				on_accept(this, other_args);
+			}
 		}
 	}
 }
@@ -346,13 +386,17 @@ xui_method_explain(onity_selector, on_clearclick,			void		)( xui_component* send
 xui_method_explain(onity_selector, on_headerperform,		void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_header->get_renderrtins();
-	xui_method_ptrcall(m_clear,		on_perform_x)(rt.ax+m_search->get_renderw()-m_clear->get_renderw()-2);
+	xui_method_ptrcall(m_clear,	   on_perform_x)(rt.ax+m_search->get_renderw()-m_clear->get_renderw()-2);
+}
+xui_method_explain(onity_selector, on_middleperform,		void		)( xui_component* sender, xui_method_args& args )
+{
+	xui_method_ptrcall(m_backpath, on_perform_x)(m_filter->get_renderx()+m_filter->get_renderw()+6);
 }
 xui_method_explain(onity_selector, on_bottomperform,		void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_bottom->get_renderrtins();
-	xui_method_ptrcall(m_drawview,	on_perform_w)(rt.get_h()-24);
-	xui_method_ptrcall(m_accept,	on_perform_x)(m_cancel->get_renderx()-m_accept->get_renderw()-10);
+	xui_method_ptrcall(m_drawview, on_perform_w)(rt.get_h()-24);
+	xui_method_ptrcall(m_accept,   on_perform_x)(m_cancel->get_renderx()-m_accept->get_renderw()-10);
 }
 
 /*
@@ -413,6 +457,10 @@ xui_method_explain(onity_selector, refresh_fileview,		void		)( void )
 
 	lineview->refresh();
 	tileview->get_drawview()->refresh();
+}
+xui_method_explain(onity_selector, refresh_backpath,		void		)( void )
+{
+	m_backpath->set_enable(m_search->get_text().length() == 0 && m_fileview->get_tileview()->get_viewfile() != NULL);
 }
 xui_method_explain(onity_selector, convert_dropsuff,		std::wstring)( const std::string& droptype )
 {

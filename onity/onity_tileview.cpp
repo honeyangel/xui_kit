@@ -36,7 +36,7 @@ xui_create_explain(onity_tileview)( void )
 	m_drawview = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 1024));
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewinvalid);
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewrenderself);
-	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
+	//xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
 	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousedown);
 	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousewheel);
 	xui_method_ptrcall(m_drawview, xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmouseclick);
@@ -83,8 +83,21 @@ xui_method_explain(onity_tileview, set_viewfile,				void				)( xui_treenode* vie
 	if (m_viewfile != viewfile)
 	{
 		m_viewfile  = viewfile;
-		m_drawview->refresh();
-		m_viewroll->set_value(0);
+		xui_method_ptrcall(m_drawview, refresh	)();
+		xui_method_ptrcall(m_viewroll, set_value)(0);
+
+		if (m_viewfile == NULL && was_visible())
+		{
+			xui_treeview* lineview = get_lineview();
+			if (lineview)
+			{
+				std::vector<xui_treenode*> nodes = lineview->get_selectednode();
+				if (nodes.size() > 0)
+				{
+					set_tilevisible(nodes.front());
+				}
+			}
+		}
 	}
 }
 xui_method_explain(onity_tileview, set_tilesize,				void				)( s32 size )
@@ -275,23 +288,13 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,		void				)( xui_compon
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
-xui_method_explain(onity_tileview, on_drawviewkeybddown,		void				)( xui_component* sender, xui_method_keybd&    args )
-{
-	if (args.kcode == KEY_BACK)
-	{
-		set_viewfile(NULL);
-
-		xui_treeview* lineview = get_lineview();
-		if (lineview)
-		{
-			std::vector<xui_treenode*> nodes = lineview->get_selectednode();
-			if (nodes.size() > 0)
-			{
-				set_tilevisible(nodes.front());
-			}
-		}
-	}
-}
+//xui_method_explain(onity_tileview, on_drawviewkeybddown,		void				)( xui_component* sender, xui_method_keybd&    args )
+//{
+//	if (args.kcode == KEY_BACK)
+//	{
+//		set_viewfile(NULL);
+//	}
+//}
 xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (args.mouse == MB_L)

@@ -41,7 +41,7 @@ protected:
 	*/
 	void					on_drawviewinvalid			( xui_component* sender, xui_method_args&	  args );
 	void					on_drawviewrenderself		( xui_component* sender, xui_method_args&	  args );
-	void					on_drawviewkeybddown		( xui_component* sender, xui_method_keybd&	  args );
+	//void					on_drawviewkeybddown		( xui_component* sender, xui_method_keybd&	  args );
 	void					on_drawviewmousedown		( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmouseclick		( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmousewheel		( xui_component* sender, xui_method_mouse&	  args );

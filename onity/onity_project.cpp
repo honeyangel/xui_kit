@@ -483,6 +483,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 				{
 					onity_tileview* tileview = m_fileview->get_tileview();
 					tileview->set_viewfile(node);
+					refresh_pathtool();
 
 					if (m_slider->get_value() == 0)
 						m_slider->set_value(10);
@@ -626,20 +627,15 @@ xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* se
 	xui_treenode* pathnode = (xui_treenode*)sender->get_data();
 	if (pathnode->was_selected())
 	{
-		onity_tileview* tileview = m_fileview->get_tileview();
-		if (tileview->get_viewfile())
+		if (m_fileview->get_tileview()->get_viewfile())
 		{
-			tileview->set_viewfile(NULL);
+			m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
+			m_fileview->get_tileview()->set_viewfile(NULL);
+			refresh_pathtool();
 
-			if (tileview->was_visible())
-			{
-				xui_treeview* lineview = m_fileview->get_lineview();
-				std::vector<xui_treenode*> nodes = lineview->get_selectednode();
-				if (nodes.size() > 0)
-				{
-					tileview->set_tilevisible(nodes.front());
-				}
-			}
+			onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+			onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+			m_slider->set_value(proppath->get_slider());
 		}
 	}
 	else
@@ -707,7 +703,7 @@ xui_method_explain(onity_project, on_sliderscroll,			void		)( xui_component* sen
 	}
 
 	std::vector<xui_treenode*> pathvec = m_pathview->get_selectednode();
-	if (pathvec.size() > 0)
+	if (tileview->get_viewfile() == NULL && pathvec.size() > 0)
 	{
 		xui_treenode*   pathnode = pathvec.front();
 		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
@@ -774,23 +770,38 @@ xui_method_explain(onity_project, on_loadtypeclick,			void		)( xui_component* se
 }
 xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* sender, xui_method_args&	   args )
 {
-	if (sender == m_backpath) ++m_curridx;
-	if (sender == m_forepath) --m_curridx;
-
-	if (m_curridx <= (s32)m_histroy.size()-1)
+	xui_treenode* pathnode = NULL;
+	if (m_fileview->get_tileview()->get_viewfile() && sender == m_backpath)
 	{
-		xui_treenode*   pathnode = m_histroy[m_curridx];
+		m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
+		m_fileview->get_tileview()->set_viewfile(NULL);
+		std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+		if (vec.size() > 0)
+			pathnode = vec.front();
+	}
+	else
+	{
+		if (sender == m_backpath) ++m_curridx;
+		if (sender == m_forepath) --m_curridx;
+
+		if (m_curridx <= (s32)m_histroy.size()-1)
+		{
+			pathnode = m_histroy[m_curridx];
+			xui_method_ptrcall(m_pathview, ini_selectednode)(pathnode, true);
+			xui_method_ptrcall(m_pathview, set_nodevisible )(pathnode);
+			refresh_fileview();
+			refresh_pathpane();
+		}
+	}
+
+	if (pathnode)
+	{
 		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-
-		xui_method_ptrcall(m_pathview, ini_selectednode)(pathnode, true);
-		xui_method_ptrcall(m_pathview, set_nodevisible )(pathnode);
-		refresh_fileview();
-		refresh_pathpane();
-		refresh_pathtool();
-
 		m_slider->set_value(proppath->get_slider());
 	}
+
+	refresh_pathtool();
 }
 
 /*
@@ -927,8 +938,8 @@ xui_method_explain(onity_project, refresh_pathpane,			void		)( void )
 }
 xui_method_explain(onity_project, refresh_pathtool,			void		)( void )
 {
-	m_backpath->set_enable(m_search->get_text().length() == 0 && m_curridx < (s32)m_histroy.size()-1);
-	m_forepath->set_enable(m_search->get_text().length() == 0 && m_curridx > 0);
+	m_backpath->set_enable((m_search->get_text().length() == 0 && m_curridx < (s32)m_histroy.size()-1) || m_fileview->get_tileview()->get_viewfile() != NULL);
+	m_forepath->set_enable((m_search->get_text().length() == 0 && m_curridx > 0));
 }
 xui_method_explain(onity_project, convert_filesuff,			std::wstring)( void )
 {
@@ -1012,45 +1023,3 @@ xui_method_explain(onity_project, set_loadtype,				void		)( u08 type, const std:
 		}
 	}
 }
-
-//xui_method_explain(onity_project, refresh_pathmeta, void)( u08 type, const std::string& lastpath, const std::string& currpath )
-//{
-//	NP2DSAssetFileMgr* file_mgr = NULL;
-//	switch (type)
-//	{
-//	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
-//	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
-//	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
-//	}
-//
-//	for (npu32 i = 0; i < file_mgr->GetFileCount(); ++i)
-//	{
-//		std::string temppath = file_mgr->GetFilePH(i);
-//		int index = temppath.find(lastpath);
-//		if (index != -1)
-//		{
-//			temppath.replace(index, lastpath.length(), currpath);
-//			file_mgr->SetFilePH(i, temppath);
-//			onity_pathdata::save_meta(type, i);
-//		}
-//	}
-//}
-//xui_method_explain(onity_project, refresh_filemeta, void)( u08 type, const std::string& lastfull, const std::string& currfull )
-//{
-//	NP2DSAssetFileMgr* file_mgr = NULL;
-//	switch (type)
-//	{
-//	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
-//	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
-//	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
-//	}
-//
-//	std::string pathname = NPFileNameHelper::PathName(lastfull);
-//	std::string filename = NPFileNameHelper::FileName(lastfull);
-//	npu32 id = file_mgr->GetFileID(pathname, filename);
-//	if (id != -1)
-//	{
-//		file_mgr->SetFileFN(id, NPFileNameHelper::FileName(currfull));
-//		onity_pathdata::save_meta(type, id);
-//	}
-//}
