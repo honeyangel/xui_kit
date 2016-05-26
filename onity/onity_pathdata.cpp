@@ -20,20 +20,7 @@ xui_create_explain(onity_pathdata)( const std::wstring& full, xui_proproot* prop
 	m_icon = onity_resource::icon_folder;
 
 	if (m_prop == NULL)
-	{
 		m_prop =  new onity_proppath(full);
-
-		std::vector<std::wstring> filevec = xui_global::get_file(full);
-		for (u32 i = 0; i < filevec.size(); ++i)
-		{
-			std::wstring  name = full+L"/"+filevec[i];
-			xui_proproot* prop = onity_filedata::new_fileprop(name);
-			if (prop)
-			{
-				m_leaf.push_back(prop);
-			}
-		}
-	}
 }
 
 /*
@@ -43,20 +30,6 @@ xui_delete_explain(onity_pathdata)( void )
 {
 	if (m_link == NULL)
 		delete m_prop;
-	for (u32 i = 0; i < m_leaf.size(); ++i)
-		delete m_leaf[i];
-}
-
-/*
-//method
-*/
-xui_method_explain(onity_pathdata, get_leaf,		const xui_proproot_vec&	)( void ) const
-{
-	return m_leaf;
-}
-xui_method_explain(onity_pathdata, add_leaf,		void					)( xui_proproot* proproot )
-{
-	m_leaf.insert(m_leaf.begin(), proproot);
 }
 
 /*
@@ -66,9 +39,11 @@ xui_method_explain(onity_pathdata, ntf_rename,		void					)( const std::wstring& 
 {
 	onity_filedata::ntf_rename(last, curr);
 
-	for (u32 i = 0; i < m_leaf.size(); ++i)
+	onity_proppath* proppath = dynamic_cast<onity_proppath*>(m_prop);
+	const xui_proproot_vec& vec = proppath->get_fileprop();
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		onity_propfile* propfile = dynamic_cast<onity_propfile*>(m_leaf[i]);
+		onity_propfile* propfile = dynamic_cast<onity_propfile*>(vec[i]);
 		if (propfile)
 			propfile->ntf_rename(last, curr);
 	}

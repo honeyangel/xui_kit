@@ -18,12 +18,6 @@ public:
 	virtual ~onity_pathdata( void );
 
 	/*
-	//method
-	*/
-	const xui_proproot_vec&	get_leaf		( void ) const;
-	void					add_leaf		( xui_proproot* proproot );
-
-	/*
 	//override
 	*/
 	virtual std::wstring	get_text		( u32 index );
@@ -44,7 +38,6 @@ protected:
 	//member
 	*/
 	xui_treenode*			m_link;
-	xui_proproot_vec		m_leaf;
 };
 
 #endif//__onity_pathdata_h__
