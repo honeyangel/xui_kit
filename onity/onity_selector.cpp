@@ -25,13 +25,13 @@
 #include "onity_project.h"
 #include "onity_selector.h"
 
-xui_implement_rtti(onity_selector, xui_pickwnd);
+xui_implement_rtti(onity_selector, xui_object_pickwnd);
 
 /*
 //constructor
 */
 xui_create_explain(onity_selector)( void )
-: xui_pickwnd()
+: xui_object_pickwnd()
 {
 	m_title		= new xui_drawer(xui_vector<s32>(24));
 	xui_method_ptrcall(m_title,		ini_component		)(0, 0, DOCKSTYLE_T);
@@ -174,9 +174,9 @@ xui_create_explain(onity_selector)( void )
 /*
 //static
 */
-xui_method_explain(onity_selector, get_ptr,					xui_pickwnd*)( void )
+xui_method_explain(onity_selector, get_ptr,					xui_object_pickwnd*	)( void )
 {
-	static xui_pickwnd* ptr = NULL;
+	static xui_object_pickwnd* ptr = NULL;
 	if (ptr == NULL)
 	{
 		ptr = new onity_selector;
@@ -194,7 +194,7 @@ xui_method_explain(onity_selector, get_ptr,					xui_pickwnd*)( void )
 /*
 //override
 */
-xui_method_explain(onity_selector, get_value,				void*		)( void )
+xui_method_explain(onity_selector, get_value,				void*				)( void )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propctrl->get_propdata().front());
 
@@ -215,7 +215,7 @@ xui_method_explain(onity_selector, get_value,				void*		)( void )
 
 	return NULL;
 }
-xui_method_explain(onity_selector, set_value,				void		)( void* value )
+xui_method_explain(onity_selector, set_value,				void				)( void* value )
 {
 	xui_method_ptrcall(m_asset,  ini_toggle )(true);
 	xui_method_ptrcall(m_scene,	 ini_toggle	)(false);
@@ -259,7 +259,7 @@ xui_method_explain(onity_selector, set_value,				void		)( void* value )
 /*
 //callback
 */
-xui_method_explain(onity_selector, on_perform,				void		)( xui_method_args& args )
+xui_method_explain(onity_selector, on_perform,				void				)( xui_method_args& args )
 {
 	xui_window::on_perform(args);
 	xui_rect2d<s32> rt = m_fileview->get_renderrt()+m_fileview->get_renderpt();
@@ -271,13 +271,13 @@ xui_method_explain(onity_selector, on_perform,				void		)( xui_method_args& args
 /*
 //event
 */
-xui_method_explain(onity_selector, on_searchtextchanged,	void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_searchtextchanged,	void				)( xui_component* sender, xui_method_args& args )
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
 	refresh_fileview();
 	refresh_backpath();
 }
-xui_method_explain(onity_selector, on_backpathclick,		void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_backpathclick,		void				)( xui_component* sender, xui_method_args& args )
 {
 	if (m_fileview->get_tileview()->get_viewfile())
 	{
@@ -288,19 +288,19 @@ xui_method_explain(onity_selector, on_backpathclick,		void		)( xui_component* se
 	m_slider->set_value((s32)m_slider->get_data());
 	refresh_backpath();
 }
-xui_method_explain(onity_selector, on_assetclick,			void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_assetclick,			void				)( xui_component* sender, xui_method_args& args )
 {
 	m_asset->ini_toggle(true);
 	m_scene->ini_toggle(false);
 	refresh_fileview();
 }
-xui_method_explain(onity_selector, on_sceneclick,			void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_sceneclick,			void				)( xui_component* sender, xui_method_args& args )
 {
 	m_asset->ini_toggle(false);
 	m_scene->ini_toggle(true);
 	refresh_fileview();
 }
-xui_method_explain(onity_selector, on_sliderscroll,			void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_sliderscroll,			void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
 
@@ -329,7 +329,7 @@ xui_method_explain(onity_selector, on_sliderscroll,			void		)( xui_component* se
 			lineview->set_nodevisible(nodevec.front());
 	}
 }
-xui_method_explain(onity_selector, on_fileviewselection,	void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_fileviewselection,	void				)( xui_component* sender, xui_method_args& args )
 {
 	std::vector<xui_treenode*> vec = m_fileview->get_lineview()->get_selectednode();
 	if (vec.size() > 0)
@@ -340,7 +340,7 @@ xui_method_explain(onity_selector, on_fileviewselection,	void		)( xui_component*
 		m_drawview->set_viewprop(prop);
 	}
 }
-xui_method_explain(onity_selector, on_fileviewdoubleclk,	void		)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_selector, on_fileviewdoubleclk,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -368,7 +368,7 @@ xui_method_explain(onity_selector, on_fileviewdoubleclk,	void		)( xui_component*
 		}
 	}
 }
-xui_method_explain(onity_selector, on_sizectrlmousemove,	void		)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_selector, on_sizectrlmousemove,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -379,20 +379,20 @@ xui_method_explain(onity_selector, on_sizectrlmousemove,	void		)( xui_component*
 		m_bottom->set_renderh(height);		
 	}
 }
-xui_method_explain(onity_selector, on_clearclick,			void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_clearclick,			void				)( xui_component* sender, xui_method_args& args )
 {
 	m_search->set_text(L"");
 }
-xui_method_explain(onity_selector, on_headerperform,		void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_headerperform,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_header->get_renderrtins();
 	xui_method_ptrcall(m_clear,	   on_perform_x)(rt.ax+m_search->get_renderw()-m_clear->get_renderw()-2);
 }
-xui_method_explain(onity_selector, on_middleperform,		void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_middleperform,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_method_ptrcall(m_backpath, on_perform_x)(m_filter->get_renderx()+m_filter->get_renderw()+6);
 }
-xui_method_explain(onity_selector, on_bottomperform,		void		)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_selector, on_bottomperform,		void				)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_bottom->get_renderrtins();
 	xui_method_ptrcall(m_drawview, on_perform_w)(rt.get_h()-24);
@@ -402,7 +402,7 @@ xui_method_explain(onity_selector, on_bottomperform,		void		)( xui_component* se
 /*
 //method
 */
-xui_method_explain(onity_selector, refresh_fileview,		void		)( void )
+xui_method_explain(onity_selector, refresh_fileview,		void				)( void )
 {
 	m_fileview->clear();
 	if (m_scene->was_push())
@@ -458,11 +458,11 @@ xui_method_explain(onity_selector, refresh_fileview,		void		)( void )
 	lineview->refresh();
 	tileview->get_drawview()->refresh();
 }
-xui_method_explain(onity_selector, refresh_backpath,		void		)( void )
+xui_method_explain(onity_selector, refresh_backpath,		void				)( void )
 {
 	m_backpath->set_enable(m_search->get_text().length() == 0 && m_fileview->get_tileview()->get_viewfile() != NULL);
 }
-xui_method_explain(onity_selector, convert_dropsuff,		std::wstring)( const std::string& droptype )
+xui_method_explain(onity_selector, convert_dropsuff,		std::wstring		)( const std::string& droptype )
 {
 	if		(droptype == "NPSourceTexture")	return L".png";
 	else if (droptype == "NP2DSImage")		return L".npModule";

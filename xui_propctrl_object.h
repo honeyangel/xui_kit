@@ -53,7 +53,7 @@ protected:
 
 #include "xui_window.h"
 
-class xui_pickwnd : public xui_window
+class xui_object_pickwnd : public xui_window
 {
 	xui_declare_rtti
 
@@ -61,7 +61,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_pickwnd( void );
+	xui_object_pickwnd( void );
 
 	/*
 	//method

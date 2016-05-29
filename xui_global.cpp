@@ -126,22 +126,43 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 //screen
 */
 HDC screen_hdc = NULL;
+xui_method_explain(xui_global, was_scolorstart, bool							)( void )
+{
+	return screen_hdc != NULL;
+}
 xui_method_explain(xui_global, set_scolorstart,	void							)( void )
 {
-	screen_hdc = ::GetDC(NULL);
+	if (screen_hdc == NULL)
+	{
+		extern HWND gHWND;
+		::SetWindowPos(gHWND, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+		screen_hdc = ::GetDC(NULL);
+	}
 }
-xui_method_explain(xui_global, get_scolor,		xui_colour						)( const xui_vector<s32>& pt )
+xui_method_explain(xui_global, get_scolor,		xui_colour						)( void )
 {
-	COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
-	BYTE r = GetRValue(color);
-	BYTE g = GetGValue(color);
-	BYTE b = GetBValue(color);
-	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
+	if (screen_hdc)
+	{
+		POINT pt;
+		GetCursorPos(&pt);
+		COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
+		BYTE r = GetRValue(color);
+		BYTE g = GetGValue(color);
+		BYTE b = GetBValue(color);
+		return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
+	}
+
+	return xui_colour::transparent;
 }
 xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 {
-	::ReleaseDC(NULL, screen_hdc);
-	screen_hdc = NULL;
+	if (screen_hdc)
+	{
+		extern HWND gHWND;
+		::SetWindowPos(gHWND, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+		::ReleaseDC(NULL, screen_hdc);
+		screen_hdc = NULL;
+	}
 }
 
 /*

@@ -3,15 +3,15 @@
 
 #include "xui_component.h"
 
-typedef xui_propctrl*	(*xui_prop_newctrl)( xui_propdata* propdata );
-typedef void			(*xui_prop_additem)( void* userptr );
-typedef void			(*xui_prop_delitem)( void* userptr );
-typedef xui_propdata*	(*xui_prop_newprop)( void* userptr, u32 index, xui_propkind* kind );
+typedef xui_propctrl*		(*xui_prop_newctrl)( xui_propdata* propdata );
+typedef void				(*xui_prop_additem)( void* userptr );
+typedef void				(*xui_prop_delitem)( void* userptr );
+typedef xui_propdata*		(*xui_prop_newprop)( void* userptr, u32 index, xui_propkind* kind );
 
-class   xui_pickwnd;
-typedef xui_pickwnd*	(*xui_prop_newpick)( void );
-typedef xui_bitmap*		(*xui_prop_geticon)( xui_propdata* propdata );
-typedef std::wstring	(*xui_prop_getname)( xui_propdata* propdata );
+class   xui_object_pickwnd;
+typedef xui_object_pickwnd*	(*xui_prop_newpick)( void );
+typedef xui_bitmap*			(*xui_prop_geticon)( xui_propdata* propdata );
+typedef std::wstring		(*xui_prop_getname)( xui_propdata* propdata );
 
 typedef std::map<s32, std::wstring> xui_propenum_map;
 typedef std::vector<xui_propdata*>  xui_propdata_vec;

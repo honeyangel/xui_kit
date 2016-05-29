@@ -512,6 +512,6 @@ xui_method_explain(onity_proptransref, set_outlinecolor,	void			)( void* userptr
 {
 	onity_proptransref* prop = (onity_proptransref*)userptr;
 	NP2DSOLInfo info = prop->get_transref()->GetOLInfo();
-	info.outlineColor = NPColor(value.a, value.r, value.g, value.b);
+	info.outlineColor = NPColor(value.r, value.g, value.b, value.a);
 	prop->get_transref()->SetOLInfo(info);
 }

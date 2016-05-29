@@ -73,6 +73,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 {
 	switch (message)
 	{
+	case WM_KILLFOCUS:
+		{
+			xui_desktop::get_ins()->set_focusctrl(NULL);
+		}
+		break;
 	case WM_USER_FWATCHNOTIFY:
 		{
 			long lEvent;
@@ -279,7 +284,6 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	//SetCapture   (gHWND);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
-
 	xui_global::add_fontfile("Arial.TTF");
 	xui_render_window* render_window = new xui_render_window(gHWND);
 	xui_static_inscall(xui_convas,		init)();

@@ -323,6 +323,10 @@ xui_create_explain(xui_propctrl_colour)( xui_propdata* propdata )
 	xui_propdata_colour* datacolour = dynamic_cast<xui_propdata_colour*>(propdata);
 	xui_propedit_colour* editcolour = new xui_propedit_colour(this);
 	xui_propctrl_implement_attach(editcolour)
+
+	xui_drawer* pickctrl = editcolour->get_pickctrl();
+	pickctrl->set_parent(this);
+	m_widgetvec.push_back(pickctrl);
 }
 xui_propctrl_implement_link(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
 xui_propctrl_implement_edit(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
@@ -333,12 +337,19 @@ xui_propctrl_implement_edit(xui_propctrl_colour, xui_propedit_colour, xui_propda
 xui_method_explain(xui_propctrl_colour, on_perform,			void					)( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
-	xui_control* textctrl = m_propedit->get_editctrl();
 
+	xui_propedit_colour* editcolour = (xui_propedit_colour*)m_propedit;
+	xui_control* editctrl = editcolour->get_editctrl();
+	xui_drawer*  pickctrl = editcolour->get_pickctrl();
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
+	//pickctrl
+	pt.x = rt.bx - pickctrl->get_renderw();
+	pt.y = rt.get_h()/2 - pickctrl->get_renderh()/2;
+	pickctrl->on_perform_pt(pt);
+	//textctrl
 	pt.x = rt.get_w()/2;
-	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
-	textctrl->on_perform_pt(pt);
-	textctrl->on_perform_w (rt.get_w()/2);
+	pt.y = rt.get_h()/2 - editctrl->get_renderh()/2;
+	editctrl->on_perform_pt(pt);
+	editctrl->on_perform_w (rt.get_w()/2 - pickctrl->get_renderw());
 }
