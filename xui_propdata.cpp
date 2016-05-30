@@ -47,7 +47,11 @@ xui_method_explain(xui_propdata,				set_ctrl,			void					)( xui_propctrl* ctrl )
 }
 xui_method_explain(xui_propdata,				non_ctrl,			void					)( void )
 {
-	m_ctrl = NULL;
+	if (m_ctrl)
+	{
+		m_ctrl->del_propdata();
+		m_ctrl = NULL;
+	}
 }
 xui_method_explain(xui_propdata,				can_edit,			bool					)( void ) const
 {

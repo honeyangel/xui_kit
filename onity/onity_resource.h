@@ -51,6 +51,7 @@ public:
 	static xui_bitmap*	icon_play;
 	static xui_bitmap*	icon_left;
 	static xui_bitmap*	icon_right;
+	static xui_bitmap*	icon_picker;
 };
 
 #endif//__onity_resource_h__

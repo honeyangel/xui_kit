@@ -38,7 +38,7 @@ xui_method_explain(xui_propctrl,		has_propdata,		bool					)( xui_propdata* propd
 }
 xui_method_explain(xui_propctrl,		set_propdata,		void					)( xui_propdata* propdata )
 {
-	m_propdata = propdata;
+	m_propdata    = propdata;
 	m_propdatavec.clear();
 	m_propdatavec.push_back(propdata);
 
@@ -51,7 +51,11 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_
 
 	on_linkpropdata();
 }
-
+xui_method_explain(xui_propctrl,		del_propdata,		void					)( void )
+{
+	m_propdata	  = NULL;
+	m_propdatavec.clear();
+}
 xui_method_explain(xui_propctrl,		get_ctrlelse,		xui_component*			)( void )
 {
 	return m_widgetvec.back();

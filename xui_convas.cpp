@@ -725,6 +725,31 @@ xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32
 	glEnd();
 }
 
+xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32>&	rt, 
+																			   xui_colour*				colors )
+{
+	if (m_cliprect.was_valid() == false)
+		return;
+
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_TEXTURE_2D);
+	glBegin(GL_QUADS);
+
+	glColor4fv(colors[0].value);
+	glVertex2f((f32)rt.ax, (f32)rt.ay);
+
+	glColor4fv(colors[1].value);
+	glVertex2f((f32)rt.ax, (f32)rt.by);
+
+	glColor4fv(colors[2].value);
+	glVertex2f((f32)rt.bx, (f32)rt.by);
+
+	glColor4fv(colors[3].value);
+	glVertex2f((f32)rt.bx, (f32)rt.ay);
+
+	glEnd();
+}
+
 /*
 //round
 */

@@ -7,6 +7,11 @@ class xui_propedit_colour : public xui_propedit_base
 {
 public:
 	/*
+	//member
+	*/
+	static xui_bitmap*			icon_pick;
+
+	/*
 	//constructor
 	*/
 	xui_propedit_colour( xui_propctrl* propctrl );
@@ -28,10 +33,10 @@ protected:
 	//event
 	*/
 	void						on_editctrlrenderself	( xui_component* sender, xui_method_args&  args );
-	void						on_pickctrlrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlnonfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_editctrlclick		( xui_component* sender, xui_method_mouse& args );
 	void						on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
+	void						on_pickctrlkeybddown	( xui_component* sender, xui_method_keybd& args );
 
 	/*
 	//member
@@ -73,19 +78,28 @@ protected:
 	/*
 	//event
 	*/
+	void						on_windownonfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_plusctrlexpand		( xui_component* sender, xui_method_args&  args );
-	void						on_pickctrlnonfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
+	void						on_pickctrlkeybddown	( xui_component* sender, xui_method_keybd& args );
 	void						on_mainviewrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_compctrlrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_compctrlclick		( xui_component* sender, xui_method_mouse& args );
 	void						on_viewctrlrenderself	( xui_component* sender, xui_method_args&  args );
-	void						on_viewctrlclick		( xui_component* sender, xui_method_mouse& args );
+	void						on_viewctrldowndrag		( xui_component* sender, xui_method_mouse& args );
+	void						on_viewpanerenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_mainrollrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_mainrolldowndrag		( xui_component* sender, xui_method_mouse& args );
+	void						on_comppanerenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_comprollrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_comprolldowndrag		( xui_component* sender, xui_method_mouse& args );
 	void						on_compedittextchanged	( xui_component* sender, xui_method_args&  args );
+
+	/*
+	//method
+	*/
+	void						set_colordata			( void );
+	void						set_colortext			( void );
 
 	/*
 	//member

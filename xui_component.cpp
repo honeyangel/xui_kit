@@ -525,7 +525,7 @@ xui_method_explain(xui_component, on_setrendersz,		void					)( xui_method_args&	
 xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			args )
 {
 	xui_component* root = m_parent;
-	while (root && xui_issub_kindof(xui_panel, root) == false)
+	while (root && xui_issub_kindof(xui_desktop, root) == false)
 	{
 		root->xm_getfocus(this, args);
 		root = root->get_parent();
@@ -534,7 +534,7 @@ xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			
 xui_method_explain(xui_component, on_nonfocus,			void					)( xui_method_args&			args )
 {
 	xui_component* root = m_parent;
-	while (root && xui_issub_kindof(xui_panel, root) == false)
+	while (root && xui_issub_kindof(xui_desktop, root) == false)
 	{
 		root->xm_nonfocus(this, args);
 		root = root->get_parent();

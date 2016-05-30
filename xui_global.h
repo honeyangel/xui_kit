@@ -31,6 +31,7 @@ public:
 	static bool								was_scolorstart	( void );
 	static void								set_scolorstart ( void );
 	static xui_colour						get_scolor		( void );
+	static std::vector<xui_colour>			get_scolor		( const xui_vector<s32>& sz );
 	static void								set_scolorclose	( void );
 
 	/*

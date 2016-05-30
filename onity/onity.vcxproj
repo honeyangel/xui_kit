@@ -32,6 +32,7 @@
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propactor.h" />
+    <ClInclude Include="onity_propctrl_texture.h" />
     <ClInclude Include="onity_propleaf.h" />
     <ClInclude Include="onity_propcollider.h" />
     <ClInclude Include="onity_propctrl_flip.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="onity_prop2dsres.cpp" />
     <ClCompile Include="onity_propaction.cpp" />
     <ClCompile Include="onity_propactor.cpp" />
+    <ClCompile Include="onity_propctrl_texture.cpp" />
     <ClCompile Include="onity_propleaf.cpp" />
     <ClCompile Include="onity_propcollider.cpp" />
     <ClCompile Include="onity_propctrl_flip.cpp" />
@@ -147,13 +149,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

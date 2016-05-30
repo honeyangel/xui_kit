@@ -148,6 +148,9 @@ public:
 												  const xui_colour&			color,
 												  bool						smooth = false );
 
+	void					fill_rectangle		( const xui_rect2d<s32>&	rt, 
+												  xui_colour*				colors );
+
 	/*
 	//round
 	*/

@@ -125,43 +125,132 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 /*
 //screen
 */
-HDC screen_hdc = NULL;
+CHAR*	screen_buffer	= NULL;
+s32		screen_w		= 0;
+s32		screen_h		= 0;
+void capture_screen( void )
+{
+	HDC hdcScreen = ::GetDC(NULL);
+
+	screen_w = GetSystemMetrics(SM_CXSCREEN);  // 屏幕宽
+	screen_h = GetSystemMetrics(SM_CYSCREEN);  // 屏幕高
+	HDC hdcMemory = CreateCompatibleDC(hdcScreen); // 创建兼容内存DC
+	if (hdcMemory == NULL)
+	{
+		goto done;
+	}
+
+	// 通过窗口DC 创建一个兼容位图
+	BITMAPINFO bi;
+	bi.bmiHeader.biSize				= sizeof(BITMAPINFOHEADER);
+	bi.bmiHeader.biWidth			=  screen_w;
+	bi.bmiHeader.biHeight			= -screen_h;
+	bi.bmiHeader.biPlanes			= 1;
+	bi.bmiHeader.biBitCount			= 24;
+	bi.bmiHeader.biCompression		= BI_RGB;
+	bi.bmiHeader.biSizeImage		= 0;
+	bi.bmiHeader.biXPelsPerMeter	= 0;
+	bi.bmiHeader.biYPelsPerMeter	= 0;
+	bi.bmiHeader.biClrUsed			= 0;
+	bi.bmiHeader.biClrImportant		= 0;
+
+	char* buffer = NULL;
+	HBITMAP hbmScreen = CreateDIBSection(hdcMemory, &bi, DIB_RGB_COLORS, (void**)(&buffer), 0, 0);
+	if (hbmScreen == NULL)
+	{
+		goto done;
+	}
+
+	// 将位图块传送到我们兼容的内存DC中
+	SelectObject(hdcMemory, hbmScreen);
+	if (!BitBlt(
+		hdcMemory,   // 目的DC
+		0, 0,        // 目的DC的 x,y 坐标
+		screen_w, screen_h, // 目的 DC 的宽高
+		hdcScreen,   // 来源DC
+		0, 0,        // 来源DC的 x,y 坐标
+		SRCCOPY))    // 粘贴方式
+	{
+		goto done;
+	}
+
+	screen_buffer = new char[screen_w*screen_h*3];
+	memcpy(screen_buffer, buffer, screen_w*screen_h*3);
+
+	// 清理资源
+done:
+	DeleteObject(hbmScreen);
+	DeleteObject(hdcMemory);
+	ReleaseDC(NULL, hdcScreen);
+}
+
 xui_method_explain(xui_global, was_scolorstart, bool							)( void )
 {
-	return screen_hdc != NULL;
+	return screen_buffer != NULL;
 }
 xui_method_explain(xui_global, set_scolorstart,	void							)( void )
 {
-	if (screen_hdc == NULL)
+	if (screen_buffer == NULL)
 	{
 		extern HWND gHWND;
 		::SetWindowPos(gHWND, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-		screen_hdc = ::GetDC(NULL);
+		capture_screen();
 	}
+}
+
+xui_colour pick_colour( s32 x, s32 y )
+{
+	u32 index = (y * screen_w + x) * 3;
+	BYTE b = screen_buffer[index  ];
+	BYTE g = screen_buffer[index+1];
+	BYTE r = screen_buffer[index+2];
+	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
 }
 xui_method_explain(xui_global, get_scolor,		xui_colour						)( void )
 {
-	if (screen_hdc)
+	if (screen_buffer)
 	{
 		POINT pt;
 		GetCursorPos(&pt);
-		COLORREF color = ::GetPixel(screen_hdc, pt.x, pt.y);
-		BYTE r = GetRValue(color);
-		BYTE g = GetGValue(color);
-		BYTE b = GetBValue(color);
-		return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
+		return pick_colour(pt.x, pt.y);
 	}
 
 	return xui_colour::transparent;
 }
+xui_method_explain(xui_global, get_scolor,		std::vector<xui_colour>			)( const xui_vector<s32>& sz )
+{
+	std::vector<xui_colour> result;
+	result.resize(sz.w*sz.h, xui_colour::black);
+	if (screen_buffer)
+	{
+		POINT pt;
+		GetCursorPos(&pt);
+		s32 sc = pt.x - sz.w/2;
+		s32 sr = pt.y - sz.h/2;
+		for (s32 ir = 0; ir < sz.h; ++ir)
+		{
+			for (s32 ic = 0; ic < sz.w; ++ic)
+			{
+				s32 x = sc + ic;
+				s32 y = sr + ir;
+				u32 index = ir * sz.w + ic;
+				result[index] = pick_colour(x, y);
+			}
+		}
+	}
+
+	return result;
+}
 xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 {
-	if (screen_hdc)
+	if (screen_buffer)
 	{
 		extern HWND gHWND;
 		::SetWindowPos(gHWND, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-		::ReleaseDC(NULL, screen_hdc);
-		screen_hdc = NULL;
+
+		//释放
+		delete [] screen_buffer;
+		screen_buffer = NULL;
 	}
 }
 

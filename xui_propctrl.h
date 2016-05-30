@@ -23,6 +23,7 @@ public:
 	bool					has_propdata	( xui_propdata* propdata ) const;
 	void					set_propdata	( xui_propdata* propdata );
 	void					set_propdata	( const xui_propdata_vec& propdata );
+	void					del_propdata	( void );
 	virtual void			on_linkpropdata	( void ) = 0;
 	virtual void			on_editvalue	( xui_propedit* sender ) = 0;
 

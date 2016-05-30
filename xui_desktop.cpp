@@ -306,7 +306,8 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 		if (window->was_modal())
 			continue;
 
-		m_childctrl[i]->render();
+		if (m_childctrl[i]->was_visible())
+			m_childctrl[i]->render();
 	}
 
 	for (u32 i = 0; i < m_modalpool.size(); ++i)
