@@ -99,8 +99,8 @@ xui_method_explain(xui_kindctrl, set_propkind,				void			)( xui_propkind* propki
 	{
 		xui_propdata* propdata = m_propkind->get_propdata()[i];
 		xui_propctrl* propctrl = m_propctrlvec[i];
-		xui_method_ptrcall(propctrl, set_propdata)(propdata);
 		xui_method_ptrcall(propdata, set_ctrl	 )(propctrl);
+		xui_method_ptrcall(propctrl, set_propdata)(propdata);
 	}
 
 	refresh();

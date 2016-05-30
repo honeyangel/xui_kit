@@ -12,6 +12,7 @@
 #include "xui_propctrl.h"
 #include "xui_propctrl_object.h"
 #include "xui_propctrl_vector.h"
+#include "onity_propctrl_texture.h"
 #include "onity_selector.h"
 #include "onity_resource.h"
 #include "onity_filedata.h"
@@ -36,7 +37,7 @@ xui_create_explain(onity_propmodule)( const std::wstring& full )
 	m_texkind->add_propdata(new xui_propdata_object_func(
 		m_texkind,
 		L"Texture",
-		xui_propctrl_object::create,
+		onity_propctrl_texture::create,
 		"NPSourceTexture",
 		onity_selector::get_ptr,
 		get_texicon,

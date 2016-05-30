@@ -89,8 +89,6 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 		{
 			std::wstring text;
 			text += L"None";
-			//text += xui_global::utf8_to_unicode(dataobject->get_droptype());
-			//text += L")";
 			textctrl->set_text(text);
 		}
 	}
@@ -128,11 +126,11 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 	xui_vector<s32> pt;
 	//pickctrl
 	pt.x = rt.bx - pickctrl->get_renderw();
-	pt.y = rt.get_h()/2 - pickctrl->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - pickctrl->get_renderh()/2;
 	pickctrl->on_perform_pt(pt);
 	//textctrl
 	pt.x = rt.get_w()/2;
-	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
+	pt.y = xui_propview::default_lineheight/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w()/2 - pickctrl->get_renderw());
 	//namectrl
