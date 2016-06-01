@@ -199,5 +199,5 @@ xui_method_explain(onity_lineview, draw_name,				void				)( const xui_rect2d<s32
 	temp << name.c_str();
 	std::wstring    text   = xui_convas::get_ins()->trim_text(temp.str(), xui_family::default, drawrt.get_w()-16);
 	xui_rect2d<s32> textrt = xui_convas::get_ins()->calc_draw(text, xui_family::default, drawrt, TEXTALIGN_CC, true);
-	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default);
+	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default, true);
 }

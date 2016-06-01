@@ -390,7 +390,8 @@ xui_method_explain(xui_textbox, on_renderself,		void					)( xui_method_args&  ar
 			m_hinttext, 
 			m_textfont, 
 			get_rendertextrt() + get_screenpt(), 
-			textdraw);
+			textdraw,
+			m_singleline);
 	}
 
 	if (has_focus() && m_readonly == false)
@@ -670,5 +671,5 @@ xui_method_explain(xui_textbox, get_showcount,		u32						)( void ) const
 	maxwidth -= m_iconoffset.x;
 	maxwidth -= m_textoffset.x;
 
-	return xui_convas::get_ins()->calc_text(temp, m_textfont, maxwidth).length();
+	return xui_convas::get_ins()->calc_text(temp, m_textfont, maxwidth, m_singleline).length();
 }

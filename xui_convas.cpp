@@ -212,7 +212,7 @@ xui_method_explain(xui_convas, trim_text,			std::wstring			)( const std::wstring
 		std::wstring dot = L"...";
 		s32 dotwidth = calc_size(dot, textfont, maxwidth, true).w;
 
-		std::wstring result = calc_text(text, textfont, maxwidth-dotwidth);
+		std::wstring result = calc_text(text, textfont, maxwidth-dotwidth, true);
 		result += dot;
 		return result;
 	}
@@ -267,7 +267,7 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 			else
 			{
 				std::wstring word;
-				s32 sw  = calc_word(std::wstring(p), textfont, maxwidth, word);
+				s32 sw  = calc_word(std::wstring(p), textfont, maxwidth, singleline, word);
 				if (sw == 0 && word.empty())
 					break;
 
@@ -346,7 +346,8 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 
 xui_method_explain(xui_convas, calc_text,			std::wstring			)( const std::wstring&		text,
 																			   const xui_family&		textfont,
-																			   s32						maxwidth )
+																			   s32						maxwidth,
+																			   bool						singleline )
 {
 	//绘制多行
 	std::wstring temp;
@@ -363,7 +364,7 @@ xui_method_explain(xui_convas, calc_text,			std::wstring			)( const std::wstring
 		else
 		{
 			std::wstring word;
-			s32 sw =  calc_word(std::wstring(p), textfont, maxwidth, word);
+			s32 sw =  calc_word(std::wstring(p), textfont, maxwidth, singleline, word);
 			if (sw == 0 && word.empty())
 				break;
 
@@ -412,6 +413,7 @@ xui_method_explain(xui_convas, calc_char,			u32						)( const std::wstring&		tex
 xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																			   s32						maxwidth,
+																			   bool						singleline,
 																			   std::wstring&			word )
 {
 	word.clear();
@@ -432,8 +434,7 @@ xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		tex
 		xui_family_member* member = get_family_member(textfont, text[i]);
 
 		//单词字符
-		if ((text[i] >= L'a' && text[i] <= L'z') ||
-			(text[i] >= L'A' && text[i] <= L'Z'))
+		if (singleline == false && ((text[i] >= L'a' && text[i] <= L'z') || (text[i] >= L'A' && text[i] <= L'Z')))
 		{
 			if (curwidth + member->advance + textfont.horz > maxwidth)
 				break;
@@ -464,7 +465,8 @@ xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		tex
 xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																			   const xui_rect2d<s32>&	drawrect,
-																			   const xui_family_render&	textdraw )
+																			   const xui_family_render&	textdraw, 
+																			   bool						singleline )
 {
 	s32 height = m_familycreate->get_height(textfont);
 
@@ -491,7 +493,7 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 		else
 		{
 			std::wstring word;
-			s32 sw =  calc_word(std::wstring(p), textfont, maxwidth, word);
+			s32 sw =  calc_word(std::wstring(p), textfont, maxwidth, singleline, word);
 			if (sw == 0 && word.empty())
 				break;
 

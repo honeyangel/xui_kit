@@ -89,7 +89,8 @@ public:
 
 	std::wstring			calc_text			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
-												  s32						maxwidth );
+												  s32						maxwidth,
+												  bool						singleline );
 
 	u32						calc_char			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
@@ -98,12 +99,14 @@ public:
 	u32						calc_word			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
 												  s32						maxwidth, 
+												  bool						singleline,
 												  std::wstring&				word );
 
 	void					draw_text			( const std::wstring&		text,
 												  const xui_family&			textfont,
 												  const xui_rect2d<s32>&	drawrect,
-												  const xui_family_render&	textdraw );
+												  const xui_family_render&	textdraw, 
+												  bool						singleline );
 
 	void					draw_text			( const std::wstring&		text,
 												  const xui_family&			textfont,

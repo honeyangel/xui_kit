@@ -207,7 +207,8 @@ xui_method_explain(xui_drawer, on_renderself,		void					)( xui_method_args& args
 			text, 
 			m_textfont, 
 			get_rendertextrt()+get_screenpt(), 
-			textdraw);
+			textdraw,
+			m_singleline);
 	}
 
 	// draw icon

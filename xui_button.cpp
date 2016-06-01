@@ -103,7 +103,8 @@ xui_method_explain(xui_button, on_renderself,	void				)( xui_method_args&  args 
 			text, 
 			m_textfont, 
 			rt+get_screenpt(), 
-			textdraw);
+			textdraw,
+			m_singleline);
 	}
 
 	// draw icon

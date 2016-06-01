@@ -41,12 +41,14 @@ protected:
 	*/
 	void					on_drawviewinvalid			( xui_component* sender, xui_method_args&	  args );
 	void					on_drawviewrenderself		( xui_component* sender, xui_method_args&	  args );
-	//void					on_drawviewkeybddown		( xui_component* sender, xui_method_keybd&	  args );
+	void					on_drawviewkeybddown		( xui_component* sender, xui_method_keybd&	  args );
 	void					on_drawviewmousedown		( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmouseclick		( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmousewheel		( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmousedoubleclick	( xui_component* sender, xui_method_mouse&	  args );
 	void					on_drawviewmousedragitem	( xui_component* sender, xui_method_dragdrop& args );
+	void					on_editctrlnonfocus			( xui_component* sender, xui_method_args&     args );
+	void					on_editctrltextenter		( xui_component* sender, xui_method_args&	  args );
 
 	/*
 	//method
@@ -69,6 +71,7 @@ protected:
 	xui_treenode*			m_viewfile;
 	onity_renderview*		m_drawview;
 	xui_scroll*				m_viewroll;
+	xui_textbox*			m_editctrl;
 };
 
 #endif//__onity_tileview_h__

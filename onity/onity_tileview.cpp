@@ -13,6 +13,7 @@
 
 #include "xui_global.h"
 #include "xui_scroll.h"
+#include "xui_textbox.h"
 #include "xui_treenode.h"
 #include "xui_treeview.h"
 #include "onity_prop2dsasset.h"
@@ -36,7 +37,7 @@ xui_create_explain(onity_tileview)( void )
 	m_drawview = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 1024));
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewinvalid);
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_drawviewrenderself);
-	//xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
+	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	onity_tileview>(this, &onity_tileview::on_drawviewkeybddown);
 	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousedown);
 	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmousewheel);
 	xui_method_ptrcall(m_drawview, xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_tileview>(this, &onity_tileview::on_drawviewmouseclick);
@@ -51,8 +52,21 @@ xui_create_explain(onity_tileview)( void )
 	xui_method_ptrcall(m_viewroll, ini_component		)(true, false);
 	xui_method_ptrcall(m_viewroll, ini_component		)(0, 0, DOCKSTYLE_R);
 
+	m_editctrl = new xui_textbox(xui_vector<s32>(name_size));
+	xui_method_ptrcall(m_editctrl, xm_nonfocus			) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_editctrlnonfocus);
+	xui_method_ptrcall(m_editctrl, xm_textenter			) += new xui_method_member<xui_method_args,		onity_tileview>(this, &onity_tileview::on_editctrltextenter);
+	xui_method_ptrcall(m_editctrl, set_parent			)(this);
+	xui_method_ptrcall(m_editctrl, set_drawcolor		)(true);
+	xui_method_ptrcall(m_editctrl, set_backcolor		)(xui_colour(1.0f, 0.2f));
+	xui_method_ptrcall(m_editctrl, set_sidestyle		)(SIDESTYLE_S);
+	xui_method_ptrcall(m_editctrl, set_borderrt			)(xui_rect2d<s32>(2));
+	xui_method_ptrcall(m_editctrl, set_textalign		)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_editctrl, ini_component		)(true, false);
+	xui_method_ptrcall(m_editctrl, ini_component		)(0, 0, DOCKSTYLE_U);
+
 	m_widgetvec.push_back(m_viewroll);
 	m_widgetvec.push_back(m_drawview);
+	m_widgetvec.push_back(m_editctrl);
 }
 
 /*
@@ -288,13 +302,49 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,		void				)( xui_compon
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
-//xui_method_explain(onity_tileview, on_drawviewkeybddown,		void				)( xui_component* sender, xui_method_keybd&    args )
-//{
-//	if (args.kcode == KEY_BACK)
-//	{
-//		set_viewfile(NULL);
-//	}
-//}
+xui_method_explain(onity_tileview, on_drawviewkeybddown,		void				)( xui_component* sender, xui_method_keybd&	   args )
+{
+	if (args.kcode == KEY_F2)
+	{
+		xui_treeview* lineview = get_lineview();
+		std::vector<xui_treenode*> vec = lineview->get_selectednode();
+		if (vec.size() > 0)
+		{
+			std::vector<xui_treenode*> nodes;
+			if (m_viewfile)
+			{
+				nodes = m_viewfile->get_leafnodearray();
+			}
+			else
+			{
+				nodes = lineview->get_entirenode(false);
+			}
+
+			xui_treenode* selectednode = vec.front();
+			for (u32 i = 0; i < nodes.size(); ++i)
+			{
+				if (nodes[i] == selectednode)
+				{
+					xui_rect2d<s32> rt = m_drawview->get_renderrtins();
+					s32 s, c, g, w, h;
+					get_tileinfo(s, c, g, w, h);
+					s32 ic = (s32)(i % c);
+					s32 ir = (s32)(i / c);
+					s32 x  = rt.ax + ic*w;
+					s32 y  = rt.ay + ir*h - m_viewroll->get_value() + m_tilesize;
+
+					xui_method_ptrcall(m_editctrl, on_perform_x	)(x);
+					xui_method_ptrcall(m_editctrl, on_perform_y	)(y);
+					xui_method_ptrcall(m_editctrl, on_perform_w	)(s);
+					xui_method_ptrcall(m_editctrl, set_visible	)(true);
+					xui_method_ptrcall(m_editctrl, ini_textbox	)(selectednode->get_linkdata()->get_text(0));
+					xui_method_ptrcall(m_editctrl, req_focus	)();
+					break;
+				}
+			}
+		}
+	}
+}
 xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (args.mouse == MB_L)
@@ -336,6 +386,8 @@ xui_method_explain(onity_tileview, on_drawviewmousewheel,		void				)( xui_compon
 	{
 		m_viewroll->set_value(m_viewroll->get_value()-args.wheel);
 		args.handle = true;
+
+		m_editctrl->set_visible(false);
 	}
 }
 xui_method_explain(onity_tileview, on_drawviewmouseclick,		void				)( xui_component* sender, xui_method_mouse&    args )
@@ -349,6 +401,24 @@ xui_method_explain(onity_tileview, on_drawviewmousedoubleclick, void				)( xui_c
 xui_method_explain(onity_tileview, on_drawviewmousedragitem,	void				)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xm_mousedragitem(sender, args);
+}
+xui_method_explain(onity_tileview, on_editctrlnonfocus,			void				)( xui_component* sender, xui_method_args&	   args )
+{
+	m_editctrl->set_visible(false);
+}
+xui_method_explain(onity_tileview, on_editctrltextenter,		void				)( xui_component* sender, xui_method_args&	   args )
+{
+	xui_treeview* lineview = get_lineview();
+	std::vector<xui_treenode*> vec = lineview->get_selectednode();
+	if (vec.size() > 0)
+	{
+		xui_treenode* selectednode = vec.front();
+		selectednode->get_linkdata()->set_text(0, m_editctrl->get_text());
+		selectednode->use_linkdata();
+
+		xui_method_ptrcall(m_editctrl, set_visible	)(false);
+		xui_method_ptrcall(m_drawview, req_focus	)();
+	}
 }
 
 /*
@@ -403,7 +473,7 @@ xui_method_explain(onity_tileview, draw_name,					void				)( const xui_rect2d<s3
 	onity_treedata* data   = (onity_treedata*)node->get_linkdata();
 	std::wstring    text   = xui_convas::get_ins()->trim_text(data->get_text(0), xui_family::default, drawrt.get_w()-16);
 	xui_rect2d<s32> textrt = xui_convas::get_ins()->calc_draw(text, xui_family::default, drawrt, TEXTALIGN_CC, true);
-	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default);
+	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default, true);
 }
 xui_method_explain(onity_tileview, draw_leaf,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
