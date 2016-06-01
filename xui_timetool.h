@@ -18,6 +18,11 @@ public:
 	*/
 	virtual ~xui_timetool( void );
 
+	/*
+	//method
+	*/
+	xui_timer*		get_playtimer		( void );
+
 protected:
 	/*
 	//method

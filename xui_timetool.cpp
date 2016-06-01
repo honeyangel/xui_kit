@@ -101,7 +101,15 @@ xui_delete_explain(xui_timetool)( void )
 /*
 //method
 */
-xui_method_explain(xui_timetool, on_buttonclick,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, get_playtimer,			xui_timer*	)( void )
+{
+	return m_playtimer;
+}
+
+/*
+//method
+*/
+xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	xui_keyframe_map allframe = timeview->get_allframe();
@@ -144,7 +152,7 @@ xui_method_explain(xui_timetool, on_buttonclick,		void)( xui_component* sender, 
 		timeview->set_curframe((*itor).first);
 	}
 }
-xui_method_explain(xui_timetool, on_toggleclick,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_toggleclick,		void		)( xui_component* sender, xui_method_args& args )
 {
 	if (sender == m_play)
 	{
@@ -163,7 +171,7 @@ xui_method_explain(xui_timetool, on_toggleclick,		void)( xui_component* sender, 
 
 	}
 }
-xui_method_explain(xui_timetool, on_buttonrenderself,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_buttonrenderself,	void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_colour color = sender->get_vertexcolor() * xui_colour(1.0f, 0.8f);
 	if (sender->has_catch() || sender->was_hover())
@@ -256,7 +264,7 @@ xui_method_explain(xui_timetool, on_buttonrenderself,	void)( xui_component* send
 		xui_convas::get_ins()->fill_rectangle(rt, color);
 	}
 }
-xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_togglerenderself,	void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
 
@@ -330,7 +338,7 @@ xui_method_explain(xui_timetool, on_togglerenderself,	void)( xui_component* send
 		xui_convas::get_ins()->fill_poly(poly, 3, color);
 	}
 }
-xui_method_explain(xui_timetool, on_timertick,			void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_timetool, on_timertick,			void		)( xui_component* sender, xui_method_args& args )
 {
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	s32 frame = timeview->get_curframe();

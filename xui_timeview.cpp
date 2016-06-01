@@ -1,3 +1,4 @@
+#include "xui_timer.h"
 #include "xui_scroll.h"
 #include "xui_slider.h"
 #include "xui_desktop.h"
@@ -64,6 +65,19 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	xui_method_ptrcall(m_ksslider, set_borderrt	)(xui_rect2d<s32>(2));
 	xui_method_ptrcall(m_ksslider, ini_scroll	)(100, 15);
 	m_widgetvec.push_back(m_ksslider);
+
+	m_fpstring = new xui_drawer(xui_vector<s32>(32, 16));
+	xui_method_ptrcall(m_fpstring, set_parent	)(this);
+	xui_method_ptrcall(m_fpstring, ini_drawer	)(L"fps:");
+	m_fpnumber = new xui_drawer(xui_vector<s32>(24, 16));
+	m_fpnumber->xm_mousemove	+= new xui_method_member<xui_method_mouse,	xui_timeview>(this, &xui_timeview::on_fpnumbermousemove);
+	m_fpnumber->xm_renderself	+= new xui_method_member<xui_method_args,	xui_timeview>(this, &xui_timeview::on_fpnumberrenderself);
+	xui_method_ptrcall(m_fpnumber, set_parent	)(this);
+	xui_method_ptrcall(m_fpnumber, set_cursor	)(CURSOR_WE);
+	xui_method_ptrcall(m_fpnumber, set_textalign)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_fpnumber, ini_drawer	)(L"60");
+	m_widgetvec.push_back(m_fpstring);
+	m_widgetvec.push_back(m_fpnumber);
 
 	s32 treesize = 0;
 	for (u32 i = 0; i < columninfo.size(); ++i)
@@ -553,27 +567,27 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 
 	xui_vector<s32> pt(0);
 	xui_vector<s32> sz(0);
-	pt.x = m_border.ax;
-	pt.y = m_border.ay;
+	pt.x  = m_border.ax;
+	pt.y  = m_border.ay;
 	m_timetool->on_perform_pt(pt);
 
-	pt.x = m_border.ax;
-	pt.y = m_border.ay + m_timetool->get_renderh();
-	sz.w = xui_max(m_timetool->get_renderw(), m_timetree->get_renderw());
-	sz.h = m_timetree->get_renderh();
+	pt.x  = m_border.ax;
+	pt.y  = m_border.ay + m_timetool->get_renderh();
+	sz.w  = xui_max(m_timetool->get_renderw(), m_timetree->get_renderw());
+	sz.h  = m_timetree->get_renderh();
 	m_timetree->on_perform_pt(pt);
 	m_timetree->on_perform_sz(sz);
 
-	pt.x = m_border.ax + m_timetree->get_renderw();
-	pt.y = m_border.ay;
-	sz.w = get_renderrtins().get_w();
-	sz.h = m_timegrad->get_renderh();
+	pt.x  = m_border.ax + m_timetree->get_renderw();
+	pt.y  = m_border.ay;
+	sz.w  = get_renderrtins().get_w();
+	sz.h  = m_timegrad->get_renderh();
 	m_timegrad->on_perform_pt(pt);
 	m_timegrad->on_perform_sz(sz);
 
-	pt.y = m_border.ay + m_timegrad->get_renderh();
-	sz.w = get_clientw();
-	sz.h = m_timetree->get_lineheight();
+	pt.y  = m_border.ay + m_timegrad->get_renderh();
+	sz.w  = get_clientw();
+	sz.h  = m_timetree->get_lineheight();
 	m_timehead->on_perform_pt(pt);
 	m_timehead->on_perform_sz(sz);
 
@@ -587,9 +601,14 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 		timeline->on_perform_sz(sz);
 	}
 
-	pt.x = m_border.ax;
-	pt.y = get_renderh() - m_border.by - m_ksslider->get_renderh();
+	pt.x  = m_border.ax;
+	pt.y  = get_renderh() - m_border.by - m_ksslider->get_renderh();
 	m_ksslider->on_perform_pt(pt);
+
+	pt.x += m_ksslider->get_renderw() + 40;
+	m_fpstring->on_perform_pt(pt);
+	pt.x += m_fpstring->get_renderw();
+	m_fpnumber->on_perform_pt(pt);
 }
 xui_method_explain(xui_timeview, on_vertvalue,				void						)( xui_method_args& args )
 {
@@ -807,4 +826,29 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componen
 xui_method_explain(xui_timeview, on_kssliderscroll,			void						)( xui_component* sender, xui_method_args&   args )
 {
 	set_keyspace(m_ksslider->get_value());
+}
+xui_method_explain(xui_timeview, on_fpnumberrenderself,		void						)( xui_component* sender, xui_method_args&   args )
+{
+	xui_rect2d<s32> rt = m_fpnumber->get_renderrtabs();
+	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by-2), xui_vector<s32>(rt.bx, rt.by-2), xui_colour::white);
+}
+xui_method_explain(xui_timeview, on_fpnumbermousemove,		void						)( xui_component* sender, xui_method_mouse&  args )
+{
+	if (m_fpnumber->has_catch())
+	{
+		xui_vector<s32> delta = xui_desktop::get_ins()->get_mousemove();
+
+		s32 frame = 0;
+	 	std::wstringstream temp(m_fpnumber->get_text().c_str());
+		temp >> frame;
+		frame += delta.x;
+		frame  = xui_min(frame, 60);
+		frame  = xui_max(frame,  0);
+		std::wstringstream text;
+		text << frame;
+		m_fpnumber->ini_drawer(text.str());
+
+		xui_timer* timer = m_timetool->get_playtimer();
+		timer->set_interval(1.0f/(f32)frame);
+	}
 }

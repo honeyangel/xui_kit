@@ -136,6 +136,8 @@ protected:
 	void						on_timeviewdragvert		( xui_component* sender, xui_method_update& args );
 	void						on_timerectdraghorz		( xui_component* sender, xui_method_update& args );
 	void						on_kssliderscroll		( xui_component* sender, xui_method_args&   args );
+	void						on_fpnumberrenderself	( xui_component* sender, xui_method_args&   args );
+	void						on_fpnumbermousemove	( xui_component* sender, xui_method_mouse&  args );
 
 	/*
 	//member
@@ -146,6 +148,8 @@ protected:
 	xui_timehead*				m_timehead;
 	xui_timerect*				m_timerect;
 	xui_slider*					m_ksslider;
+	xui_drawer*					m_fpstring;
+	xui_drawer*					m_fpnumber;
 	u08							m_dragmode;
 	s32							m_dragtime;
 	s32							m_droptime;

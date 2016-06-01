@@ -34,7 +34,6 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_linectrl,	set_corner		)(3);
 	xui_method_ptrcall(m_linectrl,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_linectrl,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_linectrl,	set_sidestyle	)(SIDESTYLE_S);
 
 	m_drawview = new onity_preview;
 	xui_method_ptrcall(m_drawview,	ini_component	)(0, 0, DOCKSTYLE_R);
@@ -86,11 +85,11 @@ xui_method_explain(onity_timeline, render_else,				void			)( void )
 	{
 		xui_rect2d<s32> rt;
 		rt = m_drawview->get_renderrtabs();
-		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.ax, rt.by), xui_colour::white);
+		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.ax, rt.by), xui_control::default_sidecolor);
 		if (m_lineview->was_visible() == false)
 			return;
 		rt = m_lineview->get_renderrtabs();
-		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by), xui_colour::white);
+		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by), xui_control::default_sidecolor);
 	}
 }
 
