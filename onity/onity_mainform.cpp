@@ -175,6 +175,10 @@ xui_method_explain(onity_mainform, get_console,			onity_console*		)( void )
 {
 	return (onity_console*)		xui_method_ptrcall(m_console,	get_data)();
 }
+xui_method_explain(onity_mainform, get_timeline,		onity_timeline*		)( void )
+{
+	return (onity_timeline*)	xui_method_ptrcall(m_timeline,	get_data)();
+}
 
 /*
 //method

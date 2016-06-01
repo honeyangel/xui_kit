@@ -36,10 +36,12 @@
 #include "onity_2dsassetdata.h"
 #include "onity_propcontroller.h"
 #include "onity_proppath.h"
+#include "onity_propactor.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_mainform.h"
 #include "onity_animator.h"
+#include "onity_timeline.h"
 #include "onity_project.h"
 
 xui_implement_rtti(onity_project, xui_dockpage);
@@ -468,25 +470,39 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 			}
 			else
 			{
-				onity_filedata* file = (onity_filedata*)node->get_linkdata();
-				std::wstring    suff = file->get_suff();
-				if (suff == L".controller")
+				onity_treedata* data = (onity_treedata*)node->get_linkdata();
+				onity_filedata* file = dynamic_cast<onity_filedata*>(data);
+				if (file)
 				{
-					onity_animator* animator = onity_mainform::get_ptr()->get_animator();
-					onity_mainform::get_ptr()->set_pageshow(animator);
-					animator->set_editprop((onity_propcontroller*)file->get_prop());
+					std::wstring suff = file->get_suff();
+					if (suff == L".controller")
+					{
+						onity_animator* animator = onity_mainform::get_ptr()->get_animator();
+						onity_mainform::get_ptr()->set_pageshow(animator);
+						animator->set_editprop((onity_propcontroller*)file->get_prop());
+					}
+					else
+					if (suff == L".npModule" ||
+						suff == L".npSprite" ||
+						suff == L".npAction")
+					{
+						onity_tileview* tileview = m_fileview->get_tileview();
+						tileview->set_viewfile(node);
+						refresh_pathtool();
+
+						if (m_slider->get_value() == 0)
+							m_slider->set_value(10);
+					}
 				}
 				else
-				if (suff == L".npModule" ||
-					suff == L".npSprite" ||
-					suff == L".npAction")
 				{
-					onity_tileview* tileview = m_fileview->get_tileview();
-					tileview->set_viewfile(node);
-					refresh_pathtool();
-
-					if (m_slider->get_value() == 0)
-						m_slider->set_value(10);
+					onity_propactor* prop = dynamic_cast<onity_propactor*>(data->get_prop());
+					if (prop)
+					{
+						onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+						onity_mainform::get_ptr()->set_pageshow(timeline);
+						timeline->set_editprop(prop);
+					}
 				}
 			}
 		}

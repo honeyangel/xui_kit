@@ -19,17 +19,17 @@ xui_implement_rtti(onity_lineview, xui_control);
 //constructor
 */
 xui_create_explain(onity_lineview)( void )
-: xui_control(xui_vector<s32>(128))
+: xui_control(xui_vector<s32>(150))
 , m_viewprop(NULL)
 , m_selected(-1)
 {
-	m_drawview = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 128));
+	m_drawview = new onity_renderview(xui_vector<s32>(128), xui_vector<s32>(2048, 128));
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		onity_lineview>(this, &onity_lineview::on_drawviewinvalid);
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		onity_lineview>(this, &onity_lineview::on_drawviewrenderself);
 	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmousewheel);
-	xui_method_ptrcall(m_drawview, xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmouseclick);
+	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmousedown);
 	xui_method_ptrcall(m_drawview, set_parent			)(this);
-	xui_method_ptrcall(m_drawview, set_borderrt			)(xui_rect2d<s32>(6));
+	xui_method_ptrcall(m_drawview, set_borderrt			)(xui_rect2d<s32>(20));
 	xui_method_ptrcall(m_drawview, ini_component		)(0, 0, DOCKSTYLE_F);
 
 	m_viewroll = xui_scroll::create(FLOWSTYLE_H);
@@ -100,7 +100,15 @@ xui_method_explain(onity_lineview, on_drawviewrenderself,	void				)( xui_compone
 	if (m_viewprop && m_viewprop->get_asset())
 	{
 		xui_rect2d<s32> rt = m_drawview->get_renderrtins();
+
 		NP2DSActor* actor = NPDynamicCast(NP2DSActor, m_viewprop->get_asset());
+		xui_rect2d<s32> drawrt;
+		drawrt.ax = rt.ax - horz_grap;
+		drawrt.ay = rt.ay;
+		drawrt.set_w(actor->GetLayerCount() * (tile_size+horz_grap) + horz_grap);
+		drawrt.set_h(tile_size);
+		xui_convas::get_ins()->fill_round(drawrt, xui_colour(1.0f, 90.0f/255.0f), xui_rect2d<s32>(tile_size/10));
+
 		for (u16 i = 0; i < actor->GetLayerCount(); ++i)
 		{
 			if (rt.ax + (s32)(i*(tile_size+horz_grap)) - m_viewroll->get_value() > rt.bx)
@@ -127,9 +135,14 @@ xui_method_explain(onity_lineview, on_drawviewmousewheel,	void				)( xui_compone
 		args.handle = true;
 	}
 }
-xui_method_explain(onity_lineview, on_drawviewmouseclick,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_lineview, on_drawviewmousedown,	void				)( xui_component* sender, xui_method_mouse& args )
 {
-
+	if (args.mouse == MB_L)
+	{
+		xui_rect2d<s32> rt = m_drawview->get_renderrtins();
+		xui_vector<s32> pt = m_drawview->get_renderpt(args.point);
+		m_selected = (pt.x-rt.ax+m_viewroll->get_value()) / (tile_size+horz_grap);
+	}
 }
 
 /*
@@ -162,8 +175,8 @@ xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32
 
 	NPVector3 scale = NPVector3(s, s, 1.0f);
 	NPVector3 trans = NPVector3(
-		(-bound.LT*s + (((f32)rt.get_w() - bound.GetW()*s)) / 2.0f) + (f32)rt.ax, 
-		(-bound.TP*s + (((f32)rt.get_h() - bound.GetH()*s)) / 2.0f) + (f32)rt.ay,
+		(-bound.LT*s + (((f32)tile_size - bound.GetW()*s)) / 2.0f) + (f32)rt.ax, 
+		(-bound.TP*s + (((f32)tile_size - bound.GetH()*s)) / 2.0f) + (f32)rt.ay,
 		0.0f);
 
 	trans.x = xui_pixel_align(trans.x);

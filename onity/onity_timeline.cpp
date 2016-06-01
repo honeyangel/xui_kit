@@ -1,4 +1,5 @@
 #include "xui_bitmap.h"
+#include "xui_dockview.h"
 #include "xui_timeview.h"
 #include "xui_timedata.h"
 #include "xui_timeline.h"
@@ -23,34 +24,22 @@ xui_create_explain(onity_timeline)( void )
 	ini_namectrl(onity_resource::icon_timeline, L"Timeline");
 
 	m_lineview = new onity_lineview;
-	xui_method_ptrcall(m_lineview,	set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(m_lineview,	set_sidecolor	)(xui_colour::black);
 	xui_method_ptrcall(m_lineview,	ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_lineview,	ini_component	)(true, false);
 
-	m_linectrl = new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
+	m_linectrl = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_linectrl,	xm_toggleclick	) += new xui_method_member<xui_method_args,		onity_timeline>(this, &onity_timeline::on_linectrlclick);
-	xui_method_ptrcall(m_linectrl,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_linectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
+	xui_method_ptrcall(m_linectrl,	ini_drawer		)(onity_resource::icon_layerview);
 	xui_method_ptrcall(m_linectrl,	set_corner		)(3);
 	xui_method_ptrcall(m_linectrl,	set_borderrt	)(xui_rect2d<s32>(4));
 	xui_method_ptrcall(m_linectrl,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_linectrl,	set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(m_linectrl,	set_iconsize	)(xui_vector<s32>(0));
-	xui_method_ptrcall(m_linectrl,	ini_drawer		)(L"Layer View");
-	m_toolpane = new xui_panel(xui_vector<s32>(40));
-	xui_method_ptrcall(m_toolpane,	ini_component	)(0, 0, DOCKSTYLE_T);
-	xui_method_ptrcall(m_toolpane,	set_drawcolor	)(false);
-	xui_method_ptrcall(m_toolpane,	add_child		)(m_linectrl);
+	xui_method_ptrcall(m_linectrl,	set_sidestyle	)(SIDESTYLE_S);
+
 	m_drawview = new onity_preview;
-	xui_method_ptrcall(m_drawview,	ini_component	)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_drawview,	ini_component	)(0, 0, DOCKSTYLE_R);
 	xui_method_ptrcall(m_drawview,	set_backcolor	)(xui_colour(1.0f, 0.15f));
 	xui_method_ptrcall(m_drawview,	set_toolshow	)(false);
-	m_leftpane = new xui_panel(xui_vector<s32>(240));
-	xui_method_ptrcall(m_leftpane,	ini_component	)(0, 0, DOCKSTYLE_L);
-	xui_method_ptrcall(m_leftpane,	set_borderrt	)(xui_rect2d<s32>(8, 0, 0, 16));
-	xui_method_ptrcall(m_leftpane,	set_drawcolor	)(false);
-	xui_method_ptrcall(m_leftpane,	add_child		)(m_toolpane);
-	xui_method_ptrcall(m_leftpane,	add_child		)(m_drawview);
 
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0));
@@ -62,9 +51,10 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_sizectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
 	xui_method_ptrcall(m_sizectrl,	set_cursor		)(CURSOR_WE);
 	add_pagectrl(m_lineview);
-	add_pagectrl(m_leftpane);
+	add_pagectrl(m_drawview);
 	add_pagectrl(m_timeview);
 	add_pagectrl(m_sizectrl);
+	add_pagectrl(m_linectrl);
 }
 
 /*
@@ -80,7 +70,27 @@ xui_method_explain(onity_timeline, set_editprop,			void			)( onity_propactor* ed
 	{
 		m_editprop  = editprop;
 		m_lineview->set_viewprop(m_editprop);
-		m_drawview->set_viewprop(m_editprop);
+		m_drawview->set_viewprop(m_editprop, false);
+	}
+}
+
+/*
+//override
+*/
+xui_method_explain(onity_timeline, render_else,				void			)( void )
+{
+	xui_dockpage::render_else();
+
+	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
+	if (dockview->get_showpage() == this)
+	{
+		xui_rect2d<s32> rt;
+		rt = m_drawview->get_renderrtabs();
+		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.ax, rt.by), xui_colour::white);
+		if (m_lineview->was_visible() == false)
+			return;
+		rt = m_lineview->get_renderrtabs();
+		xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by), xui_vector<s32>(rt.bx, rt.by), xui_colour::white);
 	}
 }
 
@@ -91,10 +101,12 @@ xui_method_explain(onity_timeline, on_perform,				void			)( xui_method_args& arg
 {
 	xui_dockpage::on_perform(args);
 
-	xui_rect2d<s32> rt = m_leftpane->get_renderrt()+m_leftpane->get_renderpt();
+	xui_rect2d<s32> rt = m_drawview->get_renderrt()+m_drawview->get_renderpt();
 	m_sizectrl->on_perform_h(rt.get_h());
-	m_sizectrl->on_perform_x(rt.bx-m_sizectrl->get_renderw());
+	m_sizectrl->on_perform_x(rt.ax-m_sizectrl->get_renderw());
 	m_sizectrl->on_perform_y(rt.ay);
+	m_linectrl->on_perform_x(rt.bx-m_linectrl->get_renderw()-8);
+	m_linectrl->on_perform_y(rt.ay+8);
 }
 
 /*
@@ -104,26 +116,24 @@ xui_method_explain(onity_timeline, on_linectrlclick,		void			)( xui_component* s
 {
 	if (m_linectrl->was_push())
 	{
-		m_lineview->set_visible(true);
-		set_renderh(get_renderh() + m_lineview->get_renderh());
+		xui_method_ptrcall(m_lineview,	set_visible)(true);
+		xui_method_ptrcall(m_parent,	set_renderh)(m_parent->get_renderh() + m_lineview->get_renderh());
 	}
 	else
 	{
-		m_lineview->set_visible(false);
-		set_renderh(get_renderh() - m_lineview->get_renderh());
+		xui_method_ptrcall(m_lineview,	set_visible)(false);
+		xui_method_ptrcall(m_parent,	set_renderh)(m_parent->get_renderh() - m_lineview->get_renderh());
 	}
-
-	refresh();
 }
 xui_method_explain(onity_timeline, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_sizectrl->has_catch())
 	{
 		s32 delta = xui_desktop::get_ins()->get_mousemove().x;
-		s32 width = m_leftpane->get_renderw() + delta;
-		width = xui_max(width, 300);
+		s32 width = m_drawview->get_renderw() - delta;
+		width = xui_max(width, 200);
 		width = xui_min(width, 500);
-		m_leftpane->set_renderw(width);		
+		m_drawview->set_renderw(width);		
 	}
 }
 

@@ -26,7 +26,7 @@ public:
 	NPNode*				get_drawnode		( void );
 	void				set_toolshow		( bool flag );
 	void				set_needshow		( void );
-	void				set_viewprop		( xui_proproot* prop );
+	void				set_viewprop		( xui_proproot* prop, bool play = true );
 	void				set_drawrect		( const xui_rect2d<s32>& rect );
 
 protected:

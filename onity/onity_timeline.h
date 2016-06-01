@@ -22,6 +22,11 @@ public:
 	onity_propactor*	get_editprop			( void );
 	void				set_editprop			( onity_propactor* editprop );
 
+	/*
+	//override
+	*/
+	virtual void		render_else				( void );
+
 protected:
 	/*
 	//callback
@@ -38,11 +43,9 @@ protected:
 	//member
 	*/
 	xui_timeview*		m_timeview;
-	xui_panel*			m_leftpane;
-	xui_toggle*			m_linectrl;
-	xui_panel*			m_toolpane;
 	onity_preview*		m_drawview;
 	onity_lineview*		m_lineview;
+	xui_toggle*			m_linectrl;
 	xui_control*		m_sizectrl;
 	onity_propactor*	m_editprop;
 };

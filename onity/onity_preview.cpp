@@ -124,7 +124,7 @@ xui_method_explain(onity_preview, set_needshow,			void	)( void )
 {
 	set_visible(m_node != NULL);
 }
-xui_method_explain(onity_preview, set_viewprop,			void	)( xui_proproot* prop )
+xui_method_explain(onity_preview, set_viewprop,			void	)( xui_proproot* prop, bool play )
 {
 	if (m_node)
 	{
@@ -156,7 +156,7 @@ xui_method_explain(onity_preview, set_viewprop,			void	)( xui_proproot* prop )
 		NP2DSActorRef* actorref = new NP2DSActorRef;
 		NP2DSAsset* asset = propactor->get_asset();
 		actorref->SetActor(asset->GetOwnedFile()->GetKey(), asset->GetKey());
-		actorref->SetPlay(true);
+		actorref->SetPlay(play);
 		m_node = actorref;
 	}
 

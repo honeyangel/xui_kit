@@ -14,7 +14,7 @@ public:
 	/*
 	//static
 	*/
-	static const u32		tile_size = 100;
+	static const u32		tile_size = 80;
 	static const u32		horz_grap = 10;
 	static const u32		name_size = 20;
 
@@ -36,7 +36,7 @@ protected:
 	*/
 	void					on_drawviewinvalid			( xui_component* sender, xui_method_args&  args );
 	void					on_drawviewrenderself		( xui_component* sender, xui_method_args&  args );
-	void					on_drawviewmouseclick		( xui_component* sender, xui_method_mouse& args );
+	void					on_drawviewmousedown		( xui_component* sender, xui_method_mouse& args );
 	void					on_drawviewmousewheel		( xui_component* sender, xui_method_mouse& args );
 
 	/*

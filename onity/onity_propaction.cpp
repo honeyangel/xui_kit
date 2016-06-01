@@ -3,6 +3,8 @@
 #include "NP2DSActorFileMgr.h"
 
 #include "xui_global.h"
+#include "onity_timeline.h"
+#include "onity_mainform.h"
 #include "onity_filedata.h"
 #include "onity_propactor.h"
 #include "onity_propaction.h"
@@ -37,4 +39,12 @@ xui_method_explain(onity_propaction, get_resfile, NP2DSAssetFile*	)( void )
 	}
 
 	return NULL;
+}
+xui_method_explain(onity_propaction, load,		void				)( void )
+{
+	onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+	if (timeline->get_editprop()->get_propfile() == this)
+		timeline->set_editprop(NULL);
+
+	onity_prop2dsres::load();
 }

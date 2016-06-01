@@ -22,6 +22,7 @@ class onity_project;
 class onity_game;
 class onity_animator;
 class onity_console;
+class onity_timeline;
 class onity_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -45,6 +46,7 @@ public:
 	onity_animator*			get_animator		( void );
 	onity_game*				get_game			( void );
 	onity_console*			get_console			( void );
+	onity_timeline*			get_timeline		( void );
 
 	/*
 	//method
