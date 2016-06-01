@@ -633,6 +633,38 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 		p2.y = pt.y + m_border.ay + m_lineheight - 1;
 		xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
 	}
+
+	if (has_catch() && m_allowplace != TREEDROP_NOTALLOW)
+	{
+		xui_rect2d<s32> rt = m_mousehover->get_renderrtabs().get_inter(get_renderrtins()+get_screenpt());
+		if (m_allowplace == TREEDROP_INNER)
+		{
+			xui_convas::get_ins()->draw_rectangle(rt, xui_colour::black, 2);
+		}
+		else
+		{
+			xui_vector<s32> p1;
+			xui_vector<s32> p2;
+			switch (m_allowplace)
+			{
+			case TREEDROP_FRONT:
+				p1 = xui_vector<s32>(rt.ax, rt.ay);
+				p2 = xui_vector<s32>(rt.bx, rt.ay);
+				break;
+			case TREEDROP_AFTER:
+				p1 = xui_vector<s32>(rt.ax, rt.ay+m_lineheight);
+				p2 = xui_vector<s32>(rt.bx, rt.ay+m_lineheight);
+				break;
+			}
+
+			rt  = xui_rect2d<s32>(p1.x+1, p1.y-1, p2.x-1, p1.y+1);
+			xui_convas::get_ins()->fill_rectangle(rt, xui_colour::black);
+			p1 += xui_vector<s32>(4, 0);
+			xui_convas::get_ins()->fill_triangle(p1, 3, TRIANGLE_RIGHT, xui_colour::black);
+			p2 -= xui_vector<s32>(3, 0);
+			xui_convas::get_ins()->fill_triangle(p2, 3, TRIANGLE_LEFT,  xui_colour::black);
+		}
+	}
 }
 
 /*
@@ -779,41 +811,6 @@ xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args
 			xui_convas::get_ins()->fill_rectangle(rt, color*lighttrace_color);
 		}
 		xui_convas::get_ins()->set_cliprect(cliprect);
-	}
-}
-xui_method_explain(xui_treeview, on_topdraw,			void								)( xui_method_args&  args )
-{
-	xui_container::on_topdraw(args);
-	if (m_allowplace != TREEDROP_NOTALLOW)
-	{
-		xui_rect2d<s32> rt = m_mousehover->get_renderrtabs().get_inter(get_renderrtins()+get_screenpt());
-		if (m_allowplace == TREEDROP_INNER)
-		{
-			xui_convas::get_ins()->draw_rectangle(rt, xui_colour::black, 2);
-		}
-		else
-		{
-			xui_vector<s32> p1;
-			xui_vector<s32> p2;
-			switch (m_allowplace)
-			{
-			case TREEDROP_FRONT:
-				p1 = xui_vector<s32>(rt.ax, rt.ay);
-				p2 = xui_vector<s32>(rt.bx, rt.ay);
-				break;
-			case TREEDROP_AFTER:
-				p1 = xui_vector<s32>(rt.ax, rt.ay+m_lineheight);
-				p2 = xui_vector<s32>(rt.bx, rt.ay+m_lineheight);
-				break;
-			}
-
-			rt  = xui_rect2d<s32>(p1.x+1, p1.y-1, p2.x-1, p1.y+1);
-			xui_convas::get_ins()->fill_rectangle(rt, xui_colour::black);
-			p1 += xui_vector<s32>(4, 0);
-			xui_convas::get_ins()->fill_triangle(p1, 3, TRIANGLE_RIGHT, xui_colour::black);
-			p2 -= xui_vector<s32>(3, 0);
-			xui_convas::get_ins()->fill_triangle(p2, 3, TRIANGLE_LEFT,  xui_colour::black);
-		}
 	}
 }
 xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_mouse& args )

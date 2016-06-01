@@ -226,7 +226,6 @@ protected:
 	virtual void						on_horzvalue		( xui_method_args&  args );
 	virtual void						on_updateself		( xui_method_args&  args );
 	virtual void						on_renderself		( xui_method_args&  args );
-	virtual void						on_topdraw			( xui_method_args&  args );
 
 	/*
 	//method

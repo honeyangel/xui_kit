@@ -289,42 +289,6 @@ void rect2d_setfunc( void* userptr, const xui_rect2d<f64>& value )
 	rect2d_value.by = (s32)value.by;
 }
 
-//test pickwnd
-class test_pickwnd : public xui_pickwnd
-{
-public:
-	static xui_pickwnd* create( xui_propctrl* propctrl )
-	{
-		return new test_pickwnd(propctrl);
-	}
-
-	test_pickwnd(xui_propctrl* propctrl)
-	: xui_pickwnd(propctrl)
-	{
-		m_render	= xui_rect2d<s32>(0, 0, 280, 160);
-		m_sidestyle	= SIDESTYLE_S;
-		m_alignhorz = ALIGNHORZ_C;
-		m_alignvert = ALIGNVERT_C;
-
-		xui_button* button = xui_button::create(NULL, L"Accept", 100);
-		button->ini_component(ALIGNHORZ_C, ALIGNVERT_C, 0);
-		button->xm_buttonclick += new xui_method_member<xui_method_args, test_pickwnd>(this, &test_pickwnd::on_accept);
-		add_child(button);
-	}
-
-	virtual void* get_value( void )
-	{
-		if (stdvec_value.size() > 0)
-			return (void*)stdvec_value.back();
-
-		return NULL;
-	}
-	virtual void  set_value( void* value )
-	{
-
-	}
-};
-
 //test propview func
 xui_bitmap* treenode_geticon( xui_propdata* propdata)
 {
@@ -346,7 +310,7 @@ void kind_textchanged( xui_component* sender, xui_method_args& args )
 }
 xui_propdata* stdvec_newprop(void* ptr, xui_propkind* kind)
 {
-	return new xui_propdata_object_impl<xui_treenode*>(kind, L"", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, (xui_treenode**)ptr);
+	return new xui_propdata_object_impl<xui_treenode*>(kind, L"", xui_propctrl_object::create, "xui_treenode", NULL, treenode_geticon, treenode_getname, (xui_treenode**)ptr);
 }
 
 void xui_demo::test_propview( xui_window* window )
@@ -363,8 +327,8 @@ void xui_demo::test_propview( xui_window* window )
 	headkind->add_propdata(new xui_propdata_vector(headkind, L"S", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1, xui_vector<f64>(1)));
 	headkind->add_propdata(new xui_propdata_vector(headkind, L"R", xui_propctrl_vector_button::create, vector_getfunc, vector_setfunc, NULL, NT_INT, 1));
 	headkind->add_propdata(new xui_propdata_rect2d(headkind, L"RECT", xui_propctrl_rect2d::create, rect2d_getfunc, rect2d_setfunc, NULL, NT_INT, 1));
-	headkind->add_propdata(new xui_propdata_stdvec_func<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, stdvec_getfunc, NULL));
-	headkind->add_propdata(new xui_propdata_object_impl<xui_treenode*>(headkind, L"object", xui_propctrl_object::create, "xui_treenode", test_pickwnd::create, treenode_geticon, treenode_getname, &object_value));
+	//headkind->add_propdata(new xui_propdata_stdvec_func<xui_treenode*>(headkind, L"stdvec", xui_propctrl_stdvec::create, NULL, NULL, stdvec_newprop, stdvec_getfunc, NULL));
+	headkind->add_propdata(new xui_propdata_object_impl<xui_treenode*>(headkind, L"object", xui_propctrl_object::create, "xui_treenode", NULL, treenode_geticon, treenode_getname, &object_value));
 	proproot->add_propkind(headkind);
 
 	xui_propkind* propkind = new xui_propkind(proproot, L"test", "Test", xui_kindctrl::create, xui_bitmap::create("icon/edit.png"), true);

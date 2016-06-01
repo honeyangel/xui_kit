@@ -340,7 +340,7 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 		{
 			root->on_mousewheel(			 args);
 			root->xm_mousewheel(m_hoverctrl, args);
-			if (xui_issub_kindof(xui_container, root))
+			if (xui_issub_kindof(xui_desktop, root))
 				break;
 
 			root = root->get_parent();

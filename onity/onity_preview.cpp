@@ -359,6 +359,8 @@ xui_method_explain(onity_preview, on_viewmousewheel,	void	)( xui_component* send
 	xui_method_args other_args;
 	if (args.wheel > 0) on_buttonclick(m_large, other_args);
 	else 				on_buttonclick(m_small, other_args);
+
+	args.handle = true;
 }
 
 /*
