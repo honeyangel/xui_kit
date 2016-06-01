@@ -3,6 +3,7 @@
 
 #include "onity_propleaf.h"
 
+class NP2DSAsset;
 class onity_prop2dsasset : public onity_propleaf
 {
 public:

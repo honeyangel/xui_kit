@@ -23,6 +23,8 @@ public:
 	/*
 	//method
 	*/
+	NPNode*				get_drawnode		( void );
+	void				set_toolshow		( bool flag );
 	void				set_needshow		( void );
 	void				set_viewprop		( xui_proproot* prop );
 	void				set_drawrect		( const xui_rect2d<s32>& rect );

@@ -110,6 +110,16 @@ xui_delete_explain(onity_preview)( void )
 /*
 //method
 */
+xui_method_explain(onity_preview, get_drawnode,			NPNode*	)( void )
+{
+	return m_node;
+}
+xui_method_explain(onity_preview, set_toolshow,			void	)( bool flag )
+{
+	m_head->set_visible(flag);
+	m_tool->set_visible(flag);
+	refresh();
+}
 xui_method_explain(onity_preview, set_needshow,			void	)( void )
 {
 	set_visible(m_node != NULL);
@@ -220,7 +230,7 @@ xui_method_explain(onity_preview, on_viewupdateself,	void	)( xui_component* send
 }
 xui_method_explain(onity_preview, on_viewrenderself,	void	)( xui_component* sender, xui_method_args&   args )
 {
-	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.15f));
+	xui_convas::get_ins()->clear(get_backcolor());
 	extern bool gInitCompleted;
 	if (gInitCompleted == false)
 		return;

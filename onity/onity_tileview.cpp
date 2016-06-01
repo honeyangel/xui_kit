@@ -401,7 +401,7 @@ xui_method_explain(onity_tileview, draw_name,					void				)( const xui_rect2d<s3
 		xui_convas::get_ins()->fill_round(drawrt, xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f), xui_rect2d<s32>(8));
 
 	onity_treedata* data   = (onity_treedata*)node->get_linkdata();
-	std::wstring    text   = trim_string(data->get_text(0), xui_family::default, drawrt.get_w()-16);
+	std::wstring    text   = xui_convas::get_ins()->trim_text(data->get_text(0), xui_family::default, drawrt.get_w()-16);
 	xui_rect2d<s32> textrt = xui_convas::get_ins()->calc_draw(text, xui_family::default, drawrt, TEXTALIGN_CC, true);
 	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default);
 }
@@ -638,22 +638,5 @@ xui_method_explain(onity_tileview, draw_background,				void				)( s32 ic, s32 ir
 		}
 
 		++ir; ic = 0;
-	}
-}
-xui_method_explain(onity_tileview, trim_string,					std::wstring		)( const std::wstring& text, const xui_family& font, s32 maxwidth )
-{
-	s32 w = xui_convas::get_ins()->calc_size(text, font, maxwidth, true).w;
-	if (w > maxwidth)
-	{
-		std::wstring dot = L"...";
-		s32 dotwidth = xui_convas::get_ins()->calc_size(dot, font, maxwidth, true).w;
-
-		std::wstring result = xui_convas::get_ins()->calc_text(text, font, maxwidth-dotwidth);
-		result += dot;
-		return result;
-	}
-	else
-	{
-		return text;
 	}
 }

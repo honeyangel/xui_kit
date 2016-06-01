@@ -61,7 +61,6 @@ protected:
 	void					draw_actor					( const xui_rect2d<s32>& rt, NP2DSActor* actor );
 	void					draw_node					( s32 ic, s32 ir, s32 x, s32 y, s32 w, s32 s, xui_treenode* node );
 	void					draw_background				( s32 ic, s32 ir, s32 c, s32 g, s32 w, s32 h, u32 count );
-	std::wstring			trim_string					( const std::wstring& text, const xui_family& font, s32 maxwidth );
 
 	/*
 	//member

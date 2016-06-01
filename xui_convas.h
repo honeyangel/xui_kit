@@ -72,6 +72,10 @@ public:
 	/*
 	//text
 	*/
+	std::wstring			trim_text			( const std::wstring&		text, 
+												  const xui_family&			textfont, 
+												  s32						maxwidth );
+
 	xui_vector<s32>			calc_size			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
 												  s32						maxwidth, 

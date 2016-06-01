@@ -21,6 +21,7 @@
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
+    <ClInclude Include="onity_lineview.h" />
     <ClInclude Include="onity_mainform.h" />
     <ClInclude Include="onity_param.h" />
     <ClInclude Include="onity_paramview.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
+    <ClCompile Include="onity_lineview.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
     <ClCompile Include="onity_param.cpp" />
     <ClCompile Include="onity_paramview.cpp" />

@@ -202,6 +202,25 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 /*
 //text
 */
+xui_method_explain(xui_convas, trim_text,			std::wstring			)( const std::wstring&		text, 
+																			   const xui_family&		textfont, 
+																			   s32 maxwidth )
+{
+	s32 w = calc_size(text, textfont, maxwidth, true).w;
+	if (w > maxwidth)
+	{
+		std::wstring dot = L"...";
+		s32 dotwidth = calc_size(dot, textfont, maxwidth, true).w;
+
+		std::wstring result = calc_text(text, textfont, maxwidth-dotwidth);
+		result += dot;
+		return result;
+	}
+	else
+	{
+		return text;
+	}
+}
 xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstring&		text,
 																			   const xui_family&		textfont,
 																		       s32						maxwidth,

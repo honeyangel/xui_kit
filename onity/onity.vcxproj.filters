@@ -138,6 +138,9 @@
     <ClInclude Include="onity_propctrl_texture.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_lineview.h">
+      <Filter>timeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -278,6 +281,9 @@
     <ClCompile Include="onity_propctrl_texture.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="onity_lineview.cpp">
+      <Filter>timeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">
@@ -288,6 +294,9 @@
     </Filter>
     <Filter Include="inspector">
       <UniqueIdentifier>{6dcb6ad3-0991-4a99-9b8c-8501caf9f1fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="timeline">
+      <UniqueIdentifier>{7c8e80c7-65ee-4f14-9c49-855f138f4660}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
