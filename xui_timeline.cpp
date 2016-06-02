@@ -23,14 +23,6 @@ xui_create_explain(xui_timeline)( xui_timedata* linkdata, xui_timeview* timeview
 }
 
 /*
-//destructor
-*/
-xui_delete_explain(xui_timeline)( void )
-{
-	delete m_linkdata;
-}
-
-/*
 //method
 */
 xui_method_explain(xui_timeline, get_linkdata,		xui_timedata*				)( void )

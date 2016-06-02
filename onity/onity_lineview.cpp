@@ -10,6 +10,7 @@
 #include "xui_convas.h"
 #include "xui_scroll.h"
 #include "onity_renderview.h"
+#include "onity_proplayer.h"
 #include "onity_propactor.h"
 #include "onity_lineview.h"
 
@@ -69,10 +70,10 @@ xui_method_explain(onity_lineview, set_viewprop,			void				)( onity_propactor* v
 xui_method_explain(onity_lineview, on_drawviewinvalid,		void				)( xui_component* sender, xui_method_args& args )
 {
 	u32 count = 0;
-	if (m_viewprop && m_viewprop->get_asset())
+	if (m_viewprop)
 	{
-		NP2DSActor* actor = NPDynamicCast(NP2DSActor, m_viewprop->get_asset());
-		count = (u32)actor->GetLayerCount();
+		const xui_proproot_vec& layers = m_viewprop->get_layers();
+		count = layers.size();
 	}
 
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
@@ -97,25 +98,24 @@ xui_method_explain(onity_lineview, on_drawviewrenderself,	void				)( xui_compone
 	if (gInitCompleted == false)
 		return;
 
-	if (m_viewprop && m_viewprop->get_asset())
+	if (m_viewprop)
 	{
 		xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 
-		NP2DSActor* actor = NPDynamicCast(NP2DSActor, m_viewprop->get_asset());
+		const xui_proproot_vec& layers = m_viewprop->get_layers();
 		xui_rect2d<s32> drawrt;
 		drawrt.ax = rt.ax - horz_grap;
 		drawrt.ay = rt.ay;
-		drawrt.set_w(actor->GetLayerCount() * (tile_size+horz_grap) + horz_grap);
+		drawrt.set_w(layers.size() * (tile_size+horz_grap) + horz_grap);
 		drawrt.set_h(tile_size);
 		xui_convas::get_ins()->fill_round(drawrt, xui_colour(1.0f, 90.0f/255.0f), xui_rect2d<s32>(tile_size/10));
 
-		for (u16 i = 0; i < actor->GetLayerCount(); ++i)
+		for (u16 i = 0; i < layers.size(); ++i)
 		{
 			if (rt.ax + (s32)(i*(tile_size+horz_grap)) - m_viewroll->get_value() > rt.bx)
 				break;
 
-			NP2DSLayer* layer = actor->GetLayer(i);
-			draw_layer(i, rt.ax, rt.ay, layer);
+			draw_layer(i, rt.ax, rt.ay, dynamic_cast<onity_proplayer*>(layers[i]));
 		}
 	}
 
@@ -148,7 +148,7 @@ xui_method_explain(onity_lineview, on_drawviewmousedown,	void				)( xui_componen
 /*
 //method
 */
-xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s32 y, NP2DSLayer* layer )
+xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s32 y,   onity_proplayer* proplayer )
 {
 	xui_rect2d<s32> tilert;
 	tilert.ax = x + index*(tile_size+horz_grap);
@@ -156,11 +156,12 @@ xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s
 	tilert.set_w(tile_size);
 	tilert.set_h(tile_size+name_size);
 
-	draw_tile(tilert, layer);
-	draw_name(tilert, xui_global::ascii_to_unicode(layer->GetName()), index);
+	draw_tile(tilert, proplayer);
+	draw_name(tilert, xui_global::ascii_to_unicode(proplayer->get_layer()->GetName()), index);
 }
-xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32>& rt, NP2DSLayer* layer )
+xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32>& rt, onity_proplayer* proplayer )
 {
+	NP2DSLayer* layer = proplayer->get_layer();
 	if (layer->GetFrameKeyCount() == 0)
 		return;
 

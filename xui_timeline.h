@@ -14,11 +14,6 @@ public:
 	xui_timeline( xui_timedata* linkdata, xui_timeview* timeview );
 
 	/*
-	//destructor
-	*/
-	virtual ~xui_timeline( void );
-
-	/*
 	//method
 	*/
 	xui_timedata*				get_linkdata		( void );

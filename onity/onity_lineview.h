@@ -3,8 +3,8 @@
 
 #include "xui_control.h"
 
-class NP2DSLayer;
 class onity_propactor;
+class onity_proplayer;
 class onity_renderview;
 class onity_lineview : public xui_control
 {
@@ -42,8 +42,8 @@ protected:
 	/*
 	//method
 	*/
-	void					draw_layer					( u16 index, s32 x, s32 y, NP2DSLayer* layer );
-	void					draw_tile					( const xui_rect2d<s32>& rt, NP2DSLayer* layer );
+	void					draw_layer					( u16 index, s32 x, s32 y,   onity_proplayer* proplayer );
+	void					draw_tile					( const xui_rect2d<s32>& rt, onity_proplayer* proplayer );
 	void					draw_name					( const xui_rect2d<s32>& rt, const std::wstring& name, u16 index );
 
 	/*

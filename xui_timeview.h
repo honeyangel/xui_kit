@@ -92,6 +92,7 @@ public:
 	xui_timeline*						get_timeline			( u32 index );
 	xui_timeline*						add_timeline			( u32 index, xui_timedata* data );
 	void								del_timeline			( xui_timeline* line );
+	void								del_timelineall			( void );
 
 	/*
 	//rectangle

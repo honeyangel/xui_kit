@@ -435,6 +435,25 @@ xui_method_explain(xui_timeview, del_timeline,				void						)( xui_timeline* lin
 	m_timetree->del_upmostnode(node);
 	delete_line(line);
 }
+xui_method_explain(xui_timeview, del_timelineall,			void						)( void )
+{
+	m_timetree->del_upmostnodeall();
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
+	{
+		if (m_ascrollitem[i] == m_timerect ||
+			m_ascrollitem[i] == m_timehead)
+			continue;
+
+		m_ascrollitem[i]->set_parent(NULL);
+		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
+	}
+
+	m_ascrollitem.clear();
+	m_ascrollitem.push_back(m_timerect);
+	m_ascrollitem.push_back(m_timehead);
+
+	invalid();
+}
 
 /*
 //rectangle

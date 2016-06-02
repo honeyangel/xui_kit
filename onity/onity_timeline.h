@@ -2,6 +2,7 @@
 #define __onity_timeline_h__
 
 #include "xui_dockpage.h"
+#include "xui_treeview.h"
 
 class onity_propactor;
 class onity_preview;
@@ -36,8 +37,17 @@ protected:
 	/*
 	//event
 	*/
-	void				on_linectrlclick		( xui_component* sender, xui_method_args&  args );
-	void				on_sizectrlmousemove	( xui_component* sender, xui_method_mouse& args );
+	void				on_linectrlclick		( xui_component* sender, xui_method_args&			args );
+	void				on_sizectrlmousemove	( xui_component* sender, xui_method_mouse&			args );
+	void				on_timelineaddlayer		( xui_component* sender, xui_method_args&			args );
+	void				on_timelinedellayer		( xui_component* sender, xui_method_args&			args );
+	void				on_timelinedragover		( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timelinedragdrop		( xui_component* sender, xui_method_treedragdrop&	args );
+
+	/*
+	//method
+	*/
+	void				refresh_timeview		( void );
 
 	/*
 	//member

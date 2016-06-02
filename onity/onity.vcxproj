@@ -21,6 +21,7 @@
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
+    <ClInclude Include="onity_layerdata.h" />
     <ClInclude Include="onity_lineview.h" />
     <ClInclude Include="onity_mainform.h" />
     <ClInclude Include="onity_param.h" />
@@ -34,6 +35,8 @@
     <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propctrl_texture.h" />
+    <ClInclude Include="onity_propframekey.h" />
+    <ClInclude Include="onity_proplayer.h" />
     <ClInclude Include="onity_propleaf.h" />
     <ClInclude Include="onity_propcollider.h" />
     <ClInclude Include="onity_propctrl_flip.h" />
@@ -62,6 +65,7 @@
     <ClInclude Include="onity_state.h" />
     <ClInclude Include="onity_stateview.h" />
     <ClInclude Include="onity_tileview.h" />
+    <ClInclude Include="onity_timedata.h" />
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
     <ClInclude Include="onity_treedata.h" />
@@ -78,6 +82,7 @@
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
+    <ClCompile Include="onity_layerdata.cpp" />
     <ClCompile Include="onity_lineview.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
     <ClCompile Include="onity_param.cpp" />
@@ -91,6 +96,8 @@
     <ClCompile Include="onity_propaction.cpp" />
     <ClCompile Include="onity_propactor.cpp" />
     <ClCompile Include="onity_propctrl_texture.cpp" />
+    <ClCompile Include="onity_propframekey.cpp" />
+    <ClCompile Include="onity_proplayer.cpp" />
     <ClCompile Include="onity_propleaf.cpp" />
     <ClCompile Include="onity_propcollider.cpp" />
     <ClCompile Include="onity_propctrl_flip.cpp" />
@@ -119,6 +126,7 @@
     <ClCompile Include="onity_state.cpp" />
     <ClCompile Include="onity_stateview.cpp" />
     <ClCompile Include="onity_tileview.cpp" />
+    <ClCompile Include="onity_timedata.cpp" />
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
     <ClCompile Include="onity_treedata.cpp" />

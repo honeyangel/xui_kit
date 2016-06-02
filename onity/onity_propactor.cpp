@@ -1,4 +1,5 @@
 #include "NP2DSActor.h"
+#include "NP2DSLayer.h"
 #include "NP2DSCollider.h"
 
 #include "xui_textbox.h"
@@ -8,6 +9,7 @@
 #include "xui_propctrl_stdvec.h"
 #include "onity_savekind.h"
 #include "onity_propcollider.h"
+#include "onity_proplayer.h"
 #include "onity_propactor.h"
 
 /*
@@ -21,7 +23,13 @@ xui_create_explain(onity_propactor)( onity_propfile* propfile, u32 id )
 	{
 		NP2DSCollider* collider = actor->GetDummy(i);
 		onity_propcollider* propcollider = new onity_propcollider(propfile, collider);
-		m_propcolliders.push_back(propcollider);
+		m_propdummys.push_back(propcollider);
+	}
+	for (npu16 i = 0; i < actor->GetLayerCount(); ++i)
+	{
+		NP2DSLayer* layer = actor->GetLayer(i);
+		onity_proplayer* proplayer = new onity_proplayer(propfile, layer);
+		m_proplayers.push_back(proplayer);
 	}
 
 	m_actorkind = new xui_propkind(this, L"", "2DSActor", xui_kindctrl::create, NULL, true, false);
@@ -52,44 +60,59 @@ xui_create_explain(onity_propactor)( onity_propfile* propfile, u32 id )
 		m_actorkind,
 		L"Colliders",
 		xui_propctrl_stdvec_root::create,
-		add_collider,
-		del_collider,
-		get_colliders,
+		add_dummy,
+		del_dummy,
+		get_dummys,
 		this));
 
 	add_propkind(m_actorkind);
 }
 
 /*
+//destructor
+*/
+xui_delete_explain(onity_propactor)( void )
+{
+	for (u32 i = 0; i < m_propdummys.size(); ++i)
+		delete m_propdummys[i];
+	for (u32 i = 0; i < m_proplayers.size(); ++i)
+		delete m_proplayers[i];
+}
+
+/*
 //method
 */
-xui_method_explain(onity_propactor, get_colliders,	const xui_proproot_vec&	)( void ) const
+xui_method_explain(onity_propactor, get_dummys,		const xui_proproot_vec&	)( void ) const
 {
-	return m_propcolliders;
+	return m_propdummys;
 }
-xui_method_explain(onity_propactor, add_collider,	void					)( void )
+xui_method_explain(onity_propactor, add_dummy,		void					)( void )
 {
 	NP2DSActor*			actor		 = (NP2DSActor*)get_asset();
 	NP2DSCollider*		collider	 = actor->AddDummy();
 	collider->SetName("Collider");
 
 	onity_propcollider* propcollider = new onity_propcollider(m_savekind->get_propfile(), collider);
-	m_propcolliders.push_back(propcollider);
+	m_propdummys.push_back(propcollider);
 }
-xui_method_explain(onity_propactor, del_collider,	void					)( xui_proproot* proproot )
+xui_method_explain(onity_propactor, del_dummy,		void					)( xui_proproot* proproot )
 {
 	NP2DSActor* actor = (NP2DSActor*)get_asset();
-	for (u32 i = 0; i < m_propcolliders.size(); ++i)
+	for (u32 i = 0; i < m_propdummys.size(); ++i)
 	{
-		onity_propcollider* propcollider = dynamic_cast<onity_propcollider*>(m_propcolliders[i]);
+		onity_propcollider* propcollider = dynamic_cast<onity_propcollider*>(m_propdummys[i]);
 		if (propcollider == proproot)
 		{
-			m_propcolliders.erase(m_propcolliders.begin()+i);
+			m_propdummys.erase(m_propdummys.begin()+i);
 			actor->DelDummy(propcollider->get_collider());
 			delete propcollider;
 			break;
 		}
 	}
+}
+xui_method_explain(onity_propactor, get_layers,		const xui_proproot_vec&	)( void ) const
+{
+	return m_proplayers;
 }
 
 /*
@@ -119,18 +142,18 @@ xui_method_explain(onity_propactor, set_loopstart,	void					)( void* userptr, f6
 	NP2DSActor* actor = (NP2DSActor*)propactor->get_asset();
 	actor->SetLoopStart((npu16)value);
 }
-xui_method_explain(onity_propactor, get_colliders,	xui_proproot_vec		)( void* userptr )
+xui_method_explain(onity_propactor, get_dummys,		xui_proproot_vec		)( void* userptr )
 {
 	onity_propactor* propactor = (onity_propactor*)userptr;
-	return propactor->get_colliders();
+	return propactor->get_dummys();
 }
-xui_method_explain(onity_propactor, add_collider,	void					)( void* userptr )
+xui_method_explain(onity_propactor, add_dummy,		void					)( void* userptr )
 {
 	onity_propactor* propactor = (onity_propactor*)userptr;
-	propactor->add_collider();
+	propactor->add_dummy();
 }
-xui_method_explain(onity_propactor, del_collider,	void					)( void* userptr, xui_proproot* proproot )
+xui_method_explain(onity_propactor, del_dummy,		void					)( void* userptr, xui_proproot* proproot )
 {
 	onity_propactor* propactor = (onity_propactor*)userptr;
-	propactor->del_collider(proproot);
+	propactor->del_dummy(proproot);
 }

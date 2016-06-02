@@ -10,6 +10,7 @@
 #include "onity_lineview.h"
 #include "onity_preview.h"
 #include "onity_propactor.h"
+#include "onity_layerdata.h"
 #include "onity_timeline.h"
 
 xui_implement_rtti(onity_timeline, xui_dockpage);
@@ -70,6 +71,7 @@ xui_method_explain(onity_timeline, set_editprop,			void			)( onity_propactor* ed
 		m_editprop  = editprop;
 		m_lineview->set_viewprop(m_editprop);
 		m_drawview->set_viewprop(m_editprop, false);
+		refresh_timeview();
 	}
 }
 
@@ -136,6 +138,22 @@ xui_method_explain(onity_timeline, on_sizectrlmousemove,	void			)( xui_component
 	}
 }
 
+/*
+//method
+*/
+xui_method_explain(onity_timeline, refresh_timeview,		void			)( void )
+{
+	m_timeview->del_timelineall();
+
+	if (m_editprop)
+	{
+		const xui_proproot_vec& proplayers = m_editprop->get_layers();
+		for (u32 i = 0; i < proplayers.size(); ++i)
+		{
+			m_timeview->add_timeline(i, new onity_layerdata(proplayers[i]));
+		}
+	}
+}
 
 ////DEBUG
 //xui_method_explain(onity_timeline, on_load, void)( xui_method_args& args )
