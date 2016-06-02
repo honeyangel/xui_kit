@@ -157,7 +157,7 @@ xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s
 	tilert.set_h(tile_size+name_size);
 
 	draw_tile(tilert, proplayer);
-	draw_name(tilert, xui_global::ascii_to_unicode(proplayer->get_layer()->GetName()), index);
+	draw_name(tilert, proplayer->get_layer()->GetName(), index);
 }
 xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32>& rt, onity_proplayer* proplayer )
 {
@@ -184,7 +184,7 @@ xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32
 	trans.y = xui_pixel_align(trans.y);
 	frameKey->GetTransRef()->Render(scale, trans);
 }
-xui_method_explain(onity_lineview, draw_name,				void				)( const xui_rect2d<s32>& rt, const std::wstring& name, u16 index )
+xui_method_explain(onity_lineview, draw_name,				void				)( const xui_rect2d<s32>& rt, const std::string& name, u16 index )
 {
 	xui_rect2d<s32> drawrt = rt;
 	drawrt.ay += tile_size;
@@ -194,11 +194,10 @@ xui_method_explain(onity_lineview, draw_name,				void				)( const xui_rect2d<s32
 	if (m_selected == index)
 		xui_convas::get_ins()->fill_round(drawrt, xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f), xui_rect2d<s32>(8));
 
-	std::wstringstream temp;
-	temp << index;
-	temp << L"#";
-	temp << name.c_str();
-	std::wstring    text   = xui_convas::get_ins()->trim_text(temp.str(), xui_family::default, drawrt.get_w()-16);
+	char temp[256];
+	if (name.length() == 0) sprintf(temp, "%02d#", index);
+	else                    sprintf(temp, "%s",    name.c_str());
+	std::wstring    text   = xui_convas::get_ins()->trim_text(xui_global::ascii_to_unicode(std::string(temp)), xui_family::default, drawrt.get_w()-16);
 	xui_rect2d<s32> textrt = xui_convas::get_ins()->calc_draw(text, xui_family::default, drawrt, TEXTALIGN_CC, true);
 	xui_convas::get_ins()->draw_text(text, xui_family::default, textrt, xui_family_render::default, true);
 }

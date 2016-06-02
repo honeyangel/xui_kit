@@ -184,6 +184,7 @@ public:
 	std::vector<xui_treenode*>			get_entirenode		( bool total = true );
 	u32									get_upmostnodecount	( void ) const;
 	const std::vector<xui_treenode*>&	get_upmostnodearray	( void ) const;
+	u32									get_upmostnodeindex	( xui_treenode* node ) const;
 	xui_treenode*						get_upmostnode		( u32 index );
 	xui_treenode*						add_upmostnode		( u32 index, xui_treedata* data );
 	void								add_upmostnode		( u32 index, xui_treenode* node );

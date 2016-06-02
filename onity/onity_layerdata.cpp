@@ -2,6 +2,8 @@
 #include "NP2DSFrameKey.h"
 
 #include "xui_global.h"
+#include "xui_treenode.h"
+#include "xui_treeview.h"
 #include "onity_proplayer.h"
 #include "onity_layerdata.h"
 
@@ -26,21 +28,31 @@ xui_create_explain(onity_layerdata)( xui_proproot* prop )
 */
 xui_method_explain(onity_layerdata, get_text, std::wstring	)( u32 index )
 {
-	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
-	NP2DSLayer* layer = proplayer->get_layer();
-	std::string name  = layer->GetName();
-	if (name.length() > 0)
-		return xui_global::ascii_to_unicode(name);
+	if (index == 0)
+	{
+		onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+		NP2DSLayer* layer = proplayer->get_layer();
+		std::string name  = layer->GetName();
+		if (name.length() == 0)
+			name = "(No Name)";
 
-	return L"(No Name)";
+		return xui_global::ascii_to_unicode(name);
+	}
+	else
+	{
+		return L"";
+	}
 }
 xui_method_explain(onity_layerdata, set_text, void			)( u32 index, const std::wstring& text )
 {
-	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
-	NP2DSLayer* layer = proplayer->get_layer();
-	layer->SetName(xui_global::unicode_to_ascii(text));
-	
-	proplayer->ntf_rename(text);
+	if (index == 0)
+	{
+		onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+		NP2DSLayer* layer = proplayer->get_layer();
+		layer->SetName(xui_global::unicode_to_ascii(text));
+
+		proplayer->ntf_rename(text);
+	}
 }
 xui_method_explain(onity_layerdata, get_flag, bool			)( u32 index )
 {

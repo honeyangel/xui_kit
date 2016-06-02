@@ -44,7 +44,7 @@ protected:
 	*/
 	void					draw_layer					( u16 index, s32 x, s32 y,   onity_proplayer* proplayer );
 	void					draw_tile					( const xui_rect2d<s32>& rt, onity_proplayer* proplayer );
-	void					draw_name					( const xui_rect2d<s32>& rt, const std::wstring& name, u16 index );
+	void					draw_name					( const xui_rect2d<s32>& rt, const std::string& name, u16 index );
 
 	/*
 	//member

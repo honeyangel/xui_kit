@@ -42,7 +42,9 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_drawview,	set_toolshow	)(false);
 
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name(total)",	NULL,							0));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_lead,		0, false, TOGGLE_NORMAL));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_visible,	0, false, TOGGLE_NORMAL));
 	m_timeview = new xui_timeview(xui_vector<s32>(200), columninfo, 24);
 	xui_method_ptrcall(m_timeview,	ini_component	)(0, 0, DOCKSTYLE_F);
 

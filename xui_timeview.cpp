@@ -79,11 +79,13 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_widgetvec.push_back(m_fpstring);
 	m_widgetvec.push_back(m_fpnumber);
 
+	std::vector<xui_treecolumn> columntemp = columninfo;
+	columntemp.push_back(xui_treecolumn(TREECOLUMN_TEXT,  24, L"", NULL, 0));
 	s32 treesize = 0;
-	for (u32 i = 0; i < columninfo.size(); ++i)
-		treesize += columninfo[i].size;
+	for (u32 i = 0; i < columntemp.size(); ++i)
+		treesize += columntemp[i].size;
 
-	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, true, false);
+	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columntemp, lineheight, PLUSRENDER_SYMBOL, false, true, false);
 	xui_method_ptrcall(m_timetree, set_parent	)(this);
 	xui_method_ptrcall(m_timetree, set_drawcolor)(false);
 	xui_method_ptrcall(m_timetree, set_borderrt	)(xui_rect2d<s32>(4, 0, 8, 0));
@@ -803,8 +805,8 @@ xui_method_explain(xui_timeview, on_timetreeselection,		void						)( xui_compone
 	{
 		xui_treenode* selectednode = vec.front();
 		xui_rect2d<s32> rt = selectednode->get_renderrtabs() - get_screenpt();
-		m_tldelete->on_perform_x(rt.ax + m_timetree->get_columninfo(0).size - m_tldelete->get_renderw()-2);
-		m_tldelete->on_perform_y(rt.ay + m_timetree->get_lineheight()/2     - m_tldelete->get_renderh()/2);
+		m_tldelete->on_perform_x(rt.bx - m_tldelete->get_renderw() - 4);
+		m_tldelete->on_perform_y(rt.ay + m_timetree->get_lineheight()/2 - m_tldelete->get_renderh()/2);
 		m_tldelete->set_visible(true);
 	}
 	else

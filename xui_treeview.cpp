@@ -398,6 +398,16 @@ xui_method_explain(xui_treeview, get_upmostnodearray,	const std::vector<xui_tree
 {
 	return m_upmostnode;
 }
+xui_method_explain(xui_treeview, get_upmostnodeindex,	u32									)( xui_treenode* node ) const
+{
+	for (u32 i = 0; i < m_upmostnode.size(); ++i)
+	{
+		if (m_upmostnode[i] == node)
+			return i;
+	}
+
+	return -1;
+}
 xui_method_explain(xui_treeview, get_upmostnode,		xui_treenode*						)( u32 index )
 {
 	return m_upmostnode[index];
