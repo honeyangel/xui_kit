@@ -111,6 +111,8 @@ public:
 	xui_method<xui_method_args>			xm_selecteddrag;
 	xui_method<xui_method_args>			xm_selectedchange;
 	xui_method<xui_method_args>			xm_curframechange;
+	xui_method<xui_method_args>			xm_timelineaddlayer;
+	xui_method<xui_method_args>			xm_timelinedellayer;
 	xui_method<xui_method_args>			xm_timelineselected;
 	xui_method<xui_method_treedragdrop>	xm_timelinedragover;
 	xui_method<xui_method_treedragdrop>	xm_timelinedragdrop;
@@ -133,6 +135,8 @@ protected:
 	/*
 	//event
 	*/
+	void								on_timetreenonfocus		( xui_component* sender, xui_method_args&			args );
+	void								on_timetreegetfocus		( xui_component* sender, xui_method_args&			args );
 	void								on_timetreeupdateself	( xui_component* sender, xui_method_update&			args );
 	void								on_timetreesetclientsz	( xui_component* sender, xui_method_args&			args );
 	void								on_timetreeselection	( xui_component* sender, xui_method_args&			args );
@@ -145,6 +149,8 @@ protected:
 	void								on_kssliderscroll		( xui_component* sender, xui_method_args&			args );
 	void								on_fpnumberrenderself	( xui_component* sender, xui_method_args&			args );
 	void								on_fpnumbermousemove	( xui_component* sender, xui_method_mouse&			args );
+	void								on_tldeleterenderself	( xui_component* sender, xui_method_args&			args );
+	void								on_tldeleteclick		( xui_component* sender, xui_method_args&			args );
 
 	/*
 	//member
@@ -157,6 +163,7 @@ protected:
 	xui_slider*							m_ksslider;
 	xui_drawer*							m_fpstring;
 	xui_drawer*							m_fpnumber;
+	xui_button*							m_tldelete;
 	u08									m_dragmode;
 	s32									m_dragtime;
 	s32									m_droptime;

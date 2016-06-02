@@ -36,6 +36,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_button*		m_plus;
 	xui_button*		m_head;
 	xui_button*		m_prev;
 	xui_toggle*		m_back;

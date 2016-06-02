@@ -21,6 +21,15 @@ xui_create_explain(xui_timetool)( xui_timeview* timeview )
 	m_border	= xui_rect2d<s32>(8, 8, 0, 8);
 	m_parent	= timeview;
 
+	//plus
+	m_plus = new xui_button(xui_vector<s32>(24));
+	m_plus->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	m_plus->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_plus,   set_parent		)(this);
+	xui_method_ptrcall(m_plus,	 set_corner		)(3);
+	xui_method_ptrcall(m_plus,	 set_sidestyle	)(SIDESTYLE_S);
+	m_widgetvec.push_back(m_plus);
+
 	//prev
 	m_head = new xui_button(xui_vector<s32>(24));
 	m_head->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
@@ -116,6 +125,11 @@ xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender
 	if (allframe.size() == 0)
 		return;
 
+	if (sender == m_plus)
+	{
+		timeview->xm_timelineaddlayer(timeview, args);
+	}
+	else
 	if (sender == m_head) 
 	{
 		xui_keyframe_map::iterator itor = allframe.begin();
@@ -178,6 +192,22 @@ xui_method_explain(xui_timetool, on_buttonrenderself,	void		)( xui_component* se
 		color *= xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
 	xui_rect2d<s32> rt = sender->get_renderrtabs() + (sender->has_catch() ? xui_vector<s32>(0, 1) : xui_vector<s32>(0));
+	if (sender == m_plus)
+	{
+		xui_vector<s32> center(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
+			center.x-8,
+			center.y-2,
+			center.x+8,
+			center.y+2), color);
+
+		xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
+			center.x-2,
+			center.y-8,
+			center.x+2,
+			center.y+8), color);
+	}
+	else
 	if (sender == m_head)
 	{
 		rt.oft_x(4);
