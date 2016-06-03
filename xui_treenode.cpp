@@ -28,9 +28,12 @@ xui_create_explain(xui_treenode)( xui_treedata* linkdata, xui_treeview* treeview
 		xui_drawer* drawer = NULL;
 		if (columninfo.type == TREECOLUMN_BOOL)
 		{
-			if (columninfo.boolmode == TOGGLE_CIRCLE)	drawer = xui_toggle::circle();
-			else										drawer = xui_toggle::create();
-			xui_method_ptrcall(drawer, set_parent		)(this);
+			xui_toggle* toggle = NULL;
+			if (columninfo.boolmode == TOGGLE_CIRCLE)	toggle = xui_toggle::circle();
+			else										toggle = xui_toggle::create();
+			xui_method_ptrcall(toggle, set_parent		)(this);
+			xui_method_ptrcall(toggle, xm_toggleclick	) += new xui_method_member<xui_method_args, xui_treenode>(this, &xui_treenode::on_toggleclick);
+			drawer = toggle;
 		}
 		else
 		{
@@ -561,4 +564,17 @@ xui_method_explain(xui_treenode, on_textkeybddown,	void								)( xui_component*
 xui_method_explain(xui_treenode, on_nodeexpand,		void								)( xui_component* sender, xui_method_args&  args )
 {
 	m_parent->invalid();
+}
+xui_method_explain(xui_treenode, on_toggleclick,	void								)( xui_component* sender, xui_method_args&  args )
+{
+	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
+	{
+		if (m_widgetvec[i] == toggle)
+		{
+			m_linkdata->set_flag(i, toggle->was_push());
+			use_linkdata();
+			break;
+		}
+	}
 }

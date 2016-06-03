@@ -20,6 +20,7 @@ public:
 	/*
 	//method
 	*/
+	onity_preview*		get_drawview			( void );
 	onity_propactor*	get_editprop			( void );
 	void				set_editprop			( onity_propactor* editprop );
 
@@ -39,10 +40,11 @@ protected:
 	*/
 	void				on_linectrlclick		( xui_component* sender, xui_method_args&			args );
 	void				on_sizectrlmousemove	( xui_component* sender, xui_method_mouse&			args );
-	void				on_timelineaddlayer		( xui_component* sender, xui_method_args&			args );
-	void				on_timelinedellayer		( xui_component* sender, xui_method_args&			args );
-	void				on_timelinedragover		( xui_component* sender, xui_method_treedragdrop&	args );
-	void				on_timelinedragdrop		( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timeviewaddlayer		( xui_component* sender, xui_method_args&			args );
+	void				on_timeviewdellayer		( xui_component* sender, xui_method_args&			args );
+	void				on_timetreedragover		( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timetreedragdrop		( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timetreemouseclick	( xui_component* sender, xui_method_mouse&			args );
 
 	/*
 	//method

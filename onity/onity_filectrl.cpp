@@ -62,7 +62,7 @@ xui_method_explain(onity_filectrl, on_perform,			void			)( xui_method_args& args
 xui_method_explain(onity_filectrl, on_showfindclick,	void			)( xui_component* sender, xui_method_args& args )
 {
 	onity_propfile* propfile = dynamic_cast<onity_propfile*>(m_propkind->get_root());
-	xui_global::set_showfind(propfile->get_full());
+	xui_global::set_showfind(propfile->get_fullname());
 }
 
 /*

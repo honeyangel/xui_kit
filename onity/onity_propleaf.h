@@ -14,9 +14,16 @@ public:
 	onity_propleaf( onity_propfile* propfile );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_propleaf( void );
+
+	/*
 	//method
 	*/
 	onity_propfile*			get_propfile	( void );
+	xui_treedata*			get_linkdata	( void );
+	void					set_linkdata	( xui_treedata* linkdata );
 
 	/*
 	//virtual
@@ -33,6 +40,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_treedata*			m_linkdata;
 	onity_savekind*			m_savekind;
 };
 

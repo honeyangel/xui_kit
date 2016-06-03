@@ -2,6 +2,8 @@
 #include "NP2DSAssetFile.h"
 
 #include "xui_global.h"
+#include "xui_treedata.h"
+#include "xui_treenode.h"
 #include "xui_textbox.h"
 #include "xui_propkind.h"
 #include "xui_kindctrl.h"
@@ -97,5 +99,11 @@ xui_method_explain(onity_prop2dsasset, on_namechanged,	void		)( xui_component* s
 	{
 		asset->SetName(name);
 		asset->GetOwnedFile()->SetNeedSave(true);
+	}
+
+	if (m_linkdata)
+	{
+		xui_treenode* node = m_linkdata->get_node();
+		node->use_linkdata();
 	}
 }

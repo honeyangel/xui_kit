@@ -3,6 +3,12 @@
 
 #include "onity_timedata.h"
 
+enum 
+{
+	LAYER_FLAG_LEAD = 1,
+	LAYER_FLAG_SHOW,
+};
+
 class onity_layerdata : public onity_timedata
 {
 public:
@@ -14,6 +20,7 @@ public:
 	/*
 	//override
 	*/
+	virtual xui_bitmap*		get_icon( u32 index );
 	virtual std::wstring	get_text( u32 index );
 	virtual void			set_text( u32 index, const std::wstring& text );
 	virtual bool			get_flag( u32 index );

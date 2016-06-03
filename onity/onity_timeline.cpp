@@ -3,6 +3,8 @@
 #include "xui_timeview.h"
 #include "xui_timedata.h"
 #include "xui_timeline.h"
+#include "xui_treeview.h"
+#include "xui_treenode.h"
 #include "xui_panel.h"
 #include "xui_toggle.h"
 #include "xui_desktop.h"
@@ -10,7 +12,10 @@
 #include "onity_lineview.h"
 #include "onity_preview.h"
 #include "onity_propactor.h"
+#include "onity_proplayer.h"
 #include "onity_layerdata.h"
+#include "onity_mainform.h"
+#include "onity_inspector.h"
 #include "onity_timeline.h"
 
 xui_implement_rtti(onity_timeline, xui_dockpage);
@@ -29,7 +34,7 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_lineview,	ini_component	)(true, false);
 
 	m_linectrl = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
-	xui_method_ptrcall(m_linectrl,	xm_toggleclick	) += new xui_method_member<xui_method_args,		onity_timeline>(this, &onity_timeline::on_linectrlclick);
+	xui_method_ptrcall(m_linectrl,	xm_toggleclick	) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_linectrlclick);
 	xui_method_ptrcall(m_linectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
 	xui_method_ptrcall(m_linectrl,	ini_drawer		)(onity_resource::icon_layerview);
 	xui_method_ptrcall(m_linectrl,	set_corner		)(3);
@@ -42,14 +47,21 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_drawview,	set_toolshow	)(false);
 
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name(total)",	NULL,							0));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name(total)",	NULL,							0, true));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_lead,		0, false, TOGGLE_NORMAL));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_visible,	0, false, TOGGLE_NORMAL));
 	m_timeview = new xui_timeview(xui_vector<s32>(200), columninfo, 24);
+	xui_method_ptrcall(m_timeview,	xm_addlayer		) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewaddlayer);
+	xui_method_ptrcall(m_timeview,	xm_dellayer		) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewdellayer);
 	xui_method_ptrcall(m_timeview,	ini_component	)(0, 0, DOCKSTYLE_F);
 
+	xui_treeview* timetree = m_timeview->get_timetree();
+	xui_method_ptrcall(timetree,	xm_mouseclick	) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_timetreemouseclick);
+	xui_method_ptrcall(timetree,	xm_treedragover	) += new xui_method_member<xui_method_treedragdrop,	onity_timeline>(this, &onity_timeline::on_timetreedragover);
+	xui_method_ptrcall(timetree,	xm_treedragdrop	) += new xui_method_member<xui_method_treedragdrop,	onity_timeline>(this, &onity_timeline::on_timetreedragdrop);
+
 	m_sizectrl = new xui_control(xui_vector<s32>(4));
-	xui_method_ptrcall(m_sizectrl,	xm_mousemove	) += new xui_method_member<xui_method_mouse,	onity_timeline>(this, &onity_timeline::on_sizectrlmousemove);
+	xui_method_ptrcall(m_sizectrl,	xm_mousemove	) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_sizectrlmousemove);
 	xui_method_ptrcall(m_sizectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
 	xui_method_ptrcall(m_sizectrl,	set_cursor		)(CURSOR_WE);
 	add_pagectrl(m_lineview);
@@ -62,6 +74,10 @@ xui_create_explain(onity_timeline)( void )
 /*
 //method
 */
+xui_method_explain(onity_timeline, get_drawview,			onity_preview*	)( void )
+{
+	return m_drawview;
+}
 xui_method_explain(onity_timeline, get_editprop,			onity_propactor*)( void )
 {
 	return m_editprop;
@@ -115,7 +131,7 @@ xui_method_explain(onity_timeline, on_perform,				void			)( xui_method_args& arg
 /*
 //event
 */
-xui_method_explain(onity_timeline, on_linectrlclick,		void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_timeline, on_linectrlclick,		void			)( xui_component* sender, xui_method_args&			args )
 {
 	if (m_linectrl->was_push())
 	{
@@ -127,8 +143,11 @@ xui_method_explain(onity_timeline, on_linectrlclick,		void			)( xui_component* s
 		xui_method_ptrcall(m_lineview,	set_visible)(false);
 		xui_method_ptrcall(m_parent,	set_renderh)(m_parent->get_renderh() - m_lineview->get_renderh());
 	}
+
+	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
+	dockview->cal_portions();
 }
-xui_method_explain(onity_timeline, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_timeline, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse&			args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -137,6 +156,53 @@ xui_method_explain(onity_timeline, on_sizectrlmousemove,	void			)( xui_component
 		width = xui_max(width, 200);
 		width = xui_min(width, 500);
 		m_drawview->set_renderw(width);		
+	}
+}
+xui_method_explain(onity_timeline, on_timeviewaddlayer,		void			)( xui_component* sender, xui_method_args&			args )
+{
+	if (m_editprop)
+	{
+		xui_proproot* prop = m_editprop->add_layer();
+		xui_timeline* line = m_timeview->add_timeline(0, new onity_layerdata(prop));
+		xui_timedata* data = line->get_linkdata();
+		xui_treenode* node = data->get_node();
+		m_timeview->get_timetree()->refresh();
+		node->set_edittext(0);
+	}
+}
+xui_method_explain(onity_timeline, on_timeviewdellayer,		void			)( xui_component* sender, xui_method_args&			args )
+{
+	xui_treeview* timetree = m_timeview->get_timetree();
+	std::vector<xui_treenode*> vec = timetree->get_selectednode();
+	if (vec.size())
+	{
+		xui_treenode*   node = vec.front();
+		onity_timedata* data = (onity_timedata*)node->get_linkdata();
+		xui_proproot*   prop = data->get_prop();
+		m_timeview->del_timeline(data->get_line());
+		m_editprop->del_layer(data->get_prop());
+	}
+}
+xui_method_explain(onity_timeline, on_timetreedragover,		void			)( xui_component* sender, xui_method_treedragdrop&	args )
+{
+
+}
+xui_method_explain(onity_timeline, on_timetreedragdrop,		void			)( xui_component* sender, xui_method_treedragdrop&	args )
+{
+
+}
+xui_method_explain(onity_timeline, on_timetreemouseclick,	void			)( xui_component* sender, xui_method_mouse&			args )
+{
+	xui_treeview* timetree = xui_dynamic_cast(xui_treeview, sender);
+	std::vector<xui_treenode*> vec = timetree->get_selectednode();
+	if (vec.size() > 0)
+	{
+		xui_treenode*   node = vec.front();
+		onity_timedata* data = (onity_timedata*)node->get_linkdata();
+		xui_proproot*   prop = data->get_prop();
+
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->set_proproot(prop);
 	}
 }
 

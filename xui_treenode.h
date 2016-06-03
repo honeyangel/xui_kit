@@ -89,6 +89,7 @@ protected:
 	void								on_textnonfocus		( xui_component* sender, xui_method_args&  args );
 	void								on_textkeybddown	( xui_component* sender, xui_method_keybd& args );
 	void								on_nodeexpand		( xui_component* sender, xui_method_args&  args );
+	void								on_toggleclick		( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//member

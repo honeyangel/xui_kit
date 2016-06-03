@@ -427,9 +427,9 @@ xui_method_explain(onity_selector, refresh_fileview,		void				)( void )
 	for (u32 i = 0, index = 1; i < filevec.size(); ++i)
 	{
 		onity_propfile* prop = dynamic_cast<onity_propfile*>(filevec[i]);
-		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_full()).find(filekey) != -1)
+		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_fullname()).find(filekey) != -1)
 		{
-			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_full(), prop));
+			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_fullname(), prop));
 			onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(prop);
 			if (prop2dsres)
 			{

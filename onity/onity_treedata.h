@@ -12,9 +12,15 @@ public:
 	onity_treedata( xui_proproot* prop );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_treedata( void );
+
+	/*
 	//method
 	*/
 	xui_proproot*		get_prop( void );
+	void				set_null( void );
 
 protected:
 	/*

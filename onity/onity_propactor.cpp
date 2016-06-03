@@ -28,7 +28,7 @@ xui_create_explain(onity_propactor)( onity_propfile* propfile, u32 id )
 	for (npu16 i = 0; i < actor->GetLayerCount(); ++i)
 	{
 		NP2DSLayer* layer = actor->GetLayer(i);
-		onity_proplayer* proplayer = new onity_proplayer(propfile, layer);
+		onity_proplayer* proplayer = new onity_proplayer(propfile, this, layer);
 		m_proplayers.push_back(proplayer);
 	}
 
@@ -113,6 +113,31 @@ xui_method_explain(onity_propactor, del_dummy,		void					)( xui_proproot* propro
 xui_method_explain(onity_propactor, get_layers,		const xui_proproot_vec&	)( void ) const
 {
 	return m_proplayers;
+}
+xui_method_explain(onity_propactor, add_layer,		xui_proproot*			)( void )
+{
+	NP2DSActor* actor = NPDynamicCast(NP2DSActor, get_asset());
+	NP2DSLayer* layer = actor->AddLayer();
+	layer->SetName("New Layer");
+	onity_proplayer* proplayer = new onity_proplayer(get_propfile(), this, layer);
+	m_proplayers.insert(m_proplayers.begin(), proplayer);
+	return proplayer;
+}
+xui_method_explain(onity_propactor, del_layer,		void					)( xui_proproot* proproot )
+{
+	for (u32 i = 0; i < m_proplayers.size(); ++i)
+	{
+		if (m_proplayers[i] == proproot)
+		{
+			onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(proproot);
+			NP2DSActor* actor = NPDynamicCast(NP2DSActor, get_asset());
+			actor->DelLayer(proplayer->get_layer());
+
+			delete m_proplayers[i];
+			m_proplayers.erase(m_proplayers.begin()+i);
+			break;
+		}
+	}
 }
 
 /*

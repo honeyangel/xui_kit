@@ -10,12 +10,19 @@ public:
 	/*
 	//constructor
 	*/
-	onity_propfile( const std::wstring& full );
+	onity_propfile( const std::wstring& fullname );
+
+	/*
+	//destructor
+	*/
+	virtual ~onity_propfile( void );
 
 	/*
 	//method
 	*/
-	const std::wstring&		get_full		( void ) const;
+	const std::wstring&		get_fullname	( void ) const;
+	xui_treedata*			get_linkdata	( void );
+	void					set_linkdata	( xui_treedata* linkdata );
 
 	/*
 	//virtual
@@ -42,6 +49,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_treedata*			m_linkdata;
 	std::wstring			m_fullname;
 	xui_propkind*			m_basekind;
 	onity_savekind*			m_savekind;

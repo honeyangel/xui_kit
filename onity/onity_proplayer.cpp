@@ -4,18 +4,22 @@
 
 #include "xui_global.h"
 #include "xui_textbox.h"
+#include "xui_treedata.h"
+#include "xui_treenode.h"
 #include "xui_kindctrl.h"
+#include "onity_resource.h"
 #include "onity_propframekey.h"
 #include "onity_proplayer.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_proplayer)( onity_propfile* propfile, NP2DSLayer* layer )
+xui_create_explain(onity_proplayer)( onity_propfile* propfile, onity_propactor* propactor, NP2DSLayer* layer )
 : onity_propleaf(propfile)
 , m_layer(layer)
+, m_propactor(propactor)
 {
-	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(layer->GetName()), "Layer", xui_kindctrl::create, NULL, true);
+	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(layer->GetName()), "Layer", xui_kindctrl::create, onity_resource::icon_layer, true);
 	m_basekind->xm_namechanged += new xui_method_member<xui_method_args, onity_proplayer>(this, &onity_proplayer::on_namechanged);
 	add_propkind(m_basekind);
 }
@@ -32,6 +36,10 @@ xui_delete_explain(onity_proplayer)( void )
 /*
 //method
 */
+xui_method_explain(onity_proplayer, get_actor,			onity_propactor*		)( void )
+{
+	return m_propactor;
+}
 xui_method_explain(onity_proplayer, get_layer,			NP2DSLayer*				)( void )
 {
 	return m_layer;
@@ -93,5 +101,11 @@ xui_method_explain(onity_proplayer, on_namechanged,		void					)( xui_component* 
 	{
 		layer->SetName(name);
 		layer->GetOwnedFile()->SetNeedSave(true);
+	}
+
+	if (m_linkdata)
+	{
+		xui_treenode* node = m_linkdata->get_node();
+		node->use_linkdata();
 	}
 }

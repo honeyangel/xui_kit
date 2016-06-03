@@ -127,7 +127,7 @@ xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender
 
 	if (sender == m_plus)
 	{
-		timeview->xm_timelineaddlayer(timeview, args);
+		timeview->xm_addlayer(timeview, args);
 	}
 	else
 	if (sender == m_head) 

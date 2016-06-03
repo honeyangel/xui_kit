@@ -252,7 +252,7 @@ xui_method_explain(onity_project, get_pathfile,				void		)( const std::wstring& 
 		for (xui_proproot_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
 		{
 			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
-			if (suff.length() == 0 || onity_filedata::get_suff(propfile->get_full()) == suff)
+			if (suff.length() == 0 || onity_filedata::get_suff(propfile->get_fullname()) == suff)
 				filevec.push_back((*itor));
 		}
 	}
@@ -333,7 +333,7 @@ xui_method_explain(onity_project, ntf_rename,				void		)( const std::wstring& la
 
 	//status
 	onity_propfile* propfile = (onity_propfile*)m_status->get_data();
-	if (propfile && propfile->get_full() == curr)
+	if (propfile && propfile->get_fullname() == curr)
 		m_status->set_text(onity_filedata::get_file(curr));
 }
 
@@ -633,7 +633,7 @@ xui_method_explain(onity_project, on_controllerclick,		void		)( xui_component* s
 		xui_method_ptrcall(propfile, save		 )();
 
 		xui_treeview* lineview = m_fileview->get_lineview();
-		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_full(), propfile));
+		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fullname(), propfile));
 		lineview->refresh();
 		linenode->set_edittext(0);
 	}
@@ -735,7 +735,7 @@ xui_method_explain(onity_project, on_showfindclick,			void		)( xui_component* se
 	{
 		onity_pathdata* pathdata = (onity_pathdata*)vec.front()->get_linkdata();
 		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-		xui_global::set_showfind(proppath->get_full());
+		xui_global::set_showfind(proppath->get_fullname());
 	}
 }
 xui_method_explain(onity_project, on_propertyclick,			void		)( xui_component* sender, xui_method_args&	   args )
@@ -764,7 +764,7 @@ xui_method_explain(onity_project, on_freetypeclick,			void		)( xui_component* se
 	{
 		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
 		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_full()) + "/";
+		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_fullname()) + "/";
 		set_freetype(META_MODULE, pathname, style);
 		set_freetype(META_SPRITE, pathname, style);
 		set_freetype(META_ACTION, pathname, style);
@@ -778,7 +778,7 @@ xui_method_explain(onity_project, on_loadtypeclick,			void		)( xui_component* se
 	{
 		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
 		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_full()) + "/";
+		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_fullname()) + "/";
 		set_loadtype(META_MODULE, pathname, flag);
 		set_loadtype(META_SPRITE, pathname, flag);
 		set_loadtype(META_ACTION, pathname, flag);
@@ -864,9 +864,9 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 	for (u32 i = 0; i < filevec.size(); ++i)
 	{
 		onity_propfile* prop = dynamic_cast<onity_propfile*>(filevec[i]);
-		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_full()).find(filekey) != -1)
+		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_fullname()).find(filekey) != -1)
 		{
-			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_full(), prop));
+			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_fullname(), prop));
 			onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(prop);
 			if (prop2dsres)
 			{

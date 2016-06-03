@@ -42,6 +42,7 @@ xui_bitmap* onity_resource::icon_picker		= NULL;
 xui_bitmap* onity_resource::icon_layerview	= NULL;
 xui_bitmap* onity_resource::icon_visible	= NULL;
 xui_bitmap* onity_resource::icon_lead		= NULL;
+xui_bitmap* onity_resource::icon_layer		= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -86,6 +87,7 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_layerview	= xui_bitmap::create("icon/layerview.png");
 	icon_visible	= xui_bitmap::create("icon/visible.png");
 	icon_lead		= xui_bitmap::create("icon/lead.png");
+	icon_layer		= xui_bitmap::create("icon/layer.png");
 
 	xui_propedit_colour::icon_pick = icon_picker;
 }

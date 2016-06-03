@@ -26,7 +26,7 @@ xui_method_explain(onity_propparticle, get_particle, NPParticleSFX*	)( void )
 	if (m_particle == NULL)
 	{
 		m_particle = new NPParticleSFX;
-		m_particle->LoadFromXML(xui_global::unicode_to_ascii(get_full()));
+		m_particle->LoadFromXML(xui_global::unicode_to_ascii(get_fullname()));
 	}
 
 	return m_particle;

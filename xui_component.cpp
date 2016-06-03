@@ -524,20 +524,44 @@ xui_method_explain(xui_component, on_setrendersz,		void					)( xui_method_args&	
 }
 xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			args )
 {
-	xui_component* root = m_parent;
-	while (root && xui_issub_kindof(xui_desktop, root) == false)
+	xui_component* root  = m_parent;
+	xui_component* other = (xui_component*)args.wparam;
+	if (other == NULL)
 	{
-		root->xm_getfocus(this, args);
-		root = root->get_parent();
+		while (root)
+		{
+			root->xm_getfocus(this, args);
+			root = root->get_parent();
+		}
+	}
+	else
+	{
+		while (root && other != root && other->was_ancestor(root) == false)
+		{
+			root->xm_getfocus(this, args);
+			root = root->get_parent();
+		}
 	}
 }
 xui_method_explain(xui_component, on_nonfocus,			void					)( xui_method_args&			args )
 {
-	xui_component* root = m_parent;
-	while (root && xui_issub_kindof(xui_desktop, root) == false)
+	xui_component* root  = m_parent;
+	xui_component* other = (xui_component*)args.wparam;
+	if (other == NULL)
 	{
-		root->xm_nonfocus(this, args);
-		root = root->get_parent();
+		while (root)
+		{
+			root->xm_nonfocus(this, args);
+			root = root->get_parent();
+		}
+	}
+	else
+	{
+		while (root && other != root && other->was_ancestor(root) == false)
+		{
+			root->xm_nonfocus(this, args);
+			root = root->get_parent();
+		}
 	}
 }
 xui_method_explain(xui_component, on_getcatch,			void					)( xui_method_args&			args )

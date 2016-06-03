@@ -75,7 +75,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	{
 	case WM_KILLFOCUS:
 		{
-			xui_desktop::get_ins()->set_focusctrl(NULL);
+			//xui_desktop::get_ins()->set_focusctrl(NULL);
 		}
 		break;
 	case WM_USER_FWATCHNOTIFY:

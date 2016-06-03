@@ -4,13 +4,14 @@
 #include "onity_propleaf.h"
 
 class NP2DSLayer;
+class onity_propactor;
 class onity_proplayer : public onity_propleaf
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_proplayer( onity_propfile* propfile, NP2DSLayer* layer );
+	onity_proplayer( onity_propfile* propfile, onity_propactor* propactor, NP2DSLayer* layer );
 
 	/*
 	//destructor
@@ -20,6 +21,7 @@ public:
 	/*
 	//method
 	*/
+	onity_propactor*		get_actor		( void );
 	NP2DSLayer*				get_layer		( void );
 	const xui_proproot_vec&	get_framekeys	( void ) const;
 	void					add_framekey	( xui_proproot* prop );
@@ -38,6 +40,7 @@ protected:
 	*/
 	xui_propkind*			m_basekind;
 	NP2DSLayer*				m_layer;
+	onity_propactor*		m_propactor;
 	xui_proproot_vec		m_propframekeys;
 };
 

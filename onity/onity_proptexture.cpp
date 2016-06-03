@@ -16,7 +16,7 @@ xui_create_explain(onity_proptexture)( const std::wstring& full )
 */
 xui_method_explain(onity_proptexture, get_texture,	NPSourceTexture*)( void )
 {
-	std::string fullname = xui_global::unicode_to_ascii(get_full());
+	std::string fullname = xui_global::unicode_to_ascii(get_fullname());
 	std::string pathname = NPFileNameHelper::PathName(fullname);
 	std::string filename = NPFileNameHelper::FileName(fullname);
 	u32 id = NP2DSTextureCache::GetIns()->GetTextureID(pathname, filename, true);

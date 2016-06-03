@@ -1,5 +1,7 @@
 #include "xui_desktop.h"
 #include "xui_dialog.h"
+#include "onity_treedata.h"
+#include "onity_timedata.h"
 #include "onity_propleaf.h"
 #include "onity_filedata.h"
 #include "onity_filectrl.h"
@@ -10,15 +12,16 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propfile)( const std::wstring& full )
+xui_create_explain(onity_propfile)( const std::wstring& fullname )
 : xui_proproot()
-, m_fullname(full)
+, m_fullname(fullname)
+, m_linkdata(NULL)
 , m_savekind(NULL)
 {
-	m_basekind = new xui_propkind(this, onity_filedata::get_safe(full), "File", onity_filectrl::create, onity_resource::icon_file, true);
+	m_basekind = new xui_propkind(this, onity_filedata::get_safe(fullname), "File", onity_filectrl::create, onity_resource::icon_file, true);
 	add_propkind(m_basekind);
 
-	std::wstring suff = onity_filedata::get_suff(full);
+	std::wstring suff = onity_filedata::get_suff(fullname);
 	if (suff.length() > 0)
 	{
 		m_savekind = new onity_savekind(this, this);
@@ -27,11 +30,29 @@ xui_create_explain(onity_propfile)( const std::wstring& full )
 }
 
 /*
+//destructor
+*/
+xui_delete_explain(onity_propfile)( void )
+{
+	onity_treedata* treedata = dynamic_cast<onity_treedata*>(m_linkdata);
+	onity_timedata* timedata = dynamic_cast<onity_timedata*>(m_linkdata);
+	if (treedata)   treedata->set_null();
+	if (timedata)	timedata->set_null();
+}
+/*
 //method
 */
-xui_method_explain(onity_propfile, get_full,			const std::wstring&	)( void ) const
+xui_method_explain(onity_propfile, get_fullname,		const std::wstring&	)( void ) const
 {
 	return m_fullname;
+}
+xui_method_explain(onity_propfile, get_linkdata,		xui_treedata*		)( void )
+{
+	return m_linkdata;
+}
+xui_method_explain(onity_propfile, set_linkdata,		void				)( xui_treedata* linkdata )
+{
+	m_linkdata = linkdata;
 }
 
 /*
@@ -93,7 +114,7 @@ xui_method_explain(onity_propfile, on_detach,			void				)( const xui_proproot_ve
 		{
 			std::wstringstream text;
 			text << L"Asset file has Changed.\n\'";
-			text << get_full().c_str();
+			text << get_fullname().c_str();
 			text << L"\'\n";
 			xui_dialog* dialog = (xui_dialog*)xui_desktop::get_ins()->show_message(text.str(), 2);
 			dialog->set_text(0, L"Apply" );

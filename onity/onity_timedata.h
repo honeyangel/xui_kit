@@ -12,9 +12,15 @@ public:
 	onity_timedata( xui_proproot* prop );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_timedata( void );
+
+	/*
 	//method
 	*/
 	xui_proproot*		get_prop( void );
+	void				set_null( void );
 
 protected:
 	/*

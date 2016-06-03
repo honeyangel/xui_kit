@@ -23,6 +23,8 @@ public:
 	void						add_dummy		( void );
 	void						del_dummy		( xui_proproot* proproot );
 	const xui_proproot_vec&		get_layers		( void ) const;
+	xui_proproot*				add_layer		( void );
+	void						del_layer		( xui_proproot* proproot );
 
 protected:
 	/*

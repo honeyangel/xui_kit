@@ -55,6 +55,7 @@ public:
 	static xui_bitmap*	icon_layerview;
 	static xui_bitmap*	icon_visible;
 	static xui_bitmap*	icon_lead;
+	static xui_bitmap*	icon_layer;
 };
 
 #endif//__onity_resource_h__
