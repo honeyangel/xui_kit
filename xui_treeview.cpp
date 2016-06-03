@@ -408,6 +408,16 @@ xui_method_explain(xui_treeview, get_upmostnodeindex,	u32									)( xui_treenod
 
 	return -1;
 }
+xui_method_explain(xui_treeview, set_upmostnodeindex,	void								)( xui_treenode* node, u32 index )
+{
+	std::vector<xui_treenode*>::iterator itor = std::find(m_upmostnode.begin(), m_upmostnode.end(), node);
+	if (itor != m_upmostnode.end())
+	{
+		m_upmostnode.erase(itor);
+		m_upmostnode.insert(m_upmostnode.begin()+index, node);
+		refresh();
+	}
+}
 xui_method_explain(xui_treeview, get_upmostnode,		xui_treenode*						)( u32 index )
 {
 	return m_upmostnode[index];

@@ -25,6 +25,7 @@ public:
 	const xui_proproot_vec&		get_layers		( void ) const;
 	xui_proproot*				add_layer		( void );
 	void						del_layer		( xui_proproot* proproot );
+	void						set_layerindex	( xui_proproot* proproot, u32 index );
 
 protected:
 	/*

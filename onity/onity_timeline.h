@@ -20,37 +20,38 @@ public:
 	/*
 	//method
 	*/
-	onity_preview*		get_drawview			( void );
-	xui_timeview*		get_timeview			( void );
-	onity_propactor*	get_editprop			( void );
-	void				set_editprop			( onity_propactor* editprop );
+	onity_preview*		get_drawview				( void );
+	xui_timeview*		get_timeview				( void );
+	onity_propactor*	get_editprop				( void );
+	void				set_editprop				( onity_propactor* editprop );
 
 	/*
 	//override
 	*/
-	virtual void		render_else				( void );
+	virtual void		render_else					( void );
 
 protected:
 	/*
 	//callback
 	*/
-	virtual void		on_perform				( xui_method_args& args );
+	virtual void		on_perform					( xui_method_args& args );
 
 	/*
 	//event
 	*/
-	void				on_linectrlclick		( xui_component* sender, xui_method_args&			args );
-	void				on_sizectrlmousemove	( xui_component* sender, xui_method_mouse&			args );
-	void				on_timeviewaddlayer		( xui_component* sender, xui_method_args&			args );
-	void				on_timeviewdellayer		( xui_component* sender, xui_method_args&			args );
-	void				on_timetreedragover		( xui_component* sender, xui_method_treedragdrop&	args );
-	void				on_timetreedragdrop		( xui_component* sender, xui_method_treedragdrop&	args );
-	void				on_timetreemouseclick	( xui_component* sender, xui_method_mouse&			args );
+	void				on_linectrlclick			( xui_component* sender, xui_method_args&			args );
+	void				on_sizectrlmousemove		( xui_component* sender, xui_method_mouse&			args );
+	void				on_timeviewcurframechange	( xui_component* sender, xui_method_args&			args );
+	void				on_timeviewaddlayer			( xui_component* sender, xui_method_args&			args );
+	void				on_timeviewdellayer			( xui_component* sender, xui_method_args&			args );
+	void				on_timetreedragover			( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timetreedragdrop			( xui_component* sender, xui_method_treedragdrop&	args );
+	void				on_timetreemouseclick		( xui_component* sender, xui_method_mouse&			args );
 
 	/*
 	//method
 	*/
-	void				refresh_timeview		( void );
+	void				refresh_timeview			( void );
 
 	/*
 	//member

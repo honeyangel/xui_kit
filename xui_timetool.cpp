@@ -92,7 +92,7 @@ xui_create_explain(xui_timetool)( xui_timeview* timeview )
 
 
 	//timer
-	m_playtimer = xui_timermgr::get_ins()->add_timer(this, 1.0f/60.0f, NULL);
+	m_playtimer = xui_timermgr::get_ins()->add_timer(this, 1.0f/30.0f, NULL);
 	m_playtimer->set_enable(false);
 	m_playtimer->xm_tick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_timertick);
 
@@ -168,16 +168,25 @@ xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender
 }
 xui_method_explain(xui_timetool, on_toggleclick,		void		)( xui_component* sender, xui_method_args& args )
 {
+	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+	xui_keyframe_map allframe = timeview->get_allframe();
+
 	if (sender == m_play)
 	{
 		m_back->ini_toggle(false);
 		m_playtimer->set_enable(m_play->was_push());
+		xui_keyframe_map::reverse_iterator itor = allframe.rbegin();
+		if (m_play->was_push() && timeview->get_curframe() >  (*itor).first)
+			timeview->set_curframe(0);
 	}
 	else 
 	if (sender == m_back)
 	{
 		m_play->ini_toggle(false);
 		m_playtimer->set_enable(m_back->was_push());
+		xui_keyframe_map::reverse_iterator itor = allframe.rbegin();
+		if (m_play->was_push() && timeview->get_curframe() == 0)
+			timeview->set_curframe((*itor).first);
 	}
 	else 
 	if (sender == m_loop)

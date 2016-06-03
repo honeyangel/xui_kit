@@ -139,6 +139,19 @@ xui_method_explain(onity_propactor, del_layer,		void					)( xui_proproot* propro
 		}
 	}
 }
+xui_method_explain(onity_propactor, set_layerindex,	void					)( xui_proproot* proproot, u32 index )
+{
+	NP2DSActor* actor = NPDynamicCast(NP2DSActor, get_asset());
+	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(proproot);
+	actor->SetLayerIndex(proplayer->get_layer(), (u16)index);
+
+	xui_proproot_vec::iterator itor = std::find(m_proplayers.begin(), m_proplayers.end(), proproot);
+	if (itor != m_proplayers.end())
+	{
+		m_proplayers.erase(itor);
+		m_proplayers.insert(m_proplayers.begin()+index, proproot);
+	}
+}
 
 /*
 //static

@@ -43,7 +43,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 : xui_container(size)
 {
 	m_hscrollshow	= true;
-	m_keyspace		= 15;
+	m_keyspace		= 10;
 	m_keylarge		=  5;
 	m_keysmall		=  1;
 	m_curframe		= -1;
@@ -75,7 +75,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	xui_method_ptrcall(m_fpnumber, set_parent	)(this);
 	xui_method_ptrcall(m_fpnumber, set_cursor	)(CURSOR_WE);
 	xui_method_ptrcall(m_fpnumber, set_textalign)(TEXTALIGN_CC);
-	xui_method_ptrcall(m_fpnumber, ini_drawer	)(L"60");
+	xui_method_ptrcall(m_fpnumber, ini_drawer	)(L"30");
 	m_widgetvec.push_back(m_fpstring);
 	m_widgetvec.push_back(m_fpnumber);
 
@@ -94,7 +94,8 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_timetree->xm_setclientsz		+= new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
 	m_timetree->xm_invalid			+= new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
 	m_timetree->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timetreeupdateself);
-	m_timetree->xm_treedragover		+= new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreedragover);
+	m_timetree->xm_treedragover		+= new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
+	m_timetree->xm_treedragdrop		+= new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
 	//m_widgetvec.push_back(m_timetree);
 
 	m_tldelete = new xui_button(xui_vector<s32>(16));
@@ -418,6 +419,17 @@ xui_method_explain(xui_timeview, get_timelinearray,			std::vector<xui_timeline*>
 	}
 
 	return lines;
+}
+xui_method_explain(xui_timeview, get_timelineindex,			u32							)( xui_timeline* line )
+{
+	xui_timedata* data = line->get_linkdata();
+	return m_timetree->get_upmostnodeindex(data->get_node());
+}
+xui_method_explain(xui_timeview, set_timelineindex,			void						)( xui_timeline* line, u32 index )
+{
+	xui_timedata* data = line->get_linkdata();
+	m_timetree->set_upmostnodeindex(data->get_node(), index);
+	refresh();
 }
 xui_method_explain(xui_timeview, get_timeline,				xui_timeline*				)( u32 index )
 {
@@ -862,7 +874,7 @@ xui_method_explain(xui_timeview, on_timetreeupdateself,		void						)( xui_compon
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timetreedragover,		void						)( xui_component* sender, xui_method_treedragdrop&	args )
+xui_method_explain(xui_timeview, on_timetreeoverdrop,		void						)( xui_component* sender, xui_method_treedragdrop&	args )
 {
 	m_tldelete->set_visible(false);
 }

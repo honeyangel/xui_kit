@@ -89,6 +89,8 @@ public:
 	std::vector<xui_timeline*>			get_timelinetotal		( bool total = true );
 	u32									get_timelinecount		( void ) const;
 	std::vector<xui_timeline*>			get_timelinearray		( void ) const;
+	u32									get_timelineindex		( xui_timeline* line );
+	void								set_timelineindex		( xui_timeline* line, u32 index );
 	xui_timeline*						get_timeline			( u32 index );
 	xui_timeline*						add_timeline			( u32 index, xui_timedata* data );
 	void								del_timeline			( xui_timeline* line );
@@ -138,7 +140,7 @@ protected:
 	void								on_timetreemouseclick	( xui_component* sender, xui_method_mouse&			args );
 	void								on_timetreeupdateself	( xui_component* sender, xui_method_update&			args );
 	void								on_timetreesetclientsz	( xui_component* sender, xui_method_args&			args );
-	void								on_timetreedragover		( xui_component* sender, xui_method_treedragdrop&	args );
+	void								on_timetreeoverdrop		( xui_component* sender, xui_method_treedragdrop&	args );
 	void								on_timetreeinvalid		( xui_component* sender, xui_method_args&			args );
 	void								on_timeviewdraghorz		( xui_component* sender, xui_method_update&			args );
 	void								on_timeviewdragvert		( xui_component* sender, xui_method_update&			args );
