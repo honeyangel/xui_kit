@@ -9,9 +9,14 @@
 #include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_scroll.h"
+#include "xui_timeview.h"
+#include "xui_treeview.h"
 #include "onity_renderview.h"
 #include "onity_proplayer.h"
 #include "onity_propactor.h"
+#include "onity_timedata.h"
+#include "onity_timeline.h"
+#include "onity_mainform.h"
 #include "onity_lineview.h"
 
 xui_implement_rtti(onity_lineview, xui_control);
@@ -29,6 +34,7 @@ xui_create_explain(onity_lineview)( void )
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		onity_lineview>(this, &onity_lineview::on_drawviewrenderself);
 	xui_method_ptrcall(m_drawview, xm_mousewheel		) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmousewheel);
 	xui_method_ptrcall(m_drawview, xm_mousedown			) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmousedown);
+	xui_method_ptrcall(m_drawview, xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse,	onity_lineview>(this, &onity_lineview::on_drawviewmousedoubleclick);
 	xui_method_ptrcall(m_drawview, set_parent			)(this);
 	xui_method_ptrcall(m_drawview, set_borderrt			)(xui_rect2d<s32>(20));
 	xui_method_ptrcall(m_drawview, ini_component		)(0, 0, DOCKSTYLE_F);
@@ -45,15 +51,15 @@ xui_create_explain(onity_lineview)( void )
 /*
 //method
 */
-xui_method_explain(onity_lineview, get_drawview,			onity_renderview*	)( void )
+xui_method_explain(onity_lineview, get_drawview,				onity_renderview*	)( void )
 {
 	return m_drawview;
 }
-xui_method_explain(onity_lineview, get_viewprop,			onity_propactor*	)( void )
+xui_method_explain(onity_lineview, get_viewprop,				onity_propactor*	)( void )
 {
 	return m_viewprop;
 }
-xui_method_explain(onity_lineview, set_viewprop,			void				)( onity_propactor* viewprop )
+xui_method_explain(onity_lineview, set_viewprop,				void				)( onity_propactor* viewprop )
 {
 	if (m_viewprop != viewprop)
 	{
@@ -67,7 +73,7 @@ xui_method_explain(onity_lineview, set_viewprop,			void				)( onity_propactor* v
 /*
 //event
 */
-xui_method_explain(onity_lineview, on_drawviewinvalid,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_lineview, on_drawviewinvalid,			void				)( xui_component* sender, xui_method_args&  args )
 {
 	u32 count = 0;
 	if (m_viewprop)
@@ -91,7 +97,7 @@ xui_method_explain(onity_lineview, on_drawviewinvalid,		void				)( xui_component
 
 	refresh();
 }
-xui_method_explain(onity_lineview, on_drawviewrenderself,	void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_lineview, on_drawviewrenderself,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.25f));
 	extern bool gInitCompleted;
@@ -127,7 +133,7 @@ xui_method_explain(onity_lineview, on_drawviewrenderself,	void				)( xui_compone
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	NP2DSRenderStep::GetIns()->RenderImmediate();
 }
-xui_method_explain(onity_lineview, on_drawviewmousewheel,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_lineview, on_drawviewmousewheel,		void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_viewroll->was_visible())
 	{
@@ -135,7 +141,7 @@ xui_method_explain(onity_lineview, on_drawviewmousewheel,	void				)( xui_compone
 		args.handle = true;
 	}
 }
-xui_method_explain(onity_lineview, on_drawviewmousedown,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_lineview, on_drawviewmousedown,		void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -144,11 +150,28 @@ xui_method_explain(onity_lineview, on_drawviewmousedown,	void				)( xui_componen
 		m_selected = (pt.x-rt.ax+m_viewroll->get_value()) / (tile_size+horz_grap);
 	}
 }
+xui_method_explain(onity_lineview, on_drawviewmousedoubleclick,	void				)( xui_component* sender, xui_method_mouse& args )
+{
+	if (m_viewprop && m_selected != -1)
+	{
+		const xui_proproot_vec& vec = m_viewprop->get_layers();
+		onity_proplayer* prop = dynamic_cast<onity_proplayer*>(vec[m_selected]);
+		onity_timedata*  data = dynamic_cast<onity_timedata* >(prop->get_linkdata());
+		if (data)
+		{
+			onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+			xui_timeview*   timeview = timeline->get_timeview();
+			xui_treeview*   timetree = timeview->get_timetree();
+			xui_method_ptrcall(timetree, set_selectednode	)(data->get_node(), true);
+			xui_method_ptrcall(timeview, set_timelinevisible)(data->get_line());
+		}
+	}
+}
 
 /*
 //method
 */
-xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s32 y,   onity_proplayer* proplayer )
+xui_method_explain(onity_lineview, draw_layer,					void				)( u16 index, s32 x, s32 y,   onity_proplayer* proplayer )
 {
 	xui_rect2d<s32> tilert;
 	tilert.ax = x + index*(tile_size+horz_grap);
@@ -159,7 +182,7 @@ xui_method_explain(onity_lineview, draw_layer,				void				)( u16 index, s32 x, s
 	draw_tile(tilert, proplayer);
 	draw_name(tilert, proplayer->get_layer()->GetName(), index);
 }
-xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32>& rt, onity_proplayer* proplayer )
+xui_method_explain(onity_lineview, draw_tile,					void				)( const xui_rect2d<s32>& rt, onity_proplayer* proplayer )
 {
 	NP2DSLayer* layer = proplayer->get_layer();
 	if (layer->GetFrameKeyCount() == 0)
@@ -184,7 +207,7 @@ xui_method_explain(onity_lineview, draw_tile,				void				)( const xui_rect2d<s32
 	trans.y = xui_pixel_align(trans.y);
 	frameKey->GetTransRef()->Render(scale, trans);
 }
-xui_method_explain(onity_lineview, draw_name,				void				)( const xui_rect2d<s32>& rt, const std::string& name, u16 index )
+xui_method_explain(onity_lineview, draw_name,					void				)( const xui_rect2d<s32>& rt, const std::string& name, u16 index )
 {
 	xui_rect2d<s32> drawrt = rt;
 	drawrt.ay += tile_size;

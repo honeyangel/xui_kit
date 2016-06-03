@@ -78,6 +78,10 @@ xui_method_explain(onity_timeline, get_drawview,			onity_preview*	)( void )
 {
 	return m_drawview;
 }
+xui_method_explain(onity_timeline, get_timeview,			xui_timeview*	)( void )
+{
+	return m_timeview;
+}
 xui_method_explain(onity_timeline, get_editprop,			onity_propactor*)( void )
 {
 	return m_editprop;

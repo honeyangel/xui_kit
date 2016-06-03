@@ -93,6 +93,7 @@ public:
 	xui_timeline*						add_timeline			( u32 index, xui_timedata* data );
 	void								del_timeline			( xui_timeline* line );
 	void								del_timelineall			( void );
+	void								set_timelinevisible		( xui_timeline* line );
 
 	/*
 	//rectangle
@@ -133,25 +134,26 @@ protected:
 	/*
 	//event
 	*/
-	void								on_timetreenonfocus		( xui_component* sender, xui_method_args&	args );
-	void								on_timetreemouseclick	( xui_component* sender, xui_method_mouse&	args );
-	void								on_timetreeupdateself	( xui_component* sender, xui_method_update&	args );
-	void								on_timetreesetclientsz	( xui_component* sender, xui_method_args&	args );
-	void								on_timetreeselection	( xui_component* sender, xui_method_args&	args );
-	void								on_timetreeinvalid		( xui_component* sender, xui_method_args&	args );
-	void								on_timeviewdraghorz		( xui_component* sender, xui_method_update&	args );
-	void								on_timeviewdragvert		( xui_component* sender, xui_method_update&	args );
-	void								on_timerectdraghorz		( xui_component* sender, xui_method_update&	args );
-	void								on_kssliderscroll		( xui_component* sender, xui_method_args&	args );
-	void								on_fpnumberrenderself	( xui_component* sender, xui_method_args&	args );
-	void								on_fpnumbermousemove	( xui_component* sender, xui_method_mouse&	args );
-	void								on_tldeleterenderself	( xui_component* sender, xui_method_args&	args );
-	void								on_tldeleteclick		( xui_component* sender, xui_method_args&	args );
+	void								on_timetreenonfocus		( xui_component* sender, xui_method_args&			args );
+	void								on_timetreemouseclick	( xui_component* sender, xui_method_mouse&			args );
+	void								on_timetreeupdateself	( xui_component* sender, xui_method_update&			args );
+	void								on_timetreesetclientsz	( xui_component* sender, xui_method_args&			args );
+	void								on_timetreedragover		( xui_component* sender, xui_method_treedragdrop&	args );
+	void								on_timetreeinvalid		( xui_component* sender, xui_method_args&			args );
+	void								on_timeviewdraghorz		( xui_component* sender, xui_method_update&			args );
+	void								on_timeviewdragvert		( xui_component* sender, xui_method_update&			args );
+	void								on_timerectdraghorz		( xui_component* sender, xui_method_update&			args );
+	void								on_kssliderscroll		( xui_component* sender, xui_method_args&			args );
+	void								on_fpnumberrenderself	( xui_component* sender, xui_method_args&			args );
+	void								on_fpnumbermousemove	( xui_component* sender, xui_method_mouse&			args );
+	void								on_tldeleterenderself	( xui_component* sender, xui_method_args&			args );
+	void								on_tldeleteclick		( xui_component* sender, xui_method_args&			args );
 
 	/*
 	//member
 	*/
 	xui_treeview*						m_timetree;
+	xui_button*							m_tldelete;
 	xui_timetool*						m_timetool;
 	xui_timegrad*						m_timegrad;
 	xui_timehead*						m_timehead;
@@ -159,7 +161,6 @@ protected:
 	xui_slider*							m_ksslider;
 	xui_drawer*							m_fpstring;
 	xui_drawer*							m_fpnumber;
-	xui_button*							m_tldelete;
 	u08									m_dragmode;
 	s32									m_dragtime;
 	s32									m_droptime;

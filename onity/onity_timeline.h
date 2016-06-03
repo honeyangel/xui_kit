@@ -21,6 +21,7 @@ public:
 	//method
 	*/
 	onity_preview*		get_drawview			( void );
+	xui_timeview*		get_timeview			( void );
 	onity_propactor*	get_editprop			( void );
 	void				set_editprop			( onity_propactor* editprop );
 

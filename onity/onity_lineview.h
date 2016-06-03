@@ -38,6 +38,7 @@ protected:
 	void					on_drawviewrenderself		( xui_component* sender, xui_method_args&  args );
 	void					on_drawviewmousedown		( xui_component* sender, xui_method_mouse& args );
 	void					on_drawviewmousewheel		( xui_component* sender, xui_method_mouse& args );
+	void					on_drawviewmousedoubleclick	( xui_component* sender, xui_method_mouse& args );
 
 	/*
 	//method
