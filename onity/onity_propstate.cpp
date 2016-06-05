@@ -50,7 +50,7 @@ xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* stat
 		m_statekind, 
 		L"Action", 
 		xui_propctrl_object::create, 
-		"NP2DSActor", 
+		DROPTYPE_ACTOR, 
 		get_actor, 
 		set_actor, 
 		state);

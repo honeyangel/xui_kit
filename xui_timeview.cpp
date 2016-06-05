@@ -112,6 +112,7 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_timerect->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timerectdraghorz);
 	m_timehead->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
 	m_timehead->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
+	m_timehead->xm_mouserise		+= new xui_method_member<xui_method_mouse,			xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
 	m_ascrollitem.push_back(m_timerect);
 	m_ascrollitem.push_back(m_timehead);
 
@@ -293,6 +294,7 @@ xui_method_explain(xui_timeview, set_rectrise,				void						)( void )
 	}
 	else
 	{
+		bool selframe = false;
 		std::vector<xui_timeline*> lines = get_timelinetotal(false);
 		for (s32 i = 0; i < (s32)lines.size(); ++i)
 		{
@@ -302,7 +304,14 @@ xui_method_explain(xui_timeview, set_rectrise,				void						)( void )
 			if (lines[i]->add_selframe(range.ax, range.bx))
 			{
 				hasframe = true;
+				selframe = true;
 			}
+		}
+
+		if (selframe)
+		{
+			xui_method_args			args;
+			xm_selectedchange(this, args);
 		}
 	}
 
@@ -784,6 +793,7 @@ xui_method_explain(xui_timeview, create_line,				xui_timeline*				)( xui_treenod
 	xui_timeline* line = new xui_timeline(data, this);
 	line->xm_updateself += new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
 	line->xm_updateself += new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
+	line->xm_mouserise  += new xui_method_member<xui_method_mouse,  xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
 	node->set_data(line);
 
 	xui_vector<s32> pt;
@@ -816,6 +826,10 @@ xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line
 /*
 //event
 */
+xui_method_explain(xui_timeview, on_timelinemouseclick,		void						)( xui_component* sender, xui_method_mouse&			args )
+{
+	xm_linemouseclick(this, args);
+}
 xui_method_explain(xui_timeview, on_timetreenonfocus,		void						)( xui_component* sender, xui_method_args&			args )
 {
 	xui_component* focusctrl = (xui_component*)args.wparam;

@@ -227,5 +227,5 @@ xui_method_explain(onity_propframe, new_propdata,		xui_propdata*			)( void* user
 {
 	onity_propframe* propframe = (onity_propframe*)userptr;
 	xui_proproot* prop = propframe->get_imagerefs()[i];
-	return new onity_propdata_transref(propkind, L"Imageref", onity_propctrl_transref::create, "NP2DSImage", dynamic_cast<onity_proptransref*>(prop), onity_propframe::get_proptotal, userptr);
+	return new onity_propdata_transref(propkind, L"Imageref", onity_propctrl_transref::create, DROPTYPE_IMAGE, dynamic_cast<onity_proptransref*>(prop), onity_propframe::get_proptotal, userptr);
 }

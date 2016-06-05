@@ -7,6 +7,10 @@ xui_create_explain(xui_timedata)( void )
 : xui_treedata()
 , m_line(NULL)
 {}
+xui_create_explain(xui_timedata)( const std::wstring& text, xui_bitmap* icon )
+: xui_treedata(text, icon)
+, m_line(NULL)
+{}
 xui_create_explain(xui_timedata)( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe )
 : xui_treedata(text, icon)
 , m_line(NULL)
@@ -25,6 +29,14 @@ xui_method_explain(xui_timedata, get_line,			xui_timeline*		)( void )
 /*
 //interface
 */
+xui_method_explain(xui_timedata, get_keycolor,		xui_colour			)( void ) const
+{
+	return xui_colour(1.0f, 0.0f, 1.0f, 0.0f);
+}
+xui_method_explain(xui_timedata, cal_keyframe,		void				)( void )
+{
+
+}
 xui_method_explain(xui_timedata, get_keyframecount,	u32					)( void ) const
 {
 	return m_keyframe.size();
@@ -42,10 +54,6 @@ xui_method_explain(xui_timedata, get_allframe,		std::vector<s32>	)( void ) const
 	}
 
 	return keyframe;
-}
-xui_method_explain(xui_timedata, get_keycolor,		xui_colour			)( void ) const
-{
-	return xui_colour(1.0f, 0.0f, 1.0f, 0.0f);
 }
 xui_method_explain(xui_timedata, has_keyframe,		bool				)( s32 frame ) const
 {

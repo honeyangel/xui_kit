@@ -18,12 +18,17 @@ xui_create_explain(onity_propdata_2dsasset)(
 	xui_propkind*			kind, 
 	const std::wstring&		name, 
 	xui_prop_newctrl		func, 
-	const std::string&		droptype, 
+	u32						droptype, 
 	get_func				userget, 
 	set_func				userset, 
 	void*					userptr )
-: xui_propdata_object_func(kind, name, func, droptype, onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
-{}
+: xui_propdata_object_func(kind, name, func, "", onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
+{
+	if (droptype & DROPTYPE_IMAGE)	add_droptype("NP2DSImage");
+	if (droptype & DROPTYPE_FRAME)	add_droptype("NP2DSFrame");
+	if (droptype & DROPTYPE_ACTOR)	add_droptype("NP2DSActor");
+}
+
 /*
 //static
 */
@@ -49,7 +54,7 @@ xui_create_explain(onity_propdata_transref)(
 	xui_propkind*			kind, 
 	const std::wstring&		name, 
 	xui_prop_newctrl		func, 
-	const std::string&		droptype, 
+	u32						droptype, 
 	onity_proptransref*		proptransref,
 	get_total				usergettotal, 
 	void*					userptrtotal )

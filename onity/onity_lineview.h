@@ -26,6 +26,7 @@ public:
 	/*
 	//method
 	*/
+	void					set_curframe				( s32 frame );
 	onity_renderview*		get_drawview				( void );
 	onity_propactor*		get_viewprop				( void );
 	void					set_viewprop				( onity_propactor* viewprop );
@@ -51,6 +52,7 @@ protected:
 	//member
 	*/
 	u16						m_selected;
+	s32						m_curframe;
 	onity_renderview*		m_drawview;
 	xui_scroll*				m_viewroll;
 	onity_propactor*		m_viewprop;

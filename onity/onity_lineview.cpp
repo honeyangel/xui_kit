@@ -28,6 +28,7 @@ xui_create_explain(onity_lineview)( void )
 : xui_control(xui_vector<s32>(150))
 , m_viewprop(NULL)
 , m_selected(-1)
+, m_curframe(0)
 {
 	m_drawview = new onity_renderview(xui_vector<s32>(128), xui_vector<s32>(2048, 128));
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		onity_lineview>(this, &onity_lineview::on_drawviewinvalid);
@@ -51,6 +52,10 @@ xui_create_explain(onity_lineview)( void )
 /*
 //method
 */
+xui_method_explain(onity_lineview, set_curframe,				void				)( s32 frame )
+{
+	m_curframe = frame;
+}
 xui_method_explain(onity_lineview, get_drawview,				onity_renderview*	)( void )
 {
 	return m_drawview;
@@ -188,9 +193,17 @@ xui_method_explain(onity_lineview, draw_tile,					void				)( const xui_rect2d<s3
 	if (layer->GetFrameKeyCount() == 0)
 		return;
 
-	NP2DSFrameKey* frameKey = layer->GetFrameKeyList().front();
-	NPRect bound = frameKey->GetTransRef()->GetWorldBounding();
+	const std::list<NP2DSFrameKey*>& keylist = layer->GetFrameKeyList();
+	NP2DSFrameKey* framekey = keylist.front();
+	for (std::list<NP2DSFrameKey*>::const_iterator itor = keylist.begin(); itor != keylist.end(); ++itor)
+	{
+		if ((*itor)->GetTime() <= (npu16)m_curframe)
+			framekey = (*itor);
+		else
+			break;
+	}
 
+	NPRect bound = framekey->GetTransRef()->GetWorldBounding();
 	f32 sw = (f32)tile_size / (f32)bound.GetW();
 	f32 sh = (f32)tile_size / (f32)bound.GetH();
 	f32 s  = xui_min(sw, sh);
@@ -205,7 +218,7 @@ xui_method_explain(onity_lineview, draw_tile,					void				)( const xui_rect2d<s3
 
 	trans.x = xui_pixel_align(trans.x);
 	trans.y = xui_pixel_align(trans.y);
-	frameKey->GetTransRef()->Render(scale, trans);
+	framekey->GetTransRef()->Render(scale, trans);
 }
 xui_method_explain(onity_lineview, draw_name,					void				)( const xui_rect2d<s32>& rt, const std::string& name, u16 index )
 {

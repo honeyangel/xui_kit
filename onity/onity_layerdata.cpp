@@ -21,28 +21,20 @@ xui_create_explain(onity_layerdata)( xui_proproot* prop )
 : onity_timedata(prop)
 {
 	m_icon = onity_resource::icon_layer;
-
-	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(prop);
-	NP2DSLayer* layer = proplayer->get_layer();
-	const NP2DSLayer::FrameKeyList& keylist = layer->GetFrameKeyList();
-	for (NP2DSLayer::FrameKeyList::const_iterator itor = keylist.begin(); itor != keylist.end(); ++itor)
-	{
-		NP2DSFrameKey* framekey = (*itor);
-		m_keyframe[(s32)framekey->GetTime()] = framekey->WasSmooth() ? KS_LINEAR : KS_STATIC;
-	}
+	cal_keyframe();
 }
 
 /*
 //override
 */
-xui_method_explain(onity_layerdata, get_icon, xui_bitmap*	)( u32 index )
+xui_method_explain(onity_layerdata, get_icon,		xui_bitmap*		)( u32 index )
 {
 	if (index == 0)
 		return m_icon;
 
 	return NULL;
 }
-xui_method_explain(onity_layerdata, get_text, std::wstring	)( u32 index )
+xui_method_explain(onity_layerdata, get_text,		std::wstring	)( u32 index )
 {
 	if (index == 0)
 	{
@@ -59,7 +51,7 @@ xui_method_explain(onity_layerdata, get_text, std::wstring	)( u32 index )
 		return L"";
 	}
 }
-xui_method_explain(onity_layerdata, set_text, void			)( u32 index, const std::wstring& text )
+xui_method_explain(onity_layerdata, set_text,		void			)( u32 index, const std::wstring& text )
 {
 	if (index == 0)
 	{
@@ -70,7 +62,7 @@ xui_method_explain(onity_layerdata, set_text, void			)( u32 index, const std::ws
 		proplayer->ntf_rename(text);
 	}
 }
-xui_method_explain(onity_layerdata, get_flag, bool			)( u32 index )
+xui_method_explain(onity_layerdata, get_flag,		bool			)( u32 index )
 {
 	switch (index)
 	{
@@ -98,7 +90,7 @@ xui_method_explain(onity_layerdata, get_flag, bool			)( u32 index )
 
 	return false;
 }
-xui_method_explain(onity_layerdata, set_flag, void			)( u32 index, bool flag )
+xui_method_explain(onity_layerdata, set_flag,		void			)( u32 index, bool flag )
 {
 	switch (index)
 	{
@@ -137,5 +129,25 @@ xui_method_explain(onity_layerdata, set_flag, void			)( u32 index, bool flag )
 			drawnode->SetLayerShow(index, flag);
 		}
 		break;
+	}
+}
+xui_method_explain(onity_layerdata, get_keycolor,	xui_colour		)( void ) const
+{
+	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+	if (proplayer->get_layer()->WasLead())
+		return xui_colour::red;
+
+	return onity_timedata::get_keycolor();
+}
+xui_method_explain(onity_layerdata, cal_keyframe,	void			)( void )
+{
+	m_keyframe.clear();
+	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+	NP2DSLayer* layer = proplayer->get_layer();
+	const NP2DSLayer::FrameKeyList& keylist = layer->GetFrameKeyList();
+	for (NP2DSLayer::FrameKeyList::const_iterator itor = keylist.begin(); itor != keylist.end(); ++itor)
+	{
+		NP2DSFrameKey* framekey = (*itor);
+		m_keyframe[(s32)framekey->GetTime()] = framekey->WasSmooth() ? KS_LINEAR : KS_STATIC;
 	}
 }

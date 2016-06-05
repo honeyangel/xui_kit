@@ -21,6 +21,7 @@ public:
 	//constructor
 	*/
 	xui_timedata( void );
+	xui_timedata( const std::wstring& text, xui_bitmap* icon );
 	xui_timedata( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe );
 
 	/*
@@ -36,13 +37,15 @@ public:
 	/*
 	//interface
 	*/
-	virtual u32					get_keyframecount	( void ) const;
-	virtual xui_keystyle_map	get_allstyle		( void ) const;
-	virtual std::vector<s32>	get_allframe		( void ) const;
 	virtual xui_colour			get_keycolor		( void ) const;
-	virtual bool				has_keyframe		( s32 frame ) const;
-	virtual s32					get_keyframe		( u32 index ) const;
-	virtual u08					get_keystyle		( u32 index ) const;
+	virtual void				cal_keyframe		( void );
+
+	u32							get_keyframecount	( void ) const;
+	xui_keystyle_map			get_allstyle		( void ) const;
+	std::vector<s32>			get_allframe		( void ) const;
+	bool						has_keyframe		( s32 frame ) const;
+	s32							get_keyframe		( u32 index ) const;
+	u08							get_keystyle		( u32 index ) const;
 
 protected:
 	/*

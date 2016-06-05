@@ -1,4 +1,7 @@
 #include "NP2DSActorRef.h"
+#include "NP2DSFrameKey.h"
+#include "NP2DSRenderUtil.h"
+#include "NP2DSRenderStep.h"
 
 #include "xui_bitmap.h"
 #include "xui_dockview.h"
@@ -11,6 +14,7 @@
 #include "xui_toggle.h"
 #include "xui_desktop.h"
 #include "onity_resource.h"
+#include "onity_renderview.h"
 #include "onity_lineview.h"
 #include "onity_preview.h"
 #include "onity_propactor.h"
@@ -45,6 +49,7 @@ xui_create_explain(onity_timeline)( void )
 
 	m_drawview = new onity_preview;
 	xui_method_ptrcall(m_drawview,	ini_component		)(0, 0, DOCKSTYLE_R);
+	xui_method_ptrcall(m_drawview,	set_drawcolor		)(true);
 	xui_method_ptrcall(m_drawview,	set_backcolor		)(xui_colour(1.0f, 0.15f));
 	xui_method_ptrcall(m_drawview,	set_toolshow		)(false);
 
@@ -56,12 +61,16 @@ xui_create_explain(onity_timeline)( void )
 	xui_method_ptrcall(m_timeview,	xm_addlayer			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewaddlayer);
 	xui_method_ptrcall(m_timeview,	xm_dellayer			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewdellayer);
 	xui_method_ptrcall(m_timeview,	xm_curframechange	) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewcurframechange);
+	xui_method_ptrcall(m_timeview,	xm_linemouseclick	) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_timeviewlinemouseclick);
 	xui_method_ptrcall(m_timeview,	ini_component		)(0, 0, DOCKSTYLE_F);
 
-	xui_treeview* timetree = m_timeview->get_timetree();
+	xui_treeview*	   timetree = m_timeview->get_timetree();
 	xui_method_ptrcall(timetree,	xm_mouseclick		) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_timetreemouseclick);
 	xui_method_ptrcall(timetree,	xm_treedragover		) += new xui_method_member<xui_method_treedragdrop,	onity_timeline>(this, &onity_timeline::on_timetreedragover);
 	xui_method_ptrcall(timetree,	xm_treedragdrop		) += new xui_method_member<xui_method_treedragdrop,	onity_timeline>(this, &onity_timeline::on_timetreedragdrop);
+
+	onity_renderview*  drawview = m_drawview->get_drawview();
+	xui_method_ptrcall(drawview,	xm_renderself		) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_drawviewrenderself);
 
 	m_sizectrl = new xui_control(xui_vector<s32>(4));
 	xui_method_ptrcall(m_sizectrl,	xm_mousemove		) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_sizectrlmousemove);
@@ -104,6 +113,20 @@ xui_method_explain(onity_timeline, set_editprop,				void			)( onity_propactor* e
 /*
 //override
 */
+xui_method_explain(onity_timeline, update_else,					void			)( f32 delta )
+{
+	xui_dockpage::update_else(delta);
+
+	s32 frame = m_timeview->get_curframe();
+	NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_drawview->get_drawnode());
+	if (actorref)
+	{
+		actorref->SetTime((npu16)frame);
+		actorref->SetPlay(true );
+		actorref->Update(0.0f);
+		actorref->SetPlay(false);
+	}
+}
 xui_method_explain(onity_timeline, render_else,					void			)( void )
 {
 	xui_dockpage::render_else();
@@ -166,14 +189,79 @@ xui_method_explain(onity_timeline, on_sizectrlmousemove,		void			)( xui_componen
 		m_drawview->set_renderw(width);		
 	}
 }
-xui_method_explain(onity_timeline, on_timeviewcurframechange,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_timeline, on_drawviewrenderself,		void			)( xui_component* sender, xui_method_args&			args )
 {
-	s32 time = m_timeview->get_curframe();
-	NP2DSActorRef* actorRef = NPDynamicCast(NP2DSActorRef, m_drawview->get_drawnode());
-	actorRef->SetTime((npu16)time);
-	actorRef->SetPlay(true );
-	actorRef->Update(0.0f);
-	actorRef->SetPlay(false);
+	extern bool gInitCompleted;
+	if (gInitCompleted == false)
+		return;
+
+	NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_drawview->get_drawnode());
+	if (actorref)
+	{
+		s32 frame = m_timeview->get_curframe();
+		for (u32 i = 0; i < m_timeview->get_timelinecount(); ++i)
+		{
+			xui_timeline* timeline = m_timeview->get_timeline(i);
+			if (timeline->has_selframe(frame))
+			{
+				NP2DSFrameKey* framekey = actorref->GetFrameKey((npu16)i);
+				NPRect rect =  framekey->GetTransRef()->GetWorldBounding();
+				if (rect.WasValid())
+				{
+					NP2DSRenderUtil::GetIns()->DrawLineBox(
+						NPVector2((npf32)rect.LT, (npf32)rect.TP), 
+						NPVector2((npf32)rect.RT, (npf32)rect.BM), 
+						actorref->GetFinalMatrix(),
+						NPColor::Green);
+				}
+				else
+				{
+					NP2DSRenderUtil::GetIns()->DrawLine(
+						NPVector2((npf32)(rect.LT-3), (npf32)(rect.LT+3)),
+						NPVector2((npf32)(rect.TP  ), (npf32)(rect.TP  )),
+						actorref->GetFinalMatrix(),
+						NPColor::Green);
+					NP2DSRenderUtil::GetIns()->DrawLine(
+						NPVector2((npf32)(rect.LT  ), (npf32)(rect.LT  )),
+						NPVector2((npf32)(rect.TP-3), (npf32)(rect.TP+3)),
+						actorref->GetFinalMatrix(),
+						NPColor::Green);
+				}
+			}
+		}
+
+		NP2DSRenderStep::GetIns()->RenderImmediate();
+	}
+}
+xui_method_explain(onity_timeline, on_timeviewcurframechange,	void			)( xui_component* sender, xui_method_args&			args )
+{
+	m_lineview->set_curframe(m_timeview->get_curframe());
+}
+xui_method_explain(onity_timeline, on_timeviewlinemouseclick,	void			)( xui_component* sender, xui_method_mouse&			args )
+{
+	if (args.mouse == MB_L)
+	{
+		xui_proproot_vec propvec;
+		std::vector<xui_timeline*> vec = m_timeview->get_selectedline();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			onity_timedata*  data = dynamic_cast<onity_timedata*>(vec[i]->get_linkdata());
+			onity_proplayer* prop = dynamic_cast<onity_proplayer*>(data->get_prop());
+			const std::vector<s32>& selframe = vec[i]->get_selframe();
+			for (std::vector<s32>::const_iterator itor = selframe.begin(); itor != selframe.end(); ++itor)
+			{
+				xui_proproot* propframekey = prop->get_framekey((*itor));
+				if (propframekey)
+					propvec.push_back(propframekey);
+			}
+		}
+
+		if (propvec.size() > 0)
+		{
+			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+			inspector->set_proproot(propvec);
+		}
+	}
 }
 xui_method_explain(onity_timeline, on_timeviewaddlayer,			void			)( xui_component* sender, xui_method_args&			args )
 {
@@ -234,16 +322,19 @@ xui_method_explain(onity_timeline, on_timetreedragdrop,			void			)( xui_componen
 }
 xui_method_explain(onity_timeline, on_timetreemouseclick,		void			)( xui_component* sender, xui_method_mouse&			args )
 {
-	xui_treeview* timetree = xui_dynamic_cast(xui_treeview, sender);
-	std::vector<xui_treenode*> vec = timetree->get_selectednode();
-	if (vec.size() > 0)
+	if (args.mouse == MB_L)
 	{
-		xui_treenode*   node = vec.front();
-		onity_timedata* data = (onity_timedata*)node->get_linkdata();
-		xui_proproot*   prop = data->get_prop();
+		xui_treeview* timetree = xui_dynamic_cast(xui_treeview, sender);
+		std::vector<xui_treenode*> vec = timetree->get_selectednode();
+		if (vec.size() > 0)
+		{
+			xui_treenode*   node = vec.front();
+			onity_timedata* data = (onity_timedata*)node->get_linkdata();
+			xui_proproot*   prop = data->get_prop();
 
-		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-		inspector->set_proproot(prop);
+			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+			inspector->set_proproot(prop);
+		}
 	}
 }
 

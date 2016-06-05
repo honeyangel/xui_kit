@@ -11,17 +11,17 @@
 xui_create_explain(onity_propimageref)( onity_propfile* propfile, NP2DSTransRef* transref )
 : onity_proptransref(propfile, transref)
 {
-	m_reskind = new xui_propkind(this, L"Resource", "2DSFrameRes", xui_kindctrl::create, NULL, true);
+	m_reskind = new xui_propkind(this, L"Resource", "2DSImageRes", xui_kindctrl::create, NULL, true);
 	m_reskind->add_propdata(new onity_propdata_2dsasset(
 		m_reskind, 
 		L"Image", 
 		xui_propctrl_object::create, 
-		"NP2DSImage", 
+		DROPTYPE_IMAGE, 
 		get_image, 
 		set_image, 
 		this));
 
-	add_propkind(m_reskind);
+	m_propkind.insert(m_propkind.begin(), m_reskind);
 }
 
 /*

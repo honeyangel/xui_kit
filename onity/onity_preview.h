@@ -24,6 +24,7 @@ public:
 	//method
 	*/
 	NPNode*				get_drawnode		( void );
+	onity_renderview*	get_drawview		( void );
 	void				set_toolshow		( bool flag );
 	void				set_needshow		( void );
 	void				set_viewprop		( xui_proproot* prop, bool play = true );
@@ -36,7 +37,6 @@ protected:
 	void				on_buttonclick		( xui_component* sender, xui_method_args&	args );
 	void				on_speedscroll		( xui_component* sender, xui_method_args&	args );
 	void				on_headperform		( xui_component* sender, xui_method_args&	args );
-	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&	args );
 	void				on_viewupdateself	( xui_component* sender, xui_method_update& args );
 	void				on_viewrenderself	( xui_component* sender, xui_method_args&	args );
 	void				on_viewmousewheel	( xui_component* sender, xui_method_mouse&	args );
@@ -46,6 +46,7 @@ protected:
 	*/
 	f32					get_speed			( void );
 	void				set_speed			( f32 speed );
+	void				set_localtransform	( void );
 
 	/*
 	//member

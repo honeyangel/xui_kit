@@ -4,8 +4,14 @@
 #include "xui_propdata.h"
 #include "xui_propctrl_object.h"
 
-class onity_proptransref;
+enum 
+{
+	DROPTYPE_IMAGE = 0x01,
+	DROPTYPE_FRAME = 0x02,
+	DROPTYPE_ACTOR = 0x04,
+};
 
+class onity_proptransref;
 class onity_propdata_2dsasset : public xui_propdata_object_func
 {
 public:
@@ -16,7 +22,7 @@ public:
 		xui_propkind*			kind,
 		const std::wstring&		name,
 		xui_prop_newctrl		func,
-		const std::string&		droptype,
+		u32						droptype,
 		get_func				userget,
 		set_func				userset,
 		void*					userptr );
@@ -45,7 +51,7 @@ public:
 		xui_propkind*			kind,
 		const std::wstring&		name,
 		xui_prop_newctrl		func,
-		const std::string&		droptype,
+		u32						droptype,
 		onity_proptransref*		proptransref,
 		get_total				usergettotal,
 		void*					userptrtotal );

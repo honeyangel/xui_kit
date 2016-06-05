@@ -36,6 +36,13 @@ protected:
 	void					on_namechanged	( xui_component* sender, xui_method_args& args );
 
 	/*
+	//static
+	*/
+	static bool				has_particle	( void* userptr );
+	static bool				has_sound		( void* userptr );
+	static bool				has_event		( void* userptr );
+
+	/*
 	//member
 	*/
 	xui_propkind*			m_basekind;

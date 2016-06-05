@@ -101,8 +101,8 @@ xui_method_explain(onity_proptransref, add_worldkind,		void			)( void )
 		m_worldkind,
 		L"Translate",
 		xui_propctrl_vector::create,
-		get_worldscale,
-		set_worldscale,
+		get_worldtrans,
+		set_worldtrans,
 		this,
 		NT_INT));
 	m_worldkind->add_propdata(new xui_propdata_number_func(

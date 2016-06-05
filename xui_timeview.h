@@ -112,11 +112,12 @@ public:
 	/*
 	//method
 	*/
+	xui_method<xui_method_args>			xm_addlayer;
+	xui_method<xui_method_args>			xm_dellayer;
 	xui_method<xui_method_args>			xm_selecteddrag;
 	xui_method<xui_method_args>			xm_selectedchange;
 	xui_method<xui_method_args>			xm_curframechange;
-	xui_method<xui_method_args>			xm_addlayer;
-	xui_method<xui_method_args>			xm_dellayer;
+	xui_method<xui_method_mouse>		xm_linemouseclick;
 
 protected:
 	/*
@@ -136,6 +137,7 @@ protected:
 	/*
 	//event
 	*/
+	void								on_timelinemouseclick	( xui_component* sender, xui_method_mouse&			args );
 	void								on_timetreenonfocus		( xui_component* sender, xui_method_args&			args );
 	void								on_timetreemouseclick	( xui_component* sender, xui_method_mouse&			args );
 	void								on_timetreeupdateself	( xui_component* sender, xui_method_update&			args );
