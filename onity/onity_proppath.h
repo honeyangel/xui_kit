@@ -19,19 +19,24 @@ public:
 	/*
 	//method
 	*/
-	s32						get_slider			( void ) const;
-	void					set_slider			( s32 slider );
+	s32						get_pathroll		( void ) const;
+	void					set_pathroll		( s32 value );
+	s32						get_fileroll		( void ) const;
+	void					set_fileroll		( s32 value );
+	onity_propfile*			get_viewfile		( void );
+	void					set_viewfile		( onity_propfile* viewfile );
 	const xui_proproot_vec&	get_fileprop		( void ) const;
-	void					add_fileprop		( xui_proproot* proproot );
+	void					add_fileprop		( onity_propfile* proproot );
 
 protected:
 	/*
 	//member
 	*/
-	s32						m_slider;
+	s32						m_pathroll;
+	s32						m_fileroll;
+	onity_propfile*			m_viewfile;
 	xui_propkind*			m_pathkind;
 	xui_proproot_vec		m_fileprop;
-
 };
 
 #endif//__onity_proppath_h__

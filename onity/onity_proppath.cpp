@@ -9,7 +9,9 @@
 */
 xui_create_explain(onity_proppath)( const std::wstring& full )
 : onity_propfile(full)
-, m_slider(0)
+, m_pathroll(0)
+, m_fileroll(10)
+, m_viewfile(NULL)
 {
 	m_basekind->set_icon(onity_resource::icon_folder);
 	//m_pathkind = new xui_propkind(this, L"", "Path", onity_pathctrl::create, NULL, true, false);
@@ -39,19 +41,35 @@ xui_delete_explain(onity_proppath)( void )
 /*
 //method
 */
-xui_method_explain(onity_proppath, get_slider,		s32						)( void ) const
+xui_method_explain(onity_proppath, get_pathroll,	s32						)( void ) const
 {
-	return m_slider;
+	return m_pathroll;
 }
-xui_method_explain(onity_proppath, set_slider,		void					)( s32 slider )
+xui_method_explain(onity_proppath, set_pathroll,	void					)( s32 value )
 {
-	m_slider = slider;
+	m_pathroll = value;
+}
+xui_method_explain(onity_proppath, get_fileroll,	s32						)( void ) const
+{
+	return m_fileroll;
+}
+xui_method_explain(onity_proppath, set_fileroll,	void					)( s32 value )
+{
+	m_fileroll = value;
+}
+xui_method_explain(onity_proppath, get_viewfile,	onity_propfile*			)( void )
+{
+	return m_viewfile;
+}
+xui_method_explain(onity_proppath, set_viewfile,	void					)( onity_propfile* viewfile )
+{
+	m_viewfile = viewfile;
 }
 xui_method_explain(onity_proppath, get_fileprop,	const xui_proproot_vec&	)( void ) const
 {
 	return m_fileprop;
 }
-xui_method_explain(onity_proppath, add_fileprop,	void					)( xui_proproot* proproot )
+xui_method_explain(onity_proppath, add_fileprop,	void					)( onity_propfile* proproot )
 {
 	m_fileprop.insert(m_fileprop.begin(), proproot);
 }

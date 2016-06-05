@@ -56,7 +56,7 @@ protected:
 	void						on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
-	void						on_sliderscroll		( xui_component* sender, xui_method_args&	  args );
+	void						on_sizerollscroll	( xui_component* sender, xui_method_args&	  args );
 	void						on_fileviewnodeclick( xui_component* sender, xui_method_mouse&	  args );
 	void						on_fileviewdoubleclk( xui_component* sender, xui_method_mouse&	  args );
 	void						on_fileviewassetdrag( xui_component* sender, xui_method_dragdrop& args );
@@ -72,6 +72,7 @@ protected:
 	void						refresh_fileview	( void );
 	void						refresh_pathpane	( void );
 	void						refresh_pathtool	( void );
+	void						refresh_tileview	( void );
 	std::wstring				convert_filesuff	( void );
 	void						set_freetype		( u08 type, const std::string& pathname, u32 style );
 	void						set_loadtype		( u08 type, const std::string& pathname, bool flag );
@@ -94,9 +95,9 @@ protected:
 	xui_button*					m_forepath;
 	xui_panel*					m_pathpane;
 	xui_panel*					m_toolpane;
+	xui_slider*					m_sizeroll;
 	xui_linebox*				m_browse;
 	xui_dropbox*				m_filter;
-	xui_slider*					m_slider;
 	xui_drawer*					m_status;
 
 	xui_menuitem*				m_showfind;
