@@ -45,6 +45,9 @@ protected:
 	void				on_drawviewrenderself		( xui_component* sender, xui_method_args&			args );
 	void				on_timeviewcurframechange	( xui_component* sender, xui_method_args&			args );
 	void				on_timeviewlinemouseclick	( xui_component* sender, xui_method_mouse&			args );
+	void				on_timeviewselecteddrag		( xui_component* sender, xui_method_args&			args );
+	void				on_timeviewaddframe			( xui_component* sender, xui_method_args&			args );
+	void				on_timeviewdelframe			( xui_component* sender, xui_method_args&			args );
 	void				on_timeviewaddlayer			( xui_component* sender, xui_method_args&			args );
 	void				on_timeviewdellayer			( xui_component* sender, xui_method_args&			args );
 	void				on_timetreedragover			( xui_component* sender, xui_method_treedragdrop&	args );

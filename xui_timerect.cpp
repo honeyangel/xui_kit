@@ -127,6 +127,7 @@ xui_method_explain(xui_timerect, on_mouserise,	void			)( xui_method_mouse& args 
 		{
 			xui_method_args other_args;
 			timeview->xm_selecteddrag(timeview, other_args);
+			timeview->invalid();
 			set_visible(false);
 		}
 

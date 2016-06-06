@@ -1,3 +1,4 @@
+#include "NP2DSLayer.h"
 #include "NP2DSActorRef.h"
 #include "NP2DSFrameKey.h"
 #include "NP2DSRenderUtil.h"
@@ -9,6 +10,8 @@
 #include "xui_timedata.h"
 #include "xui_timeline.h"
 #include "xui_treeview.h"
+#include "xui_timetool.h"
+#include "xui_timer.h"
 #include "xui_treenode.h"
 #include "xui_panel.h"
 #include "xui_toggle.h"
@@ -58,10 +61,13 @@ xui_create_explain(onity_timeline)( void )
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_lead,		0, false, TOGGLE_NORMAL));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL,  24, L"",				onity_resource::icon_visible,	0, false, TOGGLE_NORMAL));
 	m_timeview = new xui_timeview(xui_vector<s32>(200), columninfo, 24);
+	xui_method_ptrcall(m_timeview,	xm_addframe			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewaddframe);
+	xui_method_ptrcall(m_timeview,	xm_delframe			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewdelframe);
 	xui_method_ptrcall(m_timeview,	xm_addlayer			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewaddlayer);
 	xui_method_ptrcall(m_timeview,	xm_dellayer			) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewdellayer);
 	xui_method_ptrcall(m_timeview,	xm_curframechange	) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewcurframechange);
 	xui_method_ptrcall(m_timeview,	xm_linemouseclick	) += new xui_method_member<xui_method_mouse,		onity_timeline>(this, &onity_timeline::on_timeviewlinemouseclick);
+	xui_method_ptrcall(m_timeview,	xm_selecteddrag		) += new xui_method_member<xui_method_args,			onity_timeline>(this, &onity_timeline::on_timeviewselecteddrag);
 	xui_method_ptrcall(m_timeview,	ini_component		)(0, 0, DOCKSTYLE_F);
 
 	xui_treeview*	   timetree = m_timeview->get_timetree();
@@ -195,6 +201,10 @@ xui_method_explain(onity_timeline, on_drawviewrenderself,		void			)( xui_compone
 	if (gInitCompleted == false)
 		return;
 
+	xui_timer* timer = m_timeview->get_timetool()->get_playtimer();
+	if (timer->was_enable())
+		return;
+
 	NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_drawview->get_drawnode());
 	if (actorref)
 	{
@@ -217,15 +227,15 @@ xui_method_explain(onity_timeline, on_drawviewrenderself,		void			)( xui_compone
 				else
 				{
 					NP2DSRenderUtil::GetIns()->DrawLine(
-						NPVector2((npf32)(rect.LT-3), (npf32)(rect.LT+3)),
-						NPVector2((npf32)(rect.TP  ), (npf32)(rect.TP  )),
+						NPVector2((npf32)(rect.LT-5), (npf32)(rect.TP  )),
+						NPVector2((npf32)(rect.LT+6), (npf32)(rect.TP  )),
 						actorref->GetFinalMatrix(),
-						NPColor::Green);
+						NPColor::Red);
 					NP2DSRenderUtil::GetIns()->DrawLine(
-						NPVector2((npf32)(rect.LT  ), (npf32)(rect.LT  )),
-						NPVector2((npf32)(rect.TP-3), (npf32)(rect.TP+3)),
+						NPVector2((npf32)(rect.LT  ), (npf32)(rect.TP-5)),
+						NPVector2((npf32)(rect.LT  ), (npf32)(rect.TP+6)),
 						actorref->GetFinalMatrix(),
-						NPColor::Green);
+						NPColor::Red);
 				}
 			}
 		}
@@ -261,6 +271,77 @@ xui_method_explain(onity_timeline, on_timeviewlinemouseclick,	void			)( xui_comp
 			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
 			inspector->set_proproot(propvec);
 		}
+	}
+}
+xui_method_explain(onity_timeline, on_timeviewselecteddrag,		void			)( xui_component* sender, xui_method_args&			args )
+{
+	s32 delta_time = m_timeview->get_droptime() - m_timeview->get_dragtime();
+	std::vector<xui_timeline*> vec = m_timeview->get_selectedline();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		xui_timeline*    timeline  = vec[i];
+		onity_layerdata* layerdata = dynamic_cast<onity_layerdata*>(timeline->get_linkdata());
+		onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(layerdata->get_prop());
+		if (m_timeview->get_dragmode() == TIMEDRAG_SELECT)
+		{
+			const std::vector<s32>& selframe = timeline->get_selframe();
+			for (std::vector<s32>::const_iterator itor = selframe.begin(); itor != selframe.end(); ++itor)
+			{
+				s32 nowtime = (*itor) + delta_time;
+				if (nowtime >= 0)
+					proplayer->del_framekey(nowtime);
+
+				NP2DSFrameKey* framekey = proplayer->get_layer()->GetFrameKey((npu16)(*itor));
+				framekey->SetTime(nowtime);
+
+				if (nowtime <  0)
+					proplayer->del_framekey(nowtime);
+			}
+
+		}
+		if (m_timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER)
+		{
+			std::list<NP2DSFrameKey*> allframe = proplayer->get_layer()->GetFrameKeyList();
+			for (std::list<NP2DSFrameKey*>::iterator itor = allframe.begin(); itor != allframe.end(); ++itor)
+			{
+				s32 nowtime = (*itor)->GetTime() + delta_time;
+				if (timeline->has_selframe((s32)(*itor)->GetTime()) == false && timeline->was_selafter((s32)(*itor)->GetTime()) == false)
+					continue;
+
+				if (nowtime >= 0 && timeline->was_selafter(nowtime) == false)
+					proplayer->del_framekey(nowtime);
+				(*itor)->SetTime((npu16)nowtime);
+				if (nowtime <  0)
+					proplayer->del_framekey(nowtime);
+			}
+		}
+
+		std::list<NP2DSFrameKey*>& keylist = proplayer->get_layer()->GetFrameKeyList();
+		extern  bool FrameKeyCompare( const NP2DSFrameKey* frameKey1, const NP2DSFrameKey* frameKey2 );
+		keylist.sort(FrameKeyCompare);
+
+		timeline->use_linkdata(delta_time);
+	}
+}
+xui_method_explain(onity_timeline, on_timeviewaddframe,			void			)( xui_component* sender, xui_method_args&			args )
+{
+	xui_timeline*    timeline  = (xui_timeline*)args.wparam;
+	onity_layerdata* layerdata = (onity_layerdata*)timeline->get_linkdata();
+	onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(layerdata->get_prop());
+	proplayer->add_framekey((s32)args.lparam);
+}
+xui_method_explain(onity_timeline, on_timeviewdelframe,			void			)( xui_component* sender, xui_method_args&			args )
+{
+	std::vector<xui_timeline*> vec = m_timeview->get_selectedline();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		xui_timeline*	 timeline  = vec[i];
+		onity_layerdata* layerdata = (onity_layerdata*)timeline->get_linkdata();
+		onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(layerdata->get_prop());
+
+		const std::vector<s32>& selframe = timeline->get_selframe();
+		for (std::vector<s32>::const_iterator itor = selframe.begin(); itor != selframe.end(); ++itor)
+			proplayer->del_framekey((*itor));
 	}
 }
 xui_method_explain(onity_timeline, on_timeviewaddlayer,			void			)( xui_component* sender, xui_method_args&			args )

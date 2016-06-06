@@ -2,6 +2,12 @@
 #include "xui_global.h"
 
 /*
+//icon
+*/
+xui_bitmap* xui_global::icon_pick = NULL;
+xui_bitmap* xui_global::icon_loop = NULL;
+
+/*
 //string
 */
 xui_method_explain(xui_global, unicode_to_utf8, std::string						)( const std::wstring& src )

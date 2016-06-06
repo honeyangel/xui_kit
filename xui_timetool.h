@@ -25,7 +25,7 @@ public:
 
 protected:
 	/*
-	//method
+	//event
 	*/
 	void			on_buttonclick		( xui_component* sender, xui_method_args& args );
 	void			on_toggleclick		( xui_component* sender, xui_method_args& args );

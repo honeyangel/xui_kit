@@ -17,6 +17,7 @@ public:
 	//method
 	*/
 	xui_timedata*				get_linkdata		( void );
+	void						use_linkdata		( s32 delta_time = 0 );
 
 	/*
 	//selected frame
@@ -48,6 +49,7 @@ protected:
 	virtual void				on_mousedown		( xui_method_mouse& args );
 	virtual void				on_mousemove		( xui_method_mouse& args );
 	virtual void				on_mouserise		( xui_method_mouse& args );
+	virtual void				on_mousedoubleclick	( xui_method_mouse& args );
 	virtual void				on_renderself		( xui_method_args&  args );
 
 	/*

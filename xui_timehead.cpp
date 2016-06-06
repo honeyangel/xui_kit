@@ -118,6 +118,7 @@ xui_method_explain(xui_timehead, on_mouserise,		void	)( xui_method_mouse& args )
 			{
 				xui_method_args other_args;
 				timeview->xm_selecteddrag(timeview, other_args);
+				timeview->invalid();
 			}
 			else
 			{
@@ -185,11 +186,11 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 			{
 				data.keyframe += delta_time;
 			}
-			else
-			if (timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER && allfirst != -1 && data.keyframe > allfirst)
-			{
-				data.keyframe += delta_time;
-			}
+			//else
+			//if (timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER && allfirst != -1 && data.keyframe > allfirst)
+			//{
+			//	data.keyframe += delta_time;
+			//}
 			else
 			{
 				if (timeview->has_selectedline((*itor).second, (*itor).first))

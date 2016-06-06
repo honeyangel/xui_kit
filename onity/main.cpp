@@ -75,7 +75,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	{
 	case WM_KILLFOCUS:
 		{
-			xui_desktop::get_ins()->set_focusctrl(NULL);
+			if (xui_global::was_scolorstart())
+			{
+				xui_desktop::get_ins()->set_focusctrl(NULL);
+				::SetFocus(hWnd);
+			}
 		}
 		break;
 	case WM_USER_FWATCHNOTIFY:

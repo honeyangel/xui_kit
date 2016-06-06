@@ -78,23 +78,29 @@ xui_method_explain(onity_proplayer, get_framekeys,		const xui_proproot_vec&	)( v
 {
 	return m_propframekeys;
 }
-xui_method_explain(onity_proplayer, add_framekey,		void					)( xui_proproot* prop )
+xui_method_explain(onity_proplayer, add_framekey,		xui_proproot*			)( s32 time )
 {
-	//m_propframekeys.push_back(prop);
+	NP2DSFrameKey* framekey = m_layer->AddFrameKey((npu16)time);
+	framekey->SetFrame(-1, -1);
+	onity_propframekey* propframekey = new onity_propframekey(get_propfile(), this, framekey);
+	m_propframekeys.push_back(propframekey);
+
+	return propframekey;
 }
 xui_method_explain(onity_proplayer, del_framekey,		void					)( s32 time )
 {
-	//for (u32 i = 0; i < m_propframekeys.size(); ++i)
-	//{
-	//	onity_propframekey* propframekey = dynamic_cast<onity_propframekey*>(m_propframekeys[i]);
-	//	NP2DSFrameKey* framekey = propframekey->get_framekey();
-	//	if ((s32)framekey->GetTime() == time)
-	//	{
-	//		delete m_propframekeys[i];
-	//		m_propframekeys.erase(m_propframekeys.begin()+i);
-	//		break;
-	//	}
-	//}
+	for (u32 i = 0; i < m_propframekeys.size(); ++i)
+	{
+		onity_propframekey* propframekey = dynamic_cast<onity_propframekey*>(m_propframekeys[i]);
+		NP2DSFrameKey* framekey = propframekey->get_framekey();
+		if ((s32)framekey->GetTime() == time)
+		{
+			m_layer->DelFrameKey(framekey);
+			delete m_propframekeys[i];
+			m_propframekeys.erase(m_propframekeys.begin()+i);
+			break;
+		}
+	}
 }
 xui_method_explain(onity_proplayer, get_framekey,		xui_proproot*			)( s32 time )
 {

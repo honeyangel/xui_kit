@@ -11,6 +11,12 @@ class xui_global
 {
 public:
 	/*
+	//icon
+	*/
+	static xui_bitmap*						icon_pick;
+	static xui_bitmap*						icon_loop;
+
+	/*
 	//string
 	*/
 	static std::string						unicode_to_utf8	( const std::wstring& src );

@@ -24,7 +24,7 @@ public:
 	onity_propactor*		get_actor		( void );
 	NP2DSLayer*				get_layer		( void );
 	const xui_proproot_vec&	get_framekeys	( void ) const;
-	void					add_framekey	( xui_proproot* prop );
+	xui_proproot*			add_framekey	( s32 time );
 	void					del_framekey	( s32 time );
 	xui_proproot*			get_framekey	( s32 time );
 	void					ntf_rename		( const std::wstring& name );

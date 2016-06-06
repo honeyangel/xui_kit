@@ -9,11 +9,6 @@
 #include "xui_propedit_colour.h"
 
 /*
-//static
-*/
-xui_bitmap* xui_propedit_colour::icon_pick = NULL;
-
-/*
 //constructor
 */
 xui_create_explain(xui_propedit_colour)( xui_propctrl* propctrl )
@@ -27,7 +22,7 @@ xui_create_explain(xui_propedit_colour)( xui_propctrl* propctrl )
 	editctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_colour>(this, &xui_propedit_colour::on_editctrlclick);
 
 	xui_drawer* pickctrl = new xui_drawer(xui_vector<s32>(16, 16));
-	xui_method_ptrcall(pickctrl, ini_drawer		)(icon_pick);
+	xui_method_ptrcall(pickctrl, ini_drawer		)(xui_global::icon_pick);
 	pickctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlnonfocus);
 	pickctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlclick);
 	pickctrl->xm_keybddown	+= new xui_method_member<xui_method_keybd, xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlkeybddown);
@@ -121,7 +116,7 @@ xui_create_explain(xui_colour_pickwnd)( void )
 	xui_method_ptrcall(m_pickctrl,	xm_keybddown	) += new xui_method_member<xui_method_keybd,	xui_colour_pickwnd>(this, &xui_colour_pickwnd::on_pickctrlkeybddown);
 	xui_method_ptrcall(m_pickctrl,	set_iconalign	)(IMAGE_C);
 	xui_method_ptrcall(m_pickctrl,	ini_component	)(0, 0, DOCKSTYLE_L);
-	xui_method_ptrcall(m_pickctrl,	ini_drawer		)(xui_propedit_colour::icon_pick);
+	xui_method_ptrcall(m_pickctrl,	ini_drawer		)(xui_global::icon_pick);
 	m_mainview = new xui_drawer(xui_vector<s32>(80, 20));
 	xui_method_ptrcall(m_mainview,	xm_renderself	) += new xui_method_member<xui_method_args,		xui_colour_pickwnd>(this, &xui_colour_pickwnd::on_mainviewrenderself);
 	xui_method_ptrcall(m_mainview,	set_sidestyle	)(SIDESTYLE_S);

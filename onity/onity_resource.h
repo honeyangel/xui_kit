@@ -14,6 +14,8 @@ public:
 	/*
 	//member
 	*/
+	static xui_bitmap*	icon_pick;
+	static xui_bitmap*	icon_loop;
 	static xui_bitmap*	icon_animator;
 	static xui_bitmap*	icon_bigerror;
 	static xui_bitmap*	icon_bigmessage;
@@ -51,7 +53,6 @@ public:
 	static xui_bitmap*	icon_play;
 	static xui_bitmap*	icon_left;
 	static xui_bitmap*	icon_right;
-	static xui_bitmap*	icon_picker;
 	static xui_bitmap*	icon_layerview;
 	static xui_bitmap*	icon_visible;
 	static xui_bitmap*	icon_lead;

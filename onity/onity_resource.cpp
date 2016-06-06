@@ -1,6 +1,8 @@
-#include "xui_propedit_colour.h"
+#include "xui_global.h"
 #include "onity_resource.h"
 
+xui_bitmap* onity_resource::icon_pick		= NULL;
+xui_bitmap* onity_resource::icon_loop		= NULL;
 xui_bitmap*	onity_resource::icon_animator	= NULL;
 xui_bitmap*	onity_resource::icon_bigerror	= NULL;
 xui_bitmap*	onity_resource::icon_bigmessage	= NULL;
@@ -38,7 +40,6 @@ xui_bitmap* onity_resource::icon_reset		= NULL;
 xui_bitmap* onity_resource::icon_play		= NULL;
 xui_bitmap* onity_resource::icon_left		= NULL;
 xui_bitmap* onity_resource::icon_right		= NULL;
-xui_bitmap* onity_resource::icon_picker		= NULL;
 xui_bitmap* onity_resource::icon_layerview	= NULL;
 xui_bitmap* onity_resource::icon_visible	= NULL;
 xui_bitmap* onity_resource::icon_lead		= NULL;
@@ -46,6 +47,8 @@ xui_bitmap* onity_resource::icon_layer		= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
+	icon_pick		= xui_bitmap::create("icon/picker.png");
+	icon_loop		= xui_bitmap::create("icon/loop.png");
 	icon_animator	= xui_bitmap::create("icon/animator.png");
 	icon_bigerror	= xui_bitmap::create("icon/bigerror.png");
 	icon_bigmessage	= xui_bitmap::create("icon/bigmessage.png");
@@ -83,11 +86,11 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_play		= xui_bitmap::create("icon/play.png");
 	icon_left		= xui_bitmap::create("icon/left.png");
 	icon_right		= xui_bitmap::create("icon/right.png");
-	icon_picker		= xui_bitmap::create("icon/picker.png");
 	icon_layerview	= xui_bitmap::create("icon/layerview.png");
 	icon_visible	= xui_bitmap::create("icon/visible.png");
 	icon_lead		= xui_bitmap::create("icon/lead.png");
 	icon_layer		= xui_bitmap::create("icon/layer.png");
 
-	xui_propedit_colour::icon_pick = icon_picker;
+	xui_global::icon_pick = icon_pick;
+	xui_global::icon_loop = icon_loop;
 }

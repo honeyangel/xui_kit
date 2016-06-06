@@ -7,11 +7,6 @@ class xui_propedit_colour : public xui_propedit_base
 {
 public:
 	/*
-	//member
-	*/
-	static xui_bitmap*			icon_pick;
-
-	/*
 	//constructor
 	*/
 	xui_propedit_colour( xui_propctrl* propctrl );

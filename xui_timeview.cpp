@@ -113,6 +113,8 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	m_timehead->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
 	m_timehead->xm_updateself		+= new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
 	m_timehead->xm_mouserise		+= new xui_method_member<xui_method_mouse,			xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
+	m_timehead->xm_keybddown		+= new xui_method_member<xui_method_keybd,			xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
+	m_timerect->xm_keybddown		+= new xui_method_member<xui_method_keybd,			xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
 	m_ascrollitem.push_back(m_timerect);
 	m_ascrollitem.push_back(m_timehead);
 
@@ -791,9 +793,10 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 xui_method_explain(xui_timeview, create_line,				xui_timeline*				)( xui_treenode* node, xui_timedata* data )
 {
 	xui_timeline* line = new xui_timeline(data, this);
-	line->xm_updateself += new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
-	line->xm_updateself += new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
-	line->xm_mouserise  += new xui_method_member<xui_method_mouse,  xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
+	line->xm_updateself	+= new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
+	line->xm_updateself	+= new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
+	line->xm_mouserise	+= new xui_method_member<xui_method_mouse,  xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
+	line->xm_keybddown	+= new xui_method_member<xui_method_keybd,	xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
 	node->set_data(line);
 
 	xui_vector<s32> pt;
@@ -826,6 +829,23 @@ xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line
 /*
 //event
 */
+xui_method_explain(xui_timeview, on_timelinekeybddown,		void						)( xui_component* sender, xui_method_keybd&			args )
+{
+	if (args.kcode == KEY_DELETE)
+	{
+		xui_method_args   del_args ;
+		xm_delframe(this, del_args);
+
+		std::vector<xui_treenode*> nodes = m_timetree->get_upmostnodearray();
+		for (u32 i = 0; i < nodes.size(); ++i)
+		{
+			xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
+			timeline->use_linkdata();
+		}
+
+		invalid();
+	}
+}
 xui_method_explain(xui_timeview, on_timelinemouseclick,		void						)( xui_component* sender, xui_method_mouse&			args )
 {
 	xm_linemouseclick(this, args);
