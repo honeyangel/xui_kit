@@ -1,4 +1,5 @@
 #include "xui_global.h"
+#include "xui_component.h"
 #include "onity_resource.h"
 
 xui_bitmap* onity_resource::icon_pickcolour	= NULL;
@@ -111,6 +112,8 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_resource	= xui_bitmap::create("icon/resource.png");
 	icon_framekey	= xui_bitmap::create("icon/framekey.png");
 
+	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
+	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");
 	xui_global::icon_pickcolour = icon_pickcolour;
 	xui_global::icon_pickselect = icon_pickselect;
 	xui_global::icon_loop		= icon_loop;

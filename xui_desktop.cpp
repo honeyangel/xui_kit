@@ -482,13 +482,13 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 		component->xm_mousemove(component, args);
 	}
 
-	if (m_catchctrl && m_catchctrl != m_hoverctrl && m_catchdata)
+	if (m_catchctrl && m_catchdata)
 	{
-		xui_global::set_cursor(m_allowdrag         ? CURSOR_DRAG    : CURSOR_DRAGBAN);
+		xui_global::set_cursor((m_catchctrl == m_hoverctrl || m_allowdrag) ? CURSOR_DRAG : CURSOR_FORBID);
 	}
 	else
 	{
-		xui_global::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
+		xui_global::set_cursor((m_hoverctrl == NULL) ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
 	}
 }
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )

@@ -40,8 +40,7 @@ enum
 	CURSOR_TEXT,
 	CURSOR_HAND,
 	CURSOR_DRAG,
-	CURSOR_DRAGBAN,
-	CURSOR_DRAGADD,
+	CURSOR_FORBID,
 };
 
 class xui_component

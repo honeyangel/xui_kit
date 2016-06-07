@@ -106,6 +106,7 @@ xui_method_explain(xui_global, ascii_to_unicode,std::wstring					)( const std::s
 /*
 //system
 */
+std::map<u32, HCURSOR> cursor_map;
 xui_method_explain(xui_global, set_capture,		void							)( void )
 {
 	extern HWND gHWND;
@@ -115,17 +116,33 @@ xui_method_explain(xui_global, non_capture,		void							)( void )
 {
 	ReleaseCapture();
 }
+xui_method_explain(xui_global, add_cursor,		void							)( u32 cursor, const std::wstring& filename )
+{
+	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
+	if (itor != cursor_map.end())
+		::DestroyCursor((*itor).second);
+
+	cursor_map[cursor] = ::LoadCursorFromFile(filename.c_str());
+}
 xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 {
-	switch (cursor)
+	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
+	if (itor != cursor_map.end())
 	{
-	case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
-	case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
-	case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
-	case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
-	case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
-	case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
-	case CURSOR_DRAGBAN:	::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
+		::SetCursor((*itor).second);
+	}
+	else
+	{
+		switch (cursor)
+		{
+		case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
+		case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
+		case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
+		case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
+		case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+		case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+		case CURSOR_FORBID:		::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
+		}
 	}
 }
 
