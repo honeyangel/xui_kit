@@ -18,9 +18,8 @@
 //constructor
 */
 xui_create_explain(onity_layerdata)( xui_proproot* prop )
-: onity_timedata(prop)
+: onity_timedata(onity_resource::icon_layer, prop)
 {
-	m_icon = onity_resource::icon_layer;
 	cal_keyframe();
 }
 

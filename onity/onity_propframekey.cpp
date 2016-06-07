@@ -26,7 +26,7 @@ xui_create_explain(onity_propframekey)( onity_propfile* propfile, onity_proplaye
 , m_proplayer(proplayer)
 , m_framekey(framekey)
 {
-	m_keykind = new xui_propkind(this, L"FrameKey", "FrameKey", xui_kindctrl::create, NULL, true);
+	m_keykind = new xui_propkind(this, L"FrameKey", "FrameKey", xui_kindctrl::create, onity_resource::icon_framekey, true);
 	m_keykind->add_propdata(new xui_propdata_bool(
 		m_keykind,
 		L"Smooth",
@@ -60,7 +60,7 @@ xui_create_explain(onity_propframekey)( onity_propfile* propfile, onity_proplaye
 		set_event,
 		this));
 
-	m_reskind = new xui_propkind(this, L"Resource", "ImageFrame", xui_kindctrl::create, NULL, true);
+	m_reskind = new xui_propkind(this, L"Resource", "ImageFrame", xui_kindctrl::create, onity_resource::icon_resource, true);
 	m_reskind->add_propdata(new onity_propdata_2dsasset(
 		m_reskind,
 		L"Image&Frame",
@@ -120,7 +120,7 @@ xui_method_explain(onity_propframekey, set_spark,		void			)( void* userptr, void
 }
 xui_method_explain(onity_propframekey, get_sparkicon,	xui_bitmap*		)( xui_propdata* propdata )
 {
-	return onity_resource::icon_file;
+	return onity_resource::icon_particle;
 }
 xui_method_explain(onity_propframekey, get_sparkname,	std::wstring	)( xui_propdata* propdata )
 {

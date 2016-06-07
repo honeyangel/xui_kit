@@ -16,6 +16,7 @@
 #include "xui_textbox.h"
 #include "xui_treenode.h"
 #include "xui_treeview.h"
+#include "onity_resource.h"
 #include "onity_prop2dsasset.h"
 #include "onity_proptexture.h"
 #include "onity_filedata.h"
@@ -354,17 +355,17 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_compone
 		xui_treenode* node = get_tilenode(args.point, rt);
 		if (node)
 		{
-			s32 half   = m_tilesize / 20;
+			s32 half   = m_tilesize / 5;
 			xui_rect2d<s32> drawrt = rt;
 			drawrt.ax += m_tilesize / 5;
 			drawrt.bx -= m_tilesize / 5;
 			drawrt.by -= name_size;
 			xui_vector<s32> center(drawrt.bx, drawrt.ay+drawrt.get_h()/2);
 			xui_rect2d<s32> plusrt;
-			plusrt.ax = center.x-half  -3;
-			plusrt.bx = center.x+half  +3;
-			plusrt.ay = center.y-half*2-3;
-			plusrt.by = center.y+half*2+3;
+			plusrt.ax = center.x-half;
+			plusrt.bx = center.x+half;
+			plusrt.ay = center.y-half;
+			plusrt.by = center.y+half;
 
 			if (node->get_rootnode() == NULL && node->get_leafnodecount() > 0 && plusrt.was_inside(pt))
 			{
@@ -438,16 +439,26 @@ xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s3
 
 	if (node->get_leafnodecount() > 0)
 	{
-		s32 half = m_tilesize / 20;
+		s32 half = m_tilesize / 5;
 		xui_vector<s32> center(drawrt.bx, drawrt.ay+drawrt.get_h()/2);
 		xui_rect2d<s32> plusrt;
-		plusrt.ax = center.x-half  -3;
-		plusrt.bx = center.x+half  +3;
-		plusrt.ay = center.y-half*2-3;
-		plusrt.by = center.y+half*2+3;
-		xui_convas::get_ins()->fill_round   (plusrt, xui_colour::gray,  xui_rect2d<s32>(3));
-		//xui_convas::get_ins()->draw_round   (plusrt, xui_colour::white, xui_rect2d<s32>(3));
-		xui_convas::get_ins()->fill_triangle(center, half, (node->was_expanded() ? TRIANGLE_LEFT : TRIANGLE_RIGHT), xui_colour::white);
+		plusrt.ax = center.x-half;
+		plusrt.bx = center.x+half;
+		plusrt.ay = center.y-half;
+		plusrt.by = center.y+half;
+		xui_convas::get_ins()->draw_image(onity_resource::icon_circle, plusrt, xui_colour::gray);
+		xui_bitmap* icon = NULL;
+		if (node->was_expanded())
+		{
+			plusrt.oft_x( 1);
+			icon = onity_resource::icon_play;
+		}
+		else
+		{
+			plusrt.oft_x(-1);
+			icon = onity_resource::icon_back;
+		}
+		xui_convas::get_ins()->draw_image(icon, plusrt, xui_colour::white);
 	}
 }
 xui_method_explain(onity_tileview, draw_icon,					void				)( const xui_rect2d<s32>& rt, xui_treenode* node )

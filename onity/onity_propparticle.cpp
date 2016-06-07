@@ -1,12 +1,14 @@
 #include "NPParticleSFX.h"
+
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_propparticle.h"
 
 /*
 //constructor
 */
 xui_create_explain(onity_propparticle)( const std::wstring& full )
-: onity_propfile(full)
+: onity_propfile(onity_resource::icon_particle, full)
 , m_particle(NULL)
 {}
 

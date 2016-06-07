@@ -8,6 +8,7 @@
 #include "xui_propctrl_rect2d.h"
 #include "xui_propctrl_expand.h"
 #include "xui_propctrl_stdvec.h"
+#include "onity_resource.h"
 #include "onity_savekind.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propcollider.h"
@@ -18,7 +19,7 @@
 //constructor
 */
 xui_create_explain(onity_propframe)( onity_propfile* propfile, u32 id )
-: onity_prop2dsasset(propfile, id)
+: onity_prop2dsasset(onity_resource::icon_sprite, propfile, id)
 {
 	NP2DSFrame* frame = (NP2DSFrame*)get_asset();
 	for (npu16 i = 0; i < frame->GetImageRefCount(); ++i)

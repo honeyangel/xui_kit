@@ -8,7 +8,7 @@
 //constructor
 */
 xui_create_explain(onity_proppath)( const std::wstring& full )
-: onity_propfile(full)
+: onity_propfile(onity_resource::icon_folder, full)
 , m_pathroll(0)
 , m_fileroll(10)
 , m_viewfile(NULL)

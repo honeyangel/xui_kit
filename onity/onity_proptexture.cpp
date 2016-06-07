@@ -1,14 +1,16 @@
 #include "NPFileName.h"
 #include "NPSourceTexture.h"
 #include "NP2DSTextureCache.h"
+
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_proptexture.h"
 
 /*
 //constructor
 */
 xui_create_explain(onity_proptexture)( const std::wstring& full )
-: onity_propfile(full)
+: onity_propfile(onity_resource::icon_texture, full)
 {}
 
 /*

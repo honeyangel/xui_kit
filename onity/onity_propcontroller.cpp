@@ -1,6 +1,7 @@
 #include "NP2DSStateCtrl.h"
 
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_filedata.h"
 #include "onity_mainform.h"
 #include "onity_animator.h"
@@ -10,7 +11,7 @@
 //constructor
 */
 xui_create_explain(onity_propcontroller)( const std::wstring& full )
-: onity_propfile(full)
+: onity_propfile(onity_resource::icon_state, full)
 , m_statectrl(NULL)
 {}
 

@@ -23,7 +23,7 @@
 //constructor
 */
 xui_create_explain(onity_propmodule)( const std::wstring& full )
-: onity_prop2dsres(full)
+: onity_prop2dsres(onity_resource::icon_module, full)
 {
 	m_texkind = new xui_propkind(this, L"", "ImageFile", xui_kindctrl::create, NULL, true, false);
 
@@ -110,7 +110,7 @@ xui_method_explain(onity_propmodule, get_resfile,	NP2DSAssetFile*	)( void )
 */
 xui_method_explain(onity_propmodule, get_texicon,	xui_bitmap*		)( xui_propdata* propdata )
 {
-	return onity_resource::icon_file;
+	return onity_resource::icon_texture;
 }
 xui_method_explain(onity_propmodule, get_texname,	std::wstring	)( xui_propdata* propdata )
 {

@@ -177,10 +177,14 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 																			   const xui_rect2d<s32>&	dst,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f || m_cliprect.was_valid() == false)
+	if (color.a == 0.0f)
 		return;
 
 	image->set_bind();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,	  GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,	  GL_CLAMP);
 
 	glDisable(GL_POLYGON_SMOOTH);
 	glBegin(GL_QUADS);

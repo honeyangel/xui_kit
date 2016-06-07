@@ -3,6 +3,7 @@
 #include "NP2DSFrameFileMgr.h"
 
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_filedata.h"
 #include "onity_propframe.h"
 #include "onity_propsprite.h"
@@ -11,7 +12,7 @@
 //constructor
 */
 xui_create_explain(onity_propsprite)( const std::wstring& full )
-: onity_prop2dsres(full)
+: onity_prop2dsres(onity_resource::icon_sprite, full)
 {}
 
 /*

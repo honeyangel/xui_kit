@@ -4,13 +4,14 @@
 #include "xui_kindctrl.h"
 #include "xui_propkind.h"
 #include "xui_propctrl_rect2d.h"
+#include "onity_resource.h"
 #include "onity_propimage.h"
 
 /*
 //constructor
 */
 xui_create_explain(onity_propimage)( onity_propfile* propfile, u32 id )
-: onity_prop2dsasset(propfile, id)
+: onity_prop2dsasset(onity_resource::icon_module, propfile, id)
 {
 	m_imagekind = new xui_propkind(this, L"", "2DSImage", xui_kindctrl::create, NULL, true, false);
 	std::map<s32, std::wstring> textmap;

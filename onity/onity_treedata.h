@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_treedata( xui_proproot* prop );
+	onity_treedata( xui_bitmap* icon, xui_proproot* prop );
 
 	/*
 	//destructor

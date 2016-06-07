@@ -4,10 +4,12 @@
 /*
 //constructor
 */
-xui_create_explain(onity_timedata)( xui_proproot* prop )
+xui_create_explain(onity_timedata)( xui_bitmap* icon, xui_proproot* prop )
 : xui_timedata()
 , m_prop(prop)
 {
+	m_icon = icon;
+
 	onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(m_prop);
 	if (propleaf)   propleaf->set_linkdata(this);
 }

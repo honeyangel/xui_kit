@@ -13,7 +13,8 @@ public:
 	/*
 	//icon
 	*/
-	static xui_bitmap*						icon_pick;
+	static xui_bitmap*						icon_pickcolour;
+	static xui_bitmap*						icon_pickselect;
 	static xui_bitmap*						icon_loop;
 
 	/*
@@ -28,6 +29,7 @@ public:
 	//system
 	*/
 	static void								set_cursor		( u32 cursor );
+	static void								add_cursor		( u32 cursor, const std::wstring& filename );
 	static void								set_capture		( void );
 	static void								non_capture		( void );
 

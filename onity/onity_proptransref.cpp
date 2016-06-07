@@ -8,6 +8,7 @@
 #include "xui_propctrl_expand.h"
 #include "xui_propctrl_vector.h"
 #include "xui_propctrl_slider.h"
+#include "onity_resource.h"
 #include "onity_propctrl_pivot.h"
 #include "onity_propctrl_flip.h"
 #include "onity_propfile.h"
@@ -35,7 +36,7 @@ xui_method_explain(onity_proptransref, get_transref,		NP2DSTransRef*	)( void )
 
 xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 {
-	m_localkind = new xui_propkind(this, L"LocalTransform", "LocalTransform", xui_kindctrl::create, NULL, true);
+	m_localkind = new xui_propkind(this, L"LocalTransform", "LocalTransform", xui_kindctrl::create, onity_resource::icon_local, true);
 	m_localkind->add_propdata(new xui_propdata_number_func(
 		m_localkind,
 		L"Flip",
@@ -88,7 +89,7 @@ xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 }
 xui_method_explain(onity_proptransref, add_worldkind,		void			)( void )
 {
-	m_worldkind = new xui_propkind(this, L"WorldTransform", "WorldTransform", xui_kindctrl::create, NULL, true);
+	m_worldkind = new xui_propkind(this, L"WorldTransform", "WorldTransform", xui_kindctrl::create, onity_resource::icon_world, true);
 	m_worldkind->add_propdata(new xui_propdata_number_func(
 		m_worldkind,
 		L"Flip",
@@ -143,7 +144,7 @@ xui_method_explain(onity_proptransref, add_graphkind,		void			)( void )
 	xui_propenum_map				textmap;
 	std::map<s32, std::vector<u32>> showmap;
 
-	m_graphkind = new xui_propkind(this, L"Graph", "Graph", xui_kindctrl::create, NULL, true);
+	m_graphkind = new xui_propkind(this, L"Graph", "Graph", xui_kindctrl::create, onity_resource::icon_texture, true);
 
 	//filter
 	textmap[0] = L"Point";

@@ -12,13 +12,13 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propfile)( const std::wstring& fullname )
+xui_create_explain(onity_propfile)( xui_bitmap* icon, const std::wstring& fullname )
 : xui_proproot()
 , m_fullname(fullname)
 , m_linkdata(NULL)
 , m_savekind(NULL)
 {
-	m_basekind = new xui_propkind(this, onity_filedata::get_safe(fullname), "File", onity_filectrl::create, onity_resource::icon_file, true);
+	m_basekind = new xui_propkind(this, onity_filedata::get_safe(fullname), "File", onity_filectrl::create, icon, true);
 	add_propkind(m_basekind);
 
 	std::wstring suff = onity_filedata::get_suff(fullname);
@@ -42,6 +42,10 @@ xui_delete_explain(onity_propfile)( void )
 /*
 //method
 */
+xui_method_explain(onity_propfile, get_fileicon,		xui_bitmap*			)( void )
+{
+	return m_basekind->get_icon();
+}
 xui_method_explain(onity_propfile, get_fullname,		const std::wstring&	)( void ) const
 {
 	return m_fullname;

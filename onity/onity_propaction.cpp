@@ -3,6 +3,7 @@
 #include "NP2DSActorFileMgr.h"
 
 #include "xui_global.h"
+#include "onity_resource.h"
 #include "onity_timeline.h"
 #include "onity_mainform.h"
 #include "onity_filedata.h"
@@ -13,7 +14,7 @@
 //constructor
 */
 xui_create_explain(onity_propaction)( const std::wstring& full )
-: onity_prop2dsres(full)
+: onity_prop2dsres(onity_resource::icon_action, full)
 {}
 
 /*
