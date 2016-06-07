@@ -34,7 +34,12 @@ xui_create_explain(onity_propdata_2dsasset)(
 */
 xui_method_explain(onity_propdata_2dsasset, get_icon,			xui_bitmap*			)( xui_propdata* propdata )
 {
-	return onity_resource::icon_animator;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
+	if		(dataobject->has_droptype("NP2DSImage")) return onity_resource::icon_module;
+	else if (dataobject->has_droptype("NP2DSFrame")) return onity_resource::icon_sprite;
+	else if (dataobject->has_droptype("NP2DSActor")) return onity_resource::icon_action;
+
+	return NULL;
 }
 xui_method_explain(onity_propdata_2dsasset, get_name,			std::wstring		)( xui_propdata* propdata )
 {

@@ -177,7 +177,7 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 																			   const xui_rect2d<s32>&	dst,
 																			   const xui_colour&		color )
 {
-	if (color.a == 0.0f || m_cliprect.was_valid() == false)
+	if (color.a == 0.0f)
 		return;
 
 	image->set_bind();

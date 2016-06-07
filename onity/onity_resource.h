@@ -52,6 +52,7 @@ public:
 	static xui_bitmap*	icon_large;
 	static xui_bitmap*	icon_reset;
 	static xui_bitmap*	icon_play;
+	static xui_bitmap*	icon_back;
 	static xui_bitmap*	icon_left;
 	static xui_bitmap*	icon_right;
 	static xui_bitmap*	icon_layerview;

@@ -110,7 +110,7 @@ xui_method_explain(onity_propmodule, get_resfile,	NP2DSAssetFile*	)( void )
 */
 xui_method_explain(onity_propmodule, get_texicon,	xui_bitmap*		)( xui_propdata* propdata )
 {
-	return onity_resource::icon_file;
+	return onity_resource::icon_texture;
 }
 xui_method_explain(onity_propmodule, get_texname,	std::wstring	)( xui_propdata* propdata )
 {

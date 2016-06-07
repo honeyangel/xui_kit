@@ -470,9 +470,10 @@ xui_method_explain(onity_project, on_fileviewnodeclick,		void		)( xui_component*
 		if (node->get_rootnode() == NULL)
 		{
 			onity_filedata* filedata = (onity_filedata*)node->get_linkdata();
-			xui_method_ptrcall(m_status, set_icon)(filedata->get_icon(0));
-			xui_method_ptrcall(m_status, set_text)(filedata->get_file());
-			xui_method_ptrcall(m_status, set_data)(filedata->get_prop());
+			xui_method_ptrcall(m_status, set_icon		)(filedata->get_icon(0));
+			xui_method_ptrcall(m_status, set_text		)(filedata->get_file());
+			xui_method_ptrcall(m_status, set_data		)(filedata->get_prop());
+			xui_method_ptrcall(m_status, set_iconsize	)(xui_vector<s32>(16));
 		}
 	}
 }

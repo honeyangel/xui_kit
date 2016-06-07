@@ -120,7 +120,7 @@ xui_method_explain(onity_propframekey, set_spark,		void			)( void* userptr, void
 }
 xui_method_explain(onity_propframekey, get_sparkicon,	xui_bitmap*		)( xui_propdata* propdata )
 {
-	return onity_resource::icon_file;
+	return onity_resource::icon_particle;
 }
 xui_method_explain(onity_propframekey, get_sparkname,	std::wstring	)( xui_propdata* propdata )
 {
