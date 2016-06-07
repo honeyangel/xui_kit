@@ -13,11 +13,9 @@
 /*
 //constructor
 */
-xui_create_explain(onity_2dsassetdata)( xui_proproot* prop )
-: onity_treedata(prop)
-{
-	m_icon = onity_resource::icon_file;
-}
+xui_create_explain(onity_2dsassetdata)( xui_bitmap* icon, xui_proproot* prop )
+: onity_treedata(icon, prop)
+{}
 
 /*
 //override

@@ -13,7 +13,8 @@ public:
 	/*
 	//icon
 	*/
-	static xui_bitmap*						icon_pick;
+	static xui_bitmap*						icon_pickcolour;
+	static xui_bitmap*						icon_pickselect;
 	static xui_bitmap*						icon_loop;
 
 	/*

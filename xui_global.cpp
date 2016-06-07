@@ -4,8 +4,9 @@
 /*
 //icon
 */
-xui_bitmap* xui_global::icon_pick = NULL;
-xui_bitmap* xui_global::icon_loop = NULL;
+xui_bitmap* xui_global::icon_pickcolour = NULL;
+xui_bitmap* xui_global::icon_pickselect = NULL;
+xui_bitmap* xui_global::icon_loop		= NULL;
 
 /*
 //string

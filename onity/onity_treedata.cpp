@@ -5,8 +5,8 @@
 /*
 //constructor
 */
-xui_create_explain(onity_treedata)( xui_proproot* prop )
-: xui_treedata()
+xui_create_explain(onity_treedata)( xui_bitmap* icon, xui_proproot* prop )
+: xui_treedata(L"", icon)
 , m_prop(prop)
 {
 	onity_propfile* propfile = dynamic_cast<onity_propfile*>(m_prop);

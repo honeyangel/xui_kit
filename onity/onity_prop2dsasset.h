@@ -10,11 +10,12 @@ public:
 	/*
 	//constructor
 	*/
-	onity_prop2dsasset( onity_propfile* propfile, u32 id );
+	onity_prop2dsasset( xui_bitmap* icon, onity_propfile* propfile, u32 id );
 
 	/*
 	//method
 	*/
+	xui_bitmap*			get_resicon		( void );
 	u32					get_assetid		( void ) const;
 	NP2DSAsset*			get_asset		( void );
 

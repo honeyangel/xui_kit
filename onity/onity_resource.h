@@ -14,7 +14,8 @@ public:
 	/*
 	//member
 	*/
-	static xui_bitmap*	icon_pick;
+	static xui_bitmap*	icon_pickcolour;
+	static xui_bitmap*	icon_pickselect;
 	static xui_bitmap*	icon_loop;
 	static xui_bitmap*	icon_animator;
 	static xui_bitmap*	icon_bigerror;
@@ -57,6 +58,14 @@ public:
 	static xui_bitmap*	icon_visible;
 	static xui_bitmap*	icon_lead;
 	static xui_bitmap*	icon_layer;
+	static xui_bitmap*	icon_circle;
+	static xui_bitmap*	icon_texture;
+	static xui_bitmap*	icon_particle;
+	static xui_bitmap*	icon_module;
+	static xui_bitmap*	icon_sprite;
+	static xui_bitmap*	icon_action;
+	static xui_bitmap*	icon_resource;
+	static xui_bitmap*	icon_framekey;
 };
 
 #endif//__onity_resource_h__

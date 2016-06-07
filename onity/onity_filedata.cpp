@@ -19,11 +19,10 @@
 /*
 //constructor
 */
-xui_create_explain(onity_filedata)( const std::wstring& full, xui_proproot* prop )
-: onity_treedata(prop)
+xui_create_explain(onity_filedata)( xui_bitmap* icon, const std::wstring& full, xui_proproot* prop )
+: onity_treedata(icon, prop)
 {
 	m_text = full;
-	m_icon = onity_resource::icon_file;
 }
 
 /*

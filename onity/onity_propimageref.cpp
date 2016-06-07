@@ -2,6 +2,7 @@
 #include "NP2DSImageFile.h"
 #include "NP2DSImageRef.h"
 #include "xui_kindctrl.h"
+#include "onity_resource.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propimageref.h"
 
@@ -11,7 +12,7 @@
 xui_create_explain(onity_propimageref)( onity_propfile* propfile, NP2DSTransRef* transref )
 : onity_proptransref(propfile, transref)
 {
-	m_reskind = new xui_propkind(this, L"Resource", "2DSImageRes", xui_kindctrl::create, NULL, true);
+	m_reskind = new xui_propkind(this, L"Resource", "2DSImageRes", xui_kindctrl::create, onity_resource::icon_resource, true);
 	m_reskind->add_propdata(new onity_propdata_2dsasset(
 		m_reskind, 
 		L"Image", 

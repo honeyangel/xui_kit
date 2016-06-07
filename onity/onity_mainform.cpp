@@ -252,12 +252,12 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component*
 	{
 	case TOC_LOCAL:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOC_WORLD);
-		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_world);
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_world, xui_vector<s32>(16));
 		xui_method_ptrcall(drawer, ini_drawer	)(L"World");
 		break;
 	case TOC_WORLD:
 		xui_method_ptrcall(drawer, set_data		)((void*)TOC_LOCAL);
-		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_local);
+		xui_method_ptrcall(drawer, ini_drawer	)(onity_resource::icon_local, xui_vector<s32>(16));
 		xui_method_ptrcall(drawer, ini_drawer	)(L"Local");
 		break;
 	}

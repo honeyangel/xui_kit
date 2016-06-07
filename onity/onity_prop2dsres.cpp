@@ -21,8 +21,8 @@
 /*
 //constructor
 */
-xui_create_explain(onity_prop2dsres)( const std::wstring& full )
-: onity_propfile(full)
+xui_create_explain(onity_prop2dsres)( xui_bitmap* icon, const std::wstring& full )
+: onity_propfile(icon, full)
 , m_resfile(-1)
 {
 	m_reskind = new xui_propkind(this, L"AssetFile", "AssetFile", xui_kindctrl::create, NULL, true, false);

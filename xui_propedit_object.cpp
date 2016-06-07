@@ -1,4 +1,5 @@
 #include "xui_convas.h"
+#include "xui_global.h"
 #include "xui_button.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
@@ -25,8 +26,9 @@ xui_create_explain(xui_propedit_object)( xui_propctrl* propctrl, xui_bitmap* ico
 	textctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_editctrlgetfocus);
 
 	xui_drawer* pickctrl = new xui_drawer(xui_vector<s32>(16, 16));
+	xui_method_ptrcall(pickctrl, ini_drawer		)(xui_global::icon_pickselect);
 	pickctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_object>(this, &xui_propedit_object::on_pickctrlclick);
-	pickctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_pickctrlrenderself);
+	//pickctrl->xm_renderself += new xui_method_member<xui_method_args,  xui_propedit_object>(this, &xui_propedit_object::on_pickctrlrenderself);
 
 	m_editctrl = textctrl;
 	m_pickctrl = pickctrl;
@@ -57,14 +59,14 @@ xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_componen
 {
 	m_propctrl->on_editvalue(this);
 }
-xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_component* sender, xui_method_args&  args )
-{
-	xui_rect2d<s32> rt     = m_pickctrl->get_renderrtabs();
-	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
-	xui_convas::get_ins()->draw_circle(center, 5, m_pickctrl->get_sidecolor(), 0, 360);
-	rt.ax = center.x-1;
-	rt.ay = center.y-1;
-	rt.bx = center.x+2;
-	rt.by = center.y+2;
-	xui_convas::get_ins()->fill_rectangle(rt, m_pickctrl->get_sidecolor());
-}
+//xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_component* sender, xui_method_args&  args )
+//{
+//	xui_rect2d<s32> rt     = m_pickctrl->get_renderrtabs();
+//	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
+//	xui_convas::get_ins()->draw_circle(center, 5, m_pickctrl->get_sidecolor(), 0, 360);
+//	rt.ax = center.x-1;
+//	rt.ay = center.y-1;
+//	rt.bx = center.x+2;
+//	rt.by = center.y+2;
+//	xui_convas::get_ins()->fill_rectangle(rt, m_pickctrl->get_sidecolor());
+//}

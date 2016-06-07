@@ -10,7 +10,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_propfile( const std::wstring& fullname );
+	onity_propfile( xui_bitmap* icon, const std::wstring& fullname );
 
 	/*
 	//destructor
@@ -20,6 +20,7 @@ public:
 	/*
 	//method
 	*/
+	xui_bitmap*				get_fileicon	( void );
 	const std::wstring&		get_fullname	( void ) const;
 	xui_treedata*			get_linkdata	( void );
 	void					set_linkdata	( xui_treedata* linkdata );

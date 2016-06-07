@@ -23,7 +23,7 @@
 //constructor
 */
 xui_create_explain(onity_propmodule)( const std::wstring& full )
-: onity_prop2dsres(full)
+: onity_prop2dsres(onity_resource::icon_module, full)
 {
 	m_texkind = new xui_propkind(this, L"", "ImageFile", xui_kindctrl::create, NULL, true, false);
 

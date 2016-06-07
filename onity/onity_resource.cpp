@@ -1,7 +1,8 @@
 #include "xui_global.h"
 #include "onity_resource.h"
 
-xui_bitmap* onity_resource::icon_pick		= NULL;
+xui_bitmap* onity_resource::icon_pickcolour	= NULL;
+xui_bitmap* onity_resource::icon_pickselect = NULL;
 xui_bitmap* onity_resource::icon_loop		= NULL;
 xui_bitmap*	onity_resource::icon_animator	= NULL;
 xui_bitmap*	onity_resource::icon_bigerror	= NULL;
@@ -44,10 +45,19 @@ xui_bitmap* onity_resource::icon_layerview	= NULL;
 xui_bitmap* onity_resource::icon_visible	= NULL;
 xui_bitmap* onity_resource::icon_lead		= NULL;
 xui_bitmap* onity_resource::icon_layer		= NULL;
+xui_bitmap* onity_resource::icon_circle		= NULL;
+xui_bitmap* onity_resource::icon_texture	= NULL;
+xui_bitmap* onity_resource::icon_particle	= NULL;
+xui_bitmap* onity_resource::icon_module		= NULL;
+xui_bitmap* onity_resource::icon_sprite		= NULL;
+xui_bitmap* onity_resource::icon_action		= NULL;
+xui_bitmap* onity_resource::icon_resource	= NULL;
+xui_bitmap* onity_resource::icon_framekey	= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
-	icon_pick		= xui_bitmap::create("icon/picker.png");
+	icon_pickcolour	= xui_bitmap::create("icon/pickcolour.png");
+	icon_pickselect = xui_bitmap::create("icon/pickselect.png");
 	icon_loop		= xui_bitmap::create("icon/loop.png");
 	icon_animator	= xui_bitmap::create("icon/animator.png");
 	icon_bigerror	= xui_bitmap::create("icon/bigerror.png");
@@ -90,7 +100,16 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_visible	= xui_bitmap::create("icon/visible.png");
 	icon_lead		= xui_bitmap::create("icon/lead.png");
 	icon_layer		= xui_bitmap::create("icon/layer.png");
+	icon_circle		= xui_bitmap::create("icon/circle.png");
+	icon_texture	= xui_bitmap::create("icon/texture.png");
+	icon_particle	= xui_bitmap::create("icon/particle.png");
+	icon_module		= xui_bitmap::create("icon/module.png");
+	icon_sprite		= xui_bitmap::create("icon/sprite.png");
+	icon_action		= xui_bitmap::create("icon/action.png");
+	icon_resource	= xui_bitmap::create("icon/resource.png");
+	icon_framekey	= xui_bitmap::create("icon/framekey.png");
 
-	xui_global::icon_pick = icon_pick;
-	xui_global::icon_loop = icon_loop;
+	xui_global::icon_pickcolour = icon_pickcolour;
+	xui_global::icon_pickselect = icon_pickselect;
+	xui_global::icon_loop		= icon_loop;
 }

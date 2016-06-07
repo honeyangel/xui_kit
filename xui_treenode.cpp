@@ -279,9 +279,9 @@ xui_method_explain(xui_treenode, use_linkdata,		void								)( void )
 			std::wstring		text		= m_linkdata->get_text(i);
 			xui_family			textfont	= m_linkdata->get_textfont(i);
 			xui_family_render	textdraw	= m_linkdata->get_textdraw(i);
-			xui_vector<s32>		iconsize	= (icon == NULL) ? xui_vector<s32>(0) : icon->get_size();
-			drawer->ini_drawer(icon, iconsize);
-			drawer->ini_drawer(text, textfont, textdraw);
+			xui_vector<s32>		iconsize	= drawer->get_iconsize();
+			xui_method_ptrcall(drawer, ini_drawer	)(icon, iconsize);
+			xui_method_ptrcall(drawer, ini_drawer	)(text, textfont, textdraw);
 		}
 	}
 }

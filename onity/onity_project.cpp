@@ -289,7 +289,7 @@ xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfil
 					keytext << asset->GetKey();
 					if (leafkey.length() == 0 || leafkey == keytext.str() || asset->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset));
+						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
 						++isubindex;
 					}
 				}
@@ -666,7 +666,7 @@ xui_method_explain(onity_project, on_controllerclick,		void		)( xui_component* s
 		xui_method_ptrcall(propfile, save		 )();
 
 		xui_treeview* lineview = m_fileview->get_lineview();
-		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fullname(), propfile));
+		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
 		lineview->refresh();
 		linenode->set_edittext(0);
 	}
@@ -901,7 +901,7 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 		onity_propfile* prop = dynamic_cast<onity_propfile*>(filevec[i]);
 		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_fullname()).find(filekey) != -1)
 		{
-			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_fullname(), prop));
+			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_fileicon(), prop->get_fullname(), prop));
 			onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(prop);
 			if (prop2dsres)
 			{
@@ -917,7 +917,7 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 					keytext << asset->GetKey();
 					if (leafkey.length() == 0 || leafkey == keytext.str() || asset->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset));
+						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
 						++isubindex;
 					}
 				}

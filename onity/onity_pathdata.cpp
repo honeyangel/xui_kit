@@ -14,11 +14,9 @@
 //constructor
 */
 xui_create_explain(onity_pathdata)( const std::wstring& full, xui_proproot* prop, xui_treenode* link )
-: onity_filedata(full, prop)
+: onity_filedata(onity_resource::icon_folder, full, prop)
 {
 	m_link = link;
-	m_icon = onity_resource::icon_folder;
-
 	if (m_prop == NULL)
 		m_prop =  new onity_proppath(full);
 }

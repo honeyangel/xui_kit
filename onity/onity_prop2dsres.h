@@ -18,7 +18,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_prop2dsres( const std::wstring& full );
+	onity_prop2dsres( xui_bitmap* icon, const std::wstring& full );
 
 	/*
 	//destructor

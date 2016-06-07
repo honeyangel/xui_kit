@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_2dsassetdata( xui_proproot* prop );
+	onity_2dsassetdata( xui_bitmap* icon, xui_proproot* prop );
 
 	/*
 	//override

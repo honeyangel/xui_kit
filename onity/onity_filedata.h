@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_filedata( const std::wstring& full, xui_proproot* prop );
+	onity_filedata( xui_bitmap* icon, const std::wstring& full, xui_proproot* prop );
 
 	/*
 	//method

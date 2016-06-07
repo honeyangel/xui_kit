@@ -15,12 +15,12 @@
 /*
 //constructor
 */
-xui_create_explain(onity_prop2dsasset)( onity_propfile* propfile, u32 id )
+xui_create_explain(onity_prop2dsasset)( xui_bitmap* icon, onity_propfile* propfile, u32 id )
 : onity_propleaf(propfile)
 , m_assetid(id)
 {
 	NP2DSAsset* asset = get_asset();
-	m_reskind = new xui_propkind(this, xui_global::ascii_to_unicode(asset->GetName()), "2DSAsset", xui_kindctrl::create, onity_resource::icon_file, true);
+	m_reskind = new xui_propkind(this, xui_global::ascii_to_unicode(asset->GetName()), "2DSAsset", xui_kindctrl::create, icon, true);
 	m_reskind->xm_namechanged += new xui_method_member<xui_method_args, onity_prop2dsasset>(this, &onity_prop2dsasset::on_namechanged);
 	std::map<s32, std::wstring> textmap;
 	textmap[0] = L"Auto";
@@ -50,6 +50,10 @@ xui_method_explain(onity_prop2dsasset, get_asset,		NP2DSAsset*	)( void )
 xui_method_explain(onity_prop2dsasset, get_assetid,		u32			)( void ) const
 {
 	return m_assetid;
+}
+xui_method_explain(onity_prop2dsasset, get_resicon,		xui_bitmap*	)( void )
+{
+	return m_reskind->get_icon();
 }
 
 /*
