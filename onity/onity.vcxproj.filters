@@ -153,6 +153,9 @@
     <ClInclude Include="onity_layerdata.h">
       <Filter>timeline</Filter>
     </ClInclude>
+    <ClInclude Include="onity_kindctrl_commonsrc.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -307,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="onity_layerdata.cpp">
       <Filter>timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_kindctrl_commonsrc.cpp">
+      <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
