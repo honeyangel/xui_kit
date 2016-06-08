@@ -36,7 +36,7 @@
     <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propctrl_texture.h" />
     <ClInclude Include="onity_propframekey.h" />
-    <ClInclude Include="onity_kindctrl_commonsrc.h" />
+    <ClInclude Include="onity_propkind_particlesrc.h" />
     <ClInclude Include="onity_proplayer.h" />
     <ClInclude Include="onity_propleaf.h" />
     <ClInclude Include="onity_propcollider.h" />
@@ -83,7 +83,7 @@
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
-    <ClCompile Include="onity_kindctrl_commonsrc.cpp" />
+    <ClCompile Include="onity_propkind_particlesrc.cpp" />
     <ClCompile Include="onity_layerdata.cpp" />
     <ClCompile Include="onity_lineview.cpp" />
     <ClCompile Include="onity_mainform.cpp" />
