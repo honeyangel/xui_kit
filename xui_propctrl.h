@@ -110,10 +110,4 @@ xui_propctrl_declare(xui_propctrl_number)
 xui_propctrl_declare(xui_propctrl_string)
 xui_propctrl_declare(xui_propctrl_colour)
 
-///*colour*/
-//class xui_propctrl_colour : public xui_propctrl
-//{
-//
-//};
-
 #endif//__xui_propctrl_h__

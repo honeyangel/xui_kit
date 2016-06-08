@@ -95,14 +95,6 @@ xui_method_explain(onity_propctrl_condition, on_editvalue,			void			)( xui_prope
 }
 
 /*
-//method
-*/
-//xui_method_explain(onity_propctrl_condition, del_paramlink,			void			)( NP2DSParam* param )
-//{
-//
-//}
-
-/*
 //callback
 */
 xui_method_explain(onity_propctrl_condition, on_renderback,			void			)( xui_method_args& args )

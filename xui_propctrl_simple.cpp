@@ -117,7 +117,7 @@ xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
 	//name
-	m_namectrl->on_perform_w(rt.get_w()/2);
+	m_namectrl->on_perform_w(rt.get_w()/3);
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 
 	s32 max_width = 0;
@@ -139,14 +139,14 @@ xui_method_explain(xui_propctrl_simple, on_perform,			void				)( xui_method_args
 
 		xui_drawer*  namectrl = edit->get_namectrl();
 		xui_control* editctrl = edit->get_editctrl();
-		pt.x = rt.get_w()/2;
+		pt.x = rt.get_w()/3;
 		pt.y = i*height;
 		namectrl->on_perform_pt(pt);
 		namectrl->on_perform_w (max_width);
-		pt.x = rt.get_w()/2 + max_width;
+		pt.x = rt.get_w()/3 + max_width;
 		pt.y = i*height + height/2 - editctrl->get_renderh()/2;
 		editctrl->on_perform_pt(pt);
-		editctrl->on_perform_w (xui_issub_kindof(xui_toggle, editctrl) ? editctrl->get_renderw() : (rt.get_w()/2 - max_width));
+		editctrl->on_perform_w (xui_issub_kindof(xui_toggle, editctrl) ? editctrl->get_renderw() : (rt.get_w() - pt.x));
 	}
 }
 

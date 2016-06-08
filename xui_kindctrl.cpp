@@ -194,15 +194,15 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	pt.x  = rt.ax +  indent;
 	pt.y  = rt.ay + (height-m_iconctrl->get_renderh())/2;
 	m_iconctrl->on_perform_pt(pt);
-	//flag
-	pt.x += m_iconctrl->get_renderw()+4;
-	pt.y  = rt.ay + (height-m_flagctrl->get_renderh())/2;
-	m_flagctrl->on_perform_pt(pt);
 	//name
-	pt.x += m_flagctrl->get_renderw()+4;
+	pt.x += m_iconctrl->get_renderw()+4;
 	pt.y  = rt.ay + (height-m_namectrl->get_renderh())/2;
 	m_namectrl->on_perform_pt(pt);
-	m_namectrl->on_perform_w (rt.bx-pt.x);
+	m_namectrl->on_perform_w (rt.bx - pt.x - (m_iconctrl->was_visible() ? (m_iconctrl->get_renderw()+4) : 0));
+	//flag
+	pt.x += rt.bx - m_iconctrl->get_renderw();
+	pt.y  = rt.ay + (height-m_flagctrl->get_renderh())/2;
+	m_flagctrl->on_perform_pt(pt);
 	//plus
 	pt.x  = rt.ax + (indent-m_kindplus->get_renderw());
 	pt.y  = rt.ay + (height-m_kindplus->get_renderh())/2;
