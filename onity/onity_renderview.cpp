@@ -17,6 +17,8 @@ xui_create_explain(onity_renderview)( const xui_vector<s32>& size, const xui_vec
 	m_framebuffername	= -1;
 	m_depthbuffername	= -1;
 	m_framebufferlast	= -1;
+
+	create_framebuffer();
 }
 
 /*
@@ -60,11 +62,6 @@ xui_method_explain(onity_renderview, render,				void)( void )
 /*
 //callback
 */
-xui_method_explain(onity_renderview, on_load,				void)( xui_method_args& args )
-{
-	xui_control::on_load(args);
-	create_framebuffer();
-}
 xui_method_explain(onity_renderview, on_setrendersz,		void)( xui_method_args& args )
 {
 	xui_control::on_setrendersz(args);

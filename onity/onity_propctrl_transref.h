@@ -12,6 +12,29 @@ enum
 };
 
 class onity_proptransref;
+class onity_propctrl_asset : public xui_propctrl_object
+{
+	xui_declare_rtti
+
+public:
+	/*
+	//static
+	*/
+	static xui_propctrl*		create					( xui_propdata* propdata );
+
+	/*
+	//constructor
+	*/
+	onity_propctrl_asset( xui_propdata* propdata );
+
+protected:
+	/*
+	//event
+	*/
+	void						on_editctrlmouseenter	( xui_component* sender, xui_method_mouse& args );
+	void						on_editctrlmouseleave	( xui_component* sender, xui_method_mouse& args );
+};
+
 class onity_propdata_2dsasset : public xui_propdata_object_func
 {
 public:
@@ -32,8 +55,8 @@ protected:
 	/*
 	//static
 	*/
-	static xui_bitmap*			get_icon		( xui_propdata* propdata );
-	static std::wstring			get_name		( xui_propdata* propdata );
+	static xui_bitmap*			get_icon				( xui_propdata* propdata );
+	static std::wstring			get_name				( xui_propdata* propdata );
 };
 
 class onity_propdata_transref : public onity_propdata_2dsasset
@@ -59,15 +82,15 @@ public:
 	/*
 	//method
 	*/
-	onity_proptransref*			get_proptransref( void );
-	xui_proproot_vec			get_proptotal	( void );
+	onity_proptransref*			get_proptransref		( void );
+	xui_proproot_vec			get_proptotal			( void );
 
 protected:
 	/*
 	//static
 	*/
-	static void*				get_asset		( void* userptr );
-	static void					set_asset		( void* userptr, void* value );		
+	static void*				get_asset				( void* userptr );
+	static void					set_asset				( void* userptr, void* value );		
 
 	/*
 	//member
@@ -77,7 +100,7 @@ protected:
 	void*						m_userptrtotal;
 };
 
-class onity_propctrl_transref : public xui_propctrl_object
+class onity_propctrl_transref : public onity_propctrl_asset
 {
 	xui_declare_rtti
 
@@ -85,7 +108,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_propctrl*		create				( xui_propdata* propdata );
+	static xui_propctrl*		create					( xui_propdata* propdata );
 
 	/*
 	//constructor
@@ -96,7 +119,7 @@ protected:
 	/*
 	//event
 	*/
-	void						on_editctrlclick	( xui_component* sender, xui_method_mouse& args );
+	void						on_editctrlclick		( xui_component* sender, xui_method_mouse& args );
 };
 
 #endif//__onity_propctrl_transref_h__

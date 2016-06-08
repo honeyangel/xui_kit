@@ -690,7 +690,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 /*
 //callback
 */
-xui_method_explain(xui_treeview, on_invalid,			void								)( xui_method_args&  args )
+xui_method_explain(xui_treeview, on_invalid,			void								)( xui_method_args&		args )
 {
 	s32 width = 0;
 	for (u32 i = 0; i < m_columninfo.size(); ++i)
@@ -711,7 +711,7 @@ xui_method_explain(xui_treeview, on_invalid,			void								)( xui_method_args&  
 		perform();
 	}
 }
-xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&  args )
+xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		args )
 {
 	xui_container::on_perform(args);
 
@@ -775,7 +775,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&  
 		alltreenodes[i]->on_perform_sz(sz);
 	}
 }
-xui_method_explain(xui_treeview, on_horzvalue,			void								)( xui_method_args&  args )
+xui_method_explain(xui_treeview, on_horzvalue,			void								)( xui_method_args&		args )
 {
 	xui_container::on_horzvalue(args);
 	xui_vecptr_addloop(m_columnhead)
@@ -787,7 +787,7 @@ xui_method_explain(xui_treeview, on_horzvalue,			void								)( xui_method_args&
 		m_columngrid[i]->set_scrollx(m_hscroll->get_value());
 	}
 }
-xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args&  args )
+xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_update&	args )
 {
 	xui_container::on_updateself(args);
 	if (has_catch())
@@ -815,7 +815,7 @@ xui_method_explain(xui_treeview, on_updateself,			void								)( xui_method_args
 		}
 	}
 }
-xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args&  args )
+xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args&		args )
 {
 	xui_container::on_renderself(args);
 	if (m_lighttrace && was_hover())
@@ -833,7 +833,7 @@ xui_method_explain(xui_treeview, on_renderself,			void								)( xui_method_args
 		xui_convas::get_ins()->set_cliprect(cliprect);
 	}
 }
-xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_mouse& args )
+xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_mouse&	args )
 {
 	xui_container::on_mousedoubleclick(args);
 	if (args.mouse == MB_L)
@@ -845,7 +845,7 @@ xui_method_explain(xui_treeview, on_mousedoubleclick,	void								)( xui_method_
 		}
 	}
 }
-xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse& args )
+xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse&	args )
 {
 	xui_container::on_mousedown(args);
 
@@ -905,7 +905,7 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 	if (args.mouse == MB_L && m_searchtext.empty() && m_columnsort == TREESORT_NONE)
 		m_mousecatch = node;
 }
-xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse& args )
+xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse&	args )
 {
 	xui_container::on_mousemove(args);
 	if (has_catch())
@@ -930,7 +930,7 @@ xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse
 		}
 	}
 }
-xui_method_explain(xui_treeview, on_mouserise,			void								)( xui_method_mouse& args )
+xui_method_explain(xui_treeview, on_mouserise,			void								)( xui_method_mouse&	args )
 {
 	xui_container::on_mouserise(args);
 	if (args.mouse == MB_L)

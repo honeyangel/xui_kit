@@ -219,15 +219,15 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void						on_mousedoubleclick	( xui_method_mouse& args );
-	virtual void						on_mousedown		( xui_method_mouse& args );
-	virtual void						on_mousemove		( xui_method_mouse& args );
-	virtual void						on_mouserise		( xui_method_mouse& args );
-	virtual void						on_invalid			( xui_method_args&  args );
-	virtual void						on_perform			( xui_method_args&  args );
-	virtual void						on_horzvalue		( xui_method_args&  args );
-	virtual void						on_updateself		( xui_method_args&  args );
-	virtual void						on_renderself		( xui_method_args&  args );
+	virtual void						on_mousedoubleclick	( xui_method_mouse&		args );
+	virtual void						on_mousedown		( xui_method_mouse&		args );
+	virtual void						on_mousemove		( xui_method_mouse&		args );
+	virtual void						on_mouserise		( xui_method_mouse&		args );
+	virtual void						on_invalid			( xui_method_args&		args );
+	virtual void						on_perform			( xui_method_args&		args );
+	virtual void						on_horzvalue		( xui_method_args&		args );
+	virtual void						on_updateself		( xui_method_update&	args );
+	virtual void						on_renderself		( xui_method_args&		args );
 
 	/*
 	//method

@@ -45,7 +45,7 @@ xui_method_explain(onity_savectrl, create,				xui_kindctrl*	)( xui_propkind* pro
 /*
 //callback
 */
-xui_method_explain(onity_savectrl, on_updateself,		void			)( xui_method_args& args )
+xui_method_explain(onity_savectrl, on_updateself,		void			)( xui_method_update& args )
 {
 	xui_kindctrl::on_updateself(args);
 	bool modify = false;
@@ -59,7 +59,7 @@ xui_method_explain(onity_savectrl, on_updateself,		void			)( xui_method_args& ar
 	m_save->set_enable(modify);
 	m_load->set_enable(modify);
 }
-xui_method_explain(onity_savectrl, on_perform,			void			)( xui_method_args& args )
+xui_method_explain(onity_savectrl, on_perform,			void			)( xui_method_args&   args )
 {
 	xui_kindctrl::on_perform(args);
 	s32 height = KIND_HEIGHT;

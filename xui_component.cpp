@@ -685,7 +685,7 @@ xui_method_explain(xui_component, on_renderself,		void					)( xui_method_args&		
 {
 
 }
-xui_method_explain(xui_component, on_updateself,		void					)( xui_method_args&			args )
+xui_method_explain(xui_component, on_updateself,		void					)( xui_method_update&		args )
 {
 
 }

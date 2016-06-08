@@ -37,7 +37,7 @@ xui_create_explain(onity_propframekey)( onity_propfile* propfile, onity_proplaye
 	m_keykind->add_propdata(new xui_propdata_object_func(
 		m_keykind,
 		L"Particle",
-		xui_propctrl_object::create,
+		onity_propctrl_asset::create,
 		"NPParticleSFX",
 		onity_selector::get_ptr,
 		get_sparkicon,
@@ -63,8 +63,8 @@ xui_create_explain(onity_propframekey)( onity_propfile* propfile, onity_proplaye
 	m_reskind = new xui_propkind(this, L"Resource", "ImageFrame", xui_kindctrl::create, onity_resource::icon_resource, true);
 	m_reskind->add_propdata(new onity_propdata_2dsasset(
 		m_reskind,
-		L"Image&Frame",
-		xui_propctrl_object::create,
+		L"Asset",
+		onity_propctrl_asset::create,
 		DROPTYPE_IMAGE|DROPTYPE_FRAME,
 		get_asset,
 		set_asset,
