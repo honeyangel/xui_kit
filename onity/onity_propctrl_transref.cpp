@@ -6,11 +6,16 @@
 
 #include "xui_global.h"
 #include "xui_propview.h"
+#include "onity_mainform.h"
+#include "onity_inspector.h"
 #include "onity_resource.h"
 #include "onity_selector.h"
 #include "onity_proptransref.h"
 #include "onity_propctrl_transref.h"
 
+//////////////////////////////////////////////////////////////////////////
+//propdata
+//////////////////////////////////////////////////////////////////////////
 /*
 //constructor
 */
@@ -32,7 +37,7 @@ xui_create_explain(onity_propdata_2dsasset)(
 /*
 //static
 */
-xui_method_explain(onity_propdata_2dsasset, get_icon,			xui_bitmap*			)( xui_propdata* propdata )
+xui_method_explain(onity_propdata_2dsasset, get_icon,				xui_bitmap*			)( xui_propdata* propdata )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
 	if		(dataobject->has_droptype("NP2DSImage")) return onity_resource::icon_module;
@@ -41,7 +46,7 @@ xui_method_explain(onity_propdata_2dsasset, get_icon,			xui_bitmap*			)( xui_pro
 
 	return NULL;
 }
-xui_method_explain(onity_propdata_2dsasset, get_name,			std::wstring		)( xui_propdata* propdata )
+xui_method_explain(onity_propdata_2dsasset, get_name,				std::wstring		)( xui_propdata* propdata )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
 	NP2DSAsset* asset = (NP2DSAsset*)dataobject->get_value();
@@ -72,11 +77,11 @@ xui_create_explain(onity_propdata_transref)(
 /*
 //method
 */
-xui_method_explain(onity_propdata_transref, get_proptransref,	onity_proptransref*	)( void )
+xui_method_explain(onity_propdata_transref, get_proptransref,		onity_proptransref*	)( void )
 {
 	return m_proptransref;
 }
-xui_method_explain(onity_propdata_transref, get_proptotal,		xui_proproot_vec	)( void )
+xui_method_explain(onity_propdata_transref, get_proptotal,			xui_proproot_vec	)( void )
 {
 	if (m_usergettotal)
 		return (*m_usergettotal)(m_userptrtotal);
@@ -87,7 +92,7 @@ xui_method_explain(onity_propdata_transref, get_proptotal,		xui_proproot_vec	)( 
 /*
 //static
 */
-xui_method_explain(onity_propdata_transref, get_asset,			void*				)( void* userptr )
+xui_method_explain(onity_propdata_transref, get_asset,				void*				)( void* userptr )
 {
 	onity_proptransref* proptransref = (onity_proptransref*)userptr;
 	NP2DSTransRef* transref = proptransref->get_transref();
@@ -100,7 +105,7 @@ xui_method_explain(onity_propdata_transref, get_asset,			void*				)( void* userp
 
 	return NULL;
 }
-xui_method_explain(onity_propdata_transref, set_asset,			void				)( void* userptr, void* value )
+xui_method_explain(onity_propdata_transref, set_asset,				void				)( void* userptr, void* value )
 {
 	npu32 resfile = -1;
 	npu32 assetid = -1;
@@ -116,13 +121,67 @@ xui_method_explain(onity_propdata_transref, set_asset,			void				)( void* userpt
 	transref->SetAsset(resfile, assetid);
 }
 
-xui_implement_rtti(onity_propctrl_transref, xui_propctrl_object);
+//////////////////////////////////////////////////////////////////////////
+//propctrl
+//////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(onity_propctrl_asset,	xui_propctrl_object);
+
+/*
+//constructor
+*/
+xui_create_explain(onity_propctrl_asset)( xui_propdata* propdata )
+: xui_propctrl_object(propdata)
+{
+	xui_control* editctrl = m_propedit->get_editctrl();
+	editctrl->xm_mouseenter += new xui_method_member<xui_method_mouse, onity_propctrl_asset>(this, &onity_propctrl_asset::on_editctrlmouseenter);
+	editctrl->xm_mouseleave += new xui_method_member<xui_method_mouse, onity_propctrl_asset>(this, &onity_propctrl_asset::on_editctrlmouseleave);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_propctrl_asset,	create, xui_propctrl*)( xui_propdata* propdata )
+{
+	return new onity_propctrl_asset(propdata);
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propctrl_asset,	on_editctrlmouseenter,	void				)( xui_component* sender, xui_method_mouse& args )
+{
+	bool same = true;
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
+	void* value = dataobject->get_value();
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
+		if (data->get_value() != value)
+		{
+			same = false;
+			break;
+		}
+	}
+
+	if (value == NULL || same == false)
+		return;
+
+	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+	inspector->show_tips(this);
+}
+xui_method_explain(onity_propctrl_asset,	on_editctrlmouseleave,	void				)( xui_component* sender, xui_method_mouse& args )
+{
+	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+	inspector->hide_tips();
+}
+
+xui_implement_rtti(onity_propctrl_transref, onity_propctrl_asset);
 
 /*
 //constructor
 */
 xui_create_explain(onity_propctrl_transref)( xui_propdata* propdata )
-: xui_propctrl_object(propdata)
+: onity_propctrl_asset(propdata)
 {
 	xui_control* editctrl = m_propedit->get_editctrl();
 	editctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, onity_propctrl_transref>(this, &onity_propctrl_transref::on_editctrlclick);
@@ -131,7 +190,7 @@ xui_create_explain(onity_propctrl_transref)( xui_propdata* propdata )
 /*
 //static
 */
-xui_method_explain(onity_propctrl_transref, create,				xui_propctrl*		)( xui_propdata* propdata )
+xui_method_explain(onity_propctrl_transref, create,					xui_propctrl*		)( xui_propdata* propdata )
 {
 	return new onity_propctrl_transref(propdata);
 }
@@ -139,7 +198,7 @@ xui_method_explain(onity_propctrl_transref, create,				xui_propctrl*		)( xui_pro
 /*
 //event
 */
-xui_method_explain(onity_propctrl_transref, on_editctrlclick,	void				)( xui_component* sender, xui_method_mouse& args )
+xui_method_explain(onity_propctrl_transref, on_editctrlclick,		void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (args.mouse == MB_L)
 	{

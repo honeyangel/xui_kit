@@ -83,8 +83,8 @@ xui_method_explain(onity_propctrl_texture, on_invalid,				void			)( xui_method_a
 xui_method_explain(onity_propctrl_texture, on_perform,				void			)( xui_method_args& args )
 {
 	xui_propctrl_object::on_perform(args);
-	xui_rect2d<s32> rt = get_renderrt();
-	m_viewctrl->on_perform_x(rt.get_w()/2);
+	xui_rect2d<s32> rt = get_renderrtins();
+	m_viewctrl->on_perform_x(rt.get_w()/3);
 	m_viewctrl->on_perform_y(xui_propview::default_lineheight+2);
 }
 

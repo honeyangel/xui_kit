@@ -278,7 +278,7 @@ protected:
 
 	virtual void					on_renderback		( xui_method_args&		args );
 	virtual void					on_renderself		( xui_method_args&		args );
-	virtual void					on_updateself		( xui_method_args&		args );
+	virtual void					on_updateself		( xui_method_update&	args );
 	virtual void					on_topdraw			( xui_method_args&		args );
 	virtual void					on_invalid			( xui_method_args&		args );
 	virtual void					on_perform			( xui_method_args&		args );

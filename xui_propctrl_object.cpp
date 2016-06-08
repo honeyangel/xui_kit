@@ -129,13 +129,13 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 	pt.y = xui_propview::default_lineheight/2 - pickctrl->get_renderh()/2;
 	pickctrl->on_perform_pt(pt);
 	//textctrl
-	pt.x = rt.get_w()/2;
+	pt.x = rt.get_w()/3;
 	pt.y = xui_propview::default_lineheight/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
-	textctrl->on_perform_w (rt.get_w()/2 - pickctrl->get_renderw());
+	textctrl->on_perform_w (rt.get_w() - pt.x - pickctrl->get_renderw());
 	//namectrl
 	s32 indent = get_indent();
-	namectrl->on_perform_w (rt.get_w()/2);
+	namectrl->on_perform_w (rt.get_w()/3);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
@@ -240,7 +240,7 @@ xui_method_explain(xui_object_pickwnd,	set_propctrl,	void			)( xui_propctrl* pro
 {
 	m_propctrl = propctrl;
 }
-xui_method_explain(xui_object_pickwnd, on_accept,		void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_object_pickwnd,	on_accept,		void			)( xui_component* sender, xui_method_args& args )
 {
 	void* value = get_value();
 	xui_propdata_vec vec = m_propctrl->get_propdata();
@@ -253,7 +253,7 @@ xui_method_explain(xui_object_pickwnd, on_accept,		void			)( xui_component* send
 	m_propctrl->on_linkpropdata();
 	set_visible(false);
 }
-xui_method_explain(xui_object_pickwnd, on_cancel,		void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(xui_object_pickwnd,	on_cancel,		void			)( xui_component* sender, xui_method_args& args )
 {
 	set_visible(false);
 }

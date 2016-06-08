@@ -16,7 +16,7 @@ xui_create_explain(onity_propimageref)( onity_propfile* propfile, NP2DSTransRef*
 	m_reskind->add_propdata(new onity_propdata_2dsasset(
 		m_reskind, 
 		L"Image", 
-		xui_propctrl_object::create, 
+		onity_propctrl_asset::create,
 		DROPTYPE_IMAGE, 
 		get_image, 
 		set_image, 

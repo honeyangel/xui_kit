@@ -49,7 +49,7 @@ xui_create_explain(onity_propstate)( onity_propfile* propfile, onity_state* stat
 	m_actor			= new onity_propdata_2dsasset(
 		m_statekind, 
 		L"Action", 
-		xui_propctrl_object::create, 
+		onity_propctrl_asset::create,
 		DROPTYPE_ACTOR, 
 		get_actor, 
 		set_actor, 

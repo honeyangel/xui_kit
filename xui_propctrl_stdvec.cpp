@@ -205,12 +205,12 @@ xui_method_explain(xui_propctrl_stdvec,			on_perform,				void			)( xui_method_ar
 		xui_control* editctrl = m_propedit->get_editctrl();
 		//size
 		namectrl->on_perform_y (rt.ay + height);
-		namectrl->on_perform_w (rt.get_w()/2);
+		namectrl->on_perform_w (rt.get_w()/3);
 		namectrl->set_textoffset(xui_vector<s32>(indent+xui_propview::default_nodeindent, 0));
-		pt.x = rt.get_w()/2;
+		pt.x = rt.get_w()/3;
 		pt.y = rt.ay + height + height/2 - editctrl->get_renderh()/2;
 		editctrl->on_perform_pt(pt);
-		editctrl->on_perform_w (rt.get_w()/2);
+		editctrl->on_perform_w (rt.get_w() - pt.x);
 		//prop
 		pt.x = 0;
 		pt.y = rt.ay + height*2;

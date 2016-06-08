@@ -416,7 +416,7 @@ xui_method_explain(xui_treenode, on_perform,		void								)( xui_method_args&		a
 		}
 	}
 }
-xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_args&		args )
+xui_method_explain(xui_treenode, on_updateself,		void								)( xui_method_update&	args )
 {
 	xui_control::on_updateself(args);
 	if (has_focus() && m_holdtime >= 0)
