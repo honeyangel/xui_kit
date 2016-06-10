@@ -13,6 +13,7 @@
 #include "xui_propctrl_object.h"
 #include "xui_propctrl_vector.h"
 #include "onity_propctrl_transref.h"
+#include "onity_propdata_texture.h"
 #include "onity_selector.h"
 #include "onity_resource.h"
 #include "onity_filedata.h"
@@ -34,14 +35,9 @@ xui_create_explain(onity_propmodule)( const std::wstring& full )
 	textmap[NPPixelFormat::PF_R4G4B4A4	] = L"R4G4B4A4";
 	textmap[NPPixelFormat::PF_RGBAPVRTC4] = L"Compress";
 
-	m_texkind->add_propdata(new xui_propdata_object_func(
+	m_texkind->add_propdata(new onity_propdata_texture(
 		m_texkind,
 		L"Texture",
-		onity_propctrl_asset::create,
-		"NPSourceTexture",
-		onity_selector::get_ptr,
-		get_texicon,
-		get_texname,
 		get_texfile,
 		set_texfile,
 		this));
@@ -108,23 +104,6 @@ xui_method_explain(onity_propmodule, get_resfile,	NP2DSAssetFile*	)( void )
 /*
 //static
 */
-xui_method_explain(onity_propmodule, get_texicon,	xui_bitmap*		)( xui_propdata* propdata )
-{
-	return onity_resource::icon_texture;
-}
-xui_method_explain(onity_propmodule, get_texname,	std::wstring	)( xui_propdata* propdata )
-{
-	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
-	NPSourceTexture* texture = (NPSourceTexture*)dataobject->get_value();
-	if (texture)
-	{
-		npu32 id = texture->GetKey();
-		std::string name = NPFileNameHelper::SafeName(NP2DSTextureCache::GetIns()->GetTextureFN(id));
-		return xui_global::ascii_to_unicode(name);
-	}
-
-	return L"None";
-}
 xui_method_explain(onity_propmodule, get_texwidth,	f64				)( void* userptr )
 {
 	onity_propmodule* prop = (onity_propmodule*)userptr;

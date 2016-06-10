@@ -6,6 +6,7 @@
 #include "xui_kindctrl.h"
 #include "xui_propkind.h"
 #include "xui_propctrl_rect2d.h"
+#include "onity_resource.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
 #include "onity_preview.h"
@@ -19,7 +20,7 @@ xui_create_explain(onity_propcollider)( onity_propfile* propfile, NP2DSCollider*
 : onity_propleaf(propfile)
 , m_collider(collider)
 {
-	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(collider->GetName()), "Collider", xui_kindctrl::create, NULL, true);
+	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(collider->GetName()), "Collider", xui_kindctrl::create, onity_resource::icon_local, true);
 	m_basekind->xm_namechanged += new xui_method_member<xui_method_args,     onity_propcollider>(this, &onity_propcollider::on_namechanged);
 	m_basekind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_propcollider>(this, &onity_propcollider::on_propchanged);
 

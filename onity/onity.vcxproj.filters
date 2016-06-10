@@ -135,9 +135,6 @@
     <ClInclude Include="onity_selector.h">
       <Filter>inspector</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propctrl_texture.h">
-      <Filter>project</Filter>
-    </ClInclude>
     <ClInclude Include="onity_lineview.h">
       <Filter>timeline</Filter>
     </ClInclude>
@@ -154,6 +151,9 @@
       <Filter>timeline</Filter>
     </ClInclude>
     <ClInclude Include="onity_propkind_particlesrc.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propdata_texture.h">
       <Filter>project</Filter>
     </ClInclude>
   </ItemGroup>
@@ -293,9 +293,6 @@
     <ClCompile Include="onity_selector.cpp">
       <Filter>inspector</Filter>
     </ClCompile>
-    <ClCompile Include="onity_propctrl_texture.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
     <ClCompile Include="onity_lineview.cpp">
       <Filter>timeline</Filter>
     </ClCompile>
@@ -312,6 +309,9 @@
       <Filter>timeline</Filter>
     </ClCompile>
     <ClCompile Include="onity_propkind_particlesrc.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propdata_texture.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>

@@ -43,6 +43,11 @@ public:
 	*/
 	virtual void			render_else		( void );
 
+	/*
+	//method
+	*/
+	void					reset			( void );
+
 protected:
 	/*
 	//override

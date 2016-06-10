@@ -21,17 +21,30 @@ public:
 	//method
 	*/
 	NPParticleSFX*			get_particle	( void );
+	void					add_spritesrc	( void );
+	void					del_spritesrc	( xui_propkind* propkind );
 
 	/*
 	//override
 	*/
 	virtual std::string		get_dragtype	( void );
 	virtual void*			get_dragdata	( void );
+	virtual bool			was_modify		( void );
+	virtual void			load			( void );
+	virtual void			save			( void );
 
 protected:
 	/*
+	//event
+	*/
+	void					on_propchanged	( xui_component* sender, xui_method_propdata&	args );
+	void					on_flagchanged	( xui_component* sender, xui_method_args&		args );
+
+	/*
 	//member
 	*/
+	xui_propkind*			m_menukind;
+	bool					m_modify;
 	NPParticleSFX*			m_particle;
 };
 

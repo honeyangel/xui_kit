@@ -200,7 +200,7 @@ xui_method_explain(xui_kindctrl, on_perform,				void			)( xui_method_args& args 
 	m_namectrl->on_perform_pt(pt);
 	m_namectrl->on_perform_w (rt.bx - pt.x - (m_iconctrl->was_visible() ? (m_iconctrl->get_renderw()+4) : 0));
 	//flag
-	pt.x += rt.bx - m_iconctrl->get_renderw();
+	pt.x  = rt.bx - m_iconctrl->get_renderw();
 	pt.y  = rt.ay + (height-m_flagctrl->get_renderh())/2;
 	m_flagctrl->on_perform_pt(pt);
 	//plus

@@ -35,6 +35,7 @@
 #include "onity_prop2dsasset.h"
 #include "onity_2dsassetdata.h"
 #include "onity_propcontroller.h"
+#include "onity_propparticle.h"
 #include "onity_proppath.h"
 #include "onity_propactor.h"
 #include "onity_resource.h"
@@ -59,8 +60,10 @@ xui_create_explain(onity_project)( void )
 	m_folder		= menu1->add_item(onity_resource::icon_folder,	 L"Folder");
 	menu1->add_separate();
 	m_controller	= menu1->add_item(onity_resource::icon_animator, L"Animation Controller");
+	m_particle		= menu1->add_item(onity_resource::icon_particle, L"Particle");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
 	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
+	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_particleclick);
 
 	m_create	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -672,6 +675,47 @@ xui_method_explain(onity_project, on_controllerclick,		void		)( xui_component* s
 		linenode->set_edittext(0);
 	}
 }
+xui_method_explain(onity_project, on_particleclick,			void		)( xui_component* sender, xui_method_args&	   args )
+{
+	m_search->set_text(L"");
+
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*   pathnode = nodevec.front();
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		std::wstringstream temp;
+		temp << pathdata->get_full().c_str();
+		temp << L"/New Particle.particle";
+		if (xui_global::has_file(temp.str()))
+		{
+			s32 number  = 0;
+			while (true)
+			{
+				temp.str(L"");
+				temp << pathdata->get_full().c_str();
+				temp << L"/New Particle ";
+				temp << number;
+				temp << ".particle";
+				if (xui_global::has_file(temp.str()) == false)
+					break;
+
+				++number;
+			}
+		}
+
+		onity_propparticle* propfile = new onity_propparticle(temp.str());
+		xui_method_ptrcall(proppath, add_fileprop)(propfile);
+		xui_method_ptrcall(propfile, save		 )();
+
+		xui_treeview* lineview = m_fileview->get_lineview();
+		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
+		lineview->refresh();
+		linenode->set_edittext(0);
+	}
+}
 xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode* pathnode = (xui_treenode*)sender->get_data();
@@ -848,7 +892,16 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 			refresh_fileview();
 			refresh_pathpane();
 
-			m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
+			onity_propfile* viewfile = proppath->get_viewfile();
+			if (viewfile && viewfile->get_linkdata())
+			{
+				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
+				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
+			}
+			else
+			{
+				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
+			}
 			refresh_tileview();
 		}
 	}

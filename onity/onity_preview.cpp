@@ -131,7 +131,9 @@ xui_method_explain(onity_preview, set_viewprop,			void				)( xui_proproot* prop,
 {
 	if (m_node)
 	{
-		delete m_node;
+		if (NPIsExaKindOf(NPParticleSFX, m_node) == false)
+			delete m_node;
+
 		m_node = NULL;
 	}
 
@@ -140,7 +142,7 @@ xui_method_explain(onity_preview, set_viewprop,			void				)( xui_proproot* prop,
 	onity_propactor*    propactor    = dynamic_cast<onity_propactor*   >(prop);
 	if (propparticle && propparticle->get_particle())
 	{
-		NPParticleSFX* particle = propparticle->get_particle()->CreateInstance();
+		NPParticleSFX* particle = propparticle->get_particle();
 		particle->SetFlag(PARTICLESFX_LOOPPLAY, true);
 		particle->Active();
 		m_node = particle;

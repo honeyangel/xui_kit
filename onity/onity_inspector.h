@@ -26,6 +26,7 @@ public:
 	//method
 	*/
 	onity_preview*		get_preview				( void );
+	xui_propview*		get_propview			( void );
 	void				set_proproot			( xui_proproot* proproot );
 	void				set_proproot			( const xui_proproot_vec& proproot );
 

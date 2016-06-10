@@ -82,6 +82,10 @@ xui_method_explain(onity_inspector,	get_preview,			onity_preview*	)( void )
 {
 	return m_drawview;
 }
+xui_method_explain(onity_inspector, get_propview,			xui_propview*	)( void )
+{
+	return m_propview;
+}
 xui_method_explain(onity_inspector, set_proproot,			void			)( xui_proproot* proproot )
 {
 	m_propview->set_proproot(proproot);

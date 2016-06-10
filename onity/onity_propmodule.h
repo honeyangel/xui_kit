@@ -21,8 +21,6 @@ protected:
 	/*
 	//static
 	*/
-	static xui_bitmap*			get_texicon		( xui_propdata* propdata );
-	static std::wstring			get_texname		( xui_propdata* propdata );
 	static f64					get_texwidth	( void* userptr );
 	static f64					get_texheight	( void* userptr );
 	static void*				get_texfile		( void* userptr );

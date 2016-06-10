@@ -56,6 +56,18 @@ xui_method_explain(xui_proproot, add_propkind,	void					)( xui_propkind* propkin
 		m_propkind.insert(itor, propkind);
 	}
 }
+xui_method_explain(xui_proproot, del_propkind,	void					)( xui_propkind* propkind )
+{
+	for (u32 i = 0; i < m_propkind.size(); ++i)
+	{
+		if (m_propkind[i] == propkind)
+		{
+			delete m_propkind[i];
+			m_propkind.erase(m_propkind.begin()+i);
+			break;
+		}
+	}
+}
 xui_method_explain(xui_proproot, non_ctrl,		void					)( void )
 {
 	m_ctrl = NULL;

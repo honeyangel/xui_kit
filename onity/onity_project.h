@@ -53,6 +53,7 @@ protected:
 	void						on_pathviewselection( xui_component* sender, xui_method_args&	  args );
 	void						on_folderclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_controllerclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_particleclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
@@ -84,6 +85,7 @@ protected:
 	xui_toggle*					m_create;
 	xui_menuitem*				m_folder;
 	xui_menuitem*				m_controller;
+	xui_menuitem*				m_particle;
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 
