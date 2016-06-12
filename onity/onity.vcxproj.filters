@@ -156,6 +156,9 @@
     <ClInclude Include="onity_propdata_texture.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_propctrl_particlemod.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -312,6 +315,9 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_propdata_texture.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_particlemod.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>

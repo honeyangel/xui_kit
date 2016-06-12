@@ -59,6 +59,7 @@ xui_method_explain(onity_propparticle, del_spritesrc,	void			)( xui_propkind* pr
 	onity_propkind_particlesrc* propspritesrc = dynamic_cast<onity_propkind_particlesrc*>(propkind);
 	NPParticleSpriteSRC* spritesrc = propspritesrc->get_spritesrc();
 	m_particle->Detach(spritesrc);
+	propspritesrc->non_ctrl();
 	del_propkind(propspritesrc);
 	delete spritesrc;
 

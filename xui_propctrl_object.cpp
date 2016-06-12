@@ -31,6 +31,7 @@ xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
 	xui_drawer*  namectrl = editobject->get_namectrl();
 	xui_control* textctrl = editobject->get_editctrl();
 	xui_drawer*  pickctrl = editobject->get_pickctrl();
+	textctrl->xm_keybddown		+= new xui_method_member<xui_method_keybd,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlkeybddown);
 	textctrl->xm_mouseclick		+= new xui_method_member<xui_method_mouse,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlclick);
 	textctrl->xm_mousedragenter += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragenter);
 	textctrl->xm_mousedragleave += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragleave);
@@ -142,6 +143,20 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 /*
 //event
 */
+xui_method_explain(xui_propctrl_object, on_textctrlkeybddown,	void			)( xui_component* sender, xui_method_keybd&   args )
+{
+	if (args.kcode == KEY_DELETE)
+	{
+		for (u32 i = 0; i < m_propdatavec.size(); ++i)
+		{
+			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
+			data->set_value(NULL);
+			data->syn_value();
+		}
+
+		on_linkpropdata();
+	}
+}
 xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_component* sender, xui_method_mouse&	  args )
 {
 	bool same = true;
@@ -248,6 +263,7 @@ xui_method_explain(xui_object_pickwnd,	on_accept,		void			)( xui_component* send
 	{
 		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(vec[i]);
 		data->set_value(value);
+		data->syn_value();
 	}
 
 	m_propctrl->on_linkpropdata();

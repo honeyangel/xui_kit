@@ -31,21 +31,24 @@ xui_create_explain(xui_propctrl_expand)( xui_propdata* propdata )
 	m_widgetvec.push_back(m_namectrl);
 
 	//plus
-	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, !dataexpand->can_subfold());
+	m_propplus = new xui_plusctrl(PLUSRENDER_NORMAL, (dataexpand == NULL || dataexpand->can_subfold() == false));
 	xui_method_ptrcall(m_propplus, set_parent	)(this);
 	m_propplus->xm_expand += new xui_method_member<xui_method_args, xui_propctrl_expand>(this, &xui_propctrl_expand::on_propexpand);
 	m_widgetvec.push_back(m_propplus);
 
 	//prop
-	const xui_propdata_vec& vec = dataexpand->get_subprop();
-	for (u32 i = 0; i < vec.size(); ++i)
+	if (dataexpand)
 	{
-		xui_prop_newctrl  func = vec[i]->get_func();
-		xui_propctrl* propctrl = (*func)(vec[i]);
-		propctrl->refresh();
-		propctrl->set_parent(this);
-		m_widgetvec.push_back(propctrl);
-		m_propctrlvec.push_back(propctrl);
+		const xui_propdata_vec& vec = dataexpand->get_subprop();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			xui_prop_newctrl  func = vec[i]->get_func();
+			xui_propctrl* propctrl = (*func)(vec[i]);
+			propctrl->refresh();
+			propctrl->set_parent(this);
+			m_widgetvec.push_back(propctrl);
+			m_propctrlvec.push_back(propctrl);
+		}
 	}
 }
 
@@ -217,14 +220,14 @@ xui_implement_rtti(xui_propctrl_expand_plus, xui_propctrl_expand);
 */
 xui_method_explain(xui_propctrl_expand_plus,	create,				xui_propctrl*	)( xui_propdata* propdata )
 {
-	return new xui_propctrl_expand_plus(propdata);
+	return new xui_propctrl_expand_plus();
 }
 
 /*
 //constructor
 */
-xui_create_explain(xui_propctrl_expand_plus)( xui_propdata* propdata )
-: xui_propctrl_expand(propdata)
+xui_create_explain(xui_propctrl_expand_plus)( void )
+: xui_propctrl_expand(NULL)
 {}
 
 /*
@@ -245,8 +248,11 @@ xui_method_explain(xui_propctrl_expand_plus,	on_linkpropdata,	void			)( void )
 	m_propctrlvec.clear();
 
 	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
-	xui_method_ptrcall(m_namectrl, set_text		)(m_propdata->get_name());
-	xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
+	if (dataexpand)
+	{
+		xui_method_ptrcall(m_namectrl, set_text		)(m_propdata->get_name());
+		xui_method_ptrcall(m_propplus, set_visible	)(dataexpand->can_subfold());
+	}
 
 	if (m_propdatavec.size() == 1)
 	{

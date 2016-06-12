@@ -69,7 +69,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propctrl_expand_plus( xui_propdata* propdata );
+	xui_propctrl_expand_plus( void );
 
 	/*
 	//override
