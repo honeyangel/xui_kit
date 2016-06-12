@@ -262,13 +262,16 @@ xui_method_explain(xui_propedit_number, on_textctrltextchanged, void				)( xui_c
 xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (sender->has_catch())
-{
+	{
+		xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
+
 		s32 delta = args.point.x - xui_desktop::get_ins()->get_mouselast().x;
 		f64 value = get_value() + (f64)delta * m_interval;
+		if (value < 0.0 && textctrl->get_numbtype() == NT_UNSIGNEDINT)
+			value = 0.0;
 
 		std::wstringstream tmp;
 		tmp << value;
-		xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
 		textctrl->set_text(tmp.str());
 	}
 }

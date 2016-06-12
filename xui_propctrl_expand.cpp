@@ -376,14 +376,14 @@ xui_method_explain(xui_propctrl_expand_number,	on_perform,			void			)( xui_metho
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
 	//textctrl
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.ay + height/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w() - pt.x);
 	//namectrl
 	s32 indent = get_indent();
 	namectrl->on_perform_y (rt.ay);
-	namectrl->on_perform_w (rt.get_w()/3);
+	namectrl->on_perform_w (rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
@@ -479,13 +479,13 @@ xui_method_explain(xui_propctrl_expand_bool,	on_perform,			void			)( xui_method_
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> pt;
 	//boolctrl
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.ay + height/2 - boolctrl->get_renderh()/2;
 	boolctrl->on_perform_pt(pt);
 	//namectrl
 	s32 indent = get_indent();
 	namectrl->on_perform_y (rt.ay);
-	namectrl->on_perform_w (rt.get_w()/3);
+	namectrl->on_perform_w (rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
@@ -583,13 +583,13 @@ xui_method_explain(xui_propctrl_expand_enum,	on_perform,			void			)( xui_method_
 	xui_vector<s32> pt;
 	xui_vector<s32> sz;
 	//enumctrl
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.ay + height/2 - enumctrl->get_renderh()/2;
 	enumctrl->on_perform_pt(pt);
 	enumctrl->on_perform_w (rt.get_w() - pt.x);
 	//namectrl
 	s32 indent = get_indent();
 	namectrl->on_perform_y (rt.ay);
-	namectrl->on_perform_w (rt.get_w()/3);
+	namectrl->on_perform_w (rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }

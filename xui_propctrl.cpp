@@ -133,7 +133,7 @@ xui_method_explain(xui_propctrl_base,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrtins();
 	s32 indent = get_indent();
-	namectrl->on_perform_w(rt.get_w()/3);
+	namectrl->on_perform_w(rt.get_w()/2);
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
@@ -210,7 +210,7 @@ xui_method_explain(xui_propctrl_bool,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - boolctrl->get_renderh()/2;
 	boolctrl->on_perform_pt(pt);
 }
@@ -242,7 +242,7 @@ xui_method_explain(xui_propctrl_enum,	on_perform,			void					)( xui_method_args&
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - enumctrl->get_renderh()/2;
 	enumctrl->on_perform_pt(pt);
 	enumctrl->on_perform_w (rt.get_w() - pt.x);
@@ -275,7 +275,7 @@ xui_method_explain(xui_propctrl_number, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w() - pt.x);
@@ -308,7 +308,7 @@ xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_arg
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w() - pt.x);
@@ -352,7 +352,7 @@ xui_method_explain(xui_propctrl_colour, on_perform,			void					)( xui_method_arg
 	pt.y = rt.get_h()/2 - pickctrl->get_renderh()/2;
 	pickctrl->on_perform_pt(pt);
 	//textctrl
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = rt.get_h()/2 - editctrl->get_renderh()/2;
 	editctrl->on_perform_pt(pt);
 	editctrl->on_perform_w (rt.get_w()- pt.x - pickctrl->get_renderw());

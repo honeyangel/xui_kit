@@ -123,9 +123,9 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
 	xui_control* subyedit = m_subyedit->get_editctrl();
 	s32 namewidth = xui_max(subxname->get_renderw(), subyname->get_renderw());
-	s32 editwidth = (rt.get_w() - rt.get_w()/3 - 12 - 2*namewidth) / 2;
+	s32 editwidth = (rt.get_w() - rt.get_w()/2 - 12 - 2*namewidth) / 2;
 	//subxname
-	pt.x = rt.get_w()/3;
+	pt.x = rt.get_w()/2;
 	pt.y = 0;
 	sz.w = namewidth;
 	sz.h = xui_propview::default_lineheight;
@@ -154,7 +154,7 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	subyedit->on_perform_sz(sz);
 	//namectrl
 	s32 indent = get_indent();
-	m_namectrl->on_perform_w(rt.get_w()/3);
+	m_namectrl->on_perform_w(rt.get_w()/2);
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 

@@ -90,7 +90,7 @@ xui_method_explain(onity_propctrl_flip, on_perform,			void			)( xui_method_args&
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
 	//horzctrl
-	pt.x  = rt.get_w()/3;
+	pt.x  = rt.get_w()/2;
 	pt.y  = rt.get_h()/2 - m_horzctrl->get_renderh()/2;
 	m_horzctrl->on_perform_pt(pt);
 	//vertctrl
@@ -98,7 +98,7 @@ xui_method_explain(onity_propctrl_flip, on_perform,			void			)( xui_method_args&
 	m_vertctrl->on_perform_pt(pt);
 	//namectrl
 	s32 indent = get_indent();
-	m_namectrl->on_perform_w (rt.get_w()/3);
+	m_namectrl->on_perform_w (rt.get_w()/2);
 	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
