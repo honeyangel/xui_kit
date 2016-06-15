@@ -451,12 +451,12 @@ xui_method_explain(onity_tileview, draw_file,					void				)( const xui_rect2d<s3
 		if (node->was_expanded())
 		{
 			plusrt.oft_x( 1);
-			icon = onity_resource::icon_play;
+			icon = onity_resource::icon_back;
 		}
 		else
 		{
 			plusrt.oft_x(-1);
-			icon = onity_resource::icon_back;
+			icon = onity_resource::icon_play;
 		}
 		xui_convas::get_ins()->draw_image(icon, plusrt, xui_colour::white);
 	}

@@ -31,39 +31,41 @@ public:
 	/*
 	//property
 	*/
-	const xui_proproot_vec&	get_proproot	( void ) const;
-	void					set_proproot	( xui_proproot* proproot );
-	void					set_proproot	( const xui_proproot_vec& proproot );
-	void					add_propelse	( const xui_proproot_vec& lastroot, xui_proproot* propelse );
-	void					del_propelse	( const xui_proproot_vec& lastroot );
-	void					del_proproot	( xui_proproot* proproot );
+	const xui_proproot_vec&	get_proproot		( void ) const;
+	void					set_proproot		( xui_proproot* proproot );
+	void					set_proproot		( const xui_proproot_vec& proproot );
+	void					add_propelse		( const xui_proproot_vec& lastroot, xui_proproot* propelse );
+	void					del_propelse		( const xui_proproot_vec& lastroot );
+	void					del_proproot		( xui_proproot* proproot );
 
 	/*
 	//virtual
 	*/
-	virtual void			render_else		( void );
+	virtual void			render_else			( void );
 
 	/*
 	//method
 	*/
-	void					reset			( void );
+	u32						get_kindctrlcount	( void ) const;
+	xui_control*			get_kindctrl		( u32 index );
+	void					reset				( void );
 
 protected:
 	/*
 	//override
 	*/
-	virtual void			on_invalid		( xui_method_args& args );
-	virtual void			on_perform		( xui_method_args& args );
+	virtual void			on_invalid			( xui_method_args& args );
+	virtual void			on_perform			( xui_method_args& args );
 
 	/*
 	//method
 	*/
-	void					del_kindctrl	( xui_proproot* proproot );
-	void					del_kindctrl	( xui_propkind* propkind );
-	void					del_kindctrlall	( void );
-	xui_kindctrl*			get_kindctrl	( xui_propkind* propkind );
-	xui_propkind_vec		get_samekind	( void );
-	xui_propkind_vec		get_propkindall	( xui_propkind* propkind );
+	void					del_kindctrl		( xui_proproot* proproot );
+	void					del_kindctrl		( xui_propkind* propkind );
+	void					del_kindctrlall		( void );
+	xui_kindctrl*			get_kindctrl		( xui_propkind* propkind );
+	xui_propkind_vec		get_samekind		( void );
+	xui_propkind_vec		get_propkindall		( xui_propkind* propkind );
 
 	/*
 	//def

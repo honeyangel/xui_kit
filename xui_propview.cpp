@@ -239,6 +239,14 @@ xui_method_explain(xui_propview, del_proproot,		void					)( xui_proproot* propro
 /*
 //method
 */
+xui_method_explain(xui_propview, get_kindctrlcount,	u32						)( void ) const
+{
+	return m_ascrollitem.size();
+}
+xui_method_explain(xui_propview, get_kindctrl,		xui_control*			)( u32 index )
+{
+	return m_ascrollitem[index];
+}
 xui_method_explain(xui_propview, reset,				void					)( void )
 {
 	//detach

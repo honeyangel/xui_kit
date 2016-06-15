@@ -36,11 +36,11 @@ xui_delete_explain(onity_propparticle)( void )
 /*
 //method
 */
-xui_method_explain(onity_propparticle, get_particle,	NPParticleSFX*	)( void )
+xui_method_explain(onity_propparticle, get_particle,		NPParticleSFX*	)( void )
 {
 	return m_particle;
 }
-xui_method_explain(onity_propparticle, add_spritesrc,	void			)( void )
+xui_method_explain(onity_propparticle, add_spritesrc,		void			)( void )
 {
 	m_modify = true;
 
@@ -52,7 +52,7 @@ xui_method_explain(onity_propparticle, add_spritesrc,	void			)( void )
 	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
 	inspector->get_propview()->reset();
 }
-xui_method_explain(onity_propparticle, del_spritesrc,	void			)( xui_propkind* propkind )
+xui_method_explain(onity_propparticle, del_spritesrc,		void			)( xui_propkind* propkind )
 {
 	m_modify = true;
 
@@ -66,23 +66,61 @@ xui_method_explain(onity_propparticle, del_spritesrc,	void			)( xui_propkind* pr
 	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
 	inspector->get_propview()->reset();
 }
+xui_method_explain(onity_propparticle, set_spritesrcindex,	void			)( xui_propkind* propkind, u32 oldindex, u32 newindex )
+{
+	m_modify = true;
+
+	NPParticleCommonSRC* src = m_particle->At(oldindex);
+	m_particle->Detach(src);
+
+	for (u32 i = 0; i < m_propkind.size(); ++i)
+	{
+		if (m_propkind[i] == propkind)
+		{
+			m_propkind.erase(m_propkind.begin()+i);
+			break;
+		}
+	}
+
+	if (oldindex < newindex)
+		--newindex;
+
+	m_particle->Attach(src, newindex);
+	for (u32 i = 0, index = 0; i < m_propkind.size(); ++i)
+	{
+		onity_propkind_particlesrc* propkindsrc = dynamic_cast<onity_propkind_particlesrc*>(m_propkind[i]);
+		if (propkindsrc)
+		{
+			if (index == newindex)
+			{
+				m_propkind.insert(m_propkind.begin()+i, propkind);
+				break;
+			}
+
+			++index;
+		}
+	}
+
+	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+	inspector->get_propview()->reset();
+}
 
 /*
 //override
 */
-xui_method_explain(onity_propparticle, get_dragtype,	std::string		)( void )
+xui_method_explain(onity_propparticle, get_dragtype,		std::string		)( void )
 {
 	return "NPParticleSFX";
 }
-xui_method_explain(onity_propparticle, get_dragdata,	void*			)( void )
+xui_method_explain(onity_propparticle, get_dragdata,		void*			)( void )
 {
 	return get_particle();
 }
-xui_method_explain(onity_propparticle, was_modify,		bool			)( void )
+xui_method_explain(onity_propparticle, was_modify,			bool			)( void )
 {
 	return m_modify;
 }
-xui_method_explain(onity_propparticle, load,			void			)( void )
+xui_method_explain(onity_propparticle, load,				void			)( void )
 {
 	m_modify = false;
 
@@ -123,7 +161,7 @@ xui_method_explain(onity_propparticle, load,			void			)( void )
 		}
 	}
 }
-xui_method_explain(onity_propparticle, save,			void			)( void )
+xui_method_explain(onity_propparticle, save,				void			)( void )
 {
 	m_modify = false;
 	m_particle->SaveIntoXML(xui_global::unicode_to_ascii(m_fullname));
@@ -132,7 +170,7 @@ xui_method_explain(onity_propparticle, save,			void			)( void )
 /*
 //event
 */
-xui_method_explain(onity_propparticle, on_propchanged,	void			)( xui_component* sender, xui_method_propdata&	args )
+xui_method_explain(onity_propparticle, on_propchanged,		void			)( xui_component* sender, xui_method_propdata&	args )
 {
 	std::wstring name = args.propdata->get_name();
 	if (name == L"TexAtlasBiasX" ||
@@ -147,7 +185,7 @@ xui_method_explain(onity_propparticle, on_propchanged,	void			)( xui_component* 
 
 	m_modify = true;
 }
-xui_method_explain(onity_propparticle, on_flagchanged,	void			)( xui_component* sender, xui_method_args&		args )
+xui_method_explain(onity_propparticle, on_flagchanged,		void			)( xui_component* sender, xui_method_args&		args )
 {
 	xui_toggle*   toggle   = xui_dynamic_cast(xui_toggle,   sender);
 	xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, toggle->get_parent());

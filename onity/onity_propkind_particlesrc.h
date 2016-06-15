@@ -19,25 +19,25 @@ public:
 	/*
 	//method
 	*/
-	NPParticleSpriteSRC*	get_spritesrc		( void );
+	NPParticleSpriteSRC*	get_spritesrc			( void );
 
 protected:
 	/*
 	//method
 	*/
-	void					add_common			( void );
-	void					add_sprite			( void );
-	void					add_senior			( void );
+	void					add_common				( void );
+	void					add_sprite				( void );
+	void					add_senior				( void );
 
 	/*
 	//static
 	*/
-	static f64				get_maxamount		( void* userptr );
-	static void				set_maxamount		( void* userptr, f64 value );
-	static s32				get_origin			( void* userptr );
-	static void				set_origin			( void* userptr, s32 value );
-	static void*			get_texfile			( void* userptr );
-	static void				set_texfile			( void* userptr, void* value );
+	static f64				get_maxamount			( void* userptr );
+	static void				set_maxamount			( void* userptr, f64 value );
+	static s32				get_origin				( void* userptr );
+	static void				set_origin				( void* userptr, s32 value );
+	static void*			get_texfile				( void* userptr );
+	static void				set_texfile				( void* userptr, void* value );
 
 	/*
 	//member
@@ -57,7 +57,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_kindctrl*	create				( xui_propkind* propkind );
+	static xui_kindctrl*	create					( xui_propkind* propkind );
 
 	/*
 	//constructor
@@ -68,19 +68,30 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_perform			( xui_method_args& args );
+	virtual void			on_perform				( xui_method_args& args );
 
 	/*
 	//event
 	*/
-	void					on_killctrlclick	( xui_component* sender, xui_method_args& args );
-	void					on_iconrenderself	( xui_component* sender, xui_method_args& args );
+	void					on_killctrlclick		( xui_component* sender, xui_method_args& args );
+	void					on_iconviewrenderself	( xui_component* sender, xui_method_args& args );
+	void					on_sortctrlupdateself	( xui_component* sender, xui_method_update& args );
+	void					on_sortctrlrenderself	( xui_component* sender, xui_method_args&	args );
+	void					on_sortctrltopdraw		( xui_component* sender, xui_method_args&	args );
+	void					on_sortctrlmouserise	( xui_component* sender, xui_method_mouse&	args );
+
+	/*
+	//method
+	*/
+	u32						get_sortdrag			( void );
+	u32						get_sortdrop			( const xui_vector<s32>& pt );
 
 	/*
 	//member
 	*/
 	onity_renderview*		m_iconview;
 	xui_button*				m_killctrl;
+	xui_drawer*				m_sortctrl;
 };
 class onity_kindctrl_particleadd : public xui_kindctrl
 {
@@ -90,7 +101,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_kindctrl*	create				( xui_propkind* propkind );
+	static xui_kindctrl*	create					( xui_propkind* propkind );
 
 	/*
 	//constructor
@@ -101,18 +112,18 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_perform			( xui_method_args& args );
+	virtual void			on_perform				( xui_method_args& args );
 
 	/*
 	//override
 	*/
-	virtual s32				get_elsectrlsize	( void );
-	virtual s32				get_prevctrlsize	( void );
+	virtual s32				get_elsectrlsize		( void );
+	virtual s32				get_prevctrlsize		( void );
 
 	/*
 	//event
 	*/
-	void					on_prevctrlclick	( xui_component* sender, xui_method_args& args );
+	void					on_prevctrlclick		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
