@@ -261,21 +261,37 @@ xui_method_explain(xui_propview, reset,				void					)( void )
 	//set
 	for (u32 i = 0; i < m_proprootvec.size(); ++i)
 		m_proprootvec[i]->set_ctrl(this);
-	for (u32 i = 0; i < m_proprootvec.size(); ++i)
-		m_proprootvec[i]->on_attach();
 
-	xui_propkind_vec vec = get_samekind();
-	for (u32 i = 0; i < vec.size(); ++i)
+	if (m_proprootvec.size() == 1)
 	{
-		xui_propkind* propkind = vec[i];
-		xui_kindctrl* kindctrl = get_kindctrl(propkind);
-		if (kindctrl)
+		const xui_propkind_vec& vec = m_proproot->get_propkind();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			xui_propkind_vec propkindall = get_propkindall(propkind);
-			kindctrl->set_propkind(propkindall);
-			for (xui_propkind_vec::iterator itor = propkindall.begin(); itor != propkindall.end(); ++itor)
+			xui_propkind* propkind = vec[i];
+			xui_kindctrl* kindctrl = get_kindctrl(propkind);
+			if (kindctrl)
 			{
-				(*itor)->set_ctrl(kindctrl);
+				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
+				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
+			}
+		}
+	}
+	else
+	if (m_proprootvec.size() >  1)
+	{
+		xui_propkind_vec vec = get_samekind();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			xui_propkind* propkind = vec[i];
+			xui_kindctrl* kindctrl = get_kindctrl(propkind);
+			if (kindctrl)
+			{
+				xui_propkind_vec propkindall = get_propkindall(propkind);
+				kindctrl->set_propkind(propkindall);
+				for (xui_propkind_vec::iterator itor = propkindall.begin(); itor != propkindall.end(); ++itor)
+				{
+					(*itor)->set_ctrl(kindctrl);
+				}
 			}
 		}
 	}

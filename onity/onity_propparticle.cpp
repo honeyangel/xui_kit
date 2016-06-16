@@ -86,18 +86,13 @@ xui_method_explain(onity_propparticle, set_spritesrcindex,	void			)( xui_propkin
 		--newindex;
 
 	m_particle->Attach(src, newindex);
-	for (u32 i = 0, index = 0; i < m_propkind.size(); ++i)
+	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
 		onity_propkind_particlesrc* propkindsrc = dynamic_cast<onity_propkind_particlesrc*>(m_propkind[i]);
 		if (propkindsrc)
 		{
-			if (index == newindex)
-			{
-				m_propkind.insert(m_propkind.begin()+i, propkind);
-				break;
-			}
-
-			++index;
+			m_propkind.insert(m_propkind.begin()+i+newindex, propkind);
+			break;
 		}
 	}
 

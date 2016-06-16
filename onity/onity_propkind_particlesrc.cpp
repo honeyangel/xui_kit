@@ -485,7 +485,7 @@ xui_method_explain(onity_kindctrl_particlesrc, on_sortctrlmouserise,	void				)( 
 			{
 				for (u32 i = 0; i < m_propkindvec.size(); ++i)
 				{
-					onity_propparticle* propparticle = dynamic_cast<onity_propparticle*>(m_propkindvec[i]);
+					onity_propparticle* propparticle = dynamic_cast<onity_propparticle*>(m_propkindvec[i]->get_root());
 					propparticle->set_spritesrcindex(m_propkindvec[i], dragelem, dropelem);
 				}
 			}
