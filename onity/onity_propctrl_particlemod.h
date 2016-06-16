@@ -33,6 +33,69 @@ class NPParticleFixedColorMOD;
 class NPParticleOverLifeColorMOD;
 class NPParticleSeedColorMOD;
 
+struct NPCurveControlPoint;
+class onity_propdata_curve : public xui_propdata
+{
+public:
+	/*
+	//constructor
+	*/
+	onity_propdata_curve( xui_propkind* kind, const std::wstring& name, NPCurveControlPoint* ptr );
+
+	/*
+	//method
+	*/
+	NPCurveControlPoint		get_value				( void ) const;
+	void					set_value				( const NPCurveControlPoint& value );
+
+protected:
+	/*
+	//member
+	*/
+	NPCurveControlPoint*	m_ptr;
+};
+class onity_propctrl_curve : public xui_propctrl
+{
+	xui_declare_rtti
+
+public:
+	/*
+	//static
+	*/
+	static xui_propctrl*	create					( xui_propdata* propdata );
+
+	/*
+	//constructor
+	*/
+	onity_propctrl_curve( void );
+
+	/*
+	//override
+	*/
+	virtual void			on_linkpropdata			( void );
+	virtual void			on_editvalue			( xui_propedit* sender );
+
+protected:
+	/*
+	//callback
+	*/
+	virtual void			on_perform				( xui_method_args& args );
+
+	/*
+	//event
+	*/
+	void					on_enumctrlselection	( xui_component* sender, xui_method_args& args );
+	void					on_textctrltextchanged	( xui_component* sender, xui_method_args& args );
+
+	/*
+	//member
+	*/
+	xui_drawer*				m_namectrl;
+	xui_dropbox*			m_enumctrl;
+	xui_numbbox*			m_timectrl;
+	xui_numbbox*			m_numbctrl;
+};
+
 class onity_propdata_particlemod : public xui_propdata
 {
 public:
@@ -59,12 +122,6 @@ public:
 	virtual void			non_ctrl				( void );
 
 protected:
-	/*
-	//typedef
-	*/
-	//typedef std::map<xui_propdata*, NPParticleMOD*> 
-	//	modify_propdata_map;
-
 	/*
 	//method
 	*/

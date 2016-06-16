@@ -771,7 +771,9 @@ public:
 				}
 				else
 				{
-					vec.push_back(T(0));
+					T ins;
+					memset(&ins, 0, sizeof(T));
+					vec.push_back(ins);
 				}
 			}
 
@@ -885,7 +887,9 @@ public:
 				}
 				else
 				{
-					lst.push_back(T(0));
+					T ins;
+					memset(&ins, 0, sizeof(T));
+					lst.push_back(ins);
 				}
 			}
 

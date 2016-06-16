@@ -9,6 +9,7 @@
 #include "NPParticleModColorClasses.h"
 #include "NPParticleModVelocityClasses.h"
 
+#include "xui_propctrl_stdvec.h"
 #include "xui_convas.h"
 #include "xui_desktop.h"
 #include "xui_menu.h"
@@ -17,13 +18,42 @@
 #include "xui_toggle.h"
 #include "xui_listview.h"
 #include "xui_listitem.h"
-#include "xui_textbox.h"
+#include "xui_numbbox.h"
+#include "xui_dropbox.h"
 #include "xui_propkind.h"
 #include "onity_propctrl_particlemod.h"
 
 //////////////////////////////////////////////////////////////////////////
 //propdata
 //////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(onity_propdata_curve)( xui_propkind* kind, const std::wstring& name, NPCurveControlPoint* ptr )
+: xui_propdata(kind, name, onity_propctrl_curve::create)
+, m_ptr(ptr)
+{}
+
+/*
+//method
+*/
+xui_method_explain(onity_propdata_curve,		get_value,					NPCurveControlPoint		)( void ) const
+{
+	return (*m_ptr);
+}
+xui_method_explain(onity_propdata_curve,		set_value,					void					)( const NPCurveControlPoint& value )
+{
+	if (m_ptr->Interp   != value.Interp   ||
+		m_ptr->KeyValue != value.KeyValue ||
+		m_ptr->RetValue != value.RetValue ||
+		m_ptr->TanEnter != value.TanEnter ||
+		m_ptr->TanLeave != value.TanLeave)
+	{
+		*m_ptr = value;
+		on_valuechanged();
+	}
+}
+
 /*
 //constructor
 */
@@ -47,11 +77,11 @@ xui_delete_explain(onity_propdata_particlemod)( void )
 /*
 //method
 */
-xui_method_explain(onity_propdata_particlemod, get_modifydatavec,		const xui_propdata_vec&	)( void ) const
+xui_method_explain(onity_propdata_particlemod,	get_modifydatavec,			const xui_propdata_vec&	)( void ) const
 {
 	return m_spritemodvec;
 }
-xui_method_explain(onity_propdata_particlemod, add_modify,				xui_propdata*			)( NPParticleMOD* mod )
+xui_method_explain(onity_propdata_particlemod,	add_modify,					xui_propdata*			)( NPParticleMOD* mod )
 {
 	m_spritesrc->Attach(mod);
 	xui_propdata* propdata = add_modifydata(mod);
@@ -62,7 +92,7 @@ xui_method_explain(onity_propdata_particlemod, add_modify,				xui_propdata*			)(
 
 	return propdata;
 }
-xui_method_explain(onity_propdata_particlemod, del_modify,				void					)( xui_propdata* propdata )
+xui_method_explain(onity_propdata_particlemod,	del_modify,					void					)( xui_propdata* propdata )
 {
 	for (u32 i = 0; i < m_spritemodvec.size(); ++i)
 	{
@@ -86,17 +116,17 @@ xui_method_explain(onity_propdata_particlemod, del_modify,				void					)( xui_pr
 /*
 //override
 */
-xui_method_explain(onity_propdata_particlemod, non_ctrl,				void					)( void )
+xui_method_explain(onity_propdata_particlemod,	non_ctrl,					void					)( void )
 {
 	xui_propdata::non_ctrl();
 	for (u32 i = 0; i < m_spritemodvec.size(); ++i)
 		m_spritemodvec[i]->non_ctrl();
 }
-
+	
 /*
 //method
 */
-xui_method_explain(onity_propdata_particlemod, add_modifydata,			xui_propdata*			)( NPParticleMOD* mod )
+xui_method_explain(onity_propdata_particlemod,	add_modifydata,				xui_propdata*			)( NPParticleMOD* mod )
 {
 	xui_propdata* propdata = NULL;
 
@@ -136,7 +166,7 @@ xui_method_explain(onity_propdata_particlemod, add_modifydata,			xui_propdata*		
 
 	return propdata;
 }
-xui_method_explain(onity_propdata_particlemod, new_seedlifetime,		xui_propdata*			)( NPParticleSeedLifetimeMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedlifetime,			xui_propdata*			)( NPParticleSeedLifetimeMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -154,7 +184,7 @@ xui_method_explain(onity_propdata_particlemod, new_seedlifetime,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"SeedLifetime", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_attractaccel,		xui_propdata*			)( NPParticleAttractAccelMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_attractaccel,			xui_propdata*			)( NPParticleAttractAccelMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -184,7 +214,7 @@ xui_method_explain(onity_propdata_particlemod, new_attractaccel,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"AttractAccel", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_dampingaccel,		xui_propdata*			)( NPParticleDampingAccelMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_dampingaccel,			xui_propdata*			)( NPParticleDampingAccelMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -196,7 +226,7 @@ xui_method_explain(onity_propdata_particlemod, new_dampingaccel,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"DampingAccel", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_seedaccel,			xui_propdata*			)( NPParticleSeedAccelMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedaccel,				xui_propdata*			)( NPParticleSeedAccelMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -226,7 +256,7 @@ xui_method_explain(onity_propdata_particlemod, new_seedaccel,			xui_propdata*			
 
 	return new xui_propdata_expand(m_kind, L"SeedAccel", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_sineaccel,			xui_propdata*			)( NPParticleSineAccelMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_sineaccel,				xui_propdata*			)( NPParticleSineAccelMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -250,7 +280,7 @@ xui_method_explain(onity_propdata_particlemod, new_sineaccel,			xui_propdata*			
 
 	return new xui_propdata_expand(m_kind, L"SineAccel", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_seedlocation,		xui_propdata*			)( NPParticleSeedLocationMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedlocation,			xui_propdata*			)( NPParticleSeedLocationMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -280,7 +310,7 @@ xui_method_explain(onity_propdata_particlemod, new_seedlocation,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"SeedLocation", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_orbitlocation,		xui_propdata*			)( NPParticleOrbitLocationMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_orbitlocation,			xui_propdata*			)( NPParticleOrbitLocationMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -310,7 +340,7 @@ xui_method_explain(onity_propdata_particlemod, new_orbitlocation,		xui_propdata*
 
 	return new xui_propdata_expand(m_kind, L"OrbitLocation", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_seedrotation,		xui_propdata*			)( NPParticleSeedRotation2DMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedrotation,			xui_propdata*			)( NPParticleSeedRotation2DMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -340,17 +370,17 @@ xui_method_explain(onity_propdata_particlemod, new_seedrotation,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"SeedRotation", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_curveduniformsize,	xui_propdata*			)( NPParticleCurvedUniformSizeMOD*		mod )
+xui_method_explain(onity_propdata_particlemod,	new_curveduniformsize,		xui_propdata*			)( NPParticleCurvedUniformSizeMOD*		mod )
 {
 	xui_propdata_vec subprop;
 	return new xui_propdata_expand(m_kind, L"CurvedUniformSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_curvedsize,			xui_propdata*			)( NPParticleCurvedSizeMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_curvedsize,				xui_propdata*			)( NPParticleCurvedSizeMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	return new xui_propdata_expand(m_kind, L"CurvedSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_uniformoverlifesize, xui_propdata*			)( NPParticleUniformOverLifeSizeMOD*	mod )
+xui_method_explain(onity_propdata_particlemod,	new_uniformoverlifesize,	xui_propdata*			)( NPParticleUniformOverLifeSizeMOD*	mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -374,7 +404,7 @@ xui_method_explain(onity_propdata_particlemod, new_uniformoverlifesize, xui_prop
 
 	return new xui_propdata_expand(m_kind, L"UniformOverLifeSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_overlifesize,		xui_propdata*			)( NPParticleOverLifeSizeMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_overlifesize,			xui_propdata*			)( NPParticleOverLifeSizeMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -410,7 +440,7 @@ xui_method_explain(onity_propdata_particlemod, new_overlifesize,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"OverLifeSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_seedsize,			xui_propdata*			)( NPParticleSeedSizeMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedsize,				xui_propdata*			)( NPParticleSeedSizeMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -440,7 +470,7 @@ xui_method_explain(onity_propdata_particlemod, new_seedsize,			xui_propdata*			)
 
 	return new xui_propdata_expand(m_kind, L"SeedSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_uniformseedsize,		xui_propdata*			)( NPParticleUniformSeedSizeMOD*		mod )
+xui_method_explain(onity_propdata_particlemod,	new_uniformseedsize,		xui_propdata*			)( NPParticleUniformSeedSizeMOD*		mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -458,7 +488,7 @@ xui_method_explain(onity_propdata_particlemod, new_uniformseedsize,		xui_propdat
 
 	return new xui_propdata_expand(m_kind, L"UniformSeedSize", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_flipbookuv,			xui_propdata*			)( NPParticleFlipbookUVMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_flipbookuv,				xui_propdata*			)( NPParticleFlipbookUVMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_bool(
@@ -483,7 +513,7 @@ xui_method_explain(onity_propdata_particlemod, new_flipbookuv,			xui_propdata*		
 
 	return new xui_propdata_expand(m_kind, L"FlipbookUV", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_scrollanim,			xui_propdata*			)( NPParticleScrollAnimMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_scrollanim,				xui_propdata*			)( NPParticleScrollAnimMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_bool(
@@ -508,7 +538,7 @@ xui_method_explain(onity_propdata_particlemod, new_scrollanim,			xui_propdata*		
 
 	return new xui_propdata_expand(m_kind, L"ScrollAnim", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_tilesubtex,			xui_propdata*			)( NPParticleTileSubTexMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_tilesubtex,				xui_propdata*			)( NPParticleTileSubTexMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<s32>(
@@ -520,7 +550,7 @@ xui_method_explain(onity_propdata_particlemod, new_tilesubtex,			xui_propdata*		
 
 	return new xui_propdata_expand(m_kind, L"TileSubTex", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_circlespawn,			xui_propdata*			)( NPParticleCircleSpawnMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_circlespawn,			xui_propdata*			)( NPParticleCircleSpawnMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -598,7 +628,7 @@ xui_method_explain(onity_propdata_particlemod, new_circlespawn,			xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"CircleSpawn", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_ellipsespawn,		xui_propdata*			)( NPParticleEllipseSpawnMod*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_ellipsespawn,			xui_propdata*			)( NPParticleEllipseSpawnMod*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -676,7 +706,7 @@ xui_method_explain(onity_propdata_particlemod, new_ellipsespawn,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"EllipseSpawn", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_attractvelocity,		xui_propdata*			)( NPParticleAttractVelocityMOD*		mod )
+xui_method_explain(onity_propdata_particlemod,	new_attractvelocity,		xui_propdata*			)( NPParticleAttractVelocityMOD*		mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -700,7 +730,7 @@ xui_method_explain(onity_propdata_particlemod, new_attractvelocity,		xui_propdat
 
 	return new xui_propdata_expand(m_kind, L"AttractVelocity", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_seedvelocity,		xui_propdata*			)( NPParticleSeedVelocityMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedvelocity,			xui_propdata*			)( NPParticleSeedVelocityMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -742,7 +772,7 @@ xui_method_explain(onity_propdata_particlemod, new_seedvelocity,		xui_propdata*	
 
 	return new xui_propdata_expand(m_kind, L"SeedVelocity", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_horizontalstop,		xui_propdata*			)( NPParticleHorizontalStopMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_horizontalstop,			xui_propdata*			)( NPParticleHorizontalStopMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_number_impl<f32>(
@@ -760,14 +790,34 @@ xui_method_explain(onity_propdata_particlemod, new_horizontalstop,		xui_propdata
 
 	return new xui_propdata_expand(m_kind, L"HorizontalStop", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_curvedcolor,			xui_propdata*			)( NPParticleCurvedColorMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_curvedcolor,			xui_propdata*			)( NPParticleCurvedColorMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	return new xui_propdata_expand(m_kind, L"CurvedColor", xui_propctrl_expand_plus::create, subprop);
 }
-xui_method_explain(onity_propdata_particlemod, new_curvedalpha,			xui_propdata*			)( NPParticleCurvedAlphaMOD*			mod )
+std::vector<NPCurveControlPoint>& get_curvedalphadata( void* userptr )
+{
+	NPParticleCurvedAlphaMOD* mod = (NPParticleCurvedAlphaMOD*)userptr;
+	return mod->mCurveChannelA.mControlPoints;
+}
+xui_propdata* new_curvedalphaprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedAlphaMOD* mod = (NPParticleCurvedAlphaMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelA.mControlPoints[index]));
+}
+xui_method_explain(onity_propdata_particlemod,	new_curvedalpha,			xui_propdata*			)( NPParticleCurvedAlphaMOD*			mod )
 {
 	xui_propdata_vec subprop;
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Alpha",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_curvedalphaprop,
+		get_curvedalphadata,
+		mod));
+
 	return new xui_propdata_expand(m_kind, L"CurvedAlpha", xui_propctrl_expand_plus::create, subprop);
 }
 
@@ -784,7 +834,7 @@ void		fixedcolor_setcolor( void* userptr, const xui_colour& value )
 	mod->mBaseColorG = value.g;
 	mod->mBaseColorB = value.b;
 }
-xui_method_explain(onity_propdata_particlemod, new_fixedcolor,			xui_propdata*			)( NPParticleFixedColorMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_fixedcolor,				xui_propdata*			)( NPParticleFixedColorMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_colour(
@@ -824,7 +874,7 @@ void		overlifecolor_setmaxcolor( void* userptr, const xui_colour& value )
 	mod->mMaxBaseColorG = value.g;
 	mod->mMaxBaseColorB = value.b;
 }
-xui_method_explain(onity_propdata_particlemod, new_overlifecolor,		xui_propdata*			)( NPParticleOverLifeColorMOD*			mod )
+xui_method_explain(onity_propdata_particlemod,	new_overlifecolor,			xui_propdata*			)( NPParticleOverLifeColorMOD*			mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_colour(
@@ -877,7 +927,7 @@ void		seedcolor_setmaxcolor( void* userptr, const xui_colour& value )
 	mod->mMaxBaseColorG = value.g;
 	mod->mMaxBaseColorB = value.b;
 }
-xui_method_explain(onity_propdata_particlemod, new_seedcolor,			xui_propdata*			)( NPParticleSeedColorMOD*				mod )
+xui_method_explain(onity_propdata_particlemod,	new_seedcolor,				xui_propdata*			)( NPParticleSeedColorMOD*				mod )
 {
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_colour(
@@ -901,6 +951,134 @@ xui_method_explain(onity_propdata_particlemod, new_seedcolor,			xui_propdata*			
 //////////////////////////////////////////////////////////////////////////
 //propctrl
 //////////////////////////////////////////////////////////////////////////
+xui_implement_rtti(onity_propctrl_curve, xui_propctrl);
+
+/*
+//constructor
+*/
+xui_create_explain(onity_propctrl_curve)( void )
+{
+	m_namectrl = new xui_drawer(xui_vector<s32>(128, 20));
+	xui_method_ptrcall(m_namectrl, set_parent		)(this);
+	xui_method_ptrcall(m_namectrl, set_textalign	)(TEXTALIGN_LC);
+
+	m_timectrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1);
+	xui_method_ptrcall(m_timectrl, set_parent		)(this);
+	xui_method_ptrcall(m_timectrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(m_timectrl, set_drawcolor	)(true);
+	xui_method_ptrcall(m_timectrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 4, 2));
+	xui_method_ptrcall(m_timectrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_timectrl, set_textalign	)(TEXTALIGN_LC);
+	xui_method_ptrcall(m_timectrl, xm_textchanged	) += new xui_method_member<xui_method_args, onity_propctrl_curve>(this, &onity_propctrl_curve::on_textctrltextchanged);
+
+	m_enumctrl = new xui_dropbox(xui_vector<s32>(128, 18), NULL);
+	xui_method_ptrcall(m_enumctrl, set_parent		)(this);
+	xui_method_ptrcall(m_enumctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(m_enumctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(m_enumctrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 0, 2));
+	xui_method_ptrcall(m_enumctrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_enumctrl, set_corner		)(3);
+	xui_method_ptrcall(m_enumctrl, set_readonly		)(true);
+	xui_method_ptrcall(m_enumctrl, add_item			)(L"Linear");
+	xui_method_ptrcall(m_enumctrl, add_item			)(L"Bezier");
+	xui_method_ptrcall(m_enumctrl, add_item			)(L"Break" );
+	xui_method_ptrcall(m_enumctrl, xm_selection		) += new xui_method_member<xui_method_args, onity_propctrl_curve>(this, &onity_propctrl_curve::on_enumctrlselection);
+
+	m_numbctrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1);
+	xui_method_ptrcall(m_numbctrl, set_parent		)(this);
+	xui_method_ptrcall(m_numbctrl, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(m_numbctrl, set_drawcolor	)(true);
+	xui_method_ptrcall(m_numbctrl, set_borderrt		)(xui_rect2d<s32>(4, 2, 4, 2));
+	xui_method_ptrcall(m_numbctrl, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_numbctrl, set_textalign	)(TEXTALIGN_LC);
+	xui_method_ptrcall(m_numbctrl, xm_textchanged	) += new xui_method_member<xui_method_args, onity_propctrl_curve>(this, &onity_propctrl_curve::on_textctrltextchanged);
+
+	m_widgetvec.push_back(m_namectrl);
+	m_widgetvec.push_back(m_timectrl);
+	m_widgetvec.push_back(m_enumctrl);
+	m_widgetvec.push_back(m_numbctrl);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_propctrl_curve,		create,						xui_propctrl*			)( xui_propdata* propdata )
+{
+	return new onity_propctrl_curve;
+}
+
+/*
+//override
+*/
+xui_method_explain(onity_propctrl_curve,		on_linkpropdata,			void					)( void )
+{
+	m_namectrl->set_text(m_propdata->get_name());
+	m_timectrl->ini_textbox(L"");
+	m_enumctrl->ini_dropbox(-1);
+	m_numbctrl->ini_textbox(L"");
+
+	onity_propdata_curve* datacurve = dynamic_cast<onity_propdata_curve*>(m_propdata);
+	NPCurveControlPoint value = datacurve->get_value();
+	m_enumctrl->ini_dropbox((u32)value.Interp);
+	std::wstringstream time;
+	time << value.KeyValue;
+	m_timectrl->ini_textbox(time.str());
+	std::wstringstream numb;
+	numb << value.RetValue;
+	m_numbctrl->ini_textbox(numb.str());
+}
+xui_method_explain(onity_propctrl_curve,		on_editvalue,				void					)( xui_propedit* sender )
+{
+	onity_propdata_curve* datacurve = dynamic_cast<onity_propdata_curve*>(m_propdata);
+	NPCurveControlPoint value = datacurve->get_value();
+	value.Interp = (ECurveInterpMode)m_enumctrl->get_selectedindex();
+	std::wstringstream time(m_timectrl->get_text().c_str());
+	time >> value.KeyValue;
+	std::wstringstream numb(m_numbctrl->get_text().c_str());
+	numb >> value.RetValue;
+	datacurve->set_value(value);
+}
+
+/*
+//callback
+*/
+xui_method_explain(onity_propctrl_curve,		on_perform,					void					)( xui_method_args& args )
+{
+	xui_propctrl::on_perform(args);
+
+	xui_rect2d<s32> rt = get_renderrt();
+	xui_vector<s32> pt;
+	//timectrl
+	pt.x = rt.get_w()/2;
+	pt.y = rt.get_h()/2 - m_timectrl->get_renderh()/2;
+	m_timectrl->on_perform_pt(pt);
+	//numbctrl
+	pt.x = rt.bx -		  m_numbctrl->get_renderw();
+	pt.y = rt.get_h()/2 - m_numbctrl->get_renderh()/2;
+	m_numbctrl->on_perform_pt(pt);
+	//enumctrl
+	pt.x = rt.get_w()/2 + m_timectrl->get_renderw() + 4;
+	pt.y = rt.get_h()/2 - m_enumctrl->get_renderh()/2;
+	m_enumctrl->on_perform_pt(pt);
+	m_enumctrl->on_perform_w (m_numbctrl->get_renderx() - 4 - pt.x);
+	//namectrl
+	s32 indent = get_indent();
+	m_namectrl->on_perform_w (rt.get_w()/2);
+	m_namectrl->set_textoffset(xui_vector<s32>(indent, 0));
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propctrl_curve,		on_enumctrlselection,		void					)( xui_component* sender, xui_method_args& args )
+{
+	on_editvalue(NULL);
+}
+xui_method_explain(onity_propctrl_curve,		on_textctrltextchanged,		void					)( xui_component* sender, xui_method_args& args )
+{
+	on_editvalue(NULL);
+}
+
 xui_implement_rtti(onity_propctrl_particlemod, xui_propctrl);
 
 /*
@@ -1049,7 +1227,7 @@ xui_create_explain(onity_propctrl_particlemod)( xui_propdata* propdata )
 /*
 //static
 */
-xui_method_explain(onity_propctrl_particlemod, create,					xui_propctrl*			)( xui_propdata* propdata )
+xui_method_explain(onity_propctrl_particlemod,	create,						xui_propctrl*			)( xui_propdata* propdata )
 {
 	return new onity_propctrl_particlemod(propdata);
 }
@@ -1057,7 +1235,7 @@ xui_method_explain(onity_propctrl_particlemod, create,					xui_propctrl*			)( xu
 /*
 //override
 */
-xui_method_explain(onity_propctrl_particlemod, on_linkpropdata,			void					)( void )
+xui_method_explain(onity_propctrl_particlemod,	on_linkpropdata,			void					)( void )
 {
 	onity_propdata_particlemod*  dataspritemod = dynamic_cast<onity_propdata_particlemod*>(m_propdata);
 	const xui_propdata_vec& datavec = dataspritemod->get_modifydatavec();
@@ -1076,13 +1254,13 @@ xui_method_explain(onity_propctrl_particlemod, on_linkpropdata,			void					)( vo
 	xui_method_ptrcall(m_nontip, ini_component	)(true, datavec.size() == 0);
 	xui_method_ptrcall(m_middle, refresh		)();
 }
-xui_method_explain(onity_propctrl_particlemod, on_editvalue,			void					)( xui_propedit* sender )
+xui_method_explain(onity_propctrl_particlemod,	on_editvalue,				void					)( xui_propedit* sender )
 {}
 
 /*
 //callback
 */
-xui_method_explain(onity_propctrl_particlemod, on_renderback,			void					)( xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_renderback,				void					)( xui_method_args& args )
 {
 	xui_propctrl::on_renderback(args);
 
@@ -1123,7 +1301,7 @@ xui_method_explain(onity_propctrl_particlemod, on_renderback,			void					)( xui_
 		rt.bx,		   
 		rt.by), color,  0, 90, 1);
 }
-xui_method_explain(onity_propctrl_particlemod, on_invalid,				void					)( xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_invalid,					void					)( xui_method_args& args )
 {
 	xui_vector<s32> sz;
 	sz.w  = get_renderw();
@@ -1141,7 +1319,7 @@ xui_method_explain(onity_propctrl_particlemod, on_invalid,				void					)( xui_me
 		perform();
 	}
 }
-xui_method_explain(onity_propctrl_particlemod, on_perform,				void					)( xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_perform,					void					)( xui_method_args& args )
 {
 	xui_propctrl::on_perform(args);
 
@@ -1180,14 +1358,14 @@ xui_method_explain(onity_propctrl_particlemod, on_perform,				void					)( xui_me
 /*
 //event
 */
-xui_method_explain(onity_propctrl_particlemod, on_middleinvalid,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_middleinvalid,			void					)( xui_component* sender, xui_method_args& args )
 {
 	s32 h = (m_middle->get_itemcount() == 0) ? m_nontip->get_renderh() : (m_middle->get_itemcount() * m_middle->get_lineheight());
 	h += m_middle->get_borderrt().ay;
 	h += m_middle->get_borderrt().by;
 	m_middle->set_renderh(h);
 }
-xui_method_explain(onity_propctrl_particlemod, on_middleselection,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_middleselection,			void					)( xui_component* sender, xui_method_args& args )
 {
 	xui_propdata_vec datavec = m_expand->get_propdata();
 	for (u32 i = 0; i < datavec.size(); ++i)
@@ -1207,7 +1385,7 @@ xui_method_explain(onity_propctrl_particlemod, on_middleselection,		void					)( 
 	m_expand->set_visible(itemvec.size() > 0);
 	refresh();
 }
-xui_method_explain(onity_propctrl_particlemod, on_deleteclick,			void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_deleteclick,				void					)( xui_component* sender, xui_method_args& args )
 {
 	std::vector<xui_listitem*> itemvec = m_middle->get_selecteditem();
 	if (itemvec.size() > 0)
@@ -1225,7 +1403,7 @@ xui_method_explain(onity_propctrl_particlemod, on_deleteclick,			void					)( xui
 		m_middle->del_item(item);
 	}
 }
-xui_method_explain(onity_propctrl_particlemod, on_menuclick,			void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_menuclick,				void					)( xui_component* sender, xui_method_args& args )
 {
 	NPParticleMOD* mod = NULL;
 
@@ -1265,7 +1443,7 @@ xui_method_explain(onity_propctrl_particlemod, on_menuclick,			void					)( xui_c
 		item->set_data(data);
 	}
 }
-xui_method_explain(onity_propctrl_particlemod, on_deleterenderself,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_deleterenderself,		void					)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt		= sender->get_renderrtabs();
 	xui_colour		color   = sender->get_rendercolor() * sender->get_vertexcolor();
@@ -1277,7 +1455,7 @@ xui_method_explain(onity_propctrl_particlemod, on_deleterenderself,		void					)(
 		center.x+4,
 		center.y+1), color);
 }
-xui_method_explain(onity_propctrl_particlemod, on_insertrenderself,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propctrl_particlemod,	on_insertrenderself,		void					)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt		= sender->get_renderrtabs();
 	xui_colour		color   = sender->get_rendercolor() * sender->get_vertexcolor();

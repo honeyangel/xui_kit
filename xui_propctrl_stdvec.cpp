@@ -295,7 +295,8 @@ xui_method_explain(xui_propctrl_stdvec,			on_propctrlperform,		void			)( xui_com
 	xui_component* sortctrl = propctrl->get_ctrlelse();
 	xui_vector<s32> pt;
 	xui_rect2d<s32> rt = propctrl->get_renderrt();
-	pt.x = rt.get_w()/2 - sortctrl->get_renderw() - 4;
+	s32 indent = propctrl->get_indent();
+	pt.x = indent       - sortctrl->get_renderw();
 	pt.y = rt.get_h()/2 - sortctrl->get_renderh() / 2;
 	sortctrl->on_perform_pt(pt);
 }
