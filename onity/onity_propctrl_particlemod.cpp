@@ -370,14 +370,73 @@ xui_method_explain(onity_propdata_particlemod,	new_seedrotation,			xui_propdata*
 
 	return new xui_propdata_expand(m_kind, L"SeedRotation", xui_propctrl_expand_plus::create, subprop);
 }
+std::vector<NPCurveControlPoint>& get_sizedata( void* userptr )
+{
+	NPParticleCurvedUniformSizeMOD* mod = (NPParticleCurvedUniformSizeMOD*)userptr;
+	return mod->mCurveChannelSize.mControlPoints;
+}
+xui_propdata* new_sizeprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedUniformSizeMOD* mod = (NPParticleCurvedUniformSizeMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelSize.mControlPoints[index]));
+}
 xui_method_explain(onity_propdata_particlemod,	new_curveduniformsize,		xui_propdata*			)( NPParticleCurvedUniformSizeMOD*		mod )
 {
 	xui_propdata_vec subprop;
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Size",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_sizeprop,
+		get_sizedata,
+		mod));
+
 	return new xui_propdata_expand(m_kind, L"CurvedUniformSize", xui_propctrl_expand_plus::create, subprop);
+}
+std::vector<NPCurveControlPoint>& get_sizexdata( void* userptr )
+{
+	NPParticleCurvedSizeMOD* mod = (NPParticleCurvedSizeMOD*)userptr;
+	return mod->mCurveChannelX.mControlPoints;
+}
+std::vector<NPCurveControlPoint>& get_sizeydata( void* userptr )
+{
+	NPParticleCurvedSizeMOD* mod = (NPParticleCurvedSizeMOD*)userptr;
+	return mod->mCurveChannelY.mControlPoints;
+}
+xui_propdata* new_sizexprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedSizeMOD* mod = (NPParticleCurvedSizeMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelX.mControlPoints[index]));
+}
+xui_propdata* new_sizeyprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedSizeMOD* mod = (NPParticleCurvedSizeMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelY.mControlPoints[index]));
 }
 xui_method_explain(onity_propdata_particlemod,	new_curvedsize,				xui_propdata*			)( NPParticleCurvedSizeMOD*				mod )
 {
 	xui_propdata_vec subprop;
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"SizeX",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_sizexprop,
+		get_sizexdata,
+		mod));
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"SizeY",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_sizeyprop,
+		get_sizeydata,
+		mod));
+
 	return new xui_propdata_expand(m_kind, L"CurvedSize", xui_propctrl_expand_plus::create, subprop);
 }
 xui_method_explain(onity_propdata_particlemod,	new_uniformoverlifesize,	xui_propdata*			)( NPParticleUniformOverLifeSizeMOD*	mod )
@@ -790,17 +849,94 @@ xui_method_explain(onity_propdata_particlemod,	new_horizontalstop,			xui_propdat
 
 	return new xui_propdata_expand(m_kind, L"HorizontalStop", xui_propctrl_expand_plus::create, subprop);
 }
+std::vector<NPCurveControlPoint>& get_coloradata( void* userptr )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return mod->mCurveChannelA.mControlPoints;
+}
+std::vector<NPCurveControlPoint>& get_colorrdata( void* userptr )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return mod->mCurveChannelR.mControlPoints;
+}
+std::vector<NPCurveControlPoint>& get_colorgdata( void* userptr )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return mod->mCurveChannelG.mControlPoints;
+}
+std::vector<NPCurveControlPoint>& get_colorbdata( void* userptr )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return mod->mCurveChannelB.mControlPoints;
+}
+xui_propdata* new_coloraprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelA.mControlPoints[index]));
+}
+xui_propdata* new_colorrprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelR.mControlPoints[index]));
+}
+xui_propdata* new_colorgprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelG.mControlPoints[index]));
+}
+xui_propdata* new_colorbprop( void* userptr, u32 index, xui_propkind* kind )
+{
+	NPParticleCurvedColorMOD* mod = (NPParticleCurvedColorMOD*)userptr;
+	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelB.mControlPoints[index]));
+}
 xui_method_explain(onity_propdata_particlemod,	new_curvedcolor,			xui_propdata*			)( NPParticleCurvedColorMOD*			mod )
 {
 	xui_propdata_vec subprop;
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Alpha",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_coloraprop,
+		get_coloradata,
+		mod));
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Red",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_colorrprop,
+		get_colorrdata,
+		mod));
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Green",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_colorgprop,
+		get_colorgdata,
+		mod));
+	subprop.push_back(new xui_propdata_stdvec_func<NPCurveControlPoint>(
+		m_kind,
+		L"Blue",
+		xui_propctrl_stdvec::create,
+		NULL,
+		NULL,
+		new_colorbprop,
+		get_colorbdata,
+		mod));
+
 	return new xui_propdata_expand(m_kind, L"CurvedColor", xui_propctrl_expand_plus::create, subprop);
 }
-std::vector<NPCurveControlPoint>& get_curvedalphadata( void* userptr )
+std::vector<NPCurveControlPoint>& get_alphadata( void* userptr )
 {
 	NPParticleCurvedAlphaMOD* mod = (NPParticleCurvedAlphaMOD*)userptr;
 	return mod->mCurveChannelA.mControlPoints;
 }
-xui_propdata* new_curvedalphaprop( void* userptr, u32 index, xui_propkind* kind )
+xui_propdata* new_alphaprop( void* userptr, u32 index, xui_propkind* kind )
 {
 	NPParticleCurvedAlphaMOD* mod = (NPParticleCurvedAlphaMOD*)userptr;
 	return new onity_propdata_curve(kind, L"", &(mod->mCurveChannelA.mControlPoints[index]));
@@ -814,8 +950,8 @@ xui_method_explain(onity_propdata_particlemod,	new_curvedalpha,			xui_propdata*	
 		xui_propctrl_stdvec::create,
 		NULL,
 		NULL,
-		new_curvedalphaprop,
-		get_curvedalphadata,
+		new_alphaprop,
+		get_alphadata,
 		mod));
 
 	return new xui_propdata_expand(m_kind, L"CurvedAlpha", xui_propctrl_expand_plus::create, subprop);
@@ -1048,19 +1184,23 @@ xui_method_explain(onity_propctrl_curve,		on_perform,					void					)( xui_method
 
 	xui_rect2d<s32> rt = get_renderrt();
 	xui_vector<s32> pt;
-	//timectrl
-	pt.x = rt.get_w()/2;
-	pt.y = rt.get_h()/2 - m_timectrl->get_renderh()/2;
-	m_timectrl->on_perform_pt(pt);
-	//numbctrl
-	pt.x = rt.bx -		  m_numbctrl->get_renderw();
-	pt.y = rt.get_h()/2 - m_numbctrl->get_renderh()/2;
-	m_numbctrl->on_perform_pt(pt);
+
 	//enumctrl
-	pt.x = rt.get_w()/2 + m_timectrl->get_renderw() + 4;
-	pt.y = rt.get_h()/2 - m_enumctrl->get_renderh()/2;
+	pt.x  = rt.get_w()/2;
+	pt.y  = rt.get_h()/2 - m_enumctrl->get_renderh()/2;
 	m_enumctrl->on_perform_pt(pt);
-	m_enumctrl->on_perform_w (m_numbctrl->get_renderx() - 4 - pt.x);
+
+	//timectrl
+	s32 textwidth = (rt.get_w()/2 - m_enumctrl->get_renderw() - 8) / 2;
+	pt.x += m_enumctrl->get_renderw() + 4;
+	pt.y  = rt.get_h()/2 - m_timectrl->get_renderh()/2;
+	m_timectrl->on_perform_pt(pt);
+	m_timectrl->on_perform_w (textwidth);
+	//numbctrl
+	pt.x += m_timectrl->get_renderw() + 4;
+	pt.y  = rt.get_h()/2 - m_numbctrl->get_renderh()/2;
+	m_numbctrl->on_perform_pt(pt);
+	m_numbctrl->on_perform_w (rt.bx - pt.x);
 	//namectrl
 	s32 indent = get_indent();
 	m_namectrl->on_perform_w (rt.get_w()/2);
