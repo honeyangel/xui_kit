@@ -260,6 +260,88 @@ xui_method_explain(onity_project, get_pathfile,				void		)( const std::wstring& 
 		}
 	}
 }
+xui_method_explain(onity_project, loc_filenode,				void		)( const std::wstring& path, const std::wstring& file, u32 id )
+{
+	m_search->set_text(L"");
+
+	onity_proppath* viewpath = NULL;
+	onity_propfile* viewfile = NULL;
+	std::vector<xui_treenode*> pathvec = m_pathview->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		onity_pathdata* pathdata = (onity_pathdata*)pathvec[i]->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		if (proppath->get_fullname() != path)
+			continue;
+
+		const xui_proproot_vec& vec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (onity_filedata::get_safe(propfile->get_fullname()) == file)
+			{
+				viewpath = proppath;
+				viewfile = propfile;
+				break;
+			}
+		}
+
+		if (viewfile)
+		{
+			xui_method_ptrcall(m_pathview, set_selectednode	)(pathnode, true);
+			xui_method_ptrcall(m_pathview, set_nodevisible	)(pathnode);
+			break;
+		}
+	}
+
+	xui_treenode* viewnode = NULL;
+	std::vector<xui_treenode*> filevec = m_fileview->get_lineview()->get_upmostnodearray();
+	for (u32 i = 0; i < filevec.size(); ++i)
+	{
+		xui_treenode*	filenode = filevec[i];
+		onity_filedata* filedata = (onity_filedata*)filenode->get_linkdata();
+		onity_propfile* propfile = dynamic_cast<onity_propfile*>(filedata->get_prop());
+		if (propfile == viewfile)
+		{
+			viewnode = filenode;
+			const std::vector<xui_treenode*>& vec = filenode->get_leafnodearray();
+			if (vec.size() > 0)
+			{
+				for (std::vector<xui_treenode*>::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
+				{
+					xui_treenode*		treenode = (*itor);
+					onity_treedata*		treedata = (onity_treedata*)treenode->get_linkdata();
+					onity_prop2dsasset* propleaf = dynamic_cast<onity_prop2dsasset*>(treedata->get_prop());
+					if (propleaf->get_assetid() == id)
+					{
+						viewnode = treenode;
+						break;
+					}
+				}
+
+				if (m_sizeroll->get_value() == 0)
+					m_sizeroll->set_value(10);
+				//viewpath->set_viewfile(viewfile);
+				//m_fileview->get_tileview()->set_viewfile(viewnode);
+				//m_sizeroll->set_value(viewpath->get_fileroll());
+				//refresh_pathtool();
+			}
+
+			break;
+		}
+	}
+
+	if (viewnode)
+	{
+		xui_treeview*   lineview = m_fileview->get_lineview();
+		onity_tileview* tileview = m_fileview->get_tileview();
+		xui_method_ptrcall(lineview, set_selectednode	)(viewnode, true);
+		xui_method_ptrcall(lineview, set_nodevisible	)(viewnode);
+		xui_method_ptrcall(tileview, set_tilevisible	)(viewnode);
+	}
+}
 
 /*
 //notify

@@ -28,8 +28,6 @@ protected:
 	static void				set_smooth		( void* userptr, bool  value );
 	static void*			get_spark		( void* userptr );
 	static void				set_spark		( void* userptr, void* value );
-	static xui_bitmap*		get_sparkicon	( xui_propdata* propdata );
-	static std::wstring		get_sparkname	( xui_propdata* propdata );
 	static std::wstring		get_event		( void* userptr );
 	static void				set_event		( void* userptr, const std::wstring& value );
 	static std::wstring		get_sound		( void* userptr );

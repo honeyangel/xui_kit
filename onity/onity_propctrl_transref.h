@@ -35,6 +35,32 @@ protected:
 	void						on_editctrlmouseleave	( xui_component* sender, xui_method_mouse& args );
 };
 
+class onity_propdata_particle : public xui_propdata_object_func
+{
+public:
+	/*
+	//constructor
+	*/
+	onity_propdata_particle( 
+		xui_propkind*			kind,
+		const std::wstring&		name,
+		get_func				userget,
+		set_func				userset,
+		void*					userptr );
+
+protected:
+	/*
+	//event
+	*/
+	void						on_doubleclick			( xui_component* sender, xui_method_args& args );
+
+	/*
+	//static
+	*/
+	static xui_bitmap*			get_icon				( xui_propdata* propdata );
+	static std::wstring			get_name				( xui_propdata* propdata );
+};
+
 class onity_propdata_2dsasset : public xui_propdata_object_func
 {
 public:
@@ -50,8 +76,12 @@ public:
 		set_func				userset,
 		void*					userptr );
 
-
 protected:
+	/*
+	//event
+	*/
+	void						on_doubleclick			( xui_component* sender, xui_method_args& args );
+
 	/*
 	//static
 	*/

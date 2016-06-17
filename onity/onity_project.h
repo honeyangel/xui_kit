@@ -32,6 +32,7 @@ public:
 	*/
 	void						ini_pathtree		( void );
 	void						get_pathfile		( const std::wstring& suff, xui_proproot_vec& filevec );
+	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 
 	/*
 	//notify

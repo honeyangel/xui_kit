@@ -1,8 +1,16 @@
+#include "NPFileName.h"
 #include "NP2DSAsset.h"
+#include "NP2DSImage.h"
+#include "NP2DSFrame.h"
+#include "NP2DSActor.h"
 #include "NP2DSAssetFile.h"
+#include "NP2DSImageFileMgr.h"
+#include "NP2DSFrameFileMgr.h"
+#include "NP2DSActorFileMgr.h"
 #include "NP2DSImageRef.h"
 #include "NP2DSFrameRef.h"
 #include "NP2DSActorRef.h"
+#include "NPParticleSFX.h"
 
 #include "xui_global.h"
 #include "xui_propview.h"
@@ -11,11 +19,67 @@
 #include "onity_resource.h"
 #include "onity_selector.h"
 #include "onity_proptransref.h"
+#include "onity_mainform.h"
+#include "onity_project.h"
 #include "onity_propctrl_transref.h"
 
 //////////////////////////////////////////////////////////////////////////
 //propdata
 //////////////////////////////////////////////////////////////////////////
+/*
+//constructor
+*/
+xui_create_explain(onity_propdata_particle)( 
+	xui_propkind*			kind, 
+	const std::wstring&		name, 
+	get_func				userget, 
+	set_func				userset, 
+	void*					userptr )
+: xui_propdata_object_func(kind, name, onity_propctrl_asset::create, "NPParticleSFX", onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
+{
+	xm_doubleclick += new xui_method_member<xui_method_args, onity_propdata_particle>(this, &onity_propdata_particle::on_doubleclick);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_propdata_particle, get_icon,				xui_bitmap*			)( xui_propdata* propdata )
+{
+	return onity_resource::icon_particle;
+}
+xui_method_explain(onity_propdata_particle, get_name,				std::wstring		)( xui_propdata* propdata )
+{
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
+	NPParticleSFX* particle = (NPParticleSFX*)dataobject->get_value();
+	if (particle)
+	{
+		std::string name = NPFileNameHelper::SafeName(particle->GetSourceFileName());
+		return xui_global::ascii_to_unicode(name);
+	}
+
+	return L"None";
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propdata_particle, on_doubleclick,			void				)( xui_component* sender, xui_method_args& args )
+{
+	NPParticleSFX* particle = (NPParticleSFX*)get_value();
+	if (particle)
+	{
+		std::string full = particle->GetSourceFileName();
+		std::string path = NPFileNameHelper::PathName(full);
+		std::string file = NPFileNameHelper::FileName(full);
+		path = path.substr(0, path.length()-1);
+		file = NPFileNameHelper::SafeName(file);
+
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->loc_filenode(xui_global::ascii_to_unicode(path), xui_global::ascii_to_unicode(file), 0);
+		onity_mainform::get_ptr()->set_pageshow(project);
+	}
+}
+
 /*
 //constructor
 */
@@ -32,6 +96,32 @@ xui_create_explain(onity_propdata_2dsasset)(
 	if (droptype & DROPTYPE_IMAGE)	add_droptype("NP2DSImage");
 	if (droptype & DROPTYPE_FRAME)	add_droptype("NP2DSFrame");
 	if (droptype & DROPTYPE_ACTOR)	add_droptype("NP2DSActor");
+
+	xm_doubleclick += new xui_method_member<xui_method_args, onity_propdata_2dsasset>(this, &onity_propdata_2dsasset::on_doubleclick);
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propdata_2dsasset, on_doubleclick,			void				)( xui_component* sender, xui_method_args& args )
+{
+	NP2DSAsset* asset = (NP2DSAsset*)get_value();
+	if (asset)
+	{
+		NP2DSAssetFileMgr* filemgr = NULL;
+		if (NPIsExaKindOf(NP2DSImage, asset)) filemgr = NP2DSImageFileMgr::GetIns();
+		if (NPIsExaKindOf(NP2DSFrame, asset)) filemgr = NP2DSFrameFileMgr::GetIns();
+		if (NPIsExaKindOf(NP2DSActor, asset)) filemgr = NP2DSActorFileMgr::GetIns();
+		u32 id = asset->GetOwnedFile()->GetKey();
+		std::string path = filemgr->GetFilePH(id);
+		std::string file = filemgr->GetFileFN(id);
+		path = path.substr(0, path.length()-1);
+		file = NPFileNameHelper::SafeName(file);
+
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->loc_filenode(xui_global::ascii_to_unicode(path), xui_global::ascii_to_unicode(file), asset->GetKey());
+		onity_mainform::get_ptr()->set_pageshow(project);
+	}
 }
 
 /*
@@ -40,9 +130,19 @@ xui_create_explain(onity_propdata_2dsasset)(
 xui_method_explain(onity_propdata_2dsasset, get_icon,				xui_bitmap*			)( xui_propdata* propdata )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
-	if		(dataobject->has_droptype("NP2DSImage")) return onity_resource::icon_module;
-	else if (dataobject->has_droptype("NP2DSFrame")) return onity_resource::icon_sprite;
-	else if (dataobject->has_droptype("NP2DSActor")) return onity_resource::icon_action;
+	NP2DSAsset* asset = (NP2DSAsset*)dataobject->get_value();
+	if (asset)
+	{
+		if		(NPIsExaKindOf(NP2DSImage, asset))			return onity_resource::icon_module;
+		else if (NPIsExaKindOf(NP2DSFrame, asset))			return onity_resource::icon_sprite;
+		else if (NPIsExaKindOf(NP2DSFrame, asset))			return onity_resource::icon_action;
+	}
+	else
+	{
+		if		(dataobject->has_droptype("NP2DSImage"))	return onity_resource::icon_module;
+		else if (dataobject->has_droptype("NP2DSFrame"))	return onity_resource::icon_sprite;
+		else if (dataobject->has_droptype("NP2DSActor"))	return onity_resource::icon_action;
+	}
 
 	return NULL;
 }

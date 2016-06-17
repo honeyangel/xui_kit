@@ -34,14 +34,9 @@ xui_create_explain(onity_propframekey)( onity_propfile* propfile, onity_proplaye
 		was_smooth,
 		set_smooth,
 		this));
-	m_keykind->add_propdata(new xui_propdata_object_func(
+	m_keykind->add_propdata(new onity_propdata_particle(
 		m_keykind,
 		L"Particle",
-		onity_propctrl_asset::create,
-		"NPParticleSFX",
-		onity_selector::get_ptr,
-		get_sparkicon,
-		get_sparkname,
 		get_spark,
 		set_spark,
 		this));
@@ -117,22 +112,6 @@ xui_method_explain(onity_propframekey, set_spark,		void			)( void* userptr, void
 	std::string filename = particle == NULL ? "" : particle->GetSourceFileName();
 	onity_propframekey* propframekey = (onity_propframekey*)userptr;
 	propframekey->get_framekey()->SetGfxfile(filename);
-}
-xui_method_explain(onity_propframekey, get_sparkicon,	xui_bitmap*		)( xui_propdata* propdata )
-{
-	return onity_resource::icon_particle;
-}
-xui_method_explain(onity_propframekey, get_sparkname,	std::wstring	)( xui_propdata* propdata )
-{
-	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
-	NPParticleSFX* particle = (NPParticleSFX*)dataobject->get_value();
-	if (particle)
-	{
-		std::string name = NPFileNameHelper::SafeName(particle->GetSourceFileName());
-		return xui_global::ascii_to_unicode(name);
-	}
-
-	return L"None";
 }
 xui_method_explain(onity_propframekey, get_event,		std::wstring	)( void* userptr )
 {

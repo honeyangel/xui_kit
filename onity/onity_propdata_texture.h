@@ -18,10 +18,15 @@ public:
 
 protected:
 	/*
+	//event
+	*/
+	void					on_doubleclick	( xui_component* sender, xui_method_args& args );
+
+	/*
 	//static
 	*/
-	static xui_bitmap*		get_texicon	( xui_propdata* propdata );
-	static std::wstring		get_texname	( xui_propdata* propdata );
+	static xui_bitmap*		get_texicon		( xui_propdata* propdata );
+	static std::wstring		get_texname		( xui_propdata* propdata );
 };
 
 #endif//__onity_propdata_texture_h__

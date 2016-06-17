@@ -1084,7 +1084,7 @@ public:
 	/*
 	//method
 	*/
-	xui_method<xui_method_args>	xm_click;
+	xui_method<xui_method_args>	xm_doubleclick;
 
 protected:
 	/*

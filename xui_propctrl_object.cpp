@@ -31,12 +31,12 @@ xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
 	xui_drawer*  namectrl = editobject->get_namectrl();
 	xui_control* textctrl = editobject->get_editctrl();
 	xui_drawer*  pickctrl = editobject->get_pickctrl();
-	textctrl->xm_keybddown		+= new xui_method_member<xui_method_keybd,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlkeybddown);
-	textctrl->xm_mouseclick		+= new xui_method_member<xui_method_mouse,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlclick);
-	textctrl->xm_mousedragenter += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragenter);
-	textctrl->xm_mousedragleave += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragleave);
-	textctrl->xm_mousedragover  += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragover);
-	textctrl->xm_mousedragdrop  += new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragdrop);
+	textctrl->xm_keybddown			+= new xui_method_member<xui_method_keybd,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrlkeybddown);
+	textctrl->xm_mousedoubleclick	+= new xui_method_member<xui_method_mouse,	  xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldoubleclick);
+	textctrl->xm_mousedragenter		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragenter);
+	textctrl->xm_mousedragleave		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragleave);
+	textctrl->xm_mousedragover		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragover);
+	textctrl->xm_mousedragdrop		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragdrop);
 	xui_method_ptrcall(namectrl, set_parent)(this);
 	xui_method_ptrcall(textctrl, set_parent)(this);
 	xui_method_ptrcall(pickctrl, set_parent)(this);
@@ -157,11 +157,12 @@ xui_method_explain(xui_propctrl_object, on_textctrlkeybddown,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_component* sender, xui_method_mouse&	  args )
+xui_method_explain(xui_propctrl_object, on_textctrldoubleclick,	void			)( xui_component* sender, xui_method_mouse&	  args )
 {
-	bool same = true;
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	void* value = dataobject->get_value();
+
+	bool same = (value != NULL);
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
@@ -174,7 +175,8 @@ xui_method_explain(xui_propctrl_object, on_textctrlclick,		void			)( xui_compone
 
 	if (same)
 	{
-		dataobject->xm_click(sender, args);
+		xui_method_args other_args;
+		dataobject->xm_doubleclick(sender, other_args);
 	}
 }
 xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_component* sender, xui_method_dragdrop& args )
