@@ -28,6 +28,11 @@ public:
 	onity_project( void );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_project( void );
+
+	/*
 	//method
 	*/
 	void						ini_pathtree		( void );
@@ -39,11 +44,13 @@ public:
 	*/
 	void						ntf_load			( onity_propfile* propfile );
 	void						ntf_rename			( const std::wstring& last, const std::wstring& curr );
+	void						ntf_modify			( const std::wstring& path, const std::wstring& file );
 
 protected:
 	/*
 	//event
 	*/
+	void						on_timertick		( xui_component* sender, xui_method_args&	  args );
 	void						on_clearclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
 	void						on_filterselection	( xui_component* sender, xui_method_args&	  args );
@@ -89,6 +96,7 @@ protected:
 	xui_menuitem*				m_particle;
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
+	xui_timer*					m_timer;
 
 	xui_panel*					m_fill;
 	xui_control*				m_sizectrl;

@@ -377,7 +377,7 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	onity_recent* dialog = xui_dynamic_cast(onity_recent, sender);
 	xui_global::set_workpath(dialog->get_selectpath());
 
-	std::wstring srcpath = L"..\\rawConfig\\BinFiles\\client";//NPFileNameHelper::Absolute("..\\rawConfig\\BinFiles\\client", tmppath);
+	std::wstring srcpath = L"..\\rawConfig\\BinFiles\\client";
 	std::wstring dstpath = L"Config";
 	std::vector<std::wstring> filevec = xui_global::get_file(srcpath, L"*.bin");
 	for (u32 i = 0; i < filevec.size(); ++i)
@@ -396,6 +396,7 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
+	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
 
 /*

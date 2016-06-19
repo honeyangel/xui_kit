@@ -101,7 +101,7 @@ xui_method_explain(onity_stateview, add_state,			void			)( const xui_vector<s32>
 
 xui_method_explain(onity_stateview, add_statectrl,		void			)( NP2DSState* state, const xui_vector<s32>& pt )
 {
-	xui_vector<s32> finalpt = (pt+m_dragvalue)/10*10;
+	xui_vector<s32> finalpt = (pt+m_dragvalue)*10/10;
 	onity_state*  statectrl = new onity_state(m_editprop, state);
 	xui_method_ptrcall(statectrl, set_parent	)(this);
 	xui_method_ptrcall(statectrl, set_drawcolor	)(true);

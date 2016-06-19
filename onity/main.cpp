@@ -84,28 +84,30 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 		break;
 	case WM_USER_FWATCHNOTIFY:
 		{
-			long lEvent;
+			long EventID;
 			PIDLIST_ABSOLUTE *rgpidl;
-			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &lEvent);
+			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &EventID);
 			if (hNotifyLock)
 			{
-				std::wstring path;
-				std::wstring misc;
+				std::wstring srcpath;
+				std::wstring dstpath;
 
 				wchar_t buffer[MAX_PATH];
 				if (rgpidl[0])
 				{
 					SHGetPathFromIDList(rgpidl[0], buffer);
-					path = buffer;
+					srcpath = buffer;
 				}
 				if (rgpidl[1])
 				{
 					SHGetPathFromIDList(rgpidl[1], buffer);
-					misc = buffer;
+					dstpath = buffer;
 				}
 
-				if (path.length() > 0)
-					xui_global::add_fwatch(path, misc);
+				if (EventID == SHCNE_UPDATEITEM && srcpath.length() > 0)
+				{
+					xui_global::add_fwatch(EventID, srcpath, dstpath);
+				}
 			}
 			SHChangeNotification_Unlock(hNotifyLock);
 		}
@@ -300,7 +302,6 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
 	xui_desktop::get_ins()->add_child(new onity_mainform());
 	xui_desktop::get_ins()->update(0.0f);
-	xui_global::set_fwatchstart(xui_global::get_workpath());
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));

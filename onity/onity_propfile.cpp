@@ -78,6 +78,26 @@ xui_method_explain(onity_propfile, load,				void				)( void )
 {}
 xui_method_explain(onity_propfile, save,				void				)( void )
 {}
+xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
+{
+	if (was_modify())
+	{
+		std::wstringstream text;
+		text << L"Asset file was changed extern.\n\'";
+		text << get_fullname().c_str();
+		text << L"\'\nDo you want to reload ?";
+		xui_dialog* dialog = (xui_dialog*)xui_desktop::get_ins()->show_message(text.str(), 2);
+		dialog->set_text(0, L"Reload" );
+		dialog->set_text(1, L"Ignore");
+		dialog->set_data(this);
+		dialog->xm_accept += new xui_method_static<xui_method_args>(on_modify_reload);
+		//dialog->xm_cancel += new xui_method_static<xui_method_args>(on_modify_ignore);
+	}
+	else
+	{
+		load();
+	}
+}
 xui_method_explain(onity_propfile, ntf_rename,			void				)( const std::wstring& last, const std::wstring& curr )
 {
 	int npos = m_fullname.find(last);
@@ -139,6 +159,11 @@ xui_method_explain(onity_propfile, on_notify_accept,	void				)( xui_component* s
 	propfile->save();
 }
 xui_method_explain(onity_propfile, on_notify_cancel,	void				)( xui_component* sender, xui_method_args& args )
+{
+	onity_propfile* propfile = (onity_propfile*)sender->get_window()->get_data();
+	propfile->load();
+}
+xui_method_explain(onity_propfile, on_modify_reload,	void				)( xui_component* sender, xui_method_args& args )
 {
 	onity_propfile* propfile = (onity_propfile*)sender->get_window()->get_data();
 	propfile->load();

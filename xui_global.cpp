@@ -281,16 +281,31 @@ xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 /*
 //modify
 */
+std::wstring pathstyle_replace( const std::wstring& path, wchar_t src, wchar_t dst )
+{
+	std::wstring result = path;
+	for (u32 i = 0; i < result.length(); ++i)
+	{
+		if (result[i] == src)
+			result[i] =  dst;
+	}
+
+	return result;
+}
+
 #include <Shlobj.h>
 #include <shellapi.h>
 
+std::wstring g_workpath;
+
 extern HWND gHWND;
-notify_change_map			modify_map;
+xui_notify_vec				notify_vec;
 ULONG						notify_id = 0;
 xui_method_explain(xui_global, set_fwatchstart,	void							)( const std::wstring& path )
 {
+	std::wstring temp = pathstyle_replace(path, L'/', L'\\');
 	ITEMIDLIST* pidlist;
-	SHParseDisplayName(path.c_str(), NULL, &pidlist, SFGAO_CANCOPY, NULL);
+	SHParseDisplayName(temp.c_str(), NULL, &pidlist, SFGAO_CANCOPY, NULL);
 
 	SHChangeNotifyEntry shEntry;
 	shEntry.fRecursive = TRUE;
@@ -303,17 +318,24 @@ xui_method_explain(xui_global, set_fwatchclose,	void							)( void )
 	SHChangeNotifyDeregister(notify_id);
 	notify_id = 0;
 }
-xui_method_explain(xui_global, add_fwatch,		void							)( const std::wstring& path, const std::wstring& misc )
+xui_method_explain(xui_global, add_fwatch,		void							)( u32 eventid, const std::wstring& srcpath, const std::wstring& dstpath )
 {
-	modify_map[path] = misc;
+	xui_notify_info info;
+	info.eventid = eventid;
+	info.srcpath = pathstyle_replace(srcpath, L'\\', L'/');
+	info.dstpath = pathstyle_replace(dstpath, L'\\', L'/');
+	if (info.srcpath.length() > 0) info.srcpath.erase(0, g_workpath.length());
+	if (info.dstpath.length() > 0) info.dstpath.erase(0, g_workpath.length());
+
+	notify_vec.push_back(info);
 }
 xui_method_explain(xui_global, del_fwatch,		void							)( void )
 {
-	modify_map.clear();
+	notify_vec.clear();
 }
-xui_method_explain(xui_global, get_fwatch,		const notify_change_map&		)( void )
+xui_method_explain(xui_global, get_fwatch,		const xui_notify_vec&			)( void )
 {
-	return modify_map;
+	return notify_vec;
 }
 
 /*
@@ -332,18 +354,6 @@ xui_method_explain(xui_global, add_fontfile,	void							)( const std::string& fi
 /*
 //file
 */
-std::wstring pathstyle_replace( const std::wstring& path, wchar_t src, wchar_t dst )
-{
-	std::wstring result = path;
-	for (u32 i = 0; i < result.length(); ++i)
-	{
-		if (result[i] == src)
-			result[i] =  dst;
-	}
-
-	return result;
-}
-
 INT CALLBACK BrowseCallbackProc(HWND hwnd,  UINT uMsg, LPARAM lp,  LPARAM pData) 
 {
 	switch(uMsg) 
@@ -377,7 +387,6 @@ xui_method_explain(xui_global, get_openpath,	std::wstring					)( void )
 	return std::wstring(buffer);
 }
 
-std::wstring g_workpath;
 xui_method_explain(xui_global, get_workpath,	std::wstring					)( void )
 {
 	if (g_workpath.empty())
@@ -393,7 +402,7 @@ xui_method_explain(xui_global, set_workpath,	void							)( const std::wstring& p
 {
 	std::wstring temp = pathstyle_replace(path, L'/', L'\\');
 	SetCurrentDirectory(temp.c_str());
-	g_workpath = path + L"/";
+	g_workpath = pathstyle_replace(path, L'\\', L'/') + L"/";
 }
 xui_method_explain(xui_global, set_showfind,	void							)( const std::wstring& path )
 {

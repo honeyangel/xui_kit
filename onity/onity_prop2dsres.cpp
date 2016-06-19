@@ -166,7 +166,11 @@ xui_method_explain(onity_prop2dsres, save,			void						)( void )
 {
 	NP2DSAssetFile* file = get_resfile();
 	if (file)
+	{
+		xui_global::set_fwatchclose();
 		file->SaveXml(xui_global::unicode_to_ascii(m_fullname));
+		xui_global::set_fwatchstart(xui_global::get_workpath());
+	}
 }
 
 /*

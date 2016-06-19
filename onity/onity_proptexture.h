@@ -22,6 +22,7 @@ public:
 	*/
 	virtual std::string		get_dragtype	( void );
 	virtual void*			get_dragdata	( void );
+	virtual void			ntf_modify		( void );
 };
 
 #endif//__onity_proptexture_h__

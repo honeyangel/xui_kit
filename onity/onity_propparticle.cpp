@@ -159,7 +159,10 @@ xui_method_explain(onity_propparticle, load,				void			)( void )
 xui_method_explain(onity_propparticle, save,				void			)( void )
 {
 	m_modify = false;
+
+	xui_global::set_fwatchclose();
 	m_particle->SaveIntoXML(xui_global::unicode_to_ascii(m_fullname));
+	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
 
 /*

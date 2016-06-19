@@ -1,6 +1,8 @@
 #include "NP2DSStateCtrl.h"
 
 #include "xui_global.h"
+#include "xui_desktop.h"
+#include "xui_dialog.h"
 #include "onity_resource.h"
 #include "onity_filedata.h"
 #include "onity_mainform.h"
@@ -45,15 +47,13 @@ xui_method_explain(onity_propcontroller, was_modify,	bool			)( void )
 }
 xui_method_explain(onity_propcontroller, save,			void			)( void )
 {
-	onity_propfile::save();
-
 	NP2DSStateCtrl* file = get_statectrl();
+	xui_global::set_fwatchclose();
 	file->SaveXmlFile(xui_global::unicode_to_ascii(m_fullname));
+	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
 xui_method_explain(onity_propcontroller, load,			void			)( void )
 {
-	onity_propfile::load();
-
 	if (m_statectrl)
 	{
 		delete m_statectrl;

@@ -6,7 +6,14 @@
 #include "xui_colour.h"
 #include "xui_method.h"
 
-typedef std::map<std::wstring, std::wstring> notify_change_map;
+struct xui_notify_info
+{
+	u32				eventid;
+	std::wstring	srcpath;
+	std::wstring	dstpath;
+};
+typedef std::vector<xui_notify_info> xui_notify_vec;
+
 class xui_global
 {
 public:
@@ -47,9 +54,9 @@ public:
 	*/
 	static void								set_fwatchstart	( const std::wstring& path );
 	static void								set_fwatchclose	( void );
-	static void								add_fwatch		( const std::wstring& path, const std::wstring& misc = L"" );
+	static void								add_fwatch		( u32 eventid, const std::wstring& srcpath, const std::wstring& dstpath );
 	static void								del_fwatch		( void );
-	static const notify_change_map&			get_fwatch		( void );
+	static const xui_notify_vec&			get_fwatch		( void );
 
 	/*
 	//font

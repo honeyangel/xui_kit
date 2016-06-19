@@ -8,6 +8,8 @@
 #include "NP2DSFrameFileMgr.h"
 #include "NP2DSActorFileMgr.h"
 
+#include "xui_timer.h"
+#include "xui_timermgr.h"
 #include "xui_bitmap.h"
 #include "xui_global.h"
 #include "xui_desktop.h"
@@ -64,6 +66,9 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
 	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
 	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_particleclick);
+
+	m_timer		= xui_timermgr::get_ins()->add_timer(this, 1.0f, NULL);
+	xui_method_ptrcall(m_timer,		xm_tick				) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_timertick);
 
 	m_create	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -229,6 +234,14 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_fill,		add_child			)(m_sizectrl);
 	add_pagectrl(m_head);
 	add_pagectrl(m_fill);
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(onity_project)( void )
+{
+	xui_timermgr::get_ins()->del_timer(m_timer);
 }
 
 /*
@@ -421,10 +434,47 @@ xui_method_explain(onity_project, ntf_rename,				void		)( const std::wstring& la
 	if (propfile && propfile->get_fullname() == curr)
 		m_status->set_text(onity_filedata::get_file(curr));
 }
+xui_method_explain(onity_project, ntf_modify,				void		)( const std::wstring& path, const std::wstring& file )
+{
+	std::vector<xui_treenode*> pathvec = m_pathview->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+		if (proppath->get_fullname() != path)
+			continue;
+
+		const xui_proproot_vec& filevec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (onity_filedata::get_safe(propfile->get_fullname()) == file)
+			{
+				propfile->ntf_modify();
+				break;
+			}
+		}
+	}
+}
 
 /*
 //event
 */
+xui_method_explain(onity_project, on_timertick,				void		)( xui_component* sender, xui_method_args&	   args )
+{
+	const xui_notify_vec& vec = xui_global::get_fwatch();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		std::wstring path = onity_filedata::get_path(vec[i].srcpath);
+		std::wstring file = onity_filedata::get_file(vec[i].srcpath);
+		path = path.substr(0, path.length()-1);
+		file = onity_filedata::get_safe(file);
+		ntf_modify(path, file);
+	}
+
+	xui_global::del_fwatch();
+}
 xui_method_explain(onity_project, on_clearclick,			void		)( xui_component* sender, xui_method_args&     args )
 {
 	m_search->set_text(L"");

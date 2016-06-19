@@ -32,6 +32,7 @@ public:
 	virtual void*			get_dragdata	( void );
 	virtual bool			was_modify		( void );
 	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
+	virtual void 			ntf_modify		( void );
 	virtual void			load			( void );
 	virtual void			save			( void );
 
@@ -45,6 +46,8 @@ public:
 	*/
 	static void				on_notify_accept( xui_component* sender, xui_method_args& args );
 	static void				on_notify_cancel( xui_component* sender, xui_method_args& args );
+	static void				on_modify_reload( xui_component* sender, xui_method_args& args );
+	//static void				on_modify_ignore( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*

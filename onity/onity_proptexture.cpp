@@ -37,3 +37,11 @@ xui_method_explain(onity_proptexture, get_dragdata, void*			)( void )
 {
 	return get_texture();
 }
+xui_method_explain(onity_proptexture, ntf_modify,	void			)( void )
+{
+	std::string fullname = xui_global::unicode_to_ascii(get_fullname());
+	std::string pathname = NPFileNameHelper::PathName(fullname);
+	std::string filename = NPFileNameHelper::FileName(fullname);
+	u32 id = NP2DSTextureCache::GetIns()->GetTextureID(pathname, filename, true);
+	NP2DSTextureCache::GetIns()->ResTexture(id);
+}
