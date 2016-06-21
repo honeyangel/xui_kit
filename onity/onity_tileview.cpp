@@ -115,6 +115,10 @@ xui_method_explain(onity_tileview, set_viewfile,				void				)( xui_treenode* vie
 		}
 	}
 }
+xui_method_explain(onity_tileview, get_tilesize,				s32					)( void ) const
+{
+	return m_tilesize;
+}
 xui_method_explain(onity_tileview, set_tilesize,				void				)( s32 size )
 {
 	if (m_tilesize != size)
@@ -168,6 +172,8 @@ xui_method_explain(onity_tileview, get_tilenode,				xui_treenode*		)( const xui_
 }
 xui_method_explain(onity_tileview, set_tilevisible,				void				)( xui_treenode* node )
 {
+	m_drawview->refresh();
+
 	xui_treeview* lineview = get_lineview();
 	if (lineview)
 	{

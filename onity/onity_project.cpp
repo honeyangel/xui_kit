@@ -348,11 +348,12 @@ xui_method_explain(onity_project, loc_filenode,				void		)( const std::wstring& 
 
 	if (viewnode)
 	{
+		m_fileview->set_locknode(viewnode);
+
 		xui_treeview*   lineview = m_fileview->get_lineview();
 		onity_tileview* tileview = m_fileview->get_tileview();
-		xui_method_ptrcall(lineview, set_selectednode	)(viewnode, true);
-		xui_method_ptrcall(lineview, set_nodevisible	)(viewnode);
-		xui_method_ptrcall(tileview, set_tilevisible	)(viewnode);
+		xui_method_ptrcall(lineview, set_nodevisible)(viewnode);
+		xui_method_ptrcall(tileview, set_tilevisible)(viewnode);
 	}
 }
 
