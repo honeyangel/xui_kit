@@ -136,19 +136,14 @@
     <ClCompile Include="onity_treedata.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\engine\build\Win32\NPEngine_VC10.vcxproj">
+    <ProjectReference Include="..\..\BreezeGame\engine\build\Win32\NPEngine_VC10.vcxproj">
       <Project>{97847f09-efa8-4cb2-a9e5-2eb17b16b59a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\omiga\Project\win32\Omiga.vcxproj">
+    <ProjectReference Include="..\..\BreezeGame\omiga\Project\win32\Omiga.vcxproj">
       <Project>{7e3d0a80-0fd4-4dc2-baac-836adcf0f60e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\BreezeGameBranchFlyMode_V26\project\win32\Game.vcxproj">
+    <ProjectReference Include="..\..\BreezeGame\project\win32\Game.vcxproj">
       <Project>{90732415-59ab-4e46-93b6-47553fc6693c}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <ProjectReference Include="..\xui_kit.vcxproj">
       <Project>{e5ecc7c0-780e-481e-9ad2-96694045ff51}</Project>
