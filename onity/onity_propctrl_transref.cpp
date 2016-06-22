@@ -93,6 +93,7 @@ xui_create_explain(onity_propdata_2dsasset)(
 	void*					userptr )
 : xui_propdata_object_func(kind, name, func, "", onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
 {
+	m_droptype.clear();
 	if (droptype & DROPTYPE_IMAGE)	add_droptype("NP2DSImage");
 	if (droptype & DROPTYPE_FRAME)	add_droptype("NP2DSFrame");
 	if (droptype & DROPTYPE_ACTOR)	add_droptype("NP2DSActor");

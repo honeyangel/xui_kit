@@ -503,7 +503,7 @@ xui_method_explain(onity_stateview, on_statemouserise,	void			)( xui_component* 
 xui_method_explain(onity_stateview, show_menu,			void			)( onity_state* statectrl )
 {
 	m_actstate = statectrl;
-	xui_method_ptrcall(m_create,		set_enable)(statectrl == NULL);
+	xui_method_ptrcall(m_create,		set_enable)(statectrl == NULL && m_editprop != NULL);
 	xui_method_ptrcall(m_transition,	set_enable)(statectrl != NULL);
 	xui_method_ptrcall(m_default,		set_enable)(statectrl != NULL);
 	xui_method_ptrcall(m_delete,		set_enable)(statectrl != NULL);
