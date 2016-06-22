@@ -43,8 +43,9 @@ xui_method_explain(onity_propaction, get_resfile, NP2DSAssetFile*	)( void )
 }
 xui_method_explain(onity_propaction, load,		void				)( void )
 {
-	onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-	if (timeline->get_editprop()->get_propfile() == this)
+	onity_timeline*  timeline = onity_mainform::get_ptr()->get_timeline();
+	onity_propactor* editprop = timeline->get_editprop();
+	if (editprop && editprop->get_propfile() == this)
 		timeline->set_editprop(NULL);
 
 	onity_prop2dsres::load();

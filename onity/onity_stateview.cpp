@@ -249,10 +249,6 @@ xui_method_explain(onity_stateview, sel_statectrl,		void			)( onity_state* state
 		m_seltrans = NULL;
 		inspector->set_proproot(m_selstate->get_propstate());
 	}
-	else
-	{
-		inspector->set_proproot(NULL);
-	}
 }
 xui_method_explain(onity_stateview, sel_transprop,		void			)( const xui_vector<s32>& pt )
 {

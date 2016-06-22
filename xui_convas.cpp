@@ -790,7 +790,8 @@ xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	
 
 xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	rt,
 																			   const xui_colour&		color,
-																			   const xui_rect2d<s32>&   corner )
+																			   const xui_rect2d<s32>&   corner,
+																			   s32						thick )
 {
 	//左上/右上/右下/左下
 	s32 corner0 = corner.value[0];
@@ -826,6 +827,19 @@ xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	
 	draw_line(xui_vector<s32>(rt.bx,		 rt.ay+corner1), xui_vector<s32>(rt.bx,		    rt.by-corner2),	color);
 	draw_line(xui_vector<s32>(rt.bx-corner2, rt.by),		 xui_vector<s32>(rt.ax+corner3, rt.by),			color);
 	draw_line(xui_vector<s32>(rt.ax,		 rt.by-corner3), xui_vector<s32>(rt.ax,		    rt.ay+corner0),	color);
+
+	if (thick > 1)
+	{
+		for (s32 i = 1; i < thick; ++i)
+		{
+			xui_rect2d<s32> temp;
+			temp.ax = rt.ax+i;
+			temp.ay = rt.ay+i;
+			temp.bx = rt.bx-i;
+			temp.by = rt.by-i;
+			draw_round(temp, color, corner);
+		}
+	}
 }
 
 xui_method_explain(xui_convas, fill_round,			void					)( const xui_rect2d<s32>&	rt,

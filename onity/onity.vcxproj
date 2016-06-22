@@ -23,6 +23,7 @@
     <ClInclude Include="onity_inspector.h" />
     <ClInclude Include="onity_layerdata.h" />
     <ClInclude Include="onity_lineview.h" />
+    <ClInclude Include="onity_config.h" />
     <ClInclude Include="onity_mainform.h" />
     <ClInclude Include="onity_param.h" />
     <ClInclude Include="onity_paramview.h" />
@@ -84,6 +85,7 @@
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
+    <ClCompile Include="onity_config.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
     <ClCompile Include="onity_propkind_particlesrc.cpp" />
     <ClCompile Include="onity_layerdata.cpp" />
@@ -191,7 +193,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga/Libs;../../BreezeGameBranchFlyMode_V26/omiga;../../BreezeGameBranchFlyMode_V26/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../../BreezeGame/engine/inc;../../BreezeGame/engine/extern/glee;../../BreezeGame/engine/liblua/inc;../../BreezeGame/engine/libtolua/inc;../../BreezeGame/engine/m3e/inc;../../BreezeGame/engine/libxml/inc;../../BreezeGame/omiga/Entity/Component;../../BreezeGame/omiga/Entity;../../BreezeGame/omiga/Core;../../BreezeGame/omiga/Entity/Component/Transform;../../BreezeGame/omiga/Libs;../../BreezeGame/omiga;../../BreezeGame/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
@@ -211,7 +213,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../;../../BreezeGameBranchFlyMode_V26/engine/inc;../../BreezeGameBranchFlyMode_V26/engine/extern/glee;../../BreezeGameBranchFlyMode_V26/engine/liblua/inc;../../BreezeGameBranchFlyMode_V26/engine/libtolua/inc;../../BreezeGameBranchFlyMode_V26/engine/m3e/inc;../../BreezeGameBranchFlyMode_V26/engine/libxml/inc;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component;../../BreezeGameBranchFlyMode_V26/omiga/Entity;../../BreezeGameBranchFlyMode_V26/omiga/Core;../../BreezeGameBranchFlyMode_V26/omiga/Entity/Component/Transform;../../BreezeGameBranchFlyMode_V26/omiga/Libs;../../BreezeGameBranchFlyMode_V26/omiga;../../BreezeGameBranchFlyMode_V26/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../../BreezeGame/engine/inc;../../BreezeGame/engine/extern/glee;../../BreezeGame/engine/liblua/inc;../../BreezeGame/engine/libtolua/inc;../../BreezeGame/engine/m3e/inc;../../BreezeGame/engine/libxml/inc;../../BreezeGame/omiga/Entity/Component;../../BreezeGame/omiga/Entity;../../BreezeGame/omiga/Core;../../BreezeGame/omiga/Entity/Component/Transform;../../BreezeGame/omiga/Libs;../../BreezeGame/omiga;../../BreezeGame/game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

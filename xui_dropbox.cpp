@@ -426,9 +426,12 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 			m_droplst->set_selecteditem(item, true);
 	}
 
-	m_droptog->set_push(true);
-	m_droplst->refresh();
-	xui_desktop::get_ins()->set_floatctrl(m_droplst);
+	if (m_droplst->get_itemcount() > 0)
+	{
+		m_droptog->set_push(true);
+		m_droplst->refresh();
+		xui_desktop::get_ins()->set_floatctrl(m_droplst);
+	}
 }
 xui_method_explain(xui_dropbox, set_droplisthide,		void			)( void )
 {

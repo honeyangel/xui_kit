@@ -17,7 +17,7 @@ xui_implement_rtti(onity_fileview, xui_control);
 xui_create_explain(onity_fileview)( void )
 : xui_control(xui_vector<s32>(0))
 , m_locknode(NULL)
-, m_locktime(1.0f)
+, m_locktime(3.0f)
 {
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
@@ -54,7 +54,7 @@ xui_create_explain(onity_fileview)( void )
 xui_method_explain(onity_fileview, set_locknode,			void			)( xui_treenode* locknode )
 {
 	m_locknode = locknode;
-	m_locktime = 1.0f;
+	m_locktime = 3.0f;
 }
 xui_method_explain(onity_fileview, get_lineview,			xui_treeview*	)( void )
 {
@@ -109,7 +109,7 @@ xui_method_explain(onity_fileview, on_lineviewrenderelse,	void			)( xui_componen
 
 	xui_rect2d<s32> rt = m_locknode->get_renderrtabs();
 	rt.set_w(m_lineview->get_renderrtins().get_w());
-	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3));
+	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
 }
 xui_method_explain(onity_fileview, on_tileviewrenderelse,	void			)( xui_component* sender, xui_method_args&     args )
 {
@@ -142,7 +142,7 @@ xui_method_explain(onity_fileview, on_tileviewrenderelse,	void			)( xui_componen
 	rt.oft_y(ir*h - m_tileview->get_viewroll()->get_value());
 	rt.set_w(s);
 	rt.set_h(m_tileview->get_tilesize() + onity_tileview::name_size);
-	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3));
+	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
 }
 xui_method_explain(onity_fileview, on_fileviewselection,	void			)( xui_component* sender, xui_method_args&     args )
 {

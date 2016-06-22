@@ -854,13 +854,15 @@ xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* se
 	xui_treenode* pathnode = (xui_treenode*)sender->get_data();
 	if (pathnode->was_selected())
 	{
-		if (m_fileview->get_tileview()->get_viewfile())
+		xui_treenode* viewfile = m_fileview->get_tileview()->get_viewfile();
+		if (viewfile)
 		{
+			viewfile->set_expanded(false);
+
 			onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 			onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-
-			m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
 			m_fileview->get_tileview()->set_viewfile(NULL);
+			m_fileview->get_lineview()->set_selectednode(viewfile, true);
 			refresh_pathtool();
 
 			m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
@@ -991,16 +993,18 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 	xui_treenode*   pathnode = m_histroy[m_curridx];
 	onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 	onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
 
-	if (sender == m_backpath && m_fileview->get_tileview()->get_viewfile())
+	if (sender == m_backpath && viewfile)
 	{
-		m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
+		viewfile->set_expanded(false);
 		m_fileview->get_tileview()->set_viewfile(NULL);
+		m_fileview->get_lineview()->set_selectednode(viewfile, true);
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
 		refresh_tileview();
 	}
 	else
-	if (sender == m_forepath && m_fileview->get_tileview()->get_viewfile() == NULL && proppath->get_viewfile())
+	if (sender == m_forepath && viewfile == NULL && proppath->get_viewfile())
 	{
 		if (proppath->get_viewfile()->get_linkdata() == NULL)
 			return;
@@ -1228,10 +1232,10 @@ xui_method_explain(onity_project, refresh_tileview,			void		)( void )
 	std::vector<xui_treenode*> leafvec = lineview->get_selectednode();
 	if (leafvec.size() > 0)
 	{
-		if (tileview->was_visible() && tileshow == false)
-			tileview->set_tilevisible(leafvec.front());
 		if (lineview->was_visible() && lineshow == false)
 			lineview->set_nodevisible(leafvec.front());
+		if (tileview->was_visible() && tileshow == false)
+			tileview->set_tilevisible(leafvec.front());
 	}
 }
 xui_method_explain(onity_project, set_freetype,				void		)( u08 type, const std::string& pathname, u32 style )

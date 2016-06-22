@@ -23,6 +23,7 @@
 #include "onity_game.h"
 #include "onity_animator.h"
 #include "onity_recent.h"
+#include "onity_config.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -183,6 +184,14 @@ xui_method_explain(onity_mainform, get_timeline,		onity_timeline*		)( void )
 /*
 //method
 */
+xui_method_explain(onity_mainform, was_gamerun,			bool				)( void ) const
+{
+	return m_run->was_push();
+}
+xui_method_explain(onity_mainform, was_gameplay,		bool				)( void ) const
+{
+	return m_run->was_push() && m_pause->was_push() == false;
+}
 xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page )
 {
 	xui_dockview* view = xui_dynamic_cast(xui_dockview, page->get_parent());
@@ -387,16 +396,28 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 		xui_global::cpy_file(srcfile, dstfile);
 	}
 
+	dialog->set_visible(false);
+	xui_desktop::get_ins()->del_child(dialog);
+
+	onity_config* config = new onity_config;
+	config->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
+	xui_desktop::get_ins()->add_child(config);
+}
+xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args& args )
+{
+	m_run->ini_toggle(true);
+
 	NPRender::Init();
 	NP2DSLib::Init();
 	onity_project* project = get_project();
 	onity_game*    game    = get_game();
 	xui_method_ptrcall(project, ini_pathtree)();
 	xui_method_ptrcall(game,	ini_game	)();
+	xui_global::set_fwatchstart(xui_global::get_workpath());
 
+	onity_config* dialog = xui_dynamic_cast(onity_config, sender);
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
-	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
 
 /*

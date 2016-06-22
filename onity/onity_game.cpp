@@ -15,6 +15,7 @@
 #include "xui_menu.h"
 #include "xui_menuitem.h"
 #include "onity_resource.h"
+#include "onity_mainform.h"
 #include "onity_game.h"
 
 xui_implement_rtti(onity_game, xui_dockpage);
@@ -91,6 +92,8 @@ xui_method_explain(onity_game, on_viewupdateself,	void)( xui_component* sender, 
 {
 	if (gInitCompleted == false)
 		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
+		return;
 
 	NPGUIImeManagerWin32* imeManager = (NPGUIImeManagerWin32*)NPGUIImeManager::GetIns();
 	if (imeManager)
@@ -100,7 +103,10 @@ xui_method_explain(onity_game, on_viewupdateself,	void)( xui_component* sender, 
 }
 xui_method_explain(onity_game, on_viewrenderself,	void)( xui_component* sender, xui_method_args&	 args )
 {
+	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.25f));
 	if (gInitCompleted == false)
+		return;
+	if (onity_mainform::get_ptr()->was_gamerun() == false)
 		return;
 
 	xui_vector<s32> size = sender->get_rendersz();
@@ -128,6 +134,8 @@ xui_method_explain(onity_game, on_viewmousedown,	void)( xui_component* sender, x
 {
 	if (gInitCompleted == false)
 		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
+		return;
 
 	if (args.mouse != MB_L)
 		return;
@@ -139,6 +147,8 @@ xui_method_explain(onity_game, on_viewmousemove,	void)( xui_component* sender, x
 {
 	if (gInitCompleted == false)
 		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
+		return;
 
 	xui_vector<s32> pt = sender->get_renderpt(args.point);
 	m3eFrameWorkTouch(M3E_Touch_MOUSEMOVED, 0, (s16)pt.x, (s16)pt.y);
@@ -146,6 +156,8 @@ xui_method_explain(onity_game, on_viewmousemove,	void)( xui_component* sender, x
 xui_method_explain(onity_game, on_viewmouserise,	void)( xui_component* sender, xui_method_mouse&  args )
 {
 	if (gInitCompleted == false)
+		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
 		return;
 
 	if (args.mouse != MB_L)
@@ -157,6 +169,8 @@ xui_method_explain(onity_game, on_viewmouserise,	void)( xui_component* sender, x
 xui_method_explain(onity_game, on_viewkeybddown,	void)( xui_component* sender, xui_method_keybd&  args )
 {
 	if (gInitCompleted == false)
+		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
 		return;
 
 	if (args.kcode == KEY_SHIFT)
@@ -183,6 +197,8 @@ xui_method_explain(onity_game, on_viewkeybdrise,	void)( xui_component* sender, x
 {
 	if (gInitCompleted == false)
 		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
+		return;
 
 	if (args.kcode == KEY_SHIFT)
 	{
@@ -192,6 +208,8 @@ xui_method_explain(onity_game, on_viewkeybdrise,	void)( xui_component* sender, x
 xui_method_explain(onity_game, on_viewkeybdchar,	void)( xui_component* sender, xui_method_keybd&  args )
 {
 	if (gInitCompleted == false)
+		return;
+	if (onity_mainform::get_ptr()->was_gameplay() == false)
 		return;
 
 	std::wstring text;

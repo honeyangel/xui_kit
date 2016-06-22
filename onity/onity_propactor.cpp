@@ -167,7 +167,7 @@ xui_method_explain(onity_propactor, set_loop,		void					)( void* userptr, bool v
 {
 	onity_propactor* propactor = (onity_propactor*)userptr;
 	NP2DSActor* actor = (NP2DSActor*)propactor->get_asset();
-	actor->SetLoop(value);
+	actor->SetLoop(value, true);
 }
 xui_method_explain(onity_propactor, get_loopstart,	f64						)( void* userptr )
 {

@@ -167,7 +167,8 @@ public:
 
 	void					draw_round			( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color,
-												  const xui_rect2d<s32>&	corner );
+												  const xui_rect2d<s32>&	corner,
+												  s32						thick = 1 );
 
 	void					fill_round			( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color, 

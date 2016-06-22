@@ -51,6 +51,8 @@ public:
 	/*
 	//method
 	*/
+	bool					was_gamerun			( void ) const;
+	bool					was_gameplay		( void ) const;
 	void					set_pageshow		( xui_dockpage* page );
 
 protected:
@@ -73,6 +75,7 @@ protected:
 	void					on_clickreset		( xui_component* sender, xui_method_args& args );
 	void					on_mainviewinvalid	( xui_component* sender, xui_method_args& args );
 	void					on_recentaccept		( xui_component* sender, xui_method_args& args );
+	void					on_configaccept		( xui_component* sender, xui_method_args& args );
 
 	/*
 	//method
