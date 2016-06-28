@@ -18,14 +18,26 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	m_corner	= 3;
 	m_modal		= true;
 
-	m_accept = xui_button::create(NULL, L"OK",     80);
+	m_accept = new xui_button(xui_vector<s32>(80, 24));
+	xui_method_ptrcall(m_accept, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_accept, set_drawcolor	)(true);
+	xui_method_ptrcall(m_accept, set_corner		)(3);
+	xui_method_ptrcall(m_accept, set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_accept, set_textalign	)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_accept, ini_component	)((num_button == 1) ? ALIGNHORZ_C : 0, ALIGNVERT_B, 0);
 	xui_method_ptrcall(m_accept, ini_component	)(true, num_button > 0);
+	xui_method_ptrcall(m_accept, ini_drawer		)(L"Accept");
 	xui_method_ptrcall(m_accept, xm_buttonclick	) += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_accept);
 
-	m_cancel = xui_button::create(NULL, L"Cancel", 80);
+	m_cancel = new xui_button(xui_vector<s32>(80, 24));
+	xui_method_ptrcall(m_cancel, set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_cancel, set_drawcolor	)(true);
+	xui_method_ptrcall(m_cancel, set_corner		)(3);
+	xui_method_ptrcall(m_cancel, set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_cancel, set_textalign	)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_cancel, ini_component	)(0, ALIGNVERT_B, 0);
 	xui_method_ptrcall(m_cancel, ini_component	)(true, num_button > 1);
+	xui_method_ptrcall(m_cancel, ini_drawer		)(L"Cancel");
 	xui_method_ptrcall(m_cancel, xm_buttonclick	) += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_cancel);
 
 	m_detail = xui_drawer::create(text);

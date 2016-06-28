@@ -150,8 +150,8 @@ xui_method_explain(onity_config, on_perform,			void)( xui_method_args& args )
 	pt.y += xui_method_ptrcall(m_other,		get_renderh)();
 	xui_method_ptrcall(m_version,	on_perform_x )(pt.x+10);
 	xui_method_ptrcall(m_version,	on_perform_y )(pt.y);
-	xui_method_ptrcall(m_version,	on_perform_w )(60);
-	xui_method_ptrcall(m_vernumb,	on_perform_x )(pt.x+60);
+	xui_method_ptrcall(m_version,	on_perform_w )(80);
+	xui_method_ptrcall(m_vernumb,	on_perform_x )(pt.x+80);
 	xui_method_ptrcall(m_vernumb,	on_perform_y )(pt.y);
 	xui_method_ptrcall(m_vernumb,	on_perform_w )(40);
 	pt.y += xui_method_ptrcall(m_version,	get_renderh)() + 4;
@@ -227,7 +227,7 @@ xui_method_explain(onity_config, load_config,			void)( void )
 {
 	//server
 	std::ifstream server("serverlist.win32");
-	if(server)
+	if (server)
 	{
 		gServerList.clear();
 		while(!server.eof())

@@ -1,4 +1,5 @@
 #include <Shlobj.h>
+#include "NPFile.h"
 
 #include "xui_timermgr.h"
 #include "xui_convas.h"
@@ -290,7 +291,16 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	//SetCapture   (gHWND);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
-	xui_global::add_fontfile("Arial.TTF");
+
+	std::string font = "Arial.TTF";
+	NPFile font_config;
+	if (font_config.Open("onity.font", NPFile::OM_READ))
+	{
+		font_config.ReadLine(font);
+		font_config.Close();
+	}
+
+	xui_global::add_fontfile(font);
 	xui_render_window* render_window = new xui_render_window(gHWND);
 	xui_static_inscall(xui_convas,		init)();
 	xui_static_inscall(xui_timermgr,	init)();

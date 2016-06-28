@@ -36,6 +36,11 @@ public:
 	void								on_delparam			( NP2DSParam* param );
 	void								on_addparam			( NP2DSParam* param );
 
+	/*
+	//override
+	*/
+	virtual void						on_detach			( const xui_proproot_vec& proproot ){}
+
 protected:
 	/*
 	//static

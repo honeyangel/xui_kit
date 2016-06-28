@@ -17,6 +17,11 @@ public:
 	onity_animator( void );
 
 	/*
+	//reset
+	*/
+	void					reset				( void );
+
+	/*
 	//method
 	*/
 	onity_stateview*		get_stateview		( void );

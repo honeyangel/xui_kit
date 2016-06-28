@@ -21,8 +21,14 @@ public:
 
 protected:
 	/*
+	//callback
+	*/
+	virtual void		on_perform			( xui_method_args& args );
+
+	/*
 	//event
 	*/
+	void				on_menuclick		( xui_component* sender, xui_method_args&	args );
 	void				on_viewupdateself	( xui_component* sender, xui_method_update& args );
 	void				on_viewrenderself	( xui_component* sender, xui_method_args&	args );
 	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&	args );

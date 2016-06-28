@@ -91,7 +91,6 @@ xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
 		dialog->set_text(1, L"Ignore");
 		dialog->set_data(this);
 		dialog->xm_accept += new xui_method_static<xui_method_args>(on_modify_reload);
-		//dialog->xm_cancel += new xui_method_static<xui_method_args>(on_modify_ignore);
 	}
 	else
 	{

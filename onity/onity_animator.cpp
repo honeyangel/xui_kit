@@ -84,26 +84,44 @@ xui_create_explain(onity_animator)( void )
 }
 
 /*
+//reset
+*/
+xui_method_explain(onity_animator, reset,				void					)( void )
+{
+	m_paramview->set_editprop(NULL);
+	m_stateview->set_editprop(NULL);
+	m_paramview->set_editprop(m_editprop);
+	m_stateview->set_editprop(m_editprop);
+}
+
+/*
 //method
 */
 xui_method_explain(onity_animator, get_editprop,		onity_propcontroller*	)( void )
 {
 	return m_editprop;
 }
-xui_method_explain(onity_animator, set_editprop,		void			)( onity_propcontroller* editprop )
+xui_method_explain(onity_animator, set_editprop,		void					)( onity_propcontroller* editprop )
 {
 	if (m_editprop != editprop)
 	{
+		if (m_editprop)
+		{
+			xui_proproot_vec vec;
+			vec.push_back(editprop);
+			m_editprop->on_detach(vec);
+		}
+
 		m_editprop  = editprop;
 		m_paramview->set_editprop(m_editprop);
 		m_stateview->set_editprop(m_editprop);
 	}
 }
-xui_method_explain(onity_animator, get_stateview,		onity_stateview*)( void )
+xui_method_explain(onity_animator, get_stateview,		onity_stateview*		)( void )
 {
 	return m_stateview;
 }
-xui_method_explain(onity_animator, get_paramview,		onity_paramview*)( void )
+xui_method_explain(onity_animator, get_paramview,		onity_paramview*		)( void )
 {
 	return m_paramview;
 }
@@ -111,7 +129,7 @@ xui_method_explain(onity_animator, get_paramview,		onity_paramview*)( void )
 /*
 //event
 */
-xui_method_explain(onity_animator, on_stateclick,		void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_animator, on_stateclick,		void					)( xui_component* sender, xui_method_args& args )
 {
 	if (m_editprop)
 	{
@@ -121,7 +139,7 @@ xui_method_explain(onity_animator, on_stateclick,		void			)( xui_component* send
 		m_stateview->add_state(pt);
 	}
 }
-xui_method_explain(onity_animator, on_retargetclick,	void			)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_animator, on_retargetclick,	void					)( xui_component* sender, xui_method_args& args )
 {
 	if (m_editprop)
 	{

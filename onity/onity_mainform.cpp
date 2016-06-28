@@ -1,7 +1,12 @@
+#include "Network/NPLoginService.h"
 #include "NPFileName.h"
 #include "NPRender.h"
 #include "NP2DSLib.h"
 #include "m3eFrameWork.h"
+#include "Game/Profile/ProfileManager.h"
+#include "Game/Game.h"
+#include "Game/Profile/LocalSaveHelper.h"
+#include "Game/WorldLoader.h"
 
 #include "xui_desktop.h"
 #include "xui_global.h"
@@ -273,7 +278,14 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component*
 }
 xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args& args )
 {
-	if (m_run->was_push() == false)
+	if (m_run->was_push())
+	{
+		ProfileManager::Instance()->Logout(true);
+		NPLoginService::GetInstance()->Logout();
+		Game::Instance()->GetLoader()->Load( LT_Splash );	
+		LocalSaveHelper::Instance()->SaveLocalInfo();
+	}
+	else
 	{
 		m_pause->ini_toggle(false);
 	}
