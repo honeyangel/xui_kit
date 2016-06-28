@@ -136,7 +136,7 @@ xui_method_explain(onity_propdata_2dsasset, get_icon,				xui_bitmap*			)( xui_pr
 	{
 		if		(NPIsExaKindOf(NP2DSImage, asset))			return onity_resource::icon_module;
 		else if (NPIsExaKindOf(NP2DSFrame, asset))			return onity_resource::icon_sprite;
-		else if (NPIsExaKindOf(NP2DSFrame, asset))			return onity_resource::icon_action;
+		else if (NPIsExaKindOf(NP2DSActor, asset))			return onity_resource::icon_action;
 	}
 	else
 	{

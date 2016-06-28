@@ -17,6 +17,11 @@ class onity_console : public xui_dockpage
 
 public:
 	/*
+	//static
+	*/
+	static void					game_print				( const std::string& log );
+
+	/*
 	//constructor
 	*/
 	onity_console( void );

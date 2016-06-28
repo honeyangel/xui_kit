@@ -1,3 +1,4 @@
+#include "xui_global.h"
 #include "xui_bitmap.h"
 #include "xui_convas.h"
 #include "xui_panel.h"
@@ -7,6 +8,7 @@
 #include "xui_listview.h"
 #include "xui_listitem.h"
 #include "onity_resource.h"
+#include "onity_mainform.h"
 #include "onity_console.h"
 
 xui_implement_rtti(onity_console, xui_dockpage);
@@ -98,6 +100,18 @@ xui_delete_explain(onity_console)( void )
 		xui_vecptr_addloop(m_logvec[itype])
 			delete m_logvec[itype][i];
 	}
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_console, game_print,			void)( const std::string& log )
+{
+	if (log.find("ERROR") == -1)
+		return;
+
+	onity_console* console = onity_mainform::get_ptr()->get_console();
+	console->add_log(LOGTYPE_ERROR, L"", xui_global::ascii_to_unicode(log));
 }
 
 /*

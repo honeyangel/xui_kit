@@ -1,4 +1,5 @@
 #include <Shlobj.h>
+#include "m3eDebug.h"
 #include "NPFile.h"
 
 #include "xui_timermgr.h"
@@ -8,6 +9,7 @@
 #include "xui_global.h"
 #include "onity_resource.h"
 #include "onity_mainform.h"
+#include "onity_console.h"
 
 s32 DefaultWidth  = 1440;
 s32 DefaultHeight =  900;
@@ -312,6 +314,9 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
 	xui_desktop::get_ins()->add_child(new onity_mainform());
 	xui_desktop::get_ins()->update(0.0f);
+
+	extern user_print s_userprint;
+	s_userprint = onity_console::game_print;
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));
