@@ -107,9 +107,7 @@ xui_method_explain(onity_animator, set_editprop,		void					)( onity_propcontroll
 	{
 		if (m_editprop)
 		{
-			xui_proproot_vec vec;
-			vec.push_back(editprop);
-			m_editprop->on_detach(vec);
+			m_editprop->ntf_detach(editprop);
 		}
 
 		m_editprop  = editprop;

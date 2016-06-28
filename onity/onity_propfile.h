@@ -47,7 +47,6 @@ public:
 	static void				on_notify_accept( xui_component* sender, xui_method_args& args );
 	static void				on_notify_cancel( xui_component* sender, xui_method_args& args );
 	static void				on_modify_reload( xui_component* sender, xui_method_args& args );
-	//static void				on_modify_ignore( xui_component* sender, xui_method_args& args );
 
 protected:
 	/*

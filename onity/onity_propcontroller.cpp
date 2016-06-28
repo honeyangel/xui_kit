@@ -28,6 +28,12 @@ xui_delete_explain(onity_propcontroller)( void )
 /*
 //method
 */
+xui_method_explain(onity_propcontroller, ntf_detach,	void			)( xui_proproot* nextfile )
+{
+	xui_proproot_vec vec;
+	vec.push_back(nextfile);
+	onity_propfile::on_detach(vec);
+}
 xui_method_explain(onity_propcontroller, get_statectrl, NP2DSStateCtrl*	)( void )
 {
 	if (m_statectrl == NULL)
@@ -61,9 +67,7 @@ xui_method_explain(onity_propcontroller, load,			void			)( void )
 	}
 
 	onity_animator* animator = onity_mainform::get_ptr()->get_animator();
-	if (animator->get_editprop() == this)
-	{
-		animator->set_editprop(NULL);
-		animator->set_editprop(this);
-	}
+	xui_proproot*   editprop = animator->get_editprop();
+	if (editprop == this)
+		animator->reset();
 }

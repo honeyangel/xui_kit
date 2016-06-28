@@ -21,6 +21,7 @@ public:
 	//method
 	*/
 	NP2DSStateCtrl*		get_statectrl	( void );
+	void				ntf_detach		( xui_proproot* nextfile );
 
 	/*
 	//override
@@ -28,6 +29,7 @@ public:
 	virtual bool		was_modify		( void );
 	virtual void		save			( void );
 	virtual void		load			( void );
+	virtual void		on_detach		( const xui_proproot_vec& proproot ){}
 
 protected:
 	/*

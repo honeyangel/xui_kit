@@ -9,7 +9,7 @@ xui_implement_rtti(xui_dialog, xui_window);
 //constructor
 */
 xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
-: xui_window(xui_vector<s32>(320, 140))
+: xui_window(xui_vector<s32>(480, 140))
 {
 	m_sidestyle = SIDESTYLE_S;
 	m_alignhorz	= ALIGNHORZ_C;
