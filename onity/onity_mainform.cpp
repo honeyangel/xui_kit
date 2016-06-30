@@ -278,16 +278,19 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component*
 }
 xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args& args )
 {
-	if (m_run->was_push())
+	if (sender == m_run)
 	{
-		ProfileManager::Instance()->Logout(true);
-		NPLoginService::GetInstance()->Logout();
-		Game::Instance()->GetLoader()->Load( LT_Splash );	
-		LocalSaveHelper::Instance()->SaveLocalInfo();
-	}
-	else
-	{
-		m_pause->ini_toggle(false);
+		if (m_run->was_push())
+		{
+			ProfileManager::Instance()->Logout(true);
+			NPLoginService::GetInstance()->Logout();
+			Game::Instance()->GetLoader()->Load( LT_Splash );	
+			LocalSaveHelper::Instance()->SaveLocalInfo();
+		}
+		else
+		{
+			m_pause->ini_toggle(false);
+		}
 	}
 }
 xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args& args )

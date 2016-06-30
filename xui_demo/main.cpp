@@ -70,28 +70,30 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	{
 	case WM_USER_FWATCHNOTIFY:
 		{
-			long lEvent;
+			long EventID;
 			PIDLIST_ABSOLUTE *rgpidl;
-			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &lEvent);
+			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &EventID);
 			if (hNotifyLock)
 			{
-				std::wstring path;
-				std::wstring misc;
+				std::wstring srcpath;
+				std::wstring dstpath;
 
 				wchar_t buffer[MAX_PATH];
 				if (rgpidl[0])
 				{
 					SHGetPathFromIDList(rgpidl[0], buffer);
-					path = buffer;
+					srcpath = buffer;
 				}
 				if (rgpidl[1])
 				{
 					SHGetPathFromIDList(rgpidl[1], buffer);
-					misc = buffer;
+					dstpath = buffer;
 				}
 
-				if (path.length() > 0)
-					xui_global::add_fwatch(path, misc);
+				if (EventID == SHCNE_UPDATEITEM && srcpath.length() > 0)
+				{
+					xui_global::add_fwatch(EventID, srcpath, dstpath);
+				}
 			}
 			SHChangeNotification_Unlock(hNotifyLock);
 		}

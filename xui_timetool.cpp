@@ -355,7 +355,7 @@ xui_method_explain(xui_timetool, on_togglerenderself,	void		)( xui_component* se
 		}
 	}
 	else
-	if (sender == m_loop)
+	if (sender == m_loop && xui_global::icon_loop)
 	{
 		rt  =  m_loop->get_renderrtabs();
 		rt += (m_loop->has_catch() ? xui_vector<s32>(0, 1) : xui_vector<s32>(0));
