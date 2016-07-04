@@ -49,7 +49,7 @@ public:
 	/*
 	//modal
 	*/
-	xui_window*					get_modaltop	( void );
+	//xui_window*					get_modaltop	( void );
 	void						add_modalwnd	( xui_window* window );
 	void						del_modalwnd	( xui_window* window );
 

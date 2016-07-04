@@ -411,6 +411,9 @@
     <ClInclude Include="xui_numbbox.h">
       <Filter>LibGUI\textbox</Filter>
     </ClInclude>
+    <ClInclude Include="xui_syswnd.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -841,6 +844,9 @@
     </ClCompile>
     <ClCompile Include="xui_numbbox.cpp">
       <Filter>LibGUI\textbox</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_syswnd.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

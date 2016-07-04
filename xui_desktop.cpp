@@ -1,4 +1,5 @@
 #include "xui_global.h"
+#include "xui_syswnd.h"
 #include "xui_convas.h"
 #include "xui_window.h"
 #include "xui_dialog.h"
@@ -200,17 +201,19 @@ xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& 
 /*
 //modal
 */
-xui_method_explain(xui_desktop, get_modaltop,	xui_window*				)( void )
-{
-	return m_modalpool.empty() ? NULL : m_modalpool.back();
-}
+//xui_method_explain(xui_desktop, get_modaltop,	xui_window*				)( void )
+//{
+//	return m_modalpool.empty() ? NULL : m_modalpool.back();
+//}
 xui_method_explain(xui_desktop, add_modalwnd,	void					)( xui_window* window )
 {
-	del_modalwnd(window);
-	m_modalpool.push_back(window);
+	xui_global::add_syswnd(window, false);
+	xui_global::mod_syswnd(window->get_owner());
+	m_modalpool.push_back (window);
 }
 xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 {
+	xui_global::res_syswnd();
 	for (u32 i = 0; i < m_modalpool.size(); ++i)
 	{
 		if (m_modalpool[i] == window)
@@ -219,6 +222,12 @@ xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 			break;
 		}
 	}
+
+	if (m_modalpool.empty())
+		return;
+
+	xui_window* top = m_modalpool.back();
+	xui_global::mod_syswnd(top->get_owner());
 }
 
 /*
@@ -303,16 +312,11 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 	xui_vecptr_addloop(m_childctrl)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
-		if (window->was_modal())
+		if (window->get_owner())
 			continue;
 
 		if (m_childctrl[i]->was_visible())
 			m_childctrl[i]->render();
-	}
-
-	for (u32 i = 0; i < m_modalpool.size(); ++i)
-	{
-		m_modalpool[i]->render();
 	}
 
 	xui_convas::get_ins()->set_cliprect(xui_convas::get_ins()->get_viewport());
@@ -338,8 +342,8 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 		xui_component* root = m_hoverctrl;
 		while (root && args.handle == false)
 		{
-			root->on_mousewheel(			 args);
-			root->xm_mousewheel(m_hoverctrl, args);
+			root->on_mousewheel(	  args);
+			root->xm_mousewheel(root, args);
 			if (xui_issub_kindof(xui_desktop, root))
 				break;
 
@@ -355,8 +359,9 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 		component = m_floatctrl->choose(args.point);
 	if (component == NULL)
 	{
-		if (get_modaltop())
-			component = get_modaltop()->choose(args.point);
+		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+		if (syswnd)
+			component = syswnd->get_popupctrl()->choose(args.point);
 		else
 			component = choose(args.point);
 	}
@@ -402,8 +407,9 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 			component = m_floatctrl->choose(args.point);
 		if (component == NULL)
 		{
-			if (get_modaltop())
-				component = get_modaltop()->choose(args.point);
+			xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+			if (syswnd)
+				component = syswnd->get_popupctrl()->choose(args.point);
 			else
 				component = choose(args.point);
 		}
@@ -435,8 +441,9 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 		component = m_floatctrl->choose(args.point);
 	if (component == NULL)
 	{
-		if (get_modaltop())
-			component = get_modaltop()->choose(args.point);
+		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+		if (syswnd)
+			component = syswnd->get_popupctrl()->choose(args.point);
 		else
 			component = choose(args.point);
 	}
@@ -525,8 +532,10 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 	if (component)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, component);
-		if (window->was_visible() && window->was_modal())
+		if (window->was_modal() && window->was_visible())
+		{
 			add_modalwnd(window);
+		}
 	}
 }
 xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
@@ -537,8 +546,10 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 	if (component)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, component);
-		if (window->was_visible() && window->was_modal())
-			del_modalwnd(window);
+		if (window->get_owner())
+		{
+			xui_global::del_syswnd(window->get_owner());
+		}
 	}
 }
 

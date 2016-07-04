@@ -9,17 +9,17 @@ public:
 	/*
 	//constructor
 	*/
-	xui_render_window( void* hwnd );
+	xui_render_window( HWND hwnd );
 
 	/*
-	//destructor
+	//static
 	*/
-	virtual ~xui_render_window( void );
+	static void		init		( HWND hwnd );
 
 	/*
 	//method
 	*/
-	void*			get_hwnd	( void );
+	HWND			get_hwnd	( void );
 	void			current		( void );
 	void			present		( void );
 
@@ -27,9 +27,8 @@ protected:
 	/*
 	//member
 	*/
-	void*			m_hwnd;
-	void*			m_hdc;
-	void*			m_context;
+	HWND			m_hwnd;
+	HDC				m_hdc;
 };
 
 #endif//__xui_render_window_h__

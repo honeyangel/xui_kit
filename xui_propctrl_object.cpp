@@ -106,7 +106,6 @@ xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* 
 	{
 		xui_object_pickwnd* wnd = pickfunc();
 		xui_method_ptrcall(wnd, set_propctrl)(this);
-		xui_method_ptrcall(wnd, set_modal	)(true);
 		xui_method_ptrcall(wnd, set_visible	)(true);
 		xui_method_ptrcall(wnd, set_value	)(dataobject->get_value());
 	}
@@ -242,7 +241,7 @@ xui_implement_rtti(xui_object_pickwnd, xui_window);
 //constructor
 */
 xui_create_explain(xui_object_pickwnd)( void )
-: xui_window(xui_vector<s32>(320, 240))
+: xui_window(xui_vector<s32>(320, 240), true)
 , m_propctrl(NULL)
 {}
 

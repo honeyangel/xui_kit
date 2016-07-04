@@ -108,7 +108,7 @@ xui_implement_rtti(xui_colour_pickwnd, xui_window);
 //constructor
 */
 xui_create_explain(xui_colour_pickwnd)( void )
-: xui_window(xui_vector<s32>(226, 300))
+: xui_window(xui_vector<s32>(226, 300), false)
 , m_propctrl(NULL)
 {
 	m_pickctrl = new xui_drawer(xui_vector<s32>(32, 20));

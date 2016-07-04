@@ -1,5 +1,5 @@
-#ifndef __onity_login_h__
-#define __onity_login_h__
+#ifndef __onity_config_h__
+#define __onity_config_h__
 
 #include "xui_window.h"
 

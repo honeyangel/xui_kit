@@ -9,7 +9,7 @@ xui_implement_rtti(xui_dialog, xui_window);
 //constructor
 */
 xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
-: xui_window(xui_vector<s32>(480, 140))
+: xui_window(xui_vector<s32>(480, 140), true)
 {
 	m_sidestyle = SIDESTYLE_S;
 	m_alignhorz	= ALIGNHORZ_C;
@@ -18,7 +18,7 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	m_corner	= 3;
 	m_modal		= true;
 
-	m_accept = new xui_button(xui_vector<s32>(80, 24));
+	m_accept	= new xui_button(xui_vector<s32>(80, 24));
 	xui_method_ptrcall(m_accept, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_accept, set_drawcolor	)(true);
 	xui_method_ptrcall(m_accept, set_corner		)(3);
@@ -29,7 +29,7 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	xui_method_ptrcall(m_accept, ini_drawer		)(L"Accept");
 	xui_method_ptrcall(m_accept, xm_buttonclick	) += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_accept);
 
-	m_cancel = new xui_button(xui_vector<s32>(80, 24));
+	m_cancel	= new xui_button(xui_vector<s32>(80, 24));
 	xui_method_ptrcall(m_cancel, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_cancel, set_drawcolor	)(true);
 	xui_method_ptrcall(m_cancel, set_corner		)(3);
@@ -40,11 +40,14 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	xui_method_ptrcall(m_cancel, ini_drawer		)(L"Cancel");
 	xui_method_ptrcall(m_cancel, xm_buttonclick	) += new xui_method_member<xui_method_args, xui_dialog>(this, &xui_dialog::on_cancel);
 
-	m_detail = xui_drawer::create(text);
-	xui_vector<s32> size = xui_convas::get_ins()->calc_size(text, m_detail->get_textfont(), 240, false);
-	xui_method_ptrcall(m_detail, set_borderrt	)(xui_rect2d<s32>(0));
+	xui_family font;
+	font.size	= 16;
+	font.vert	=  2;
+	xui_vector<s32> size = xui_convas::get_ins()->calc_size(text, font, 400, false);
+	m_detail	= xui_drawer::create(text);
 	xui_method_ptrcall(m_detail, ini_component	)(ALIGNHORZ_C, ALIGNVERT_T, 0);
 	xui_method_ptrcall(m_detail, set_singleline	)(false);
+	xui_method_ptrcall(m_detail, set_textfont	)(font);
 	xui_method_ptrcall(m_detail, on_perform_sz	)(size);
 
 	size.w += m_border.ax;

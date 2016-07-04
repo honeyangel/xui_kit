@@ -135,6 +135,7 @@
     </ClInclude>
     <ClInclude Include="xui_render_window.h" />
     <ClInclude Include="xui_global.h" />
+    <ClInclude Include="xui_syswnd.h" />
     <ClInclude Include="xui_timehead.h" />
     <ClInclude Include="xui_timeline.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -337,6 +338,7 @@
     </ClCompile>
     <ClCompile Include="xui_render_window.cpp" />
     <ClCompile Include="xui_global.cpp" />
+    <ClCompile Include="xui_syswnd.cpp" />
     <ClCompile Include="xui_timehead.cpp" />
     <ClCompile Include="xui_timeline.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

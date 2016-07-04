@@ -7,73 +7,22 @@
 #include "xui_desktop.h"
 #include "xui_render_window.h"
 #include "xui_global.h"
+#include "xui_syswnd.h"
 #include "onity_resource.h"
 #include "onity_mainform.h"
 #include "onity_console.h"
 
-s32 DefaultWidth  = 1440;
-s32 DefaultHeight =  900;
-
-HWND gHWND = NULL;
-
-u08 VKToKey(WPARAM wParam)
-{
-	switch (wParam)
-	{
-	case 'A':				return KEY_A;
-	case 'B':				return KEY_B;
-	case 'C':				return KEY_C;
-	case 'D':				return KEY_D;
-	case 'E':				return KEY_E;
-	case 'F':				return KEY_F;
-	case 'G':				return KEY_G;
-	case 'H':				return KEY_H;
-	case 'I':				return KEY_I;
-	case 'J':				return KEY_J;
-	case 'K':				return KEY_K;
-	case 'L':				return KEY_L;
-	case 'M':				return KEY_M;
-	case 'N':				return KEY_N;
-	case 'O':				return KEY_O;
-	case 'P':				return KEY_P;
-	case 'Q':				return KEY_Q;
-	case 'R':				return KEY_R;
-	case 'S':				return KEY_S;
-	case 'T':				return KEY_T;
-	case 'U':				return KEY_U;
-	case 'V':				return KEY_V;
-	case 'W':				return KEY_W;
-	case 'X':				return KEY_X;
-	case 'Y':				return KEY_Y;
-	case 'Z':				return KEY_Z;
-	case VK_ESCAPE:			return KEY_ESC;
-	case VK_RETURN:			return KEY_ENTER;
-	case VK_TAB:			return KEY_TAB;
-	case VK_BACK:			return KEY_BACK;
-	case VK_SHIFT:			return KEY_SHIFT;
-	case VK_UP:				return KEY_UARROW;
-	case VK_DOWN:			return KEY_DARROW;
-	case VK_LEFT:			return KEY_LARROW;
-	case VK_RIGHT:			return KEY_RARROW;
-	case VK_HOME:			return KEY_HOME;
-	case VK_END:			return KEY_END;
-	case VK_DELETE:			return KEY_DELETE;
-	case VK_F1:				return KEY_F1;
-	case VK_F2:				return KEY_F2;
-	case VK_F3:				return KEY_F3;
-	case VK_F4:				return KEY_F4;
-	case VK_F5:				return KEY_F5;
-	case VK_F6:				return KEY_F6;
-	case VK_F7:				return KEY_F7;
-	case VK_F8:				return KEY_F8;
-	case VK_F9:				return KEY_F9;
-	default:				return KEY_NONE;
-	}
-}
+s32			DefaultWidth	= 1440;
+s32			DefaultHeight	=  900;
+HWND		gHWND			= NULL;
+HINSTANCE	gHINSTANCE		= NULL;
 
 #define WM_USER_FWATCHNOTIFY WM_USER+0x1000
-LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {
+	if (xui_global::def_deviceproc(hwnd, message, wparam, lparam))
+		return 0;
+
 	switch (message)
 	{
 	case WM_KILLFOCUS:
@@ -81,16 +30,16 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			if (xui_global::was_scolorstart())
 			{
 				xui_desktop::get_ins()->set_focusctrl(NULL);
-				::SetFocus(hWnd);
+				::SetFocus(hwnd);
 			}
 		}
 		break;
 	case WM_USER_FWATCHNOTIFY:
 		{
-			long EventID;
+			long eventid;
 			PIDLIST_ABSOLUTE *rgpidl;
-			HANDLE hNotifyLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &rgpidl, &EventID);
-			if (hNotifyLock)
+			HANDLE notify_lock = SHChangeNotification_Lock((HANDLE)wparam, (DWORD)lparam, &rgpidl, &eventid);
+			if (notify_lock)
 			{
 				std::wstring srcpath;
 				std::wstring dstpath;
@@ -107,144 +56,12 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 					dstpath = buffer;
 				}
 
-				if (EventID == SHCNE_UPDATEITEM && srcpath.length() > 0)
+				if (eventid == SHCNE_UPDATEITEM && srcpath.length() > 0)
 				{
-					xui_global::add_fwatch(EventID, srcpath, dstpath);
+					xui_global::add_fwatch(eventid, srcpath, dstpath);
 				}
 			}
-			SHChangeNotification_Unlock(hNotifyLock);
-		}
-		break;
-	case WM_MOUSEWHEEL:
-		{
-			xui_method_mouse args;
-			args.wheel = (s32)(s16)HIWORD(wParam) / 3;
-			xui_desktop::get_ins()->os_mousewheel(args);
-		}
-		break;
-	case WM_CAPTURECHANGED:
-		{
-			HWND other_hwnd = (HWND)lParam;
-			if (other_hwnd && other_hwnd != hWnd)
-			{
-				if (xui_desktop::get_ins()->get_catchctrl() != NULL)
-				{
-					POINT pt;
-					GetCursorPos(&pt);
-					ScreenToClient(hWnd, &pt);
-
-					xui_method_mouse args;
-					args.mouse = MB_L;
-					args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
-					args.ctrl  = false;
-					args.shift = false;
-					args.alt   = false;
-					xui_desktop::get_ins()->os_mouserise(args);
-				}
-			}
-		}
-		break;
-	//case WM_LBUTTONDBLCLK:
-	//case WM_RBUTTONDBLCLK:
-	//case WM_MBUTTONDBLCLK:
-	//	{
-	//		xui_method_mouse args;
-	//		args.point = xui_vector<s32>((s32)LOWORD(lParam), (s32)HIWORD(lParam));
-	//		args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-	//		args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-	//		args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-
-	//		switch (message)
-	//		{
-	//		case WM_LBUTTONDBLCLK:	args.mouse = MB_L;	break;
-	//		case WM_RBUTTONDBLCLK:	args.mouse = MB_R;	break;
-	//		case WM_MBUTTONDBLCLK:	args.mouse = MB_M;	break;
-	//		}
-
-	//		xui_desktop::get_ins()->os_mousedclick(args);
-	//	}
-	//	break;
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-	case WM_MBUTTONDOWN:
-		{
-			POINT pt;
-			GetCursorPos(&pt);
-			ScreenToClient(hWnd, &pt);
-
-			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
-			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-			
-			switch (message)
-			{
-			case WM_LBUTTONDOWN:	args.mouse = MB_L;	break;
-			case WM_RBUTTONDOWN:	args.mouse = MB_R;	break;
-			case WM_MBUTTONDOWN:	args.mouse = MB_M;	break;
-			}
-			
-			xui_desktop::get_ins()->os_mousedown(args);
-		}
-		break;
-	case WM_MOUSEMOVE:
-		{
-			POINT pt;
-			GetCursorPos(&pt);
-			ScreenToClient(hWnd, &pt);
-			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
-			xui_desktop::get_ins()->os_mousemove(args);
-		}
-		break;
-	case WM_LBUTTONUP:
-	case WM_RBUTTONUP:
-	case WM_MBUTTONUP:
-		{
-			POINT pt;
-			GetCursorPos(&pt);
-			ScreenToClient(hWnd, &pt);
-
-			xui_method_mouse args;
-			args.point = xui_vector<s32>((s32)pt.x, (s32)pt.y);
-			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-
-			switch (message)
-			{
-			case WM_LBUTTONUP:		args.mouse = MB_L;	break;
-			case WM_RBUTTONUP:		args.mouse = MB_R;	break;
-			case WM_MBUTTONUP:		args.mouse = MB_M;	break;
-			}
-
-			xui_desktop::get_ins()->os_mouserise(args);
-		}
-		break;
-	case WM_KEYDOWN:
-		{
-			xui_method_keybd args;
-			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-			args.kcode = VKToKey(wParam);
-			xui_desktop::get_ins()->os_keybddown(args);
-		}
-		break;
-	case WM_KEYUP:
-		{
-			xui_method_keybd args;
-			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
-			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
-			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
-			args.kcode = VKToKey(wParam);
-			xui_desktop::get_ins()->os_keybdrise(args);
-		}
-		break;
-	case WM_CHAR:
-		{
-			xui_desktop::get_ins()->os_keybdchar((u16)wParam);
+			SHChangeNotification_Unlock(notify_lock);
 		}
 		break;
 	case WM_CLOSE:
@@ -255,18 +72,15 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	case WM_SIZE:
 		{
 			RECT rect;
-			GetClientRect(hWnd, &rect);
+			GetClientRect(hwnd, &rect);
 			int w = rect.right-rect.left;
 			int h = rect.bottom-rect.top;
-			if (xui_convas::get_ins() && w > 0 && h > 0)
-			{
-				xui_method_inscall(xui_convas,  set_viewport)(xui_rect2d<s32>(0, 0, w, h));
-				xui_method_inscall(xui_desktop, set_rendersz)(xui_vector<s32>(w, h));
-			}
+			if (xui_desktop::get_ins() && w > 0 && h > 0)
+				xui_desktop::get_ins()->set_rendersz(xui_vector<s32>(w, h));
 		}
 		break;
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		return DefWindowProc(hwnd, message, wparam, lparam);
 	}
 
 	return 0;
@@ -274,10 +88,10 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
 int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
 {
+	gHINSTANCE = hInstance;
+
 	WNDCLASS wc;
 	memset(&wc, 0, sizeof(WNDCLASS));
-
-	//create console 
 	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
 	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance		= hInstance;
@@ -290,7 +104,6 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		return 0;
 
 	gHWND = CreateWindow(L"Onity", L"Onity", WS_OVERLAPPEDWINDOW , 0, 0, DefaultWidth, DefaultHeight, NULL, NULL, hInstance, NULL);
-	//SetCapture   (gHWND);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 
@@ -303,6 +116,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	}
 
 	xui_global::add_fontfile(font);
+	xui_render_window::init(gHWND);
 	xui_render_window* render_window = new xui_render_window(gHWND);
 	xui_static_inscall(xui_convas,		init)();
 	xui_static_inscall(xui_timermgr,	init)();
@@ -334,12 +148,19 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 
 			total_time = timeGetTime();
 
-			xui_method_inscall(xui_convas,		clear	)(xui_colour(1.0f, 0.1f, 0.1f, 0.1f));
-			xui_method_inscall(xui_convas,		begin	)();
+			render_window->current();
 			xui_method_inscall(xui_timermgr,	update	)(delta_time/1000.0f);
 			xui_method_inscall(xui_desktop,		update	)(delta_time/1000.0f);
 			xui_method_inscall(xui_desktop,		render	)();
 			render_window->present();
+
+			std::vector<xui_syswnd*> vec = xui_global::get_syswndall();
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				xui_syswnd* wnd = vec[i];
+				wnd->update(delta_time/1000.0f);
+				wnd->render();
+			}
 
 			delta_time = timeGetTime() - total_time;
 			if (delta_time < 16)

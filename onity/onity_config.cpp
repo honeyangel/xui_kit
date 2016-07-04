@@ -37,7 +37,7 @@ xui_implement_rtti(onity_config, xui_window);
 //constructor
 */
 xui_create_explain(onity_config)( void )
-: xui_window(xui_vector<s32>(320, 320))
+: xui_window(xui_vector<s32>(320, 320), true)
 {
 	m_modal		= true;
 	m_border	= xui_rect2d<s32>(10);

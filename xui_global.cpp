@@ -1,4 +1,7 @@
-#include "xui_component.h"
+#include "xui_desktop.h"
+#include "xui_render_window.h"
+#include "xui_window.h"
+#include "xui_syswnd.h"
 #include "xui_global.h"
 
 /*
@@ -106,6 +109,371 @@ xui_method_explain(xui_global, ascii_to_unicode,std::wstring					)( const std::s
 /*
 //system
 */
+std::map<HWND, xui_syswnd*> syswnd_map;
+LRESULT CALLBACK xui_syswnd_proc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
+{
+	if (xui_global::def_deviceproc(hwnd, message, wparam, lparam))
+		return 0;
+
+	switch (message)
+	{
+	case WM_CLOSE:
+		{
+			xui_syswnd* syswnd = xui_global::get_syswnd(hwnd);
+			if (syswnd)
+			{
+				xui_window* wnd = syswnd->get_popupctrl();
+				if (wnd->was_modal())
+					xui_desktop::get_ins()->del_modalwnd(wnd);
+
+				std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find(hwnd);
+				if (itor != syswnd_map.end())
+				{
+					delete (*itor).second;
+					syswnd_map.erase(itor);
+				}
+
+				wnd->set_visible(false);
+			}
+
+			DestroyWindow(hwnd);
+		}
+		break;
+	case WM_SIZE:
+		{
+			xui_syswnd* syswnd = xui_global::get_syswnd(hwnd);
+			if (syswnd)
+			{
+				RECT rect;
+				GetClientRect(hwnd, &rect);
+				int w = rect.right-rect.left;
+				int h = rect.bottom-rect.top;
+				if (w > 0 && h > 0)
+				{
+					xui_window* wnd = syswnd->get_popupctrl();
+					xui_method_ptrcall(wnd, set_owner	)(NULL);
+					xui_method_ptrcall(wnd, set_rendersz)(xui_vector<s32>(w, h));
+					xui_method_ptrcall(wnd, set_owner	)(syswnd);
+				}
+			}
+		}
+		break;
+	default:
+		return DefWindowProc(hwnd, message, wparam, lparam);
+	}
+
+	return 0;
+}
+
+void reg_syswndclass( void )
+{
+	static bool has_register = false;
+	if (has_register == false)
+	{
+		WNDCLASS wc;
+		memset(&wc, 0, sizeof(WNDCLASS));
+
+		extern HINSTANCE gHINSTANCE;
+		wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
+		wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+		wc.hInstance		= gHINSTANCE;
+		wc.lpfnWndProc		= xui_syswnd_proc;
+		wc.lpszClassName	= L"xui_syswnd";
+		wc.lpszMenuName		= NULL;
+		wc.style			= CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
+
+		if (RegisterClass(&wc))
+			has_register = true;
+	}
+}
+u08 VKToKey(WPARAM wParam)
+{
+	switch (wParam)
+	{
+	case 'A':				return KEY_A;
+	case 'B':				return KEY_B;
+	case 'C':				return KEY_C;
+	case 'D':				return KEY_D;
+	case 'E':				return KEY_E;
+	case 'F':				return KEY_F;
+	case 'G':				return KEY_G;
+	case 'H':				return KEY_H;
+	case 'I':				return KEY_I;
+	case 'J':				return KEY_J;
+	case 'K':				return KEY_K;
+	case 'L':				return KEY_L;
+	case 'M':				return KEY_M;
+	case 'N':				return KEY_N;
+	case 'O':				return KEY_O;
+	case 'P':				return KEY_P;
+	case 'Q':				return KEY_Q;
+	case 'R':				return KEY_R;
+	case 'S':				return KEY_S;
+	case 'T':				return KEY_T;
+	case 'U':				return KEY_U;
+	case 'V':				return KEY_V;
+	case 'W':				return KEY_W;
+	case 'X':				return KEY_X;
+	case 'Y':				return KEY_Y;
+	case 'Z':				return KEY_Z;
+	case VK_ESCAPE:			return KEY_ESC;
+	case VK_RETURN:			return KEY_ENTER;
+	case VK_TAB:			return KEY_TAB;
+	case VK_BACK:			return KEY_BACK;
+	case VK_SHIFT:			return KEY_SHIFT;
+	case VK_UP:				return KEY_UARROW;
+	case VK_DOWN:			return KEY_DARROW;
+	case VK_LEFT:			return KEY_LARROW;
+	case VK_RIGHT:			return KEY_RARROW;
+	case VK_HOME:			return KEY_HOME;
+	case VK_END:			return KEY_END;
+	case VK_DELETE:			return KEY_DELETE;
+	case VK_F1:				return KEY_F1;
+	case VK_F2:				return KEY_F2;
+	case VK_F3:				return KEY_F3;
+	case VK_F4:				return KEY_F4;
+	case VK_F5:				return KEY_F5;
+	case VK_F6:				return KEY_F6;
+	case VK_F7:				return KEY_F7;
+	case VK_F8:				return KEY_F8;
+	case VK_F9:				return KEY_F9;
+	default:				return KEY_NONE;
+	}
+}
+xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
+{
+	switch (message)
+	{
+	case WM_MOUSEWHEEL:
+		{
+			xui_method_mouse args;
+			args.wheel = (s32)(s16)HIWORD(wparam) / 3;
+			xui_desktop::get_ins()->os_mousewheel(args);
+		}
+		break;
+	case WM_CAPTURECHANGED:
+		{
+			HWND other_hwnd = (HWND)lparam;
+			if (other_hwnd)
+			{
+				extern HWND gHWND;
+				if (xui_global::get_syswnd(other_hwnd) == NULL || other_hwnd != gHWND)
+				{
+					if (xui_desktop::get_ins()->get_catchctrl() != NULL)
+					{
+						POINT pt;
+						GetCursorPos(&pt);
+						ScreenToClient(hwnd, &pt);
+
+						xui_method_mouse args;
+						args.wparam = hwnd;
+						args.mouse  = MB_L;
+						args.point  = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+						args.ctrl   = false;
+						args.shift  = false;
+						args.alt    = false;
+						xui_desktop::get_ins()->os_mouserise(args);
+					}
+				}
+			}
+		}
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+		{
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hwnd, &pt);
+
+			xui_method_mouse args;
+			args.wparam = hwnd;
+			args.point  = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+			args.ctrl   = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift  = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt    = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+
+			switch (message)
+			{
+			case WM_LBUTTONDOWN:	args.mouse = MB_L;	break;
+			case WM_RBUTTONDOWN:	args.mouse = MB_R;	break;
+			case WM_MBUTTONDOWN:	args.mouse = MB_M;	break;
+			}
+
+			xui_desktop::get_ins()->os_mousedown(args);
+		}
+		break;
+	case WM_MOUSEMOVE:
+		{
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hwnd, &pt);
+			xui_method_mouse args;
+			args.wparam = hwnd;
+			args.point  = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+			xui_desktop::get_ins()->os_mousemove(args);
+		}
+		break;
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+		{
+			POINT pt;
+			GetCursorPos(&pt);
+			ScreenToClient(hwnd, &pt);
+
+			xui_method_mouse args;
+			args.wparam = hwnd;
+			args.point  = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+			args.ctrl   = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift  = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt    = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+
+			switch (message)
+			{
+			case WM_LBUTTONUP:		args.mouse = MB_L;	break;
+			case WM_RBUTTONUP:		args.mouse = MB_R;	break;
+			case WM_MBUTTONUP:		args.mouse = MB_M;	break;
+			}
+
+			xui_desktop::get_ins()->os_mouserise(args);
+		}
+		break;
+	case WM_KEYDOWN:
+		{
+			xui_method_keybd args;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+			args.kcode = VKToKey(wparam);
+			xui_desktop::get_ins()->os_keybddown(args);
+		}
+		break;
+	case WM_KEYUP:
+		{
+			xui_method_keybd args;
+			args.ctrl  = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt   = (GetKeyState(VK_MENU)    & 0x8000) != 0;
+			args.kcode = VKToKey(wparam);
+			xui_desktop::get_ins()->os_keybdrise(args);
+		}
+		break;
+	case WM_CHAR:
+		{
+			xui_desktop::get_ins()->os_keybdchar((u16)wparam);
+		}
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+xui_method_explain(xui_global, set_syswndmove,	void							)( xui_syswnd* syswnd, const xui_vector<s32>& pt )
+{
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+	s32 x = rect.left + pt.x;
+	s32 y = rect.top  + pt.y;
+	s32 w = rect.right  - rect.left;
+	s32 h = rect.bottom - rect.top ;
+	MoveWindow(hwnd, x, y, w, h, FALSE);
+}
+xui_method_explain(xui_global, set_syswndrect,	void							)( xui_syswnd* syswnd, const xui_rect2d<s32>& rt )
+{
+	extern HWND gHWND;
+	RECT rect;
+	GetWindowRect(gHWND, &rect);
+	s32 title = GetSystemMetrics(SM_CYCAPTION);
+	s32 frame = GetSystemMetrics(SM_CXSIZEFRAME);
+
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	RECT window;
+	RECT client;
+	GetWindowRect(hwnd, &window);
+	GetClientRect(hwnd, &client);
+	s32 edgex = (window.right-window.left) - (client.right-client.left);
+	s32 edgey = (window.bottom-window.top) - (client.bottom-client.top);
+
+	s32 x = rect.left  + frame + rt.ax - edgex/2;
+	s32 y = rect.top   + title + rt.ay - edgey/2;
+	s32 w = rt.get_w() + edgex;
+	s32 h = rt.get_h() + edgey;
+	MoveWindow(hwnd, x, y, w, h, FALSE);
+}
+xui_method_explain(xui_global, get_syswndall,	std::vector<xui_syswnd*>		)( void )
+{
+	std::vector<xui_syswnd*> vec;
+	for (std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin(); itor != syswnd_map.end(); ++itor)
+	{
+		vec.push_back((*itor).second);
+	}
+
+	return vec;
+}
+xui_method_explain(xui_global, get_syswnd,		xui_syswnd*						)( HWND hwnd )
+{
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find(hwnd);
+	if (itor != syswnd_map.end())
+		return (*itor).second;
+
+	return NULL;
+}
+xui_method_explain(xui_global, add_syswnd,		xui_syswnd*						)( xui_window* popupctrl, bool sizable )
+{
+	reg_syswndclass();
+
+	DWORD style = WS_POPUP |
+				  (sizable ? WS_THICKFRAME : WS_DLGFRAME);
+
+	extern HINSTANCE gHINSTANCE;
+	extern HWND      gHWND;
+	HWND hwnd = CreateWindow(L"xui_syswnd", L"", style , 0, 0, 0, 0, gHWND, NULL, gHINSTANCE, NULL);
+	xui_syswnd* syswnd = new xui_syswnd(hwnd, popupctrl);
+	syswnd_map[hwnd] = syswnd;
+	set_syswndrect(syswnd, popupctrl->get_renderrtabs());
+
+	ShowWindow   (hwnd, SW_NORMAL);
+	UpdateWindow (hwnd);
+
+	return syswnd;
+}
+xui_method_explain(xui_global, del_syswnd,		void							)( xui_syswnd* syswnd )
+{
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	SendMessage(hwnd, WM_CLOSE, 0, 0);
+}
+xui_method_explain(xui_global, mod_syswnd,		void							)( xui_syswnd* syswnd )
+{
+	extern HWND  gHWND;
+	EnableWindow(gHWND, FALSE);
+
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
+	for (; itor != syswnd_map.end(); ++itor)
+	{
+		HWND		 hwnd = (*itor).first;
+		xui_syswnd*  swnd = (*itor).second;
+		EnableWindow(hwnd, (swnd == syswnd) ? TRUE : FALSE);
+	}
+
+	SetForegroundWindow(syswnd->get_renderwnd()->get_hwnd());
+}
+xui_method_explain(xui_global, res_syswnd,		void							)( void )
+{
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
+	for (; itor != syswnd_map.end(); ++itor)
+	{
+		HWND hwnd = (*itor).first;
+		EnableWindow(hwnd, TRUE);
+	}
+
+	extern HWND  gHWND;
+	EnableWindow(gHWND, TRUE);
+	SetForegroundWindow(gHWND);
+}
+
 std::map<u32, HCURSOR> cursor_map;
 xui_method_explain(xui_global, set_capture,		void							)( void )
 {

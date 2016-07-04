@@ -37,7 +37,7 @@ xui_implement_rtti(onity_mainform, xui_window);
 //constructor
 */
 xui_create_explain(onity_mainform)( void )
-: xui_window(xui_vector<s32>(0))
+: xui_window(xui_vector<s32>(0), false)
 {
 	m_dockstyle		= DOCKSTYLE_F;
 
