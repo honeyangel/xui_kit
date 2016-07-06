@@ -89,7 +89,11 @@ xui_method_explain(xui_propedit_colour, on_editctrlclick,		void				)( xui_compon
 }
 xui_method_explain(xui_propedit_colour, on_pickctrlclick,		void				)( xui_component* sender, xui_method_mouse& args )
 {
-	xui_global::set_scolorstart();
+	xui_window* window = sender->get_window();
+	if (window)
+	{
+		xui_global::set_scolorstart(window->get_owner());
+	}
 }
 xui_method_explain(xui_propedit_colour, on_pickctrlkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
 {
@@ -329,7 +333,7 @@ xui_method_explain(xui_colour_pickwnd,	on_plusctrlexpand,		void				)( xui_compon
 }
 xui_method_explain(xui_colour_pickwnd,	on_pickctrlclick,		void				)( xui_component* sender, xui_method_mouse& args )
 {
-	xui_global::set_scolorstart();
+	xui_global::set_scolorstart(get_owner());
 	xui_method_ptrcall(m_compctrl, set_visible	)(false);
 	xui_method_ptrcall(m_viewctrl, set_visible	)(false);
 	xui_method_ptrcall(m_mainroll, set_visible	)(false);

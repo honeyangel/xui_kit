@@ -282,10 +282,12 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 	{
 		if (m_run->was_push())
 		{
-			ProfileManager::Instance()->Logout(true);
+			BreezeGame::ProfileManager::Instance()->Logout(true);
 			NPLoginService::GetInstance()->Logout();
-			Game::Instance()->GetLoader()->Load( LT_Splash );	
-			LocalSaveHelper::Instance()->SaveLocalInfo();
+			BreezeGame::Game::Instance()->GetLoader()->Load( BreezeGame::LT_Splash );	
+			BreezeGame::LocalSaveHelper::Instance()->SaveLocalInfo();
+			BreezeGame::Game::Instance()->Resume();
+			m3eFrameWorkUpdate();
 		}
 		else
 		{

@@ -107,6 +107,149 @@ xui_method_explain(xui_global, ascii_to_unicode,std::wstring					)( const std::s
 }
 
 /*
+//screen
+*/
+HWND	scolor_hwnd		= NULL;
+CHAR*	screen_buffer	= NULL;
+s32		screen_w		= 0;
+s32		screen_h		= 0;
+void capture_screen( void )
+{
+	HDC hdcScreen = ::GetDC(NULL);
+
+	screen_w = GetSystemMetrics(SM_CXSCREEN);  // 屏幕宽
+	screen_h = GetSystemMetrics(SM_CYSCREEN);  // 屏幕高
+	HDC hdcMemory = CreateCompatibleDC(hdcScreen); // 创建兼容内存DC
+	if (hdcMemory == NULL)
+	{
+		goto done;
+	}
+
+	// 通过窗口DC 创建一个兼容位图
+	BITMAPINFO bi;
+	bi.bmiHeader.biSize				= sizeof(BITMAPINFOHEADER);
+	bi.bmiHeader.biWidth			=  screen_w;
+	bi.bmiHeader.biHeight			= -screen_h;
+	bi.bmiHeader.biPlanes			= 1;
+	bi.bmiHeader.biBitCount			= 24;
+	bi.bmiHeader.biCompression		= BI_RGB;
+	bi.bmiHeader.biSizeImage		= 0;
+	bi.bmiHeader.biXPelsPerMeter	= 0;
+	bi.bmiHeader.biYPelsPerMeter	= 0;
+	bi.bmiHeader.biClrUsed			= 0;
+	bi.bmiHeader.biClrImportant		= 0;
+
+	char* buffer = NULL;
+	HBITMAP hbmScreen = CreateDIBSection(hdcMemory, &bi, DIB_RGB_COLORS, (void**)(&buffer), 0, 0);
+	if (hbmScreen == NULL)
+	{
+		goto done;
+	}
+
+	// 将位图块传送到我们兼容的内存DC中
+	SelectObject(hdcMemory, hbmScreen);
+	if (!BitBlt(
+		hdcMemory,   // 目的DC
+		0, 0,        // 目的DC的 x,y 坐标
+		screen_w, screen_h, // 目的 DC 的宽高
+		hdcScreen,   // 来源DC
+		0, 0,        // 来源DC的 x,y 坐标
+		SRCCOPY))    // 粘贴方式
+	{
+		goto done;
+	}
+
+	screen_buffer = new char[screen_w*screen_h*3];
+	memcpy(screen_buffer, buffer, screen_w*screen_h*3);
+
+	// 清理资源
+done:
+	DeleteObject(hbmScreen);
+	DeleteObject(hdcMemory);
+	ReleaseDC(NULL, hdcScreen);
+}
+
+xui_method_explain(xui_global, was_scolorstart, bool							)( void )
+{
+	return screen_buffer != NULL;
+}
+xui_method_explain(xui_global, set_scolorstart,	void							)( xui_syswnd* syswnd )
+{
+	if (screen_buffer == NULL)
+	{
+		if (syswnd)
+		{
+			scolor_hwnd = syswnd->get_renderwnd()->get_hwnd();
+		}
+		else
+		{
+			extern HWND gHWND;
+			scolor_hwnd = gHWND;
+		}
+
+		::SetWindowPos(scolor_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+		capture_screen();
+	}
+}
+
+xui_colour pick_colour( s32 x, s32 y )
+{
+	u32 index = (y * screen_w + x) * 3;
+	BYTE b = screen_buffer[index  ];
+	BYTE g = screen_buffer[index+1];
+	BYTE r = screen_buffer[index+2];
+	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
+}
+xui_method_explain(xui_global, get_scolor,		xui_colour						)( void )
+{
+	if (screen_buffer)
+	{
+		POINT pt;
+		GetCursorPos(&pt);
+		return pick_colour(pt.x, pt.y);
+	}
+
+	return xui_colour::transparent;
+}
+xui_method_explain(xui_global, get_scolor,		std::vector<xui_colour>			)( const xui_vector<s32>& sz )
+{
+	std::vector<xui_colour> result;
+	result.resize(sz.w*sz.h, xui_colour::black);
+	if (screen_buffer)
+	{
+		POINT pt;
+		GetCursorPos(&pt);
+		s32 sc = pt.x - sz.w/2;
+		s32 sr = pt.y - sz.h/2;
+		for (s32 ir = 0; ir < sz.h; ++ir)
+		{
+			for (s32 ic = 0; ic < sz.w; ++ic)
+			{
+				s32 x = sc + ic;
+				s32 y = sr + ir;
+				u32 index = ir * sz.w + ic;
+				result[index] = pick_colour(x, y);
+			}
+		}
+	}
+
+	return result;
+}
+xui_method_explain(xui_global, set_scolorclose,	void							)( void )
+{
+	if (screen_buffer)
+	{
+		if (scolor_hwnd)
+			::SetWindowPos(scolor_hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+
+		//释放
+		delete [] screen_buffer;
+		screen_buffer = NULL;
+		scolor_hwnd   = NULL;
+	}
+}
+
+/*
 //system
 */
 std::map<HWND, xui_syswnd*> syswnd_map;
@@ -240,10 +383,165 @@ u08 VKToKey(WPARAM wParam)
 	default:				return KEY_NONE;
 	}
 }
+xui_method_explain(xui_global, set_syswndmove,	void							)( xui_syswnd* syswnd, const xui_vector<s32>& pt )
+{
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+	s32 x = rect.left + pt.x;
+	s32 y = rect.top  + pt.y;
+	s32 w = rect.right  - rect.left;
+	s32 h = rect.bottom - rect.top ;
+	MoveWindow(hwnd, x, y, w, h, FALSE);
+}
+xui_method_explain(xui_global, set_syswndrect,	void							)( xui_syswnd* syswnd, const xui_rect2d<s32>& rt )
+{
+	extern HWND gHWND;
+	RECT rect;
+	GetWindowRect(gHWND, &rect);
+	s32 title = GetSystemMetrics(SM_CYCAPTION);
+	s32 frame = GetSystemMetrics(SM_CXSIZEFRAME);
+
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	RECT window;
+	RECT client;
+	GetWindowRect(hwnd, &window);
+	GetClientRect(hwnd, &client);
+	s32 edgex = (window.right-window.left) - (client.right-client.left);
+	s32 edgey = (window.bottom-window.top) - (client.bottom-client.top);
+
+	s32 x = rect.left  + frame + rt.ax - edgex/2;
+	s32 y = rect.top   + title + rt.ay - edgey/2;
+	s32 w = rt.get_w() + edgex;
+	s32 h = rt.get_h() + edgey;
+	MoveWindow(hwnd, x, y, w, h, FALSE);
+}
+xui_method_explain(xui_global, get_syswndall,	std::vector<xui_syswnd*>		)( void )
+{
+	std::vector<xui_syswnd*> vec;
+	for (std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin(); itor != syswnd_map.end(); ++itor)
+	{
+		vec.push_back((*itor).second);
+	}
+
+	return vec;
+}
+xui_method_explain(xui_global, get_syswnd,		xui_syswnd*						)( HWND hwnd )
+{
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find(hwnd);
+	if (itor != syswnd_map.end())
+		return (*itor).second;
+
+	return NULL;
+}
+xui_method_explain(xui_global, add_syswnd,		xui_syswnd*						)( xui_window* popupctrl, bool sizable )
+{
+	reg_syswndclass();
+
+	DWORD style = WS_POPUP |
+				  (sizable ? WS_THICKFRAME : WS_DLGFRAME);
+
+	extern HINSTANCE gHINSTANCE;
+	extern HWND      gHWND;
+	HWND hwnd = CreateWindow(L"xui_syswnd", L"", style , 0, 0, 0, 0, gHWND, NULL, gHINSTANCE, NULL);
+	xui_syswnd* syswnd = new xui_syswnd(hwnd, popupctrl);
+	syswnd_map[hwnd] = syswnd;
+	set_syswndrect(syswnd, popupctrl->get_renderrtabs());
+
+	ShowWindow   (hwnd, SW_NORMAL);
+	UpdateWindow (hwnd);
+
+	return syswnd;
+}
+xui_method_explain(xui_global, del_syswnd,		void							)( xui_syswnd* syswnd )
+{
+	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+	if (hwnd == scolor_hwnd)
+		set_scolorclose();
+
+	SendMessage(hwnd, WM_CLOSE, 0, 0);
+}
+xui_method_explain(xui_global, mod_syswnd,		void							)( xui_syswnd* syswnd )
+{
+	extern HWND  gHWND;
+	EnableWindow(gHWND, FALSE);
+
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
+	for (; itor != syswnd_map.end(); ++itor)
+	{
+		HWND		 hwnd = (*itor).first;
+		xui_syswnd*  swnd = (*itor).second;
+		EnableWindow(hwnd, (swnd == syswnd) ? TRUE : FALSE);
+	}
+
+	SetForegroundWindow(syswnd->get_renderwnd()->get_hwnd());
+}
+xui_method_explain(xui_global, res_syswnd,		void							)( void )
+{
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
+	for (; itor != syswnd_map.end(); ++itor)
+	{
+		HWND hwnd = (*itor).first;
+		EnableWindow(hwnd, TRUE);
+	}
+
+	extern HWND  gHWND;
+	EnableWindow(gHWND, TRUE);
+	SetForegroundWindow(gHWND);
+}
+
+std::map<u32, HCURSOR> cursor_map;
+xui_method_explain(xui_global, set_capture,		void							)( void )
+{
+	extern HWND gHWND;
+	SetCapture(gHWND);
+}
+xui_method_explain(xui_global, non_capture,		void							)( void )
+{
+	ReleaseCapture();
+}
+xui_method_explain(xui_global, add_cursor,		void							)( u32 cursor, const std::wstring& filename )
+{
+	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
+	if (itor != cursor_map.end())
+		::DestroyCursor((*itor).second);
+
+	cursor_map[cursor] = ::LoadCursorFromFile(filename.c_str());
+}
+xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
+{
+	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
+	if (itor != cursor_map.end())
+	{
+		::SetCursor((*itor).second);
+	}
+	else
+	{
+		switch (cursor)
+		{
+		case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
+		case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
+		case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
+		case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
+		case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+		case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
+		case CURSOR_FORBID:		::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
+		}
+	}
+}
 xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {
 	switch (message)
 	{
+	case WM_KILLFOCUS:
+		{
+			if (hwnd == scolor_hwnd)
+			{
+				xui_desktop::get_ins()->set_focusctrl(NULL);
+				::SetFocus(hwnd);
+			}
+		}
+		break;
 	case WM_MOUSEWHEEL:
 		{
 			xui_method_mouse args;
@@ -369,281 +667,6 @@ xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT mes
 	}
 
 	return true;
-}
-xui_method_explain(xui_global, set_syswndmove,	void							)( xui_syswnd* syswnd, const xui_vector<s32>& pt )
-{
-	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
-	RECT rect;
-	GetWindowRect(hwnd, &rect);
-	s32 x = rect.left + pt.x;
-	s32 y = rect.top  + pt.y;
-	s32 w = rect.right  - rect.left;
-	s32 h = rect.bottom - rect.top ;
-	MoveWindow(hwnd, x, y, w, h, FALSE);
-}
-xui_method_explain(xui_global, set_syswndrect,	void							)( xui_syswnd* syswnd, const xui_rect2d<s32>& rt )
-{
-	extern HWND gHWND;
-	RECT rect;
-	GetWindowRect(gHWND, &rect);
-	s32 title = GetSystemMetrics(SM_CYCAPTION);
-	s32 frame = GetSystemMetrics(SM_CXSIZEFRAME);
-
-	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
-	RECT window;
-	RECT client;
-	GetWindowRect(hwnd, &window);
-	GetClientRect(hwnd, &client);
-	s32 edgex = (window.right-window.left) - (client.right-client.left);
-	s32 edgey = (window.bottom-window.top) - (client.bottom-client.top);
-
-	s32 x = rect.left  + frame + rt.ax - edgex/2;
-	s32 y = rect.top   + title + rt.ay - edgey/2;
-	s32 w = rt.get_w() + edgex;
-	s32 h = rt.get_h() + edgey;
-	MoveWindow(hwnd, x, y, w, h, FALSE);
-}
-xui_method_explain(xui_global, get_syswndall,	std::vector<xui_syswnd*>		)( void )
-{
-	std::vector<xui_syswnd*> vec;
-	for (std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin(); itor != syswnd_map.end(); ++itor)
-	{
-		vec.push_back((*itor).second);
-	}
-
-	return vec;
-}
-xui_method_explain(xui_global, get_syswnd,		xui_syswnd*						)( HWND hwnd )
-{
-	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find(hwnd);
-	if (itor != syswnd_map.end())
-		return (*itor).second;
-
-	return NULL;
-}
-xui_method_explain(xui_global, add_syswnd,		xui_syswnd*						)( xui_window* popupctrl, bool sizable )
-{
-	reg_syswndclass();
-
-	DWORD style = WS_POPUP |
-				  (sizable ? WS_THICKFRAME : WS_DLGFRAME);
-
-	extern HINSTANCE gHINSTANCE;
-	extern HWND      gHWND;
-	HWND hwnd = CreateWindow(L"xui_syswnd", L"", style , 0, 0, 0, 0, gHWND, NULL, gHINSTANCE, NULL);
-	xui_syswnd* syswnd = new xui_syswnd(hwnd, popupctrl);
-	syswnd_map[hwnd] = syswnd;
-	set_syswndrect(syswnd, popupctrl->get_renderrtabs());
-
-	ShowWindow   (hwnd, SW_NORMAL);
-	UpdateWindow (hwnd);
-
-	return syswnd;
-}
-xui_method_explain(xui_global, del_syswnd,		void							)( xui_syswnd* syswnd )
-{
-	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
-	SendMessage(hwnd, WM_CLOSE, 0, 0);
-}
-xui_method_explain(xui_global, mod_syswnd,		void							)( xui_syswnd* syswnd )
-{
-	extern HWND  gHWND;
-	EnableWindow(gHWND, FALSE);
-
-	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
-	for (; itor != syswnd_map.end(); ++itor)
-	{
-		HWND		 hwnd = (*itor).first;
-		xui_syswnd*  swnd = (*itor).second;
-		EnableWindow(hwnd, (swnd == syswnd) ? TRUE : FALSE);
-	}
-
-	SetForegroundWindow(syswnd->get_renderwnd()->get_hwnd());
-}
-xui_method_explain(xui_global, res_syswnd,		void							)( void )
-{
-	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.begin();
-	for (; itor != syswnd_map.end(); ++itor)
-	{
-		HWND hwnd = (*itor).first;
-		EnableWindow(hwnd, TRUE);
-	}
-
-	extern HWND  gHWND;
-	EnableWindow(gHWND, TRUE);
-	SetForegroundWindow(gHWND);
-}
-
-std::map<u32, HCURSOR> cursor_map;
-xui_method_explain(xui_global, set_capture,		void							)( void )
-{
-	extern HWND gHWND;
-	SetCapture(gHWND);
-}
-xui_method_explain(xui_global, non_capture,		void							)( void )
-{
-	ReleaseCapture();
-}
-xui_method_explain(xui_global, add_cursor,		void							)( u32 cursor, const std::wstring& filename )
-{
-	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
-	if (itor != cursor_map.end())
-		::DestroyCursor((*itor).second);
-
-	cursor_map[cursor] = ::LoadCursorFromFile(filename.c_str());
-}
-xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
-{
-	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
-	if (itor != cursor_map.end())
-	{
-		::SetCursor((*itor).second);
-	}
-	else
-	{
-		switch (cursor)
-		{
-		case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
-		case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
-		case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
-		case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
-		case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
-		case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
-		case CURSOR_FORBID:		::SetCursor(::LoadCursor(NULL, IDC_NO		));	break;
-		}
-	}
-}
-
-/*
-//screen
-*/
-CHAR*	screen_buffer	= NULL;
-s32		screen_w		= 0;
-s32		screen_h		= 0;
-void capture_screen( void )
-{
-	HDC hdcScreen = ::GetDC(NULL);
-
-	screen_w = GetSystemMetrics(SM_CXSCREEN);  // 屏幕宽
-	screen_h = GetSystemMetrics(SM_CYSCREEN);  // 屏幕高
-	HDC hdcMemory = CreateCompatibleDC(hdcScreen); // 创建兼容内存DC
-	if (hdcMemory == NULL)
-	{
-		goto done;
-	}
-
-	// 通过窗口DC 创建一个兼容位图
-	BITMAPINFO bi;
-	bi.bmiHeader.biSize				= sizeof(BITMAPINFOHEADER);
-	bi.bmiHeader.biWidth			=  screen_w;
-	bi.bmiHeader.biHeight			= -screen_h;
-	bi.bmiHeader.biPlanes			= 1;
-	bi.bmiHeader.biBitCount			= 24;
-	bi.bmiHeader.biCompression		= BI_RGB;
-	bi.bmiHeader.biSizeImage		= 0;
-	bi.bmiHeader.biXPelsPerMeter	= 0;
-	bi.bmiHeader.biYPelsPerMeter	= 0;
-	bi.bmiHeader.biClrUsed			= 0;
-	bi.bmiHeader.biClrImportant		= 0;
-
-	char* buffer = NULL;
-	HBITMAP hbmScreen = CreateDIBSection(hdcMemory, &bi, DIB_RGB_COLORS, (void**)(&buffer), 0, 0);
-	if (hbmScreen == NULL)
-	{
-		goto done;
-	}
-
-	// 将位图块传送到我们兼容的内存DC中
-	SelectObject(hdcMemory, hbmScreen);
-	if (!BitBlt(
-		hdcMemory,   // 目的DC
-		0, 0,        // 目的DC的 x,y 坐标
-		screen_w, screen_h, // 目的 DC 的宽高
-		hdcScreen,   // 来源DC
-		0, 0,        // 来源DC的 x,y 坐标
-		SRCCOPY))    // 粘贴方式
-	{
-		goto done;
-	}
-
-	screen_buffer = new char[screen_w*screen_h*3];
-	memcpy(screen_buffer, buffer, screen_w*screen_h*3);
-
-	// 清理资源
-done:
-	DeleteObject(hbmScreen);
-	DeleteObject(hdcMemory);
-	ReleaseDC(NULL, hdcScreen);
-}
-
-xui_method_explain(xui_global, was_scolorstart, bool							)( void )
-{
-	return screen_buffer != NULL;
-}
-xui_method_explain(xui_global, set_scolorstart,	void							)( void )
-{
-	if (screen_buffer == NULL)
-	{
-		extern HWND gHWND;
-		::SetWindowPos(gHWND, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-		capture_screen();
-	}
-}
-
-xui_colour pick_colour( s32 x, s32 y )
-{
-	u32 index = (y * screen_w + x) * 3;
-	BYTE b = screen_buffer[index  ];
-	BYTE g = screen_buffer[index+1];
-	BYTE r = screen_buffer[index+2];
-	return xui_colour(1.0f, r/255.0f, g/255.0f, b/255.0f);
-}
-xui_method_explain(xui_global, get_scolor,		xui_colour						)( void )
-{
-	if (screen_buffer)
-	{
-		POINT pt;
-		GetCursorPos(&pt);
-		return pick_colour(pt.x, pt.y);
-	}
-
-	return xui_colour::transparent;
-}
-xui_method_explain(xui_global, get_scolor,		std::vector<xui_colour>			)( const xui_vector<s32>& sz )
-{
-	std::vector<xui_colour> result;
-	result.resize(sz.w*sz.h, xui_colour::black);
-	if (screen_buffer)
-	{
-		POINT pt;
-		GetCursorPos(&pt);
-		s32 sc = pt.x - sz.w/2;
-		s32 sr = pt.y - sz.h/2;
-		for (s32 ir = 0; ir < sz.h; ++ir)
-		{
-			for (s32 ic = 0; ic < sz.w; ++ic)
-			{
-				s32 x = sc + ic;
-				s32 y = sr + ir;
-				u32 index = ir * sz.w + ic;
-				result[index] = pick_colour(x, y);
-			}
-		}
-	}
-
-	return result;
-}
-xui_method_explain(xui_global, set_scolorclose,	void							)( void )
-{
-	if (screen_buffer)
-	{
-		extern HWND gHWND;
-		::SetWindowPos(gHWND, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-
-		//释放
-		delete [] screen_buffer;
-		screen_buffer = NULL;
-	}
 }
 
 /*
