@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_desktop.h"
+#include "xui_window.h"
 #include "xui_toggle.h"
 #include "xui_scroll.h"
 #include "xui_listview.h"
@@ -76,7 +77,7 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 */
 xui_delete_explain(xui_dropbox)( void )
 {
-	delete m_droplst;
+	xui_desktop::get_ins()->move_recycle(m_droplst);
 	for (u32 i = 0; i < m_itemvec.size(); ++i)
 		delete m_itemvec[i];
 }
@@ -370,13 +371,16 @@ xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_component* 
 }
 xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* sender, xui_method_args&  args )
 {
+	xui_window* window = get_window();
+
+	xui_rect2d<s32> rt = window->get_renderrtabs();
 	xui_vector<s32> sz = m_droplst->get_rendersz();
 	xui_vector<s32> pt;
-	pt.x  = xui_desktop::get_ins()->get_renderw() - get_screenpt().x - sz.w ;
+	pt.x  = rt.bx - get_screenpt().x - sz.w ;
 	pt.x  = xui_min(pt.x, 0);
 	pt.y  = get_renderh();
 
-	if (get_renderrtabs().by + m_droplst->get_renderh() < xui_desktop::get_ins()->get_renderh())
+	if (get_renderrtabs().by + m_droplst->get_renderh() < rt.by)
 		pt.y = get_renderh();
 	else
 		pt.y = -m_droplst->get_renderh();
@@ -430,11 +434,12 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 	{
 		m_droptog->set_push(true);
 		m_droplst->refresh();
-		xui_desktop::get_ins()->set_floatctrl(m_droplst);
+		xui_window* window = get_window();
+		xui_desktop::get_ins()->set_floatctrl(window, m_droplst);
 	}
 }
 xui_method_explain(xui_dropbox, set_droplisthide,		void			)( void )
 {
 	m_droptog->set_push(false);
-	xui_desktop::get_ins()->set_floatctrl(NULL);
+	xui_desktop::get_ins()->set_floatctrl(NULL, NULL);
 }

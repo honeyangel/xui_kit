@@ -11,20 +11,24 @@ public:
 	/*
 	//constructor
 	*/
-	xui_window( const xui_vector<s32>& size, bool modal );
+	xui_window( const xui_vector<s32>& size, bool modal, bool popup = false );
 
 	/*
-	//modal
+	//method
 	*/
 	bool						was_modal		( void ) const;
+	bool						was_popup		( void ) const;
 	xui_syswnd*					get_owner		( void );
 	void						set_owner		( xui_syswnd* owner );
+	xui_component*				get_float		( void );
+	void						set_float		( xui_component* component );
 
 	/*
 	//virtual
 	*/
 	virtual xui_vector<s32>		get_screenpt	( void ) const;
 	virtual xui_component*		choose			( const xui_vector<s32>& pt );
+	virtual void				render			( void );
 
 	/*
 	//event
@@ -50,7 +54,9 @@ protected:
 	//member
 	*/
 	bool						m_modal;
+	bool						m_popup;
 	xui_syswnd*					m_owner;
+	xui_component*				m_float;
 };
 
 #endif//__xui_window_h__

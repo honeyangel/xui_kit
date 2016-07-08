@@ -18,6 +18,8 @@ public:
 	/*
 	//method
 	*/
+	bool								was_pageshow			( xui_dockpage* page );
+	void								set_pageshow			( xui_dockpage* page, bool flag );
 	xui_menu*							get_viewmenu			( void );
 	xui_dockpage*						get_showpage			( void );
 	void								set_showpage			( xui_dockpage* page );
@@ -47,9 +49,10 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void						on_invalid				( xui_method_args& args );
-	virtual void						on_perform				( xui_method_args& args );
-	virtual void						on_setrendersz			( xui_method_args& args );
+	virtual void						on_invalid				( xui_method_args&  args );
+	virtual void						on_perform				( xui_method_args&  args );
+	virtual void						on_setrendersz			( xui_method_args&  args );
+	virtual void						on_mousemove			( xui_method_mouse& args );
 
 	/*
 	//event

@@ -1,6 +1,7 @@
 #include "xui_convas.h"
 #include "xui_bitmap.h"
 #include "xui_desktop.h"
+#include "xui_window.h"
 #include "xui_menu.h"
 #include "xui_toggle.h"
 
@@ -66,7 +67,7 @@ xui_create_explain(xui_toggle)( const xui_vector<s32>& size, u08 drawstyle )
 */
 xui_delete_explain(xui_toggle)( void )
 {
-	delete m_menu;
+	xui_desktop::get_ins()->move_recycle(m_menu);
 }
 
 /*
@@ -97,16 +98,18 @@ xui_method_explain(xui_toggle, set_push,			void			)( bool push )
 		{
 			m_menu->refresh();
 
+			xui_window* window = get_window();
 			xui_vector<s32> pt = get_screenpt() + xui_vector<s32>(0, get_renderh());
-			if (pt.x + m_menu->get_renderw() > xui_desktop::get_ins()->get_renderw())
-				pt.x = xui_desktop::get_ins()->get_renderw() - m_menu->get_renderw();
-			if (pt.y + m_menu->get_renderh() > xui_desktop::get_ins()->get_renderh())
-				pt.y = xui_desktop::get_ins()->get_renderh() - m_menu->get_renderh();
+			xui_rect2d<s32> rt = window->get_renderrtabs();
+			if (pt.x + m_menu->get_renderw() > rt.bx)
+				pt.x = rt.bx - m_menu->get_renderw();
+			if (pt.y + m_menu->get_renderh() > rt.by)
+				pt.y = rt.by - m_menu->get_renderh();
 
 			xui_method_ptrcall(m_menu, set_renderpt		)(pt);
 			xui_method_ptrcall(m_menu, set_showsubmenu	)(NULL);
 			xui_method_ptrcall(m_menu, req_focus		)();
-			xui_desktop::get_ins()->set_floatctrl(m_menu);
+			xui_desktop::get_ins()->set_floatctrl(window, m_menu);
 		}
 	}
 }

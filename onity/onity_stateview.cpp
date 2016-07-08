@@ -52,7 +52,7 @@ xui_create_explain(onity_stateview)( void )
 */
 xui_delete_explain(onity_stateview)( void )
 {
-	delete m_menu;
+	xui_desktop::get_ins()->move_recycle(m_menu);
 }
 
 /*
@@ -508,12 +508,13 @@ xui_method_explain(onity_stateview, show_menu,			void			)( onity_state* statectr
 	xui_method_ptrcall(m_default,		set_enable)(statectrl != NULL);
 	xui_method_ptrcall(m_delete,		set_enable)(statectrl != NULL);
 
+	xui_window* window = get_window();
 	xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 	xui_method_ptrcall(m_menu, refresh			)();
 	xui_method_ptrcall(m_menu, set_renderpt		)(pt);
 	xui_method_ptrcall(m_menu, set_showsubmenu	)(NULL);
 	xui_method_ptrcall(m_menu, req_focus		)();
-	xui_desktop::get_ins()->set_floatctrl(m_menu);
+	xui_desktop::get_ins()->set_floatctrl(window, m_menu);
 }
 xui_method_explain(onity_stateview, drag_view,			void			)( const xui_vector<s32>& delta )
 {

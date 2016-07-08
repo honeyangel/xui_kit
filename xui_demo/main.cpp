@@ -19,15 +19,6 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
 
 	switch (message)
 	{
-	case WM_KILLFOCUS:
-		{
-			if (xui_global::was_scolorstart())
-			{
-				xui_desktop::get_ins()->set_focusctrl(NULL);
-				::SetFocus(hwnd);
-			}
-		}
-		break;
 	case WM_USER_FWATCHNOTIFY:
 		{
 			long eventid;
@@ -115,28 +106,26 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500), false);
 	window->ini_component(0, 0, DOCKSTYLE_F);
 	window->set_borderrt(xui_rect2d<s32>(8));
-	xui_demo::test_button	(window);
-	xui_demo::test_toggle	(window);
-	xui_demo::test_textbox	(window);
-	xui_demo::test_linebox	(window);
-	xui_demo::test_gridbox	(window);
-	xui_demo::test_toolbar	(window);
-	xui_demo::test_scroll	(window);
-	xui_demo::test_slider	(window);
-	xui_demo::test_listview	(window);
-	xui_demo::test_dropbox	(window);
-	xui_demo::test_treeview	(window);
-	xui_demo::test_timeview	(window);
-	xui_demo::test_propview	(window);
-	xui_demo::test_menu		(window);
-	//xui_demo::test_dockview(window);
+	//xui_demo::test_button	(window);
+	//xui_demo::test_toggle	(window);
+	//xui_demo::test_textbox	(window);
+	//xui_demo::test_linebox	(window);
+	//xui_demo::test_gridbox	(window);
+	//xui_demo::test_toolbar	(window);
+	//xui_demo::test_scroll	(window);
+	//xui_demo::test_slider	(window);
+	//xui_demo::test_listview	(window);
+	//xui_demo::test_dropbox	(window);
+	//xui_demo::test_treeview	(window);
+	//xui_demo::test_timeview	(window);
+	//xui_demo::test_propview	(window);
+	//xui_demo::test_menu		(window);
+	xui_demo::test_dockview(window);
 	xui_desktop::get_ins()->add_child(window);
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 
-	xui_window* dlg1 = xui_desktop::get_ins()->show_message(L"111", 1);
-	xui_window* dlg2 = xui_desktop::get_ins()->show_message(L"222", 2);
-	//xui_global::add_syswnd(L"Test1", window, true);
-	//xui_global::add_syswnd(L"Test2", window, true);
+	//xui_window* dlg1 = xui_desktop::get_ins()->show_message(L"111", 1);
+	//xui_window* dlg2 = xui_desktop::get_ins()->show_message(L"222", 2);
 
 	MSG msg;
 	memset(&msg, 0, sizeof(MSG));
@@ -164,8 +153,9 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 			for (u32 i = 0; i < vec.size(); ++i)
 			{
 				xui_syswnd* wnd = vec[i];
-				wnd->update(delta_time/1000.0f);
-				wnd->render();
+				wnd->get_renderwnd()->current();
+				wnd->get_popupctrl()->render ();
+				wnd->get_renderwnd()->present();
 			}
 
 			delta_time = timeGetTime() - total_time;

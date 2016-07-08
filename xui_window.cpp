@@ -1,4 +1,5 @@
 #include "xui_desktop.h"
+#include "xui_convas.h"
 #include "xui_global.h"
 #include "xui_window.h"
 
@@ -7,10 +8,12 @@ xui_implement_rtti(xui_window, xui_panel);
 /*
 //constructor
 */
-xui_create_explain(xui_window)( const xui_vector<s32>& size, bool modal )
+xui_create_explain(xui_window)( const xui_vector<s32>& size, bool modal, bool popup )
 : xui_panel(size)
 , m_modal(modal)
+, m_popup(popup)
 , m_owner(NULL)
+, m_float(NULL)
 {}
 
 /*
@@ -20,6 +23,10 @@ xui_method_explain(xui_window, was_modal,		bool			)( void ) const
 {
 	return m_modal;
 }
+xui_method_explain(xui_window, was_popup,		bool			)( void ) const
+{
+	return m_popup;
+}
 xui_method_explain(xui_window, get_owner,		xui_syswnd*		)( void )
 {
 	return m_owner;
@@ -27,6 +34,14 @@ xui_method_explain(xui_window, get_owner,		xui_syswnd*		)( void )
 xui_method_explain(xui_window, set_owner,		void			)( xui_syswnd* owner )
 {
 	m_owner = owner;
+}
+xui_method_explain(xui_window, get_float,		xui_component*	)( void )
+{
+	return m_float;
+}
+xui_method_explain(xui_window, set_float,		void			)( xui_component* component )
+{
+	m_float = component;
 }
 
 /*
@@ -41,11 +56,36 @@ xui_method_explain(xui_window, get_screenpt,	xui_vector<s32>	)( void ) const
 }
 xui_method_explain(xui_window, choose,			xui_component*	)( const xui_vector<s32>& pt )
 {
-	xui_vector<s32> fixed = pt;
-	if (m_owner)
-		fixed += get_renderpt();
+	xui_component* component = NULL;
+	if (m_float)
+		component = m_float->choose(pt);
+	if (component == NULL)
+	{
+		xui_vector<s32> fixed = pt;
+		if (m_owner)
+			fixed += get_renderpt();
 
-	return xui_panel::choose(fixed);
+		component = xui_panel::choose(fixed);
+	}
+
+	return component;
+}
+xui_method_explain(xui_window, render,			void			)( void )
+{
+	xui_panel::render();
+	xui_component* catchctrl = xui_desktop::get_ins()->get_catchctrl();
+	if (catchctrl && catchctrl->get_window() == this)
+	{
+		xui_method_args args;
+		catchctrl->on_topdraw(           args);
+		catchctrl->xm_topdraw(catchctrl, args);
+	}
+
+	xui_convas::get_ins()->set_cliprect(xui_convas::get_ins()->get_viewport());
+	if (m_float)
+	{
+		m_float->render();
+	}
 }
 
 /*
@@ -55,9 +95,12 @@ xui_method_explain(xui_window, on_show,			void			)( xui_method_args&	 args )
 {
 	xui_panel::on_show(args);
 
-	if (m_modal)
+	if (m_modal || m_popup)
 	{
-		xui_desktop::get_ins()->add_modalwnd(this);
+		xui_global::add_syswnd(this, m_modal == false);
+
+		if (m_modal)
+			xui_desktop::get_ins()->add_modalwnd(this);
 	}
 }
 xui_method_explain(xui_window, on_hide,			void			)( xui_method_args&	 args )

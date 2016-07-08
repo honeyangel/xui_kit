@@ -23,12 +23,6 @@ public:
 	xui_window*			get_popupctrl	( void );
 	xui_render_window*	get_renderwnd	( void );
 
-	/*
-	//virtual
-	*/
-	virtual void		update			( f32 delta );
-	virtual void		render			( void );
-
 protected:
 	/*
 	//member

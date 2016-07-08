@@ -48,7 +48,7 @@ public:
 	//viewport
 	*/
 	const xui_rect2d<s32>&	get_viewport		( void ) const;
-	void					set_viewport		( const xui_rect2d<s32>		rt );
+	void					set_viewport		( const xui_rect2d<s32>&	rt );
 	const xui_rect2d<s32>&	get_cliprect		( void ) const;
 	void					set_cliprect		( const xui_rect2d<s32>&	rt );
 

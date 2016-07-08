@@ -32,17 +32,3 @@ xui_method_explain(xui_syswnd, get_renderwnd,	xui_render_window*	)( void )
 {
 	return m_renderwnd;
 }
-
-/*
-//virtual
-*/
-xui_method_explain(xui_syswnd, update,			void				)( f32 delta )
-{
-	xui_method_ptrcall(m_popupctrl, update	)(delta);
-}
-xui_method_explain(xui_syswnd, render,			void				)( void )
-{
-	xui_method_ptrcall(m_renderwnd, current	)();
-	xui_method_ptrcall(m_popupctrl, render	)();
-	xui_method_ptrcall(m_renderwnd, present	)();
-}

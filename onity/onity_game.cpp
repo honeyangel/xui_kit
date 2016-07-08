@@ -123,6 +123,14 @@ xui_method_explain(onity_game, on_perform,			void)( xui_method_args& args )
 		m_view->on_perform_y((sz.h-fh) / 2 + rt.ay + m_head->get_renderh());
 	}
 }
+xui_method_explain(onity_game, on_renderself,		void)( xui_method_args& args )
+{
+	xui_dockpage::on_renderself(args);
+	xui_vector<s32> pt = m_view->get_screenpt();
+	xui_vector<s32> p1 = xui_vector<s32>(pt.x,					pt.y);
+	xui_vector<s32> p2 = xui_vector<s32>(pt.x+get_renderw(),	pt.y);
+	xui_convas::get_ins()->draw_line(p1, p2, xui_colour::black);
+}
 
 /*
 //event

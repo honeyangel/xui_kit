@@ -119,7 +119,7 @@ xui_method_explain(xui_convas, get_viewport,		const xui_rect2d<s32>&	)( void ) c
 {
 	return m_viewport;
 }
-xui_method_explain(xui_convas, set_viewport,		void					)( const xui_rect2d<s32> rt )
+xui_method_explain(xui_convas, set_viewport,		void					)( const xui_rect2d<s32>&	rt )
 {
 	if (m_viewport != rt)
 	{

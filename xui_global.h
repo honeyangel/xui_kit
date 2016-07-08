@@ -36,7 +36,6 @@ public:
 	//system
 	*/
 	static bool								def_deviceproc	( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
-	static void								set_syswndmove	( xui_syswnd* syswnd, const xui_vector<s32>& pt );
 	static void								set_syswndrect	( xui_syswnd* syswnd, const xui_rect2d<s32>& rt );
 	static std::vector<xui_syswnd*>			get_syswndall	( void );
 	static xui_syswnd*						get_syswnd		( HWND hwnd );
@@ -44,11 +43,8 @@ public:
 	static void								del_syswnd		( xui_syswnd* syswnd );
 	static void								mod_syswnd		( xui_syswnd* syswnd );
 	static void								res_syswnd		( void );
-
 	static void								set_cursor		( u32 cursor );
 	static void								add_cursor		( u32 cursor, const std::wstring& filename );
-	static void								set_capture		( void );
-	static void								non_capture		( void );
 
 	/*
 	//screen

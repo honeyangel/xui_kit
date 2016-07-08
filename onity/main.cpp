@@ -149,8 +149,9 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 			for (u32 i = 0; i < vec.size(); ++i)
 			{
 				xui_syswnd* wnd = vec[i];
-				wnd->update(delta_time/1000.0f);
-				wnd->render();
+				wnd->get_renderwnd()->current();
+				wnd->get_popupctrl()->render ();
+				wnd->get_renderwnd()->present();
 			}
 
 			delta_time = timeGetTime() - total_time;

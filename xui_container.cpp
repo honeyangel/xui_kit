@@ -1,4 +1,5 @@
 #include "xui_desktop.h"
+#include "xui_window.h"
 #include "xui_convas.h"
 #include "xui_scroll.h"
 #include "xui_menu.h"
@@ -29,7 +30,7 @@ xui_create_explain(xui_container)( const xui_vector<s32>& size )
 */
 xui_delete_explain(xui_container)( void )
 {
-	delete m_contextmenu;
+	xui_desktop::get_ins()->move_recycle(m_contextmenu);
 	xui_vecptr_addloop(m_ascrollitem)
 	{
 		delete m_ascrollitem[i];
@@ -212,16 +213,18 @@ xui_method_explain(xui_container, on_mousedown,		void			)( xui_method_mouse& arg
 	{
 		m_contextmenu->refresh();
 
+		xui_window* window = get_window();
 		xui_vector<s32> pt = args.point;
-		if (pt.x + m_contextmenu->get_renderw() > xui_desktop::get_ins()->get_renderw())
-			pt.x = xui_desktop::get_ins()->get_renderw() - m_contextmenu->get_renderw();
-		if (pt.y + m_contextmenu->get_renderh() > xui_desktop::get_ins()->get_renderh())
-			pt.y = xui_desktop::get_ins()->get_renderh() - m_contextmenu->get_renderh();
+		xui_rect2d<s32> rt = window->get_renderrtabs();
+		if (pt.x + m_contextmenu->get_renderw() > rt.bx)
+			pt.x = rt.bx - m_contextmenu->get_renderw();
+		if (pt.y + m_contextmenu->get_renderh() > rt.by)
+			pt.y = rt.by - m_contextmenu->get_renderh();
 
 		xui_method_ptrcall(m_contextmenu, set_renderpt		)(pt);
 		xui_method_ptrcall(m_contextmenu, set_showsubmenu	)(NULL);
 		xui_method_ptrcall(m_contextmenu, req_focus			)();
-		xui_desktop::get_ins()->set_floatctrl(m_contextmenu);
+		xui_desktop::get_ins()->set_floatctrl(window, m_contextmenu);
 	}
 }
 xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& args )

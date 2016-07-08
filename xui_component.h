@@ -49,6 +49,7 @@ class xui_component
 
 public:
 	friend class xui_desktop;
+	friend class xui_window;
 
 	/*
 	//constructor

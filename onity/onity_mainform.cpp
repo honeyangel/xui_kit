@@ -201,15 +201,10 @@ xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page 
 {
 	xui_dockview* view = xui_dynamic_cast(xui_dockview, page->get_parent());
 	if (view == NULL)
-	{
 		view = m_mainview;
-		view->add_dockpage(page, page->get_initdock(), false, true);
-	}
 
-	if (view->has_dockpage(page))
-	{
-		view->set_showpage(page);
-	}
+	view->set_pageshow(page, true);
+	view->set_showpage(page);
 }
 
 /*
@@ -300,16 +295,11 @@ xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* s
 	xui_dockpage* page = (xui_dockpage*)sender->get_data();
 	if (page)
 	{
-		xui_dockview* rootview = xui_dynamic_cast(xui_dockview, page->get_parent());
-		if (rootview)
-		{
-			rootview->del_dockpage(page);
-		}
-		else
-		{
-			rootview = m_mainview;
-			rootview->add_dockpage(page, page->get_initdock(), false, true);
-		}
+		xui_dockview* view = xui_dynamic_cast(xui_dockview, page->get_parent());
+		if (view == NULL)
+			view = m_mainview;
+
+		view->set_pageshow(page, !view->was_pageshow(page));
 	}
 }
 xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args& args )

@@ -1,5 +1,7 @@
 #include "xui_convas.h"
+#include "xui_global.h"
 #include "xui_menu.h"
+#include "xui_window.h"
 #include "xui_toggle.h"
 #include "xui_desktop.h"
 #include "xui_menuitem.h"
@@ -61,6 +63,40 @@ xui_create_explain(xui_dockview)( const xui_vector<s32>& size, u08 dockstyle )
 /*
 //method
 */
+xui_method_explain(xui_dockview, was_pageshow,			bool								)( xui_dockpage* page )
+{
+	xui_window* window = page->get_window();
+	if (window)
+		return window->was_visible();
+
+	return false;
+}
+xui_method_explain(xui_dockview, set_pageshow,			void								)( xui_dockpage* page, bool flag )
+{
+	xui_window* window = page->get_window();
+	if (flag)
+	{
+		if (window)
+		{
+			window->set_visible(true);
+		}
+		else
+		{
+			add_dockpage(page, page->get_initdock(), false, true);
+		}
+	}
+	else
+	{
+		if (window == m_parent && window->get_owner() && m_pagelist.size() == 1 && m_viewlist.empty())
+		{
+			window->set_visible(false);
+		}
+		else
+		{
+			del_dockpage(page);
+		}
+	}
+}
 xui_method_explain(xui_dockview, get_pagelist,			const std::vector<xui_dockpage*>&	)( void ) const
 {
 	return m_pagelist;
@@ -394,7 +430,7 @@ xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_
 /*
 //callback
 */
-xui_method_explain(xui_dockview, on_setrendersz,		void								)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_setrendersz,		void								)( xui_method_args&  args )
 {
 	xui_control::on_setrendersz(args);
 	xui_dockview* view = xui_dynamic_cast(xui_dockview, m_parent);
@@ -403,7 +439,7 @@ xui_method_explain(xui_dockview, on_setrendersz,		void								)( xui_method_args
 		use_portions();
 	}
 }
-xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args&  args )
 {
 	xui_control::on_invalid(args);
 
@@ -436,7 +472,7 @@ xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args& a
 		}
 	}
 }
-xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args& args )
+xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args&  args )
 {
 	xui_control::on_perform(args);
 
@@ -485,6 +521,19 @@ xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args& a
 			xui_method_ptrcall(page, on_perform_sz	)(freert.get_sz());
 			xui_method_ptrcall(page, mov_namectrl	)(x, y, w);
 			x += w;
+		}
+	}
+}
+xui_method_explain(xui_dockview, on_mousemove,			void								)( xui_method_mouse& args )
+{
+	xui_control::on_mousemove(args);
+	if (has_catch())
+	{
+		xui_window* window = get_window();
+		if (window == m_parent && window->get_owner())
+		{
+			xui_vector<s32> pt = window->get_renderpt() + xui_desktop::get_ins()->get_mousemove();
+			window->set_renderpt(pt);
 		}
 	}
 }
@@ -546,7 +595,7 @@ xui_method_explain(xui_dockview, on_viewmenucloseclick,	void								)( xui_compo
 {
 	if (m_showpage)
 	{
-		del_dockpage(m_showpage);
+		set_pageshow(m_showpage, false);
 	}
 }
 

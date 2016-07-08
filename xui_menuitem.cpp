@@ -22,7 +22,7 @@ xui_create_explain(xui_menuitem)( void )
 */
 xui_delete_explain(xui_menuitem)( void )
 {
-	delete m_submenu;
+	xui_desktop::get_ins()->move_recycle(m_submenu);
 }
 
 /*
@@ -110,7 +110,7 @@ xui_method_explain(xui_menuitem, on_nonfocus,		void					)( xui_method_args&  arg
 		if (toggle && focusctrl != toggle)
 			toggle->ini_toggle(false);
 
-		xui_desktop::get_ins()->set_floatctrl(NULL);
+		xui_desktop::get_ins()->set_floatctrl(NULL, NULL);
 	}
 }
 xui_method_explain(xui_menuitem, on_renderself,		void					)( xui_method_args&  args )

@@ -44,10 +44,11 @@ xui_create_explain(xui_dialog)( const std::wstring& text, s32 num_button )
 	font.size	= 16;
 	font.vert	=  2;
 	xui_vector<s32> size = xui_convas::get_ins()->calc_size(text, font, 400, false);
-	m_detail	= xui_drawer::create(text);
+	m_detail	= new xui_drawer(xui_vector<s32>(0));
 	xui_method_ptrcall(m_detail, ini_component	)(ALIGNHORZ_C, ALIGNVERT_T, 0);
 	xui_method_ptrcall(m_detail, set_singleline	)(false);
 	xui_method_ptrcall(m_detail, set_textfont	)(font);
+	xui_method_ptrcall(m_detail, set_text		)(text);
 	xui_method_ptrcall(m_detail, on_perform_sz	)(size);
 
 	size.w += m_border.ax;

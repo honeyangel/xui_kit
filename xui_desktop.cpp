@@ -19,7 +19,6 @@ xui_create_explain(xui_desktop)( void )
 	m_catchctrl = NULL;
 	m_focusctrl = NULL;
 	m_hoverctrl = NULL;
-	m_floatctrl = NULL;
 	m_allowdrag = 0;
 	m_catchdata = NULL;
 	m_mousedown = xui_vector<s32>(0, 0);
@@ -69,9 +68,6 @@ xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* compon
 		if (m_catchctrl)
 			set_focusctrl(m_catchctrl);
 	}
-
-	if (m_catchctrl) xui_global::set_capture();
-	else			 xui_global::non_capture();
 }
 xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
 {
@@ -159,11 +155,24 @@ xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* compon
 }
 xui_method_explain(xui_desktop, get_floatctrl,	xui_component*			)( void )
 {
-	return m_floatctrl;
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
+	{
+		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
+		if (window->get_float() == NULL)
+			continue;
+
+		return window->get_float();
+	}
+
+	return NULL;
 }
-xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_component* component )
+xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_window* owner, xui_component* component )
 {
-	m_floatctrl = component;
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
+	{
+		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
+		window->set_float(window == owner ? component : NULL);
+	}
 }
 
 /*
@@ -185,6 +194,14 @@ xui_method_explain(xui_desktop, get_mousemove,	xui_vector<s32>			)( void ) const
 {
 	return m_mousecurr-m_mouselast;
 }
+xui_method_explain(xui_desktop, set_mouselast,	void					)( const xui_vector<s32>& pt )
+{
+	m_mouselast = pt;
+}
+xui_method_explain(xui_desktop, set_mousecurr,	void					)( const xui_vector<s32>& pt )
+{
+	m_mousecurr = pt;
+}
 
 /*
 //input
@@ -201,13 +218,8 @@ xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& 
 /*
 //modal
 */
-//xui_method_explain(xui_desktop, get_modaltop,	xui_window*				)( void )
-//{
-//	return m_modalpool.empty() ? NULL : m_modalpool.back();
-//}
 xui_method_explain(xui_desktop, add_modalwnd,	void					)( xui_window* window )
 {
-	xui_global::add_syswnd(window, false);
 	xui_global::mod_syswnd(window->get_owner());
 	m_modalpool.push_back (window);
 }
@@ -250,10 +262,12 @@ xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* compone
 		if (m_hoverctrl == component || m_hoverctrl->was_ancestor(component))
 			m_hoverctrl = NULL;
 	}
-	if (m_floatctrl)
+
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
-		if (m_floatctrl == component || m_floatctrl->was_ancestor(component))
-			m_floatctrl = NULL;
+		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
+		if (window->get_float() == component)
+			window->set_float(NULL);
 	}
 
 	for (u32 i = 0; i < m_recyclebin.size(); ++i)
@@ -299,6 +313,29 @@ xui_method_explain(xui_desktop, show_message,	xui_window*				)( const std::wstri
 /*
 //virtual
 */
+xui_method_explain(xui_desktop, choose_else,	xui_component*			)( const xui_vector<s32>& pt )
+{
+	xui_component* component = xui_container::choose_else(pt);
+	if (component == NULL)
+	{
+		xui_rect2d<s32> rt = get_renderrtins() + m_render.get_pt();
+		if (rt.was_inside(pt))
+		{
+			xui_vector<s32> relative = pt - m_render.get_pt();
+			xui_vecptr_delloop(m_childctrl)
+			{
+				xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
+				if (window->get_owner())
+					continue;
+
+				if (component = window->choose(relative))
+					return component;
+			}
+		}
+	}
+
+	return component;
+}
 xui_method_explain(xui_desktop, update,			void					)( f32 delta )
 {
 	xui_panel::update(delta);
@@ -318,18 +355,7 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 		if (m_childctrl[i]->was_visible())
 			m_childctrl[i]->render();
 	}
-
-	xui_convas::get_ins()->set_cliprect(xui_convas::get_ins()->get_viewport());
-	if (m_floatctrl)
-	{
-		m_floatctrl->render();
-	}
-	if (m_catchctrl)
-	{
-		xui_method_args args;
-		m_catchctrl->on_topdraw(             args);
-		m_catchctrl->xm_topdraw(m_catchctrl, args);
-	}
+	xui_convas::get_ins()->set_cliprect(m_render);
 }
 
 /*
@@ -355,21 +381,18 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 {
 	xui_component* component = NULL;
 
-	if (m_floatctrl)
-		component = m_floatctrl->choose(args.point);
-	if (component == NULL)
-	{
-		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
-		if (syswnd)
-			component = syswnd->get_popupctrl()->choose(args.point);
-		else
-			component = choose(args.point);
-	}
+	xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+	if (syswnd)
+		component = syswnd->get_popupctrl()->choose(args.point);
+	else
+		component = choose(args.point);
 
 	if (args.mouse == MB_L)
 	{
 		set_catchctrl(component);
 		m_mousedown = args.point;
+		m_mouselast = args.point;
+		m_mousecurr = args.point;
 	}
 
 	if (component)
@@ -403,16 +426,11 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 	}
 	else
 	{
-		if (m_floatctrl)
-			component = m_floatctrl->choose(args.point);
-		if (component == NULL)
-		{
-			xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
-			if (syswnd)
-				component = syswnd->get_popupctrl()->choose(args.point);
-			else
-				component = choose(args.point);
-		}
+		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+		if (syswnd)
+			component = syswnd->get_popupctrl()->choose(args.point);
+		else
+			component = choose(args.point);
 	}
 
 	if (component)
@@ -437,19 +455,13 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 
 	xui_component* component = NULL;
 
-	if (m_floatctrl)
-		component = m_floatctrl->choose(args.point);
-	if (component == NULL)
-	{
-		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
-		if (syswnd)
-			component = syswnd->get_popupctrl()->choose(args.point);
-		else
-			component = choose(args.point);
-	}
+	xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+	if (syswnd)
+		component = syswnd->get_popupctrl()->choose(args.point);
+	else
+		component = choose(args.point);
 
 	set_hoverctrl(component);
-
 	if (m_catchctrl)
 	{
 		xui_vector<s32> delta = args.point - m_mousedown;
@@ -532,9 +544,13 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 	if (component)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, component);
-		if (window->was_modal() && window->was_visible())
+		if (window->was_visible())
 		{
-			add_modalwnd(window);
+			if (window->was_modal() || window->was_popup())
+				xui_global::add_syswnd(window, window->was_modal() == false);
+
+			if (window->was_modal())
+				add_modalwnd(window);
 		}
 	}
 }
@@ -550,6 +566,22 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 		{
 			xui_global::del_syswnd(window->get_owner());
 		}
+	}
+}
+xui_method_explain(xui_desktop, on_invalid,		void					)( xui_method_args& args )
+{
+	xui_vector<s32> sz(0);
+	xui_rect2d<s32> rt = get_renderrtins();
+	sz.w = xui_max(sz.w, rt.get_w());
+	sz.h = xui_max(sz.h, rt.get_h());
+
+	if (get_clientsz() != sz)
+	{
+		set_clientsz(sz);
+	}
+	else
+	{
+		perform();
 	}
 }
 

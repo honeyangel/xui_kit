@@ -24,6 +24,7 @@ protected:
 	//callback
 	*/
 	virtual void		on_perform			( xui_method_args& args );
+	virtual void		on_renderself		( xui_method_args& args );
 
 	/*
 	//event

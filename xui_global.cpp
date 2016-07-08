@@ -383,19 +383,12 @@ u08 VKToKey(WPARAM wParam)
 	default:				return KEY_NONE;
 	}
 }
-xui_method_explain(xui_global, set_syswndmove,	void							)( xui_syswnd* syswnd, const xui_vector<s32>& pt )
-{
-	HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
-	RECT rect;
-	GetWindowRect(hwnd, &rect);
-	s32 x = rect.left + pt.x;
-	s32 y = rect.top  + pt.y;
-	s32 w = rect.right  - rect.left;
-	s32 h = rect.bottom - rect.top ;
-	MoveWindow(hwnd, x, y, w, h, FALSE);
-}
 xui_method_explain(xui_global, set_syswndrect,	void							)( xui_syswnd* syswnd, const xui_rect2d<s32>& rt )
 {
+	xui_vector<s32> pt = xui_desktop::get_ins()->get_mousedown();
+	xui_desktop::get_ins()->set_mouselast(pt);
+	xui_desktop::get_ins()->set_mousecurr(pt);
+
 	extern HWND gHWND;
 	RECT rect;
 	GetWindowRect(gHWND, &rect);
@@ -446,7 +439,7 @@ xui_method_explain(xui_global, add_syswnd,		xui_syswnd*						)( xui_window* popu
 	HWND hwnd = CreateWindow(L"xui_syswnd", L"", style , 0, 0, 0, 0, gHWND, NULL, gHINSTANCE, NULL);
 	xui_syswnd* syswnd = new xui_syswnd(hwnd, popupctrl);
 	syswnd_map[hwnd] = syswnd;
-	set_syswndrect(syswnd, popupctrl->get_renderrtabs());
+	set_syswndrect(syswnd, popupctrl->get_renderrt() + popupctrl->get_renderpt());
 
 	ShowWindow   (hwnd, SW_NORMAL);
 	UpdateWindow (hwnd);
@@ -491,15 +484,6 @@ xui_method_explain(xui_global, res_syswnd,		void							)( void )
 }
 
 std::map<u32, HCURSOR> cursor_map;
-xui_method_explain(xui_global, set_capture,		void							)( void )
-{
-	extern HWND gHWND;
-	SetCapture(gHWND);
-}
-xui_method_explain(xui_global, non_capture,		void							)( void )
-{
-	ReleaseCapture();
-}
 xui_method_explain(xui_global, add_cursor,		void							)( u32 cursor, const std::wstring& filename )
 {
 	std::map<u32, HCURSOR>::iterator itor = cursor_map.find(cursor);
@@ -599,6 +583,8 @@ xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT mes
 			}
 
 			xui_desktop::get_ins()->os_mousedown(args);
+			if (xui_desktop::get_ins()->get_catchctrl())
+				SetCapture(hwnd);
 		}
 		break;
 	case WM_MOUSEMOVE:
@@ -635,6 +621,8 @@ xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT mes
 			}
 
 			xui_desktop::get_ins()->os_mouserise(args);
+			if (xui_desktop::get_ins()->get_catchctrl() == NULL)
+				ReleaseCapture();
 		}
 		break;
 	case WM_KEYDOWN:

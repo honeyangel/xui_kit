@@ -29,8 +29,12 @@ public:
 	void						set_focusctrl	( xui_component* component );
 	xui_component*				get_hoverctrl	( void );
 	void						set_hoverctrl	( xui_component* component );
+
+	/*
+	//window float component
+	*/
 	xui_component*				get_floatctrl	( void );
-	void						set_floatctrl	( xui_component* component );
+	void						set_floatctrl	( xui_window* owner, xui_component* component );
 
 	/*
 	//mouse
@@ -39,6 +43,8 @@ public:
 	const xui_vector<s32>&		get_mouselast	( void ) const;
 	const xui_vector<s32>&		get_mousecurr	( void ) const;
 	xui_vector<s32>				get_mousemove	( void ) const;
+	void						set_mouselast	( const xui_vector<s32>& pt );
+	void						set_mousecurr	( const xui_vector<s32>& pt );
 
 	/*
 	//paste
@@ -49,7 +55,6 @@ public:
 	/*
 	//modal
 	*/
-	//xui_window*					get_modaltop	( void );
 	void						add_modalwnd	( xui_window* window );
 	void						del_modalwnd	( xui_window* window );
 
@@ -64,6 +69,7 @@ public:
 	/*
 	//virtual
 	*/
+	virtual xui_component*		choose_else		( const xui_vector<s32>& pt );
 	virtual	void				update			( f32 delta );
 	virtual void				render			( void );
 
@@ -82,8 +88,9 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void				on_addchild		( xui_method_args&  args );
-	virtual void				on_delchild		( xui_method_args&  args );
+	virtual void				on_addchild		( xui_method_args& args );
+	virtual void				on_delchild		( xui_method_args& args );
+	virtual void				on_invalid		( xui_method_args& args );
 
 	/*
 	//proc
@@ -99,7 +106,7 @@ protected:
 	xui_component*				m_catchctrl;
 	xui_component*				m_focusctrl;
 	xui_component*				m_hoverctrl;
-	xui_component*				m_floatctrl;
+	//xui_component*				m_floatctrl;
 	u08							m_allowdrag;
 	void*						m_catchdata;
 	std::string					m_catchtype;

@@ -71,8 +71,8 @@ xui_create_explain(onity_inspector)( void )
 */
 xui_delete_explain(onity_inspector)( void )
 {
-	delete m_tipsview;
 	delete m_tipsnode;
+	xui_desktop::get_ins()->move_recycle(m_tipsview);
 }
 
 /*
@@ -151,16 +151,23 @@ xui_method_explain(onity_inspector, show_tips,				void			)( xui_propctrl* propct
 
 	set_localtransform();
 
-	xui_vector<s32> pt;
-	pt.x = get_screenpt().x - m_tipsview->get_renderw();
-	pt.y = propctrl->get_screenpt().y;
+	xui_vector<s32> pt = propctrl->get_screenpt();
+	xui_window* window = get_window();
+	if (window->get_owner())
+	{
+		pt.y += propctrl->get_renderh();
+	}
+	else
+	{
+		pt.x -= m_tipsview->get_renderw();
+	}
 	m_tipsview->set_data(propctrl);
 	m_tipsview->set_renderpt(pt);
-	xui_desktop::get_ins()->set_floatctrl(m_tipsview);
+	xui_desktop::get_ins()->set_floatctrl(window, m_tipsview);
 }
 xui_method_explain(onity_inspector, hide_tips,				void			)( void )
 {
-	xui_desktop::get_ins()->set_floatctrl(NULL);
+	xui_desktop::get_ins()->set_floatctrl(NULL, NULL);
 }
 
 /*

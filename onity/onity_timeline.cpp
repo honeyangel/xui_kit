@@ -4,6 +4,7 @@
 #include "NP2DSRenderUtil.h"
 #include "NP2DSRenderStep.h"
 
+#include "xui_global.h"
 #include "xui_bitmap.h"
 #include "xui_dockview.h"
 #include "xui_timeview.h"
@@ -170,15 +171,35 @@ xui_method_explain(onity_timeline, on_perform,					void			)( xui_method_args& ar
 */
 xui_method_explain(onity_timeline, on_linectrlclick,			void			)( xui_component* sender, xui_method_args&			args )
 {
-	if (m_linectrl->was_push())
+	m_lineview->set_visible(m_linectrl->was_push());
+
+	xui_window* window = get_window();
+	if (window->get_owner())
 	{
-		xui_method_ptrcall(m_lineview,	set_visible)(true);
-		xui_method_ptrcall(m_parent,	set_renderh)(m_parent->get_renderh() + m_lineview->get_renderh());
+		xui_rect2d<s32> rt = window->get_renderrt() + window->get_renderpt();
+		if (m_linectrl->was_push())
+		{
+			rt.set_h(rt.get_h()+m_lineview->get_renderh());
+			rt.oft_y(-m_lineview->get_renderh());
+		}
+		else
+		{
+			rt.set_h(rt.get_h()-m_lineview->get_renderh());
+			rt.oft_y( m_lineview->get_renderh());
+		}
+		window->set_renderpt(rt.get_pt());
+		window->set_rendersz(rt.get_sz());
 	}
 	else
 	{
-		xui_method_ptrcall(m_lineview,	set_visible)(false);
-		xui_method_ptrcall(m_parent,	set_renderh)(m_parent->get_renderh() - m_lineview->get_renderh());
+		if (m_linectrl->was_push())
+		{
+			m_parent->set_renderh(m_parent->get_renderh() + m_lineview->get_renderh());
+		}
+		else
+		{
+			m_parent->set_renderh(m_parent->get_renderh() - m_lineview->get_renderh());
+		}
 	}
 
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
@@ -435,42 +456,3 @@ xui_method_explain(onity_timeline, refresh_timeview,			void			)( void )
 		}
 	}
 }
-
-////DEBUG
-//xui_method_explain(onity_timeline, on_load, void)( xui_method_args& args )
-//{
-//	xui_dockpage::on_load(args);
-//	for (int i = 0; i < 4; ++i)
-//	{
-//		std::map<s32, u08> keyframe;
-//		keyframe[rand()%5+ 0] = 0;
-//		keyframe[rand()%5+ 5] = 0;
-//		keyframe[rand()%5+10] = 1;
-//		keyframe[rand()%5+20] = 1;
-//		keyframe[rand()%5+30] = 2;
-//		keyframe[rand()%5+50] = 1;
-//		keyframe[rand()%5+70] = 1;
-//		keyframe[rand()%5+90] = 2;
-//
-//		std::wstringstream text;
-//		text << L"layer";
-//		text << i;
-//		xui_timedata* data = new xui_timedata(text.str(), xui_bitmap::create("icon/edit.png"), keyframe);
-//		xui_timeline* line = m_view->add_timeline(i, data);
-//
-//		if (i % 2 == 0)
-//		{
-//			std::map<s32, u08> subkeyframe;
-//			subkeyframe[rand()%5+ 0] = 0;
-//			subkeyframe[rand()%5+ 5] = 0;
-//			subkeyframe[rand()%5+10] = 1;
-//			subkeyframe[rand()%5+20] = 1;
-//			subkeyframe[rand()%5+30] = 2;
-//			subkeyframe[rand()%5+50] = 1;
-//			subkeyframe[rand()%5+70] = 1;
-//			subkeyframe[rand()%5+90] = 2;
-//			xui_timedata* childdata = new xui_timedata(L"sublayer", xui_bitmap::create("icon/edit.png"), subkeyframe);
-//			xui_timeline* childline = line->add_timeline(0, childdata);
-//		}
-//	}
-//}

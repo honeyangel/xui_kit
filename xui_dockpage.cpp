@@ -1,4 +1,6 @@
 #include "xui_convas.h"
+#include "xui_global.h"
+#include "xui_window.h"
 #include "xui_drawer.h"
 #include "xui_desktop.h"
 #include "xui_dockview.h"
@@ -58,10 +60,9 @@ xui_method_explain(xui_dockpage, has_dockarea,			bool					)( u08 dockstyle )
 	case DOCKSTYLE_R: return (m_dockarea & AREALIMIT_R) != 0;
 	case DOCKSTYLE_T: return (m_dockarea & AREALIMIT_T) != 0;
 	case DOCKSTYLE_B: return (m_dockarea & AREALIMIT_B) != 0;
-	case DOCKSTYLE_F: return (m_dockarea & AREALIMIT_F) != 0;
 	}
 
-	return false;
+	return true;
 }
 xui_method_explain(xui_dockpage, get_initdock,			u08						)( void ) const
 {
@@ -254,7 +255,7 @@ xui_method_explain(xui_dockpage, render_else,			void					)( void )
 /*
 //callback
 */
-xui_method_explain(xui_dockpage, on_perform,			void					)( xui_method_args& args )
+xui_method_explain(xui_dockpage, on_perform,			void					)( xui_method_args&  args )
 {
 	if (m_widgetvec.size() > 0)
 	{
@@ -269,7 +270,7 @@ xui_method_explain(xui_dockpage, on_perform,			void					)( xui_method_args& args
 		perform_dockstyle(rt, m_widgetvec);
 	}
 }
-xui_method_explain(xui_dockpage, on_renderback,			void					)( xui_method_args& args )
+xui_method_explain(xui_dockpage, on_renderback,			void					)( xui_method_args&  args )
 {
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (dockview->get_showpage() == this)
@@ -288,46 +289,107 @@ xui_method_explain(xui_dockpage, on_renderback,			void					)( xui_method_args& a
 */
 xui_method_explain(xui_dockpage, on_namectrltopdraw,	void					)( xui_component* sender, xui_method_args&  args )
 {
+	xui_colour fill_color = xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+	xui_colour side_color = xui_colour(1.0f,          0.0f,          0.9f,          0.9f);
+
 	if (m_namectrl->has_catch())
 	{
-		xui_dockview* dockview = get_dockview(xui_desktop::get_ins()->get_hoverctrl());
-		if (dockview)
+		xui_dockview* dockview = get_dockview (xui_desktop::get_ins()->get_hoverctrl());
+		u08 dockstyle = cal_dockinfo(dockview, xui_desktop::get_ins()->get_mousecurr());
+		if (dockstyle == DOCKSTYLE_F)
 		{
-			u08 dockstyle = cal_dockinfo(dockview, xui_desktop::get_ins()->get_mousecurr());
-			if (dockstyle == DOCKSTYLE_F)
+			xui_rect2d<s32> rt = dockview->get_namerect() + dockview->get_screenpt() + dockview->get_freerect().get_pt();
+			rt.ax = rt.bx+ 6;
+			rt.bx = rt.ax+ 2;
+			rt.by = rt.ay+20;
+			xui_convas::get_ins()->fill_rectangle(rt, xui_colour::white);
+			xui_convas::get_ins()->fill_triangle (xui_vector<s32>(rt.ax+1, rt.by), 3, TRIANGLE_DOWN, xui_colour::white);
+		}
+		else
+		if (dockstyle == DOCKSTYLE_U)
+		{
+			xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+			xui_vector<s32> sz = get_rendersz();
+			xui_rect2d<s32> rt;
+			rt.ax = pt.x-sz.w/4;
+			rt.bx = pt.x+sz.w/4;
+			rt.ay = pt.y-sz.h/4;
+			rt.by = pt.y+sz.h/4;
+
+			xui_rect2d<s32> pagert = rt;
+			pagert.ax += m_border.ax;
+			pagert.ay += m_border.ay;
+			pagert.ay += m_namectrl->get_renderh();
+			pagert.bx -= m_border.bx;
+			pagert.by -= m_border.by;
+			xui_rect2d<s32> namert = rt;
+			namert.ax += m_border.ax;
+			namert.ay += m_border.ay;
+			namert.set_sz(m_namectrl->get_rendersz());
+
+			xui_convas::get_ins()->fill_rectangle(pagert, fill_color);
+			xui_convas::get_ins()->fill_round(namert, fill_color, xui_rect2d<s32>(3, 3, 0, 0));
+
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.bx,   pagert.ay  ), xui_vector<s32>(pagert.bx,   pagert.by  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.bx,   pagert.by  ), xui_vector<s32>(pagert.ax,   pagert.by  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.ax,   pagert.by  ), xui_vector<s32>(pagert.ax,   pagert.ay  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(pagert.ax,   pagert.ay  ), xui_vector<s32>(namert.ax,   pagert.ay  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(namert.bx,   pagert.ay  ), xui_vector<s32>(pagert.bx,   pagert.ay  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(namert.ax+3, namert.ay	 ), xui_vector<s32>(namert.bx-3, namert.ay  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(namert.bx,	  namert.ay+3), xui_vector<s32>(namert.bx,	 namert.by  ), side_color);
+			xui_convas::get_ins()->draw_line(xui_vector<s32>(namert.ax,	  namert.by  ), xui_vector<s32>(namert.ax,   namert.ay+3), side_color);
+			xui_convas::get_ins()->draw_arc (xui_rect2d<s32>(
+				namert.ax,			 
+				namert.ay,
+				namert.ax+6, 
+				namert.ay+6), side_color, 180, 90, 1);
+			xui_convas::get_ins()->draw_arc (xui_rect2d<s32>(
+				namert.bx-6, 
+				namert.ay,			
+				namert.bx,		   
+				namert.ay+6), side_color, 270, 90, 1);
+
+			xui_bitmap*  icon = m_namectrl->get_rendericon();
+			std::wstring text = m_namectrl->get_rendertext();
+			if (text.length() > 0)
 			{
-				xui_rect2d<s32> rt = dockview->get_namerect() + dockview->get_screenpt() + dockview->get_freerect().get_pt();
-				rt.ax = rt.bx+ 6;
-				rt.bx = rt.ax+ 2;
-				rt.by = rt.ay+20;
-				xui_convas::get_ins()->fill_rectangle(rt, xui_colour::white);
-				xui_convas::get_ins()->fill_triangle (xui_vector<s32>(rt.ax+1, rt.by), 3, TRIANGLE_DOWN, xui_colour::white);
+				xui_convas::get_ins()->draw_text(
+					text, 
+					m_namectrl->get_textfont(), 
+					m_namectrl->get_rendertextrt()+namert.get_pt(), 
+					m_namectrl->get_textdraw(),
+					true);
+			}
+			if (icon)
+			{
+				xui_convas::get_ins()->draw_image(
+					icon, 
+					xui_rect2d<s32>(m_namectrl->get_rendericonpt()+namert.get_pt(), m_namectrl->get_iconsize()), 
+					xui_colour::white);
+			}
+		}
+		else 
+		if (dockstyle != DOCKSTYLE_N)
+		{
+			xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
+			rt.ax += m_border.ax;
+			rt.ay += m_border.ay;
+			rt.bx -= m_border.bx;
+			rt.by -= m_border.by;
+			rt.ay += 24;
+
+			switch (dockstyle)
+			{
+			case DOCKSTYLE_L: rt.bx  = rt.ax + rt.get_w()/3; break;
+			case DOCKSTYLE_R: rt.ax  = rt.bx - rt.get_w()/3; break;
+			case DOCKSTYLE_T: rt.by  = rt.ay + rt.get_h()/3; break;
+			case DOCKSTYLE_B: rt.ay  = rt.by - rt.get_h()/3; break;
 			}
 
-			if (dockstyle != DOCKSTYLE_N)
-			{
-				xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
-				rt.ax += m_border.ax;
-				rt.ay += m_border.ay;
-				rt.bx -= m_border.bx;
-				rt.by -= m_border.by;
-				rt.ay += 24;
-
-				xui_colour fill_color = xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
-				xui_colour side_color = xui_colour(1.0f,          0.0f,          0.9f,          0.9f);
-				switch (dockstyle)
-				{
-				case DOCKSTYLE_L: rt.bx  = rt.ax + rt.get_w()/3; break;
-				case DOCKSTYLE_R: rt.ax  = rt.bx - rt.get_w()/3; break;
-				case DOCKSTYLE_T: rt.by  = rt.ay + rt.get_h()/3; break;
-				case DOCKSTYLE_B: rt.ay  = rt.by - rt.get_h()/3; break;
-				}
-
-				rt.bx -= 1;
-				rt.by -= 1;
-				xui_convas::get_ins()->fill_rectangle(rt, fill_color);
-				xui_convas::get_ins()->draw_rectangle(rt, side_color);
-			}
+			rt.bx -= 1;
+			rt.by -= 1;
+			xui_convas::get_ins()->fill_rectangle(rt, fill_color);
+			xui_convas::get_ins()->draw_rectangle(rt, side_color);
 		}
 	}
 }
@@ -340,15 +402,31 @@ xui_method_explain(xui_dockpage, on_namectrlmouserise,	void					)( xui_component
 {
 	if (m_namectrl->has_catch())
 	{
-		xui_dockview* dockview = get_dockview(xui_desktop::get_ins()->get_hoverctrl());
-		if (dockview)
+		xui_dockview* dockview = get_dockview (xui_desktop::get_ins()->get_hoverctrl());
+		u08 dockstyle = cal_dockinfo(dockview, xui_desktop::get_ins()->get_mousecurr());
+		if (dockstyle != DOCKSTYLE_N)
 		{
-			u08 dockstyle = cal_dockinfo(dockview, xui_desktop::get_ins()->get_mousecurr());
-			if (dockstyle != DOCKSTYLE_N)
+			xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
+			rootview->del_dockpage(this);
+			if (dockstyle == DOCKSTYLE_U)
 			{
-				xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
-				rootview->del_dockpage(this);
-				dockview->add_dockpage(this, dockstyle);
+				xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
+				xui_vector<s32> sz = get_rendersz();
+				pt.x -= sz.w/2; 
+				pt.y -= sz.h/2;
+				pt.x  = xui_max(0, pt.x);
+				pt.y  = xui_max(0, pt.y);
+
+				xui_window*   popupwnd = new xui_window(sz, false, true);
+				xui_dockview* fillview = new xui_dockview(xui_vector<s32>(0), DOCKSTYLE_F);
+				xui_method_ptrcall(fillview, add_dockpage	)(this, DOCKSTYLE_F);
+				xui_method_ptrcall(popupwnd, add_child		)(fillview);
+				xui_method_ptrcall(popupwnd, set_renderpt	)(pt);
+				xui_desktop::get_ins()->add_child(popupwnd);
+			}
+			else
+			{
+				xui_method_ptrcall(dockview, add_dockpage	)(this, dockstyle);
 			}
 		}
 	}
@@ -374,29 +452,42 @@ xui_method_explain(xui_dockpage, get_dockview,			xui_dockview*			)( xui_componen
 xui_method_explain(xui_dockpage, cal_dockinfo,			u08						)( xui_dockview* dockview, const xui_vector<s32>& pt )
 {
 	u08 dockstyle = DOCKSTYLE_N;
-
-	xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
-	rt.ax += m_border.ax;
-	rt.ay += m_border.ay;
-	rt.bx -= m_border.bx;
-	rt.by -= m_border.by;
-
-	if (pt.y < rt.ay+24)
+	if (dockview)
 	{
-		if (has_dockarea(dockview->get_dockstyle()) && dockview != m_parent)
-			dockstyle = DOCKSTYLE_F;
-	}
-	else
-	{
-		if (has_dockarea(dockview->get_dockstyle()) || dockview->get_dockstyle() == DOCKSTYLE_F)
+		xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
+		rt.ax += m_border.ax;
+		rt.ay += m_border.ay;
+		rt.bx -= m_border.bx;
+		rt.by -= m_border.by;
+
+		if (pt.y < rt.ay+24)
 		{
-			rt.ay += 24;
-			if		 (pt.x < (rt.ax+rt.get_w()/3) && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
-			else if  (pt.x > (rt.bx-rt.get_w()/3) && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
-			else if	 (pt.y < (rt.ay+rt.get_h()/3) && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
-			else if  (pt.y > (rt.by-rt.get_h()/3) && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
+			if (has_dockarea(dockview->get_dockstyle()) && dockview != m_parent)
+			{
+				dockstyle = DOCKSTYLE_F;
+			}
+		}
+		else
+		{
+			const std::vector<xui_dockpage*>& pagelist = dockview->get_pagelist();
+			if (dockview == m_parent && pagelist.size() == 1 && pagelist.front() == this)
+			{
+				xui_window* window = get_window();
+				if (window->get_owner() == NULL || dockview->get_parent() != window)
+					dockstyle = DOCKSTYLE_U;
+			}
 			else
-			{}
+			{
+				if (has_dockarea(dockview->get_dockstyle()) || dockview->get_dockstyle() == DOCKSTYLE_F)
+				{
+					rt.ay += 24;
+					if		 (pt.x < (rt.ax+rt.get_w()/3) && has_dockarea(DOCKSTYLE_L))	dockstyle = DOCKSTYLE_L;
+					else if  (pt.x > (rt.bx-rt.get_w()/3) && has_dockarea(DOCKSTYLE_R))	dockstyle = DOCKSTYLE_R;
+					else if	 (pt.y < (rt.ay+rt.get_h()/3) && has_dockarea(DOCKSTYLE_T))	dockstyle = DOCKSTYLE_T;
+					else if  (pt.y > (rt.by-rt.get_h()/3) && has_dockarea(DOCKSTYLE_B))	dockstyle = DOCKSTYLE_B;
+					else																dockstyle = DOCKSTYLE_U;
+				}
+			}
 		}
 	}
 
