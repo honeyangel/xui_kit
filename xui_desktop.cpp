@@ -381,7 +381,7 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 {
 	xui_component* component = NULL;
 
-	xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+	xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
 	if (syswnd)
 		component = syswnd->get_popupctrl()->choose(args.point);
 	else
@@ -426,7 +426,7 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 	}
 	else
 	{
-		xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+		xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
 		if (syswnd)
 			component = syswnd->get_popupctrl()->choose(args.point);
 		else
@@ -454,12 +454,25 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	m_mousecurr = args.point;
 
 	xui_component* component = NULL;
-
-	xui_syswnd* syswnd = xui_global::get_syswnd((HWND)args.wparam);
+	xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
 	if (syswnd)
 		component = syswnd->get_popupctrl()->choose(args.point);
-	else
-		component = choose(args.point);
+	if (component == NULL && m_catchctrl && m_modalpool.empty())
+	{
+		std::vector<xui_syswnd*> vec = xui_global::get_syswndall();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			xui_syswnd* wnd = vec[i];
+			if (wnd == syswnd)
+				continue;
+
+			xui_vector<s32> pt = xui_global::get_syswndmouse(wnd);
+			if (component = wnd->get_popupctrl()->choose(pt))
+				break;
+		}
+	}
+	if (component == NULL)
+		component = choose(xui_global::get_syswndmouse(NULL));
 
 	set_hoverctrl(component);
 	if (m_catchctrl)
