@@ -471,6 +471,14 @@ xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args&  
 			}
 		}
 	}
+	else
+	{
+		xui_window* window = get_window();
+		if (m_pagelist.empty() && m_viewlist.empty() && window->get_owner())
+		{
+			xui_desktop::get_ins()->del_child(window);
+		}
+	}
 }
 xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args&  args )
 {
@@ -578,6 +586,9 @@ xui_method_explain(xui_dockview, on_sizectrltopdraw,	void								)( xui_componen
 }
 xui_method_explain(xui_dockview, on_menuctrlrenderself, void								)( xui_component* sender, xui_method_args& args )
 {
+	if (args.wparam != get_window())
+		return;
+
 	xui_rect2d<s32> rt     = sender->get_renderrtabs();
 	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_button::default_backcolor;
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);

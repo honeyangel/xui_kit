@@ -12,6 +12,11 @@ xui_bitmap* xui_global::icon_pickselect = NULL;
 xui_bitmap* xui_global::icon_loop		= NULL;
 
 /*
+//global
+*/
+bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
+
+/*
 //string
 */
 xui_method_explain(xui_global, unicode_to_utf8, std::string						)( const std::wstring& src )
@@ -255,7 +260,7 @@ xui_method_explain(xui_global, set_scolorclose,	void							)( void )
 std::map<HWND, xui_syswnd*> syswnd_map;
 LRESULT CALLBACK xui_syswnd_proc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {
-	if (xui_global::def_deviceproc(hwnd, message, wparam, lparam))
+	if (def_deviceproc(hwnd, message, wparam, lparam))
 		return 0;
 
 	switch (message)
@@ -383,6 +388,22 @@ u08 VKToKey(WPARAM wParam)
 	default:				return KEY_NONE;
 	}
 }
+xui_method_explain(xui_global, get_syswndmouse,	xui_vector<s32>					)( xui_syswnd* syswnd )
+{
+	POINT pt;
+	GetCursorPos(&pt);
+	if (syswnd)
+	{
+		ScreenToClient(syswnd->get_renderwnd()->get_hwnd(), &pt);
+	}
+	else
+	{
+		extern HWND gHWND;
+		ScreenToClient(gHWND, &pt);
+	}
+
+	return xui_vector<s32>(pt.x, pt.y);
+}
 xui_method_explain(xui_global, set_syswndrect,	void							)( xui_syswnd* syswnd, const xui_rect2d<s32>& rt )
 {
 	xui_vector<s32> pt = xui_desktop::get_ins()->get_mousedown();
@@ -419,9 +440,9 @@ xui_method_explain(xui_global, get_syswndall,	std::vector<xui_syswnd*>		)( void 
 
 	return vec;
 }
-xui_method_explain(xui_global, get_syswnd,		xui_syswnd*						)( HWND hwnd )
+xui_method_explain(xui_global, get_syswnd,		xui_syswnd*						)( void* hwnd )
 {
-	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find(hwnd);
+	std::map<HWND, xui_syswnd*>::iterator itor = syswnd_map.find((HWND)hwnd);
 	if (itor != syswnd_map.end())
 		return (*itor).second;
 
@@ -513,7 +534,8 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 		}
 	}
 }
-xui_method_explain(xui_global, def_deviceproc,	bool							)( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
+
+bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {
 	switch (message)
 	{

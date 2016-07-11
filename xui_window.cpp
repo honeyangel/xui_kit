@@ -74,9 +74,10 @@ xui_method_explain(xui_window, render,			void			)( void )
 {
 	xui_panel::render();
 	xui_component* catchctrl = xui_desktop::get_ins()->get_catchctrl();
-	if (catchctrl && catchctrl->get_window() == this)
+	if (catchctrl)
 	{
 		xui_method_args args;
+		args.wparam = this;
 		catchctrl->on_topdraw(           args);
 		catchctrl->xm_topdraw(catchctrl, args);
 	}

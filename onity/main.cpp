@@ -17,10 +17,12 @@ s32			DefaultHeight	=  900;
 HWND		gHWND			= NULL;
 HINSTANCE	gHINSTANCE		= NULL;
 
+extern bool def_deviceproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
+
 #define WM_USER_FWATCHNOTIFY WM_USER+0x1000
 LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {
-	if (xui_global::def_deviceproc(hwnd, message, wparam, lparam))
+	if (def_deviceproc(hwnd, message, wparam, lparam))
 		return 0;
 
 	switch (message)

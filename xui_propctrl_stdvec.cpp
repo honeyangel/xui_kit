@@ -346,7 +346,9 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlrenderself,	void			)( xui_c
 }
 xui_method_explain(xui_propctrl_stdvec,			on_sortctrltopdraw,		void			)( xui_component* sender, xui_method_args&   args )
 {
-	xui_propctrl::on_topdraw(args);
+	if (args.wparam != get_window())
+		return;
+
 	if (m_dropelem != -1 && m_dropelem != m_dragelem)
 	{
 		if (m_dropelem < m_dragelem || m_dropelem > m_dragelem+1)
