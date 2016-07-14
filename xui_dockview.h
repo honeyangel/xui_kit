@@ -3,6 +3,9 @@
 
 #include "xui_control.h"
 
+typedef std::string		(*get_pagename)( xui_dockpage* page);
+typedef xui_dockpage*	(*get_pagectrl)( const std::string& name );
+
 class xui_dockview : public xui_control
 {
 	xui_declare_rtti
@@ -25,6 +28,7 @@ public:
 	void								set_showpage			( xui_dockpage* page );
 	bool								has_dockpage			( xui_dockpage* page );
 	const std::vector<xui_dockpage*>&	get_pagelist			( void ) const;
+	const std::vector<xui_dockview*>&	get_viewlist			( void ) const;
 	xui_rect2d<s32>						get_freerect			( void ) const;
 	xui_rect2d<s32>						get_namerect			( void ) const;
 	f32									get_portions			( void ) const;
@@ -44,6 +48,12 @@ public:
 	void								del_dockpage			( xui_dockpage* page );
 	void								del_dockview			( xui_dockview* view );
 	void								mov_dockview			( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview );
+
+	/*
+	//save&load
+	*/
+	void								save_config				( FILE* file, get_pagename func, int indent );
+	void								load_config				( FILE* file, get_pagectrl func );
 
 protected:
 	/*

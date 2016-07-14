@@ -9,6 +9,7 @@
 #include "Game/WorldLoader.h"
 
 #include "xui_desktop.h"
+#include "xui_syswnd.h"
 #include "xui_global.h"
 #include "xui_convas.h"
 #include "xui_bitmap.h"
@@ -158,9 +159,44 @@ xui_method_explain(onity_mainform, get_ptr,				onity_mainform*		)( void )
 
 	return NULL;
 }
+xui_method_explain(onity_mainform, get_pagename,		std::string			)( xui_dockpage* page )
+{
+	onity_mainform* mainform = get_ptr();
+	if		(page == mainform->get_hierarchy())	return "hierarchy";
+	else if (page == mainform->get_inspector())	return "inspector";
+	else if (page == mainform->get_project	())	return "project";
+	else if (page == mainform->get_game		())	return "game";
+	else if (page == mainform->get_animator	())	return "animator";
+	else if (page == mainform->get_console	())	return "console";
+	else if (page == mainform->get_timeline	())	return "timeline";
+	else
+	{
+		return "";
+	}
+}
+xui_method_explain(onity_mainform, get_pagectrl,		xui_dockpage*		)( const std::string& name )
+{
+	onity_mainform* mainform = get_ptr();
+	if		(name == "hierarchy")	return mainform->get_hierarchy();
+	else if (name == "inspector")	return mainform->get_inspector();
+	else if (name == "project")		return mainform->get_project();
+	else if (name == "game")		return mainform->get_game();
+	else if (name == "animator")	return mainform->get_animator();
+	else if (name == "console")		return mainform->get_console();
+	else if (name == "timeline")	return mainform->get_timeline();
+	else
+	{
+		return NULL;
+	}
+}
+
 /*
 //method
 */
+xui_method_explain(onity_mainform, get_hierarchy,		onity_hierarchy*	)( void )
+{
+	return (onity_hierarchy*)	xui_method_ptrcall(m_hierarchy, get_data)();
+}
 xui_method_explain(onity_mainform, get_inspector,		onity_inspector*	)( void )
 {
 	return (onity_inspector*)	xui_method_ptrcall(m_inspector, get_data)();
@@ -304,12 +340,94 @@ xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* s
 }
 xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args& args )
 {
+	extern std::wstring TOOLPATH;
+	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "onity.dock";
+	FILE* file = fopen(filename.c_str(), "w");
+	if (file)
+	{
+		extern int WNDPOSX;
+		extern int WNDPOSY;
+		extern int WNDWIDTH;
+		extern int WNDHEIGHT;
 
+		char buffer[256];
+		sprintf(buffer, "%d,%d,%d,%d\n", WNDPOSX, WNDPOSY, WNDWIDTH, WNDHEIGHT);
+		fwrite(buffer, 1, strlen(buffer), file);
+
+		m_mainview->save_config(file, get_pagename, 0);
+		std::vector<xui_window*> wndvec;
+		std::vector<xui_syswnd*> sysvec = xui_global::get_syswndall();
+		for (u32 i = 0; i < sysvec.size(); ++i)
+		{
+			xui_syswnd* syswnd = sysvec[i];
+			xui_window* wnd = syswnd->get_popupctrl();
+			const std::vector<xui_control*>& children = wnd->get_children();
+			if (children.size() > 0 && xui_issub_kindof(xui_dockview, children.front()))
+				wndvec.push_back(wnd);
+		}
+
+		u32 wndcount = wndvec.size();
+		sprintf(buffer, "popupcount=%d\n", wndcount); fwrite(buffer, 1, strlen(buffer), file);
+		for (u32 i = 0; i < wndcount; ++i)
+		{
+			xui_window* popupwnd = wndvec[i];
+			xui_vector<s32> pt = popupwnd->get_renderpt();
+			xui_vector<s32> sz = popupwnd->get_rendersz();
+			sprintf(buffer, "viewrectangle=%d,%d,%d,%d\n", pt.x, pt.y, sz.w, sz.h);
+			fwrite(buffer, 1, strlen(buffer), file);
+
+			const std::vector<xui_control*>& children = popupwnd->get_children();
+			xui_dockview* dockview = xui_dynamic_cast(xui_dockview, children.front());
+			dockview->save_config(file, get_pagename, 4);
+		}
+
+		fclose(file);
+	}
 }
 xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args& args )
 {
-	//TODO
-	on_clickreset(sender, args);
+	del_allview();
+
+	extern std::wstring TOOLPATH;
+	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "onity.dock";
+	FILE* file = fopen(filename.c_str(), "r");
+	if (file)
+	{
+		std::string line;
+		line = xui_global::get_fileline(file);
+		xui_method_ptrcall(m_mainview, load_config	)(file, get_pagectrl);
+		xui_method_ptrcall(m_mainview, use_portions	)();
+
+		u32 wndcount = 0;
+		line = xui_global::get_fileline(file);
+		if (line.length() > 0)
+		{
+			std::string temp = line.substr(line.find_first_not_of(' '));
+			sscanf(temp.c_str(), "popupcount=%d", &wndcount);
+		}
+		for (u32 i = 0; i < wndcount; ++i)
+		{
+			line = xui_global::get_fileline(file);
+			if (line.empty())
+				continue;
+
+			xui_window* popupwnd = new xui_window(xui_vector<s32>(0), false, true);
+			s32 x = 0;
+			s32 y = 0;
+			s32 w = 0;
+			s32 h = 0;
+			std::string temp = line.substr(line.find_first_not_of(' '));
+			sscanf(temp.c_str(), "viewrectangle=%d,%d,%d,%d", &x, &y, &w, &h);
+			xui_dockview* fillview = new xui_dockview(xui_vector<s32>(0), DOCKSTYLE_F);
+			xui_method_ptrcall(fillview, load_config	)(file, get_pagectrl);
+			xui_method_ptrcall(popupwnd, add_child		)(fillview);
+			xui_method_ptrcall(popupwnd, set_renderpt	)(xui_vector<s32>(x, y));
+			xui_method_ptrcall(popupwnd, set_rendersz	)(xui_vector<s32>(w, h));
+			xui_desktop::get_ins()->add_child(popupwnd);
+		}
+
+		fclose(file);
+	}
 }
 xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sender, xui_method_args& args )
 {

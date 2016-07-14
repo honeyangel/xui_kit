@@ -10,6 +10,9 @@
 
 HINSTANCE	gHINSTANCE	= NULL;
 HWND		gHWND		= NULL;
+int 		gWNDPOSX	= 0;
+int			gWNDPOSY	= 0;
+
 
 extern bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
 
@@ -54,6 +57,25 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
 	case WM_CLOSE:
 		{
 			PostQuitMessage(0);
+		}
+		break;
+	case WM_MOVE:
+		{
+			int movex = (int)(short)LOWORD(lparam) - gWNDPOSX;
+			int movey = (int)(short)HIWORD(lparam) - gWNDPOSY;
+			std::vector<xui_syswnd*> vec = xui_global::get_syswndall();
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				xui_syswnd* syswnd = vec[i];
+				xui_window* wnd = syswnd->get_popupctrl();
+				xui_method_ptrcall(wnd, set_owner	)(NULL);
+				xui_method_ptrcall(wnd, set_renderx	)(wnd->get_renderx()-movex);
+				xui_method_ptrcall(wnd, set_rendery	)(wnd->get_rendery()-movey);
+				xui_method_ptrcall(wnd, set_owner	)(syswnd);
+			}
+
+			gWNDPOSX = (int)(short)LOWORD(lparam);
+			gWNDPOSY = (int)(short)HIWORD(lparam);
 		}
 		break;
 	case WM_SIZE:
@@ -104,6 +126,8 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	RECT rect;
 	GetClientRect(gHWND, &rect);
 	MoveWindow   (gHWND, 100, 100, 2*1024-rect.right+rect.left, 2*768-rect.bottom+rect.top, TRUE);
+	gWNDPOSX = 100;
+	gWNDPOSY = 100;
 
 	xui_window* window = new xui_window(xui_vector<s32>(500, 500), false);
 	window->ini_component(0, 0, DOCKSTYLE_F);

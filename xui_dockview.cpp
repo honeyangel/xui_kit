@@ -101,6 +101,10 @@ xui_method_explain(xui_dockview, get_pagelist,			const std::vector<xui_dockpage*
 {
 	return m_pagelist;
 }
+xui_method_explain(xui_dockview, get_viewlist,			const std::vector<xui_dockview*>&	)( void ) const
+{
+	return m_viewlist;
+}
 xui_method_explain(xui_dockview, get_showpage,			xui_dockpage*						)( void )
 {
 	return m_showpage;
@@ -425,6 +429,94 @@ xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_
 
 	viewlist.clear();
 	invalid();
+}
+
+/*
+//load&save
+*/
+xui_method_explain(xui_dockview, save_config,			void								)( FILE* file, get_pagename func, int indent )
+{
+	std::string space; 
+	for (u32 i = 0; i < indent; ++i) 
+		space += " ";
+
+	char buffer[256];
+	u32 viewcount = m_viewlist.size();
+	u32 pagecount = m_pagelist.size();
+	sprintf(buffer, "%sdockstyle=%d\n", space.c_str(), m_dockstyle);	fwrite(buffer, 1, strlen(buffer), file);
+	sprintf(buffer, "%sportions=%f\n",  space.c_str(), m_portions);		fwrite(buffer, 1, strlen(buffer), file);
+	sprintf(buffer, "%sviewcount=%d\n",	space.c_str(), viewcount);		fwrite(buffer, 1, strlen(buffer), file);
+	for (u32 i = 0; i < viewcount; ++i)
+	{
+		xui_dockview* view = m_viewlist[i];
+		view->save_config(file, func, indent+4);
+	}
+
+	sprintf(buffer, "%spagecount=%d\n",	space.c_str(), pagecount);		fwrite(buffer, 1, strlen(buffer), file);
+	for (u32 i = 0; i < m_pagelist.size(); ++i)
+	{
+		std::string pagename = func(m_pagelist[i]);
+		sprintf(buffer, "%s%s\n", space.c_str(), pagename.c_str());
+		fwrite(buffer, 1, strlen(buffer), file);
+	}
+}
+xui_method_explain(xui_dockview, load_config,			void								)( FILE* file, get_pagectrl func )
+{
+	std::string line;
+
+	//dockstyle
+	line = xui_global::get_fileline(file);
+	if (line.length() > 0)
+	{
+		std::string temp = line.substr(line.find_first_not_of(' '));
+		sscanf(temp.c_str(), "dockstyle=%d", &m_dockstyle);
+	}
+
+	//portions
+	line = xui_global::get_fileline(file);
+	if (line.length() > 0)
+	{
+		std::string temp = line.substr(line.find_first_not_of(' '));
+		sscanf(temp.c_str(), "portions=%f",  &m_portions);
+	}
+
+	//viewcount
+	u32 viewcount = 0;
+	line = xui_global::get_fileline(file);
+	if (line.length() > 0)
+	{
+		std::string temp = line.substr(line.find_first_not_of(' '));
+		sscanf(temp.c_str(), "viewcount=%d", &viewcount);
+	}
+	for (u32 i = 0; i < viewcount; ++i)
+	{
+		xui_dockview* dockview = new xui_dockview(xui_vector<s32>(0), DOCKSTYLE_N);
+		dockview->load_config(file, func);
+		add_dockctrl(dockview);
+		m_viewlist.push_back(dockview);
+	}
+
+	//pagecount
+	u32 pagecount = 0;
+	line = xui_global::get_fileline(file);
+	if (line.length() > 0)
+	{
+		std::string temp = line.substr(line.find_first_not_of(' '));
+		sscanf(temp.c_str(), "pagecount=%d", &pagecount);
+	}
+	for (u32 i = 0; i < pagecount; ++i)
+	{
+		line = xui_global::get_fileline(file);
+		if (line.empty())
+			continue;
+
+		std::string temp = line.substr(line.find_first_not_of(' '));
+		xui_dockpage* dockpage = func(temp);
+		if (dockpage)
+		{
+			add_dockpage(dockpage, DOCKSTYLE_F);
+		}
+	}
 }
 
 /*
