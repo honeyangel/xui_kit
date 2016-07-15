@@ -52,6 +52,11 @@ protected:
 	virtual void				on_perform		( xui_method_args& args );
 
 	/*
+	//event
+	*/
+	void						on_popactiontick( xui_component* sender, xui_method_args& args );
+
+	/*
 	//member
 	*/
 	xui_toggle*					m_ownertoggle;

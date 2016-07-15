@@ -47,7 +47,7 @@ public:
 	/*
 	//method
 	*/
-	xui_action_ctrl<s32>*		get_valueaction	( void );
+	xui_action_ctrl*			get_valueaction	( void );
 	s32							get_smallchange ( void ) const;
 	void						set_smallchange ( s32 value );
 	s32							get_largechange	( void ) const;
@@ -102,7 +102,7 @@ protected:
 	/*
 	//member
 	*/
-	xui_action_ctrl<s32>*		m_valueaction;
+	xui_action_ctrl*			m_valueaction;
 	s32							m_smallchange;
 	s32							m_largechange;
 	bool						m_thumbresize;

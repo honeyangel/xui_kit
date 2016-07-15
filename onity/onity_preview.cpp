@@ -93,6 +93,10 @@ xui_create_explain(onity_preview)( void )
 	xui_method_ptrcall(m_view,	xm_renderself	) += new xui_method_member<xui_method_args,   onity_preview>(this, &onity_preview::on_viewrenderself);
 	xui_method_ptrcall(m_view,	xm_mousewheel	) += new xui_method_member<xui_method_mouse,  onity_preview>(this, &onity_preview::on_viewmousewheel);
 
+	m_ctrl	= new xui_action_ctrl_impl<f32>(this);
+	xui_method_ptrcall(m_ctrl,	set_soft		)(true);
+	xui_method_ptrcall(m_ctrl,	xm_tick			) += new xui_method_member<xui_method_args,	  onity_preview>(this, &onity_preview::on_ctrltick);
+
 	m_widgetvec.push_back(m_head);
 	m_widgetvec.push_back(m_tool);
 	m_widgetvec.push_back(m_view);
@@ -104,6 +108,7 @@ xui_create_explain(onity_preview)( void )
 xui_delete_explain(onity_preview)( void )
 {
 	delete m_node;
+	delete m_ctrl;
 }
 
 /*
@@ -167,11 +172,21 @@ xui_method_explain(onity_preview, set_viewprop,			void				)( xui_proproot* prop,
 
 	m_scale = 1.0f;
 	m_rect	= xui_rect2d<s32>(0);
+	m_ctrl->clear();
 }
 
 xui_method_explain(onity_preview, set_drawrect,			void				)( const xui_rect2d<s32>& rect )
 {
 	m_rect = rect;
+}
+
+/*
+//callback
+*/
+xui_method_explain(onity_preview, on_updateself,		void				)( xui_method_update& args )
+{
+	xui_control::on_updateself(args);
+	m_ctrl->update(args.delta);
 }
 
 /*
@@ -195,23 +210,22 @@ xui_method_explain(onity_preview, on_buttonclick,		void				)( xui_component* sen
 		}
 	}
 	else
-	if (sender == m_large || sender == m_small)
+	if (sender == m_large)
 	{
-		if (sender == m_small && m_scale > 0.1f)
-		{
-			if (m_scale <= 1.0f)	m_scale -= 0.1f;
-			else					m_scale -= 1.0f;
-		}
-		if (sender == m_large && m_scale < 5.0f)
-		{
-			if (m_scale <= 1.0f)	m_scale += 0.1f;
-			else					m_scale += 1.0f;
-		}
+		m_scale = get_incscale();
+		m_ctrl->clear();
+	}
+	else
+	if (sender == m_small)
+	{
+		m_scale = get_decscale();
+		m_ctrl->clear();
 	}
 	else
 	if (sender == m_reset)
 	{
 		m_scale = 1.0f;
+		m_ctrl->clear();
 	}
 }
 xui_method_explain(onity_preview, on_speedscroll,		void				)( xui_component* sender, xui_method_args&   args )
@@ -286,12 +300,28 @@ xui_method_explain(onity_preview, on_viewmousewheel,	void				)( xui_component* s
 {
 	if (m_tool->was_visible())
 	{
-		xui_method_args other_args;
-		if (args.wheel > 0) on_buttonclick(m_large, other_args);
-		else 				on_buttonclick(m_small, other_args);
+		f32 start = m_scale;
+		f32 final = m_scale;
+		if (args.wheel > 0) final = get_incscale();
+		else 				final = get_decscale();
+
+		xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_ctrl;
+		action->clear();
+		action->add_time(0.0f);
+		action->add_time(0.5f);
+		action->add_data(start);
+		action->add_data(final);
+		action->set_play(true);
 
 		args.handle = true;
 	}
+}
+xui_method_explain(onity_preview, on_ctrltick,			void				)( xui_component* sender, xui_method_args& args )
+{
+	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_ctrl;
+	m_scale = action->sample();
+	if (m_scale == 0.1f || m_scale == 5.0f)
+		m_ctrl->clear();
 }
 
 /*
@@ -394,4 +424,22 @@ xui_method_explain(onity_preview, set_localtransform,	void				)( void )
 			particle->SetLocalT(trans);
 		}
 	}
+}
+xui_method_explain(onity_preview, get_incscale,			f32					)( void )
+{
+	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_ctrl;
+	f32 scale = action->has_data() ? action->get_data(1) : m_scale;
+	if (scale <  1.0f)	scale += 0.1f;
+	else				scale += 1.0f;
+
+	return xui_min(scale, 5.0f);
+}
+xui_method_explain(onity_preview, get_decscale,			f32					)( void )
+{
+	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_ctrl;
+	f32 scale = action->has_data() ? action->get_data(1) : m_scale;
+	if (scale <= 1.0f)	scale -= 0.1f;
+	else				scale -= 1.0f;
+
+	return xui_max(scale, 0.1f);
 }

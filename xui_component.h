@@ -4,6 +4,7 @@
 #include "xui_rect2d.h"
 #include "xui_colour.h"
 #include "xui_method.h"
+#include "xui_action_ctrl.h"
 
 enum
 {
@@ -315,6 +316,7 @@ protected:
     xui_colour						m_maskcolor;
 	f32								m_clicktime;
 	xui_vector<s32>					m_clickdown;
+	xui_action_ctrl*				m_popaction;
 };
 
 #endif//__xui_component_h__

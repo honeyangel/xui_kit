@@ -3,7 +3,6 @@
 
 #include "xui_header.h"
 
-template<class T>
 class xui_action_ctrl
 {
 public:
@@ -13,14 +12,15 @@ public:
 	xui_action_ctrl( xui_component* comp );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_action_ctrl( void ){}
+
+	/*
 	//method
 	*/
 	void						add_time			( f32 time );
 	void						set_timevec			( const std::vector<f32>& timevec );
-	bool						has_data			( void ) const;
-	T							get_data			( u32 index ) const;
-	void						add_data			( const T& data );
-	void						set_datavec			( const std::vector<T>& datavec );
 
 	bool						was_play			( void ) const;
 	void						set_play			( bool flag );
@@ -33,10 +33,9 @@ public:
 	f32							get_time			( void ) const;
 	void						set_time			( f32 time );
 
-	void						reset				( void );
-	void						clear				( void );
-	void						update				( f32 delta );
-	T							sample				( void );
+	virtual void				reset				( void );
+	virtual void				clear				( void );
+	virtual void				update				( f32 delta );
 
 	/*
 	//method
@@ -62,14 +61,43 @@ protected:
 	bool						m_play;
 	f32							m_time;
 	std::vector<f32>			m_timevec;
+};
+
+template<typename T>
+class xui_action_ctrl_impl : public xui_action_ctrl
+{
+public:
+	/*
+	//constructor
+	*/
+	xui_action_ctrl_impl( xui_component* comp );
+
+	/*
+	//method
+	*/
+	bool						has_data			( void ) const;
+	T							get_data			( u32 index ) const;
+	void						add_data			( const T& data );
+	void						set_datavec			( const std::vector<T>& datavec );
+
+	/*
+	//sample
+	*/
+	virtual void				clear				( void );
+	T							sample				( void );
+
+protected:
+	/*
+	//member
+	*/
 	std::vector<T>				m_datavec;
 };
 
 /*
 //constructor
 */
-template<class T>
-xui_action_ctrl<T>::xui_action_ctrl( xui_component* comp )
+inline
+xui_action_ctrl::xui_action_ctrl( xui_component* comp )
 : m_comp(comp)
 , m_loop(false)
 , m_soft(false)
@@ -80,44 +108,23 @@ xui_action_ctrl<T>::xui_action_ctrl( xui_component* comp )
 /*
 //method
 */
-template<class T>
 inline
-void xui_action_ctrl<T>::add_time		( f32 time )
+void xui_action_ctrl::add_time				( f32 time )
 {
 	m_timevec.push_back(time);
 }
-template<typename T>
-void xui_action_ctrl<T>::set_timevec	( const std::vector<f32>& timevec )
+inline
+void xui_action_ctrl::set_timevec			( const std::vector<f32>& timevec )
 {
 	m_timevec = timevec;
 }
-template<typename T>
-bool xui_action_ctrl<T>::has_data		( void ) const
-{
-	return m_datavec.size() > 0;
-}
-template<typename T>
-T    xui_action_ctrl<T>::get_data		( u32 index ) const
-{
-	return m_datavec[index];
-}
-template<typename T>
-void xui_action_ctrl<T>::add_data		( const T& data )
-{
-	m_datavec.push_back(data);
-}
-template<typename T>
-void xui_action_ctrl<T>::set_datavec	( const std::vector<T>& datavec )
-{
-	m_datavec = datavec;
-}
-template<typename T>
-bool xui_action_ctrl<T>::was_play		( void ) const
+inline
+bool xui_action_ctrl::was_play				( void ) const
 {
 	return m_play;
 }
-template<typename T>
-void xui_action_ctrl<T>::set_play		( bool flag )
+inline
+void xui_action_ctrl::set_play				( bool flag )
 {
 	if (m_play != flag)
 	{
@@ -130,57 +137,56 @@ void xui_action_ctrl<T>::set_play		( bool flag )
 		else		xm_stop(m_comp, args);
 	}
 }
-template<typename T>
-bool xui_action_ctrl<T>::was_loop		( void ) const
+inline
+bool xui_action_ctrl::was_loop				( void ) const
 {
 	return m_loop;
 }
-template<typename T>
-void xui_action_ctrl<T>::set_loop		( bool flag )
+inline
+void xui_action_ctrl::set_loop				( bool flag )
 {
 	m_loop = flag;
 }
-template<typename T>
-bool xui_action_ctrl<T>::was_soft		( void ) const
+inline
+bool xui_action_ctrl::was_soft				( void ) const
 {
 	return m_soft;
 }
-template<typename T>
-void xui_action_ctrl<T>::set_soft		( bool flag )
+inline
+void xui_action_ctrl::set_soft				( bool flag )
 {
 	m_soft = flag;
 }
-template<typename T>
-f32	 xui_action_ctrl<T>::get_timetotal	( void ) const
+inline
+f32	 xui_action_ctrl::get_timetotal			( void ) const
 {
 	return m_timevec.empty() ? 0.0f : m_timevec.back();
 }
-template<typename T>
-f32  xui_action_ctrl<T>::get_time		( void ) const
+inline
+f32  xui_action_ctrl::get_time				( void ) const
 {
 	return m_time;
 }
-template<typename T>
-void xui_action_ctrl<T>::set_time		( f32 time )
+inline
+void xui_action_ctrl::set_time				( f32 time )
 {
 	m_time = time;
 }
-template<typename T>
-void xui_action_ctrl<T>::reset			( void )
+inline
+void xui_action_ctrl::reset					( void )
 {
 	m_time = 0.0f;
 	m_play = false;
 	m_loop = false;
 }
-template<typename T>
-void xui_action_ctrl<T>::clear			( void )
+inline
+void xui_action_ctrl::clear					( void )
 {
 	reset();
 	m_timevec.clear();
-	m_datavec.clear();
 }
-template<typename T>
-void xui_action_ctrl<T>::update			( f32 delta )
+inline
+void xui_action_ctrl::update				( f32 delta )
 {
 	if (m_play)
 	{
@@ -200,8 +206,74 @@ void xui_action_ctrl<T>::update			( f32 delta )
 		}
 	}
 }
+inline
+u32  xui_action_ctrl::get_currtimeidx		( void ) const
+{
+	if (!m_timevec.empty())
+	{
+		for (u32 i = m_timevec.size()-1; i >= 0; --i)
+		{
+			if (m_timevec[i] <= m_time)
+				return i;
+		}
+	}
+
+	return -1;
+}
+inline
+u32  xui_action_ctrl::get_nexttimeidx		( void ) const
+{
+	if (!m_timevec.empty())
+	{
+		for (u32 i = 0; i < m_timevec.size(); ++i)
+		{
+			if (m_timevec[i] >  m_time)
+				return i;
+		}
+	}
+
+	return -1;
+}
+
 template<typename T>
-T	 xui_action_ctrl<T>::sample			( void )
+inline
+xui_action_ctrl_impl<T>::xui_action_ctrl_impl( xui_component* comp )
+: xui_action_ctrl(comp)
+{}
+template<typename T>
+inline
+bool xui_action_ctrl_impl<T>::has_data		( void ) const
+{
+	return m_datavec.size() > 0;
+}
+template<typename T>
+inline
+T    xui_action_ctrl_impl<T>::get_data		( u32 index ) const
+{
+	return m_datavec[index];
+}
+template<typename T>
+inline
+void xui_action_ctrl_impl<T>::add_data		( const T& data )
+{
+	m_datavec.push_back(data);
+}
+template<typename T>
+inline
+void xui_action_ctrl_impl<T>::set_datavec	( const std::vector<T>& datavec )
+{
+	m_datavec = datavec;
+}
+template<typename T>
+inline
+void xui_action_ctrl_impl<T>::clear			( void )
+{
+	xui_action_ctrl::clear();
+	m_datavec.clear();
+}
+template<typename T>
+inline
+T	 xui_action_ctrl_impl<T>::sample		( void )
 {
 	u32 curridx = get_currtimeidx();
 	u32 nextidx = get_nexttimeidx();
@@ -222,34 +294,6 @@ T	 xui_action_ctrl<T>::sample			( void )
 	}
 
 	return result;
-}
-template<typename T>
-u32  xui_action_ctrl<T>::get_currtimeidx( void ) const
-{
-	if (!m_timevec.empty())
-	{
-		for (u32 i = m_timevec.size()-1; i >= 0; --i)
-		{
-			if (m_timevec[i] <= m_time)
-				return i;
-		}
-	}
-
-	return -1;
-}
-template<typename T>
-u32  xui_action_ctrl<T>::get_nexttimeidx( void ) const
-{
-	if (!m_timevec.empty())
-	{
-		for (u32 i = 0; i < m_timevec.size(); ++i)
-		{
-			if (m_timevec[i] >  m_time)
-				return i;
-		}
-	}
-
-	return -1;
 }
 
 #endif//__xui_action_ctrl_h__

@@ -27,13 +27,16 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size )
 	m_maskcolor	= xui_colour::white;
 	m_clicktime = -1.0f;
 	m_clickdown = xui_vector<s32>(0);
+	m_popaction = NULL;
 }
 
 /*
 //destructor
 */
 xui_delete_explain(xui_component)( void )
-{}
+{
+	delete m_popaction;
+}
 
 /*
 //ini
@@ -387,11 +390,14 @@ xui_method_explain(xui_component, get_renderrtabs,		xui_rect2d<s32>			)( void ) 
 */
 xui_method_explain(xui_component, choose,				xui_component*			)( const xui_vector<s32>& pt )
 {
-	//判定区域
-	if (m_enable && m_visible)
+	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
-		if (m_render.was_inside(pt))
-			return this;
+		//判定区域
+		if (m_enable && m_visible)
+		{
+			if (m_render.was_inside(pt))
+				return this;
+		}
 	}
 
 	return NULL;
@@ -445,6 +451,11 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 			m_clicktime =-1.0f;
 	}
 
+	if (m_popaction)
+	{
+		m_popaction->update(delta);
+	}
+
 	xui_method_update   args ;
 	args.delta = delta;
 	on_updateself(      args);
@@ -454,11 +465,14 @@ xui_method_explain(xui_component, render,				void					)( void )
 {
 	xui_method_args     args; 
 	on_renderback(      args);
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
-	on_renderself(      args);
-	xm_renderself(this, args);
-	xui_convas::get_ins()->set_cliprect(cliprect);
+	if (m_popaction == NULL || m_popaction->was_play() == false)
+	{
+		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
+		on_renderself(      args);
+		xm_renderself(this, args);
+		xui_convas::get_ins()->set_cliprect(cliprect);
+	}
 }
 
 /*
@@ -586,7 +600,12 @@ xui_method_explain(xui_component, on_lock,				void					)( xui_method_args&			arg
 }
 xui_method_explain(xui_component, on_show,				void					)( xui_method_args&			args )
 {
-
+	if (m_popaction)
+	{
+		xui_method_ptrcall(m_popaction, reset	)();
+		xui_method_ptrcall(m_popaction, set_play)(true);
+		xui_method_ptrcall(m_popaction, update	)(0.0f);
+	}
 }
 xui_method_explain(xui_component, on_hide,				void					)( xui_method_args&			args )
 {

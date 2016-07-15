@@ -242,7 +242,7 @@ xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& arg
 	{
 		args.handle = true;
 
-		xui_action_ctrl<s32>* action = scroll->get_valueaction();
+		xui_action_ctrl_impl<s32>* action = (xui_action_ctrl_impl<s32>*)scroll->get_valueaction();
 		s32 start = scroll->get_value();
 		s32 final = (action->has_data() ? action->get_data(1) : start) - args.wheel;
 		action->clear();

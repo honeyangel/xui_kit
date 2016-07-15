@@ -42,6 +42,11 @@ xui_method_explain(xui_window, get_float,		xui_component*	)( void )
 xui_method_explain(xui_window, set_float,		void			)( xui_component* component )
 {
 	m_float = component;
+	if (m_float)
+	{
+		m_float->set_visible(false);
+		m_float->set_visible(true );
+	}
 }
 
 /*
@@ -57,15 +62,18 @@ xui_method_explain(xui_window, get_screenpt,	xui_vector<s32>	)( void ) const
 xui_method_explain(xui_window, choose,			xui_component*	)( const xui_vector<s32>& pt )
 {
 	xui_component* component = NULL;
-	if (m_float)
-		component = m_float->choose(pt);
-	if (component == NULL)
+	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
-		xui_vector<s32> fixed = pt;
-		if (m_owner)
-			fixed += get_renderpt();
+		if (m_float)
+			component = m_float->choose(pt);
+		if (component == NULL)
+		{
+			xui_vector<s32> fixed = pt;
+			if (m_owner)
+				fixed += get_renderpt();
 
-		component = xui_panel::choose(fixed);
+			component = xui_panel::choose(fixed);
+		}
 	}
 
 	return component;

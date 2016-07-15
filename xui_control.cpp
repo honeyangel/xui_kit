@@ -199,13 +199,16 @@ xui_method_explain(xui_control, get_renderrtins,	xui_rect2d<s32>			)( void ) con
 */
 xui_method_explain(xui_control, choose,				xui_component*			)( const xui_vector<s32>& pt )
 {
-	if (m_enable && m_visible)
+	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
-		xui_component* component = choose_else(pt);
-		if (component == NULL)
-			component  = xui_component::choose(pt);
+		if (m_enable && m_visible)
+		{
+			xui_component* component = choose_else(pt);
+			if (component == NULL)
+				component  = xui_component::choose(pt);
 
-		return component;
+			return component;
+		}
 	}
 
 	return NULL;
@@ -245,19 +248,10 @@ xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 xui_method_explain(xui_control, render,				void					)( void )
 {
 	xui_component::render();
-	render_else();
-}
-xui_method_explain(xui_control, render_else,		void					)( void )
-{
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtabs());
-	xui_convas::get_ins()->set_cliprect(currrect);
-	xui_vecptr_addloop(m_widgetvec)
+	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
-		if (m_widgetvec[i]->was_visible() && currrect.get_inter(m_widgetvec[i]->get_renderrtabs()).was_valid())
-			m_widgetvec[i]->render();
+		render_else();
 	}
-	xui_convas::get_ins()->set_cliprect(cliprect);
 
 	if (m_sidestyle)
 	{
@@ -284,6 +278,19 @@ xui_method_explain(xui_control, render_else,		void					)( void )
 			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
 		}
 	}
+}
+xui_method_explain(xui_control, render_else,		void					)( void )
+{
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtabs());
+	xui_convas::get_ins()->set_cliprect(currrect);
+	xui_vecptr_addloop(m_widgetvec)
+	{
+		if (m_widgetvec[i]->was_visible() && currrect.get_inter(m_widgetvec[i]->get_renderrtabs()).was_valid())
+			m_widgetvec[i]->render();
+	}
+	xui_convas::get_ins()->set_cliprect(cliprect);
+
 
 	xui_method_args		args;
 	xm_renderelse(this, args);

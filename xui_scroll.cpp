@@ -41,7 +41,7 @@ xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style )
 	m_style			= style;
 	m_range			= 0;
 	m_value			= 0;
-	m_valueaction	= new xui_action_ctrl<s32>(this);
+	m_valueaction	= new xui_action_ctrl_impl<s32>(this);
 	m_valueaction->set_soft(true);
 	m_valueaction->xm_tick += new xui_method_member<xui_method_args, xui_scroll>(this, &xui_scroll::on_actiontick);
 
@@ -110,7 +110,7 @@ xui_method_explain(xui_scroll, get_thumb,		xui_scrollthumb*		)( void ) const
 /*
 //method
 */
-xui_method_explain(xui_scroll, get_valueaction,	xui_action_ctrl<s32>*	)( void )
+xui_method_explain(xui_scroll, get_valueaction,	xui_action_ctrl*		)( void )
 {
 	return m_valueaction;
 }
@@ -363,7 +363,8 @@ xui_method_explain(xui_scroll, update_value,	void					)( void )
 */
 xui_method_explain(xui_scroll, on_actiontick,	void					)( xui_component* sender, xui_method_args& args )
 {
-	set_value(m_valueaction->sample(), false);
+	xui_action_ctrl_impl<s32>* action = (xui_action_ctrl_impl<s32>*)m_valueaction;
+	set_value(action->sample(), false);
 	if (m_value == 0 || m_value == m_range)
 		m_valueaction->clear();
 }

@@ -249,7 +249,8 @@ xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page 
 xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args )
 {
 	xui_window::on_load(args);
-	on_clickload(NULL,  args);
+	on_clickreset(NULL, args);
+	on_clickload (NULL, args);
 
 	onity_recent* dialog = new onity_recent;
 	dialog->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_recentaccept);
@@ -386,13 +387,13 @@ xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* send
 }
 xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args& args )
 {
-	del_allview();
-
 	extern std::wstring TOOLPATH;
 	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "onity.dock";
 	FILE* file = fopen(filename.c_str(), "r");
 	if (file)
 	{
+		del_allview();
+
 		std::string line;
 		line = xui_global::get_fileline(file);
 		xui_method_ptrcall(m_mainview, load_config	)(file, get_pagectrl);
