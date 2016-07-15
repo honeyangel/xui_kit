@@ -179,7 +179,6 @@
     <ClInclude Include="libzip\inc\zlib.h" />
     <ClInclude Include="libzip\inc\zutil.h" />
     <ClInclude Include="xui_action_ctrl.h" />
-    <ClInclude Include="xui_action_data.h" />
     <ClInclude Include="xui_bitmap.h" />
     <ClInclude Include="xui_bitmap_buffer.h" />
     <ClInclude Include="xui_bitmap_format.h" />
@@ -358,7 +357,6 @@
     <ClCompile Include="xui_timeview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="xui_action_ctrl.cpp" />
     <ClCompile Include="xui_bitmap.cpp" />
     <ClCompile Include="xui_bitmap_buffer.cpp" />
     <ClCompile Include="xui_bitmap_format.cpp" />

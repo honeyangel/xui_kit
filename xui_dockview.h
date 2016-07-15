@@ -52,7 +52,7 @@ public:
 	/*
 	//save&load
 	*/
-	void								save_config				( FILE* file, get_pagename func, int indent );
+	void								save_config				( FILE* file, get_pagename func, u32 indent );
 	void								load_config				( FILE* file, get_pagectrl func );
 
 protected:

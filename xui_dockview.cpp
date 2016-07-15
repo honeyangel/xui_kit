@@ -434,7 +434,7 @@ xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_
 /*
 //load&save
 */
-xui_method_explain(xui_dockview, save_config,			void								)( FILE* file, get_pagename func, int indent )
+xui_method_explain(xui_dockview, save_config,			void								)( FILE* file, get_pagename func, u32 indent )
 {
 	std::string space; 
 	for (u32 i = 0; i < indent; ++i) 

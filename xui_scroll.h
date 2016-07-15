@@ -2,6 +2,7 @@
 #define __xui_scroll_h__
 
 #include "xui_control.h"
+#include "xui_action_ctrl.h"
 
 enum
 {
@@ -28,6 +29,11 @@ public:
 	xui_scroll( const xui_vector<s32>& size, u08 style );
 
 	/*
+	//destructor
+	*/
+	virtual ~xui_scroll( void );
+
+	/*
 	//init
 	*/
 	void						ini_scroll		( s32 range, s32 value );
@@ -41,6 +47,7 @@ public:
 	/*
 	//method
 	*/
+	xui_action_ctrl<s32>*		get_valueaction	( void );
 	s32							get_smallchange ( void ) const;
 	void						set_smallchange ( s32 value );
 	s32							get_largechange	( void ) const;
@@ -51,19 +58,19 @@ public:
 	/*
 	//range
 	*/
-	s32							get_range	( void ) const;
-	void						set_range	( s32 range );
+	s32							get_range		( void ) const;
+	void						set_range		( s32 range );
 
 	/*
 	//value
 	*/
-	s32							get_value	( void ) const;
-	void						set_value	( s32 value );
+	s32							get_value		( void ) const;
+	void						set_value		( s32 value, bool stop_action = true );
 
 	/*
 	//rectangle
 	*/
-	virtual xui_rect2d<s32>		get_hallowrt( void ) const;
+	virtual xui_rect2d<s32>		get_hallowrt	( void ) const;
 
 	/*
 	//method
@@ -74,21 +81,28 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void				on_lock		( xui_method_args&  args );
-	virtual void				on_free		( xui_method_args&  args );
-	virtual void				on_perform	( xui_method_args&  args );
-	virtual void				on_mousedown( xui_method_mouse& args );
+	virtual void				on_lock			( xui_method_args&   args );
+	virtual void				on_free			( xui_method_args&   args );
+	virtual void				on_perform		( xui_method_args&   args );
+	virtual void				on_mousedown	( xui_method_mouse&  args );
+	virtual void				on_updateself	( xui_method_update& args );
 
 	/*
 	//update
 	*/
-	void						resize_thumb( void );
-	void						update_thumb( void );
-	void						update_value( void );
+	void						resize_thumb	( void );
+	void						update_thumb	( void );
+	void						update_value	( void );
+
+	/*
+	//event
+	*/
+	void						on_actiontick	( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
 	*/
+	xui_action_ctrl<s32>*		m_valueaction;
 	s32							m_smallchange;
 	s32							m_largechange;
 	bool						m_thumbresize;

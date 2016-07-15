@@ -41,6 +41,9 @@ xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style )
 	m_style			= style;
 	m_range			= 0;
 	m_value			= 0;
+	m_valueaction	= new xui_action_ctrl<s32>(this);
+	m_valueaction->set_soft(true);
+	m_valueaction->xm_tick += new xui_method_member<xui_method_args, xui_scroll>(this, &xui_scroll::on_actiontick);
 
 	//thumb
 	m_thumb	= new xui_scrollthumb(xui_vector<s32>(12), style);
@@ -72,9 +75,17 @@ xui_create_explain(xui_scroll)( const xui_vector<s32>& size, u08 style )
 }
 
 /*
+//destructor
+*/
+xui_delete_explain(xui_scroll)( void )
+{
+	delete m_valueaction;
+}
+
+/*
 //init
 */
-xui_method_explain(xui_scroll, ini_scroll,		void			)( s32 range, s32 value )
+xui_method_explain(xui_scroll, ini_scroll,		void					)( s32 range, s32 value )
 {
 	m_range = range;
 	m_value = value;
@@ -87,11 +98,11 @@ xui_method_explain(xui_scroll, ini_scroll,		void			)( s32 range, s32 value )
 /*
 //arrow&thumb
 */
-xui_method_explain(xui_scroll, get_arrow,		xui_scrollarrow*)( u08 arrow ) const
+xui_method_explain(xui_scroll, get_arrow,		xui_scrollarrow*		)( u08 arrow ) const
 {
 	return m_arrow[arrow];
 }
-xui_method_explain(xui_scroll, get_thumb,		xui_scrollthumb*)( void ) const
+xui_method_explain(xui_scroll, get_thumb,		xui_scrollthumb*		)( void ) const
 {
 	return m_thumb;
 }
@@ -99,29 +110,33 @@ xui_method_explain(xui_scroll, get_thumb,		xui_scrollthumb*)( void ) const
 /*
 //method
 */
-xui_method_explain(xui_scroll, get_smallchange, s32				)( void ) const
+xui_method_explain(xui_scroll, get_valueaction,	xui_action_ctrl<s32>*	)( void )
+{
+	return m_valueaction;
+}
+xui_method_explain(xui_scroll, get_smallchange, s32						)( void ) const
 {
 	return m_smallchange;
 }
-xui_method_explain(xui_scroll, set_smallchange, void			)( s32 value )
+xui_method_explain(xui_scroll, set_smallchange, void					)( s32 value )
 {
 	m_smallchange = value;
 }
 
-xui_method_explain(xui_scroll, get_largechange,	s32				)( void ) const
+xui_method_explain(xui_scroll, get_largechange,	s32						)( void ) const
 {
 	return m_largechange;
 }
-xui_method_explain(xui_scroll, set_largechange,	void			)( s32 value )
+xui_method_explain(xui_scroll, set_largechange,	void					)( s32 value )
 {
 	m_largechange = value;
 }
 
-xui_method_explain(xui_scroll, was_thumbresize, bool			)( void ) const
+xui_method_explain(xui_scroll, was_thumbresize, bool					)( void ) const
 {
 	return m_thumbresize;
 }
-xui_method_explain(xui_scroll, set_thumbresize, void			)( bool flag )
+xui_method_explain(xui_scroll, set_thumbresize, void					)( bool flag )
 {
 	if (m_thumbresize != flag)
 	{
@@ -137,11 +152,11 @@ xui_method_explain(xui_scroll, set_thumbresize, void			)( bool flag )
 /*
 //range
 */
-xui_method_explain(xui_scroll, get_range,		s32				)( void ) const
+xui_method_explain(xui_scroll, get_range,		s32						)( void ) const
 {
 	return m_range;
 }
-xui_method_explain(xui_scroll, set_range,		void			)( s32 range )
+xui_method_explain(xui_scroll, set_range,		void					)( s32 range )
 {
 	if (m_range != range)
 	{
@@ -157,11 +172,11 @@ xui_method_explain(xui_scroll, set_range,		void			)( s32 range )
 /*
 //value
 */
-xui_method_explain(xui_scroll, get_value,		s32				)( void ) const
+xui_method_explain(xui_scroll, get_value,		s32						)( void ) const
 {
 	return m_value;
 }
-xui_method_explain(xui_scroll, set_value,		void			)( s32 value )
+xui_method_explain(xui_scroll, set_value,		void					)( s32 value, bool stop_action )
 {
 	value = xui_min(value, m_range);
 	value = xui_max(value, 0);
@@ -173,12 +188,15 @@ xui_method_explain(xui_scroll, set_value,		void			)( s32 value )
 		xui_method_args args;
 		xm_scroll(this, args);
 	}
+
+	if (stop_action)
+		m_valueaction->clear();
 }
 
 /*
 //rectangle
 */
-xui_method_explain(xui_scroll, get_hallowrt,	xui_rect2d<s32>	)( void ) const
+xui_method_explain(xui_scroll, get_hallowrt,	xui_rect2d<s32>			)( void ) const
 {
 	xui_rect2d<s32> rt = xui_control::get_renderrtins();
 	switch (m_style)
@@ -199,19 +217,19 @@ xui_method_explain(xui_scroll, get_hallowrt,	xui_rect2d<s32>	)( void ) const
 /*
 //callback
 */
-xui_method_explain(xui_scroll, on_lock,			void			)( xui_method_args&  args )
+xui_method_explain(xui_scroll, on_lock,			void					)( xui_method_args&   args )
 {
 	xui_control::on_lock(args);
 	set_maskcolor(xui_colour::white);
 	m_thumb->set_visible(false);
 }
-xui_method_explain(xui_scroll, on_free,			void			)( xui_method_args&  args )
+xui_method_explain(xui_scroll, on_free,			void					)( xui_method_args&   args )
 {
 	xui_control::on_free(args);
 	set_maskcolor(xui_colour::white);
 	m_thumb->set_visible(true);
 }
-xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args&  args )
+xui_method_explain(xui_scroll, on_perform,		void					)( xui_method_args&   args )
 {
 	xui_control::on_perform(args);
 
@@ -233,11 +251,13 @@ xui_method_explain(xui_scroll, on_perform,		void			)( xui_method_args&  args )
 	resize_thumb();
 	update_thumb();
 }
-xui_method_explain(xui_scroll, on_mousedown,	void			)( xui_method_mouse& args )
+xui_method_explain(xui_scroll, on_mousedown,	void					)( xui_method_mouse&  args )
 {
 	xui_control::on_mousedown(args);
 	if (args.mouse == MB_L)
 	{
+		m_valueaction->clear();
+
 		//点击其它位置
 		xui_rect2d<s32> rt = m_thumb->get_renderrtabs();
 		switch (m_style)
@@ -257,11 +277,16 @@ xui_method_explain(xui_scroll, on_mousedown,	void			)( xui_method_mouse& args )
 		}
 	}
 }
+xui_method_explain(xui_scroll, on_updateself,	void					)( xui_method_update& args )
+{
+	xui_control::on_updateself(args);
+	m_valueaction->update(args.delta);
+}
 
 /*
 //method
 */
-xui_method_explain(xui_scroll, resize_thumb,	void			)( void )
+xui_method_explain(xui_scroll, resize_thumb,	void					)( void )
 {
 	if (m_thumbresize)
 	{
@@ -283,7 +308,7 @@ xui_method_explain(xui_scroll, resize_thumb,	void			)( void )
 		}
 	}
 }
-xui_method_explain(xui_scroll, update_thumb,	void			)( void )
+xui_method_explain(xui_scroll, update_thumb,	void					)( void )
 {
 	//比例
 	f32 ratio = (m_range == 0) ? 0.0f : (f32)m_value / (f32)m_range;
@@ -306,7 +331,7 @@ xui_method_explain(xui_scroll, update_thumb,	void			)( void )
 		break;
 	}
 }
-xui_method_explain(xui_scroll, update_value,	void			)( void )
+xui_method_explain(xui_scroll, update_value,	void					)( void )
 {
 	xui_rect2d<s32> rt = get_hallowrt();
 
@@ -331,4 +356,14 @@ xui_method_explain(xui_scroll, update_value,	void			)( void )
 		xui_method_args args;
 		xm_scroll(this, args);
 	}
+}
+
+/*
+//event
+*/
+xui_method_explain(xui_scroll, on_actiontick,	void					)( xui_component* sender, xui_method_args& args )
+{
+	set_value(m_valueaction->sample(), false);
+	if (m_value == 0 || m_value == m_range)
+		m_valueaction->clear();
 }

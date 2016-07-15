@@ -23,6 +23,8 @@ xui_create_explain(xui_container)( const xui_vector<s32>& size )
 	m_hscrollauto	= true;
 	m_contextmenu	= NULL;
 	update_scroll();
+
+	xm_getfocus	+= new xui_method_member<xui_method_args, xui_container>(this, &xui_container::on_ctrlgetfocus);
 }
 
 /*
@@ -230,16 +232,25 @@ xui_method_explain(xui_container, on_mousedown,		void			)( xui_method_mouse& arg
 xui_method_explain(xui_container, on_mousewheel,	void			)( xui_method_mouse& args )
 {
 	xui_control::on_mousewheel(args);
-	if (m_vscroll)
-	{
-		m_vscroll->set_value(m_vscroll->get_value()-args.wheel);
-		args.handle = true;
-	}
+	xui_scroll* scroll = NULL;
+	if		(m_vscroll) scroll = m_vscroll;
+	else if (m_hscroll) scroll = m_hscroll;
 	else
-	if (m_hscroll)
+	{}
+
+	if (scroll)
 	{
-		m_hscroll->set_value(m_hscroll->get_value()-args.wheel);
 		args.handle = true;
+
+		xui_action_ctrl<s32>* action = scroll->get_valueaction();
+		s32 start = scroll->get_value();
+		s32 final = (action->has_data() ? action->get_data(1) : start) - args.wheel;
+		action->clear();
+		action->add_time(0.0f);
+		action->add_time(0.5f);
+		action->add_data(start);
+		action->add_data(final);
+		action->set_play(true);
 	}
 }
 
@@ -360,4 +371,15 @@ xui_method_explain(xui_container, delete_scroll,	void			)( u08 style )
 	}
 
 	invalid();
+}
+
+/*
+//event
+*/
+xui_method_explain(xui_container, on_ctrlgetfocus,	void			)( xui_component* sender, xui_method_args& args )
+{
+	if (m_hscroll)
+		m_hscroll->get_valueaction()->clear();
+	if (m_vscroll)
+		m_vscroll->get_valueaction()->clear();
 }

@@ -180,9 +180,6 @@
     <ClInclude Include="xui_action_ctrl.h">
       <Filter>Action</Filter>
     </ClInclude>
-    <ClInclude Include="xui_action_data.h">
-      <Filter>Action</Filter>
-    </ClInclude>
     <ClInclude Include="xui_panel.h">
       <Filter>LibGUI\panel</Filter>
     </ClInclude>
@@ -517,9 +514,6 @@
     </ClCompile>
     <ClCompile Include="xui_family_bitmap.cpp">
       <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="xui_action_ctrl.cpp">
-      <Filter>Action</Filter>
     </ClCompile>
     <ClCompile Include="xui_panel.cpp">
       <Filter>LibGUI\panel</Filter>

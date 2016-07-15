@@ -84,8 +84,6 @@ class   xui_family_bitmap;
 class   xui_family_member;
 class   xui_family_create;
 class   xui_convas;
-class   xui_action_ctrl;
-class   xui_action_ctrl_move;
 class	xui_syswnd;
 class	xui_render_window;
 
