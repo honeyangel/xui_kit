@@ -17,6 +17,7 @@ enum
 	TOC_WORLD,
 };
 
+class onity_hierarchy;
 class onity_inspector;
 class onity_project;
 class onity_game;
@@ -32,6 +33,8 @@ public:
 	//static
 	*/
 	static onity_mainform*	get_ptr				( void );
+	static std::string		get_pagename		( xui_dockpage* page );
+	static xui_dockpage*	get_pagectrl		( const std::string& name );
 
 	/*
 	//constructor
@@ -41,6 +44,7 @@ public:
 	/*
 	//method
 	*/
+	onity_hierarchy*		get_hierarchy		( void );
 	onity_inspector*		get_inspector		( void );
 	onity_project*			get_project			( void );
 	onity_animator*			get_animator		( void );

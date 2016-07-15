@@ -12,10 +12,13 @@
 #include "onity_mainform.h"
 #include "onity_console.h"
 
-s32			DefaultWidth	= 1440;
-s32			DefaultHeight	=  900;
-HWND		gHWND			= NULL;
-HINSTANCE	gHINSTANCE		= NULL;
+HWND			gHWND		= NULL;
+HINSTANCE		gHINSTANCE	= NULL;
+int 			WNDPOSX		= 0;
+int				WNDPOSY		= 0;
+int				WNDWIDTH	= 1600;
+int				WNDHEIGHT	= 900;
+std::wstring	TOOLPATH;
 
 extern bool def_deviceproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
 
@@ -62,6 +65,25 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
 			PostQuitMessage(0);
 		}
 		break;
+	case WM_MOVE:
+		{
+			int movex = (int)(short)LOWORD(lparam) - WNDPOSX;
+			int movey = (int)(short)HIWORD(lparam) - WNDPOSY;
+			std::vector<xui_syswnd*> vec = xui_global::get_syswndall();
+			for (u32 i = 0; i < vec.size(); ++i)
+			{
+				xui_syswnd* syswnd = vec[i];
+				xui_window* wnd = syswnd->get_popupctrl();
+				xui_method_ptrcall(wnd, set_owner	)(NULL);
+				xui_method_ptrcall(wnd, set_renderx	)(wnd->get_renderx()-movex);
+				xui_method_ptrcall(wnd, set_rendery	)(wnd->get_rendery()-movey);
+				xui_method_ptrcall(wnd, set_owner	)(syswnd);
+			}
+
+			WNDPOSX   = (int)(short)LOWORD(lparam);
+			WNDPOSY   = (int)(short)HIWORD(lparam);
+		}
+		break;
 	case WM_SIZE:
 		{
 			RECT rect;
@@ -70,6 +92,9 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
 			int h = rect.bottom-rect.top;
 			if (xui_desktop::get_ins() && w > 0 && h > 0)
 				xui_desktop::get_ins()->set_rendersz(xui_vector<s32>(w, h));
+
+			WNDWIDTH  = (int)(short)LOWORD(lparam);
+			WNDHEIGHT = (int)(short)HIWORD(lparam);
 		}
 		break;
 	default:
@@ -96,17 +121,30 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	if (!RegisterClass(&wc))
 		return 0;
 
-	gHWND = CreateWindow(L"Onity", L"Onity", WS_OVERLAPPEDWINDOW , 0, 0, DefaultWidth, DefaultHeight, NULL, NULL, hInstance, NULL);
+	FILE* file = NULL;
+	file = fopen("onity.dock", "r");
+	if (file)
+	{
+		std::string line = xui_global::get_fileline(file);
+		sscanf(line.c_str(), "%d,%d,%d,%d", &WNDPOSX, &WNDPOSY, &WNDWIDTH, &WNDHEIGHT);
+		fclose(file);
+		file = NULL;
+	}
+
+	gHWND = CreateWindow(L"Onity", L"Onity", WS_OVERLAPPEDWINDOW, WNDPOSX, WNDPOSY, WNDWIDTH, WNDHEIGHT, NULL, NULL, hInstance, NULL);
 	ShowWindow   (gHWND, SW_NORMAL);
 	UpdateWindow (gHWND);
 
 	std::string font = "Arial.TTF";
-	NPFile font_config;
-	if (font_config.Open("onity.font", NPFile::OM_READ))
+	file = fopen("onity.font", "r");
+	if (file)
 	{
-		font_config.ReadLine(font);
-		font_config.Close();
+		font = xui_global::get_fileline(file);
+		fclose(file);
+		file = NULL;
 	}
+
+	TOOLPATH = xui_global::get_workpath();
 
 	xui_global::add_fontfile(font);
 	xui_render_window::init(gHWND);
@@ -115,12 +153,13 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	xui_static_inscall(xui_timermgr,	init)();
 	xui_static_inscall(xui_desktop,		init)();
 	xui_static_inscall(onity_resource,	init)();
-
 	RECT rect;
 	GetClientRect(gHWND, &rect);
-	MoveWindow   (gHWND, 0, 0, 2*DefaultWidth-rect.right+rect.left, 2*DefaultHeight-rect.bottom+rect.top, TRUE);
-	xui_desktop::get_ins()->add_child(new onity_mainform());
-	xui_desktop::get_ins()->update(0.0f);
+	int w = rect.right-rect.left;
+	int h = rect.bottom-rect.top;
+	xui_method_inscall(xui_desktop,		set_rendersz)(xui_vector<s32>(w, h));
+	xui_method_inscall(xui_desktop,		add_child	)(new onity_mainform());
+	xui_method_inscall(xui_desktop,		update		)(0.0f);
 
 	extern user_print s_userprint;
 	s_userprint = onity_console::game_print;

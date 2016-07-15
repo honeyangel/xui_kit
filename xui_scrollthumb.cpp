@@ -21,7 +21,12 @@ xui_method_explain(xui_scrollthumb, on_mousedown,	void)( xui_method_mouse& args 
 {
 	xui_button::on_mousedown(args);
 	if (args.mouse == MB_L)
+	{
 		m_mouserela = get_renderpt(args.point);
+
+		xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
+		scroll->get_valueaction()->clear();
+	}
 }
 xui_method_explain(xui_scrollthumb, on_mousemove,	void)( xui_method_mouse& args )
 {

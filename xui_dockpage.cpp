@@ -297,9 +297,10 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void					)( xui_component* 
 	if (window != args.wparam)
 		return;
 
+	xui_vector<s32> pt = xui_global::get_syswndmouse(window->get_owner());
 	xui_colour fill_color = xui_colour(0.5f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 	xui_colour side_color = xui_colour(1.0f,          0.0f,          0.9f,          0.9f);
-	u08 dockstyle = cal_dockinfo(dockview, xui_global::get_syswndmouse(window->get_owner()));
+	u08 dockstyle = cal_dockinfo(dockview, pt);
 	if (dockstyle == DOCKSTYLE_F)
 	{
 		xui_rect2d<s32> rt = dockview->get_namerect() + dockview->get_screenpt() + dockview->get_freerect().get_pt();
@@ -312,7 +313,6 @@ xui_method_explain(xui_dockpage, on_namectrltopdraw,	void					)( xui_component* 
 	else
 	if (dockstyle == DOCKSTYLE_U)
 	{
-		xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();
 		xui_vector<s32> sz = get_rendersz();
 		xui_rect2d<s32> rt;
 		rt.ax = pt.x-sz.w/4;

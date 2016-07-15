@@ -292,17 +292,29 @@ LRESULT CALLBACK xui_syswnd_proc( HWND hwnd, UINT message, WPARAM wparam, LPARAM
 			xui_syswnd* syswnd = xui_global::get_syswnd(hwnd);
 			if (syswnd)
 			{
+				extern HWND gHWND;
 				RECT rect;
-				GetClientRect(hwnd, &rect);
-				int w = rect.right-rect.left;
-				int h = rect.bottom-rect.top;
-				if (w > 0 && h > 0)
-				{
-					xui_window* wnd = syswnd->get_popupctrl();
-					xui_method_ptrcall(wnd, set_owner	)(NULL);
-					xui_method_ptrcall(wnd, set_rendersz)(xui_vector<s32>(w, h));
-					xui_method_ptrcall(wnd, set_owner	)(syswnd);
-				}
+				GetWindowRect(gHWND, &rect);
+				s32 title = GetSystemMetrics(SM_CYCAPTION);
+				s32 frame = GetSystemMetrics(SM_CXSIZEFRAME);
+
+				HWND hwnd = syswnd->get_renderwnd()->get_hwnd();
+				RECT window;
+				RECT client;
+				GetWindowRect(hwnd, &window);
+				GetClientRect(hwnd, &client);
+				s32 edgex = (window.right-window.left) - (client.right-client.left);
+				s32 edgey = (window.bottom-window.top) - (client.bottom-client.top);
+
+				s32 x = (window.left + edgex/2) - (rect.left + frame);
+				s32 y = (window.top  + edgey/2) - (rect.top  + title);
+				s32 w =  client.right  - client.left;
+				s32 h =  client.bottom - client.top ;
+				xui_window* wnd = syswnd->get_popupctrl();
+				xui_method_ptrcall(wnd, set_owner	)(NULL);
+				xui_method_ptrcall(wnd, set_renderpt)(xui_vector<s32>(x, y));
+				xui_method_ptrcall(wnd, set_rendersz)(xui_vector<s32>(w, h));
+				xui_method_ptrcall(wnd, set_owner	)(syswnd);
 			}
 		}
 		break;
@@ -770,6 +782,21 @@ INT CALLBACK BrowseCallbackProc(HWND hwnd,  UINT uMsg, LPARAM lp,  LPARAM pData)
 		break;
 	}
 	return 0;
+}
+xui_method_explain(xui_global, get_fileline,	std::string						)( FILE* file )
+{
+	std::string line;
+	while (1)
+	{
+		char c = 0;
+		fread(&c, 1, 1, file);
+		if (c == '\n' || c == 0)
+			break;
+
+		line.append(1, c);
+	}
+
+	return line;
 }
 xui_method_explain(xui_global, get_openpath,	std::wstring					)( void )
 {

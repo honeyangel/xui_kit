@@ -82,6 +82,11 @@ protected:
 	void						delete_scroll	( u08 style );
 
 	/*
+	//event
+	*/
+	void						on_ctrlgetfocus	( xui_component* sender, xui_method_args& args );
+
+	/*
 	//member
 	*/
 	xui_scroll*					m_vscroll;

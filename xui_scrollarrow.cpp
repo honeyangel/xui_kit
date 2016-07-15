@@ -54,6 +54,8 @@ xui_method_explain(xui_scrollarrow, on_mousedown,	void)( xui_method_mouse& args 
 	xui_button::on_mousedown(args);
 	if (args.mouse == MB_L)
 	{
+		xui_scroll* scroll = xui_dynamic_cast(xui_scroll, m_parent);
+		scroll->get_valueaction()->clear();
 		m_deltahold = 0.0f;
 	}
 }

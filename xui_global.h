@@ -73,6 +73,7 @@ public:
 	/*
 	//file
 	*/
+	static std::string						get_fileline	( FILE* file );
 	static std::wstring						get_openpath	( void );
 	static std::wstring						get_workpath	( void );
 	static void								set_workpath	( const std::wstring& path );
