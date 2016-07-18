@@ -411,6 +411,9 @@
     <ClInclude Include="xui_syswnd.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="xui_droplist.h">
+      <Filter>LibGUI\listview</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xui_convas.cpp">
@@ -841,6 +844,9 @@
     </ClCompile>
     <ClCompile Include="xui_syswnd.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_droplist.cpp">
+      <Filter>LibGUI\listview</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

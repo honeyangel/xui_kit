@@ -463,10 +463,10 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 }
 xui_method_explain(xui_component, render,				void					)( void )
 {
-	xui_method_args     args; 
-	on_renderback(      args);
 	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
+		xui_method_args     args; 
+		on_renderback(      args);
 		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
 		on_renderself(      args);

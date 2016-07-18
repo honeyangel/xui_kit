@@ -98,6 +98,7 @@
     <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_dockpage.h" />
     <ClInclude Include="xui_dockview.h" />
+    <ClInclude Include="xui_droplist.h" />
     <ClInclude Include="xui_family_create.h" />
     <ClInclude Include="xui_family_render.h" />
     <ClInclude Include="xui_menu.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="xui_dialog.cpp" />
     <ClCompile Include="xui_dockpage.cpp" />
     <ClCompile Include="xui_dockview.cpp" />
+    <ClCompile Include="xui_droplist.cpp" />
     <ClCompile Include="xui_family.cpp" />
     <ClCompile Include="xui_family_create.cpp" />
     <ClCompile Include="xui_family_render.cpp" />

@@ -31,9 +31,10 @@ xui_create_explain(xui_menu)( const xui_vector<s32>& size )
 
 	xui_action_ctrl_impl<f32>* action = new xui_action_ctrl_impl<f32>(this);
 	action->add_time(0.0f);
-	action->add_time(0.2f);
-	action->add_data(0.0f);
+	action->add_time(0.1f);
+	action->add_data(0.2f);
 	action->add_data(1.0f);
+	action->set_soft(true);
 	action->xm_tick += new xui_method_member<xui_method_args, xui_menu>(this, &xui_menu::on_popactiontick);
 	m_popaction	= action;
 }
@@ -241,5 +242,5 @@ xui_method_explain(xui_menu, on_perform,		void						)( xui_method_args& args )
 xui_method_explain(xui_menu, on_popactiontick,	void						)( xui_component* sender, xui_method_args& args )
 {
 	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_popaction;
-	m_backalpha = action->sample();
+	m_backscale = xui_vector<f32>(action->sample());
 }

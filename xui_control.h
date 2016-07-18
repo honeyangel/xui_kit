@@ -127,6 +127,8 @@ protected:
 	bool							m_drawcolor;
 	u08								m_sidestyle;
 	xui_colour						m_sidecolor;
+	xui_vector<f32>					m_backpivot;
+	xui_vector<f32>					m_backscale;
 	std::vector<xui_component*>		m_widgetvec;
 };
 

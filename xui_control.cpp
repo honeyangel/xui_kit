@@ -24,6 +24,8 @@ xui_create_explain(xui_control)( const xui_vector<s32>& size )
 	m_drawcolor = false;
 	m_sidestyle = 0;
 	m_sidecolor = default_sidecolor;
+	m_backpivot = xui_vector<f32>(0.0f);
+	m_backscale = xui_vector<f32>(1.0f);
 }
 
 /*
@@ -247,6 +249,28 @@ xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 }
 xui_method_explain(xui_control, render,				void					)( void )
 {
+	xui_rect2d<s32> cornerrt = get_cornerrt   ();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
+
+	f32 ox = -m_backpivot.x * renderrt.get_w() * m_backscale.x + m_backpivot.x * renderrt.get_w();
+	f32 oy = -m_backpivot.y * renderrt.get_h() * m_backscale.y + m_backpivot.y * renderrt.get_h();
+	f32 fw =  m_backscale.x * renderrt.get_w();
+	f32 fh =  m_backscale.y * renderrt.get_h();
+	renderrt.oft_x((s32)ox);
+	renderrt.oft_y((s32)oy);
+	renderrt.set_w((s32)fw);
+	renderrt.set_h((s32)fh);
+	if (renderrt.get_w() < cornerrt.ax ||
+		renderrt.get_h() < cornerrt.ay)
+		return;
+
+	if (m_drawcolor)
+	{
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
+	}
+
 	xui_component::render();
 	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
@@ -255,10 +279,6 @@ xui_method_explain(xui_control, render,				void					)( void )
 
 	if (m_sidestyle)
 	{
-		xui_rect2d<s32> cornerrt = get_cornerrt();
-		xui_rect2d<s32> renderrt = get_renderrtabs();
-		xui_colour      color    = get_vertexcolor();
-
 		renderrt.bx -= 1;
 		renderrt.by -= 1;
 		xui_colour side_color = m_sidecolor * color;
@@ -309,15 +329,7 @@ xui_method_explain(xui_control, on_setborderrt,		void					)( xui_method_args& ar
 }
 xui_method_explain(xui_control, on_renderback,		void					)( xui_method_args& args )
 {
-	if (m_drawcolor)
-	{
-		xui_rect2d<s32> cornerrt = get_cornerrt   ();
-		xui_rect2d<s32> renderrt = get_renderrtabs();
-		xui_colour      color    = get_vertexcolor();
 
-		xui_colour fill_color = get_rendercolor() * color;
-		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
-	}
 }
 xui_method_explain(xui_control, on_renderself,		void					)( xui_method_args& args )
 {
