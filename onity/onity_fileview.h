@@ -15,6 +15,11 @@ public:
 	onity_fileview( void );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_fileview( void );
+
+	/*
 	//method
 	*/
 	void							set_locknode			( xui_treenode* locknode );
@@ -48,12 +53,17 @@ protected:
 	void							on_fileviewassetdrag	( xui_component* sender, xui_method_dragdrop& args );
 
 	/*
+	//method
+	*/
+	void							draw_lockround			( const xui_rect2d<s32>& rt );
+
+	/*
 	//member
 	*/
 	xui_treeview*					m_lineview;
 	onity_tileview*					m_tileview;
 	xui_treenode*					m_locknode;
-	f32								m_locktime;
+	xui_action_ctrl*				m_lockctrl;
 };
 
 #endif//__onity_fileview_h__

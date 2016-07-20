@@ -78,6 +78,14 @@ xui_method_explain(xui_window, choose,			xui_component*	)( const xui_vector<s32>
 
 	return component;
 }
+xui_method_explain(xui_window, update,			void			)( f32 delta )
+{
+	xui_panel::update(delta);
+	if (m_float)
+	{
+		m_float->update(delta);
+	}
+}
 xui_method_explain(xui_window, render,			void			)( void )
 {
 	xui_panel::render();

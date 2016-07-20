@@ -17,7 +17,6 @@ xui_implement_rtti(onity_fileview, xui_control);
 xui_create_explain(onity_fileview)( void )
 : xui_control(xui_vector<s32>(0))
 , m_locknode(NULL)
-, m_locktime(3.0f)
 {
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
@@ -46,6 +45,26 @@ xui_create_explain(onity_fileview)( void )
 
 	m_widgetvec.push_back(m_tileview);
 	m_widgetvec.push_back(m_lineview);
+
+	xui_action_ctrl_impl<f32>* action = new xui_action_ctrl_impl<f32>(this);
+	action->set_soft(true);
+	action->add_time(0.0f);
+	action->add_time(0.2f);
+	action->add_time(0.4f);
+	action->add_time(5.0f);
+	action->add_data(1.0f);
+	action->add_data(1.5f);
+	action->add_data(1.0f);
+	action->add_data(0.0f);
+	m_lockctrl = action;
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(onity_fileview)( void )
+{
+	delete m_lockctrl;
 }
 
 /*
@@ -54,7 +73,8 @@ xui_create_explain(onity_fileview)( void )
 xui_method_explain(onity_fileview, set_locknode,			void			)( xui_treenode* locknode )
 {
 	m_locknode = locknode;
-	m_locktime = 3.0f;
+	m_lockctrl->reset();
+	m_lockctrl->set_play(true);
 }
 xui_method_explain(onity_fileview, get_lineview,			xui_treeview*	)( void )
 {
@@ -85,9 +105,9 @@ xui_method_explain(onity_fileview, on_updateself,			void			)( xui_method_update&
 	xui_control::on_updateself(args);
 	if (m_locknode)
 	{
-		m_locktime -= args.delta;
-		if (m_locktime <= 0.0f)
-			m_locknode  = NULL;
+		m_lockctrl->update(args.delta);
+		if (m_lockctrl->was_play() == false)
+			m_locknode = NULL;
 	}
 }
 
@@ -109,7 +129,7 @@ xui_method_explain(onity_fileview, on_lineviewrenderelse,	void			)( xui_componen
 
 	xui_rect2d<s32> rt = m_locknode->get_renderrtabs();
 	rt.set_w(m_lineview->get_renderrtins().get_w());
-	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+	draw_lockround(rt);
 }
 xui_method_explain(onity_fileview, on_tileviewrenderelse,	void			)( xui_component* sender, xui_method_args&     args )
 {
@@ -141,8 +161,8 @@ xui_method_explain(onity_fileview, on_tileviewrenderelse,	void			)( xui_componen
 	rt.oft_x(ic*w);
 	rt.oft_y(ir*h - m_tileview->get_viewroll()->get_value());
 	rt.set_w(s);
-	rt.set_h(m_tileview->get_tilesize() + onity_tileview::name_size);
-	xui_convas::get_ins()->draw_round(rt, xui_colour(m_locktime, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+	rt.set_h(m_tileview->get_tilesize());
+	draw_lockround(rt);
 }
 xui_method_explain(onity_fileview, on_fileviewselection,	void			)( xui_component* sender, xui_method_args&     args )
 {
@@ -166,4 +186,24 @@ xui_method_explain(onity_fileview, on_fileviewdoubleclk,	void			)( xui_component
 xui_method_explain(onity_fileview, on_fileviewassetdrag,	void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	xm_fileviewassetdrag(this, args);
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_fileview, draw_lockround,			void			)( const xui_rect2d<s32>& rt )
+{
+	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_lockctrl;
+	f32 sa = action->sample();
+	f32 s  = xui_max(sa, 1.0f);
+	f32 ox = -0.5f * rt.get_w() * s + 0.5f * rt.get_w();
+	f32 oy = -0.5f * rt.get_h() * s + 0.5f * rt.get_h();
+	f32 fw =  s    * rt.get_w();
+	f32 fh =  s    * rt.get_h();
+	xui_rect2d<s32> drawrt = rt;
+	drawrt.oft_x((s32)ox);
+	drawrt.oft_y((s32)oy);
+	drawrt.set_w((s32)fw);
+	drawrt.set_h((s32)fh);
+	xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
 }

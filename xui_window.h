@@ -28,6 +28,7 @@ public:
 	*/
 	virtual xui_vector<s32>		get_screenpt	( void ) const;
 	virtual xui_component*		choose			( const xui_vector<s32>& pt );
+	virtual void				update			( f32 delta );
 	virtual void				render			( void );
 
 	/*

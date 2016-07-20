@@ -152,8 +152,8 @@ xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 		if (m_ascrollitem[i]->was_enable() && m_ascrollitem[i]->was_visible())
 			m_ascrollitem[i]->update(delta);
 	}
-	if (m_contextmenu)
-		m_contextmenu->update(delta);
+	//if (m_contextmenu)
+	//	m_contextmenu->update(delta);
 }
 xui_method_explain(xui_container, render_else,		void			)( void )
 {

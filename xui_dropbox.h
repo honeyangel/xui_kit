@@ -58,7 +58,7 @@ public:
 	*/
 	virtual xui_rect2d<s32>		get_renderrtins			( void ) const;
 	//virtual xui_colour			get_rendercolor			( void ) const;
-	virtual void				update					( f32 delta );
+	//virtual void				update					( f32 delta );
 
 	/*
 	//method

@@ -164,6 +164,12 @@ xui_method_explain(xui_menu, choose,			xui_component*				)( const xui_vector<s32
 
 	return xui_control::choose(pt);
 }
+xui_method_explain(xui_menu, update,			void						)( f32 delta )
+{
+	xui_control::update(delta);
+	if (m_showsubmenu)
+		m_showsubmenu->update(delta);
+}
 xui_method_explain(xui_menu, render,			void						)( void )
 {
 	xui_control::render();

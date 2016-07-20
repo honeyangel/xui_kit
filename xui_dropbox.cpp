@@ -209,11 +209,11 @@ xui_method_explain(xui_dropbox, get_renderrtins,		xui_rect2d<s32>	)( void ) cons
 	rt.bx -= m_droptog->get_renderw();
 	return rt;
 }
-xui_method_explain(xui_dropbox, update,					void			)( f32 delta )
-{
-	xui_textbox::update(delta);
-	m_droplst->update(delta);
-}
+//xui_method_explain(xui_dropbox, update,					void			)( f32 delta )
+//{
+//	xui_textbox::update(delta);
+//	m_droplst->update(delta);
+//}
 
 /*
 //callback

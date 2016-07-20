@@ -34,29 +34,76 @@ xui_delete_explain(onity_renderview)( void )
 */
 xui_method_explain(onity_renderview, render,				void)( void )
 {
-	xui_rect2d<s32> viewport = xui_convas::get_ins()->get_viewport();
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	attach_framebuffer();
-	xui_convas::get_ins()->set_viewport(get_renderrt());
-	xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
-	xui_convas::get_ins()->begin();
-	xui_method_args     args; 
-	on_renderself(      args);
-	xm_renderself(this, args);
-	detach_framebuffer();
-	xui_convas::get_ins()->set_viewport(viewport);
-	xui_convas::get_ins()->set_cliprect(cliprect);
-	xui_convas::get_ins()->begin();
+	xui_rect2d<s32> cornerrt = get_cornerrt   ();
+	xui_rect2d<s32> renderrt = get_renderrtabs();
+	xui_colour      color    = get_vertexcolor();
 
-	xui_rect2d<s32> src;
-	src.ax = 0;
-	src.bx = get_renderw();
-	src.ay = get_renderh();
-	src.by = 0;
-	xui_rect2d<s32> dst = get_renderrtabs();
-	xui_convas::get_ins()->draw_image(m_colorbitmap, src, dst, get_vertexcolor());
+	f32 ox = -m_backpivot.x * renderrt.get_w() * m_backscale.x + m_backpivot.x * renderrt.get_w();
+	f32 oy = -m_backpivot.y * renderrt.get_h() * m_backscale.y + m_backpivot.y * renderrt.get_h();
+	f32 fw =  m_backscale.x * renderrt.get_w();
+	f32 fh =  m_backscale.y * renderrt.get_h();
+	renderrt.oft_x((s32)ox);
+	renderrt.oft_y((s32)oy);
+	renderrt.set_w((s32)fw);
+	renderrt.set_h((s32)fh);
+	if (renderrt.get_w() < cornerrt.ax ||
+		renderrt.get_h() < cornerrt.ay)
+		return;
 
-	xui_control::render_else();
+	if (m_drawcolor)
+	{
+		xui_colour fill_color = get_rendercolor() * color;
+		xui_convas::get_ins()->fill_round(renderrt, fill_color, cornerrt);
+	}
+
+	if (m_popaction == NULL || m_popaction->was_play() == false)
+	{
+		xui_rect2d<s32> viewport = xui_convas::get_ins()->get_viewport();
+		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+		attach_framebuffer();
+		xui_convas::get_ins()->set_viewport(get_renderrt());
+		xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
+		xui_convas::get_ins()->begin();
+		xui_method_args     args; 
+		on_renderself(      args);
+		xm_renderself(this, args);
+		detach_framebuffer();
+		xui_convas::get_ins()->set_viewport(viewport);
+		xui_convas::get_ins()->set_cliprect(cliprect);
+		xui_convas::get_ins()->begin();
+
+		xui_rect2d<s32> src;
+		src.ax = 0;
+		src.bx = get_renderw();
+		src.ay = get_renderh();
+		src.by = 0;
+		xui_rect2d<s32> dst = get_renderrtabs();
+		xui_convas::get_ins()->draw_image(m_colorbitmap, src, dst, get_vertexcolor());
+
+		render_else();
+	}
+
+	if (m_sidestyle)
+	{
+		renderrt.bx -= 1;
+		renderrt.by -= 1;
+		xui_colour side_color = m_sidecolor * color;
+		xui_convas::get_ins()->draw_round(renderrt, side_color, cornerrt);
+
+		if (m_sidestyle == SIDESTYLE_D)
+		{
+			xui_rect2d<s32> temp(
+				renderrt.ax+1, 
+				renderrt.ay+1, 
+				renderrt.bx-1, 
+				renderrt.by-1);
+
+			side_color.r = 1.0f - side_color.r;
+			side_color.g = 1.0f - side_color.g;
+			side_color.b = 1.0f - side_color.b;
+			xui_convas::get_ins()->draw_round(temp, side_color, cornerrt);
+		}
+	}
 }
 
 /*
