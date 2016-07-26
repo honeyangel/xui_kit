@@ -31,6 +31,7 @@ public:
 	virtual std::string		get_dragtype	( void );
 	virtual void*			get_dragdata	( void );
 	virtual bool			was_modify		( void );
+	virtual bool			can_rename		( void );
 	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
 	virtual void 			ntf_modify		( void );
 	virtual void			load			( void );

@@ -57,6 +57,7 @@ protected:
 	xui_propdata_vec		get_propdataall			( u32 index );
 	virtual s32				get_elsectrlsize		( void );
 	virtual s32				get_prevctrlsize		( void );
+	virtual void			set_propkindimpl		( void );
 
 	/*
 	//member

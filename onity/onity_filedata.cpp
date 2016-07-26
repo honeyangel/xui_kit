@@ -14,6 +14,7 @@
 #include "onity_propsprite.h"
 #include "onity_propaction.h"
 #include "onity_propcontroller.h"
+#include "onity_propjson.h"
 #include "onity_filedata.h"
 
 /*
@@ -66,6 +67,10 @@ xui_method_explain(onity_filedata, get_text,		std::wstring		)( u32 index )
 }
 xui_method_explain(onity_filedata, set_text,		void				)( u32 index, const std::wstring& text )
 {
+	onity_propfile* propfile = dynamic_cast<onity_propfile*>(m_prop);
+	if (propfile && propfile->can_rename() == false)
+		return;
+
 	xui_global::set_fwatchclose();
 	std::wstring suff = get_suff();
 	std::wstring curr = get_path()+text+suff;
@@ -167,6 +172,7 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	else if (suff == L".npAction")		return new onity_propaction		(full);
 	else if (suff == L".particle")		return new onity_propparticle	(full);
 	else if (suff == L".controller")	return new onity_propcontroller	(full);
+	else if (suff == L".json")			return new onity_propjson		(full);
 	else
 	{
 		return NULL;

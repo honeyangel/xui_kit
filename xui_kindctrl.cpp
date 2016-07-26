@@ -39,7 +39,6 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	xui_method_ptrcall(m_namectrl, set_borderrt		)(xui_rect2d<s32>(4, 0, 2, 0));
 	xui_method_ptrcall(m_namectrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_namectrl, set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(m_namectrl, ini_component	)(true, propkind->was_headshow());
 	m_widgetvec.push_back(m_namectrl);
 
 	//flag
@@ -58,15 +57,20 @@ xui_create_explain(xui_kindctrl)( xui_propkind* propkind )
 	m_widgetvec.push_back(m_kindplus);
 
 	//prop
-	const xui_propdata_vec& vec = propkind->get_propdata();
-	for (u32 i = 0; i < vec.size(); ++i)
+	if (propkind)
 	{
-		xui_prop_newctrl  func = vec[i]->get_func();
-		xui_propctrl* propctrl = (*func)(vec[i]);
-		propctrl->refresh();
-		propctrl->set_parent(this);
-		m_widgetvec.push_back(propctrl);
-		m_propctrlvec.push_back(propctrl);
+		m_namectrl->ini_component(true, propkind->was_headshow());
+
+		const xui_propdata_vec& vec = propkind->get_propdata();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			xui_prop_newctrl  func = vec[i]->get_func();
+			xui_propctrl* propctrl = (*func)(vec[i]);
+			propctrl->refresh();
+			propctrl->set_parent(this);
+			m_widgetvec.push_back(propctrl);
+			m_propctrlvec.push_back(propctrl);
+		}
 	}
 }
 
@@ -95,14 +99,7 @@ xui_method_explain(xui_kindctrl, set_propkind,				void			)( xui_propkind* propki
 	m_propkindvec.clear();
 	m_propkindvec.push_back(m_propkind);
 
-	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
-	{
-		xui_propdata* propdata = m_propkind->get_propdata()[i];
-		xui_propctrl* propctrl = m_propctrlvec[i];
-		xui_method_ptrcall(propdata, set_ctrl	 )(propctrl);
-		xui_method_ptrcall(propctrl, set_propdata)(propdata);
-	}
-
+	set_propkindimpl();
 	refresh();
 }
 xui_method_explain(xui_kindctrl, set_propkind,				void			)( const xui_propkind_vec& propkind )
@@ -110,18 +107,7 @@ xui_method_explain(xui_kindctrl, set_propkind,				void			)( const xui_propkind_v
 	m_propkind	  = propkind.front();
 	m_propkindvec = propkind;
 
-	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
-	{
-		xui_propdata_vec propdataall = get_propdataall(i);
-		xui_propctrl*    propctrl    = m_propctrlvec[i];
-		propctrl->set_propdata(propdataall);
-
-		for (xui_propdata_vec::iterator itor = propdataall.begin(); itor != propdataall.end(); ++itor)
-		{
-			(*itor)->set_ctrl(propctrl);
-		}
-	}
-
+	set_propkindimpl();
 	refresh();
 }
 
@@ -276,4 +262,18 @@ xui_method_explain(xui_kindctrl, get_elsectrlsize,			s32				)( void )
 xui_method_explain(xui_kindctrl, get_prevctrlsize,			s32				)( void )
 {
 	return 0;
+}
+xui_method_explain(xui_kindctrl, set_propkindimpl,			void			)( void )
+{
+	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
+	{
+		xui_propdata_vec propdataall = get_propdataall(i);
+		xui_propctrl*    propctrl    = m_propctrlvec[i];
+		propctrl->set_propdata(propdataall);
+
+		for (xui_propdata_vec::iterator itor = propdataall.begin(); itor != propdataall.end(); ++itor)
+		{
+			(*itor)->set_ctrl(propctrl);
+		}
+	}
 }

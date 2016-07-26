@@ -74,6 +74,10 @@ xui_method_explain(onity_propfile, was_modify,			bool				)( void )
 {
 	return false;
 }
+xui_method_explain(onity_propfile, can_rename,			bool				)( void )
+{
+	return true;
+}
 xui_method_explain(onity_propfile, load,				void				)( void )
 {}
 xui_method_explain(onity_propfile, save,				void				)( void )

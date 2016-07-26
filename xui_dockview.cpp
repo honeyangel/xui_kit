@@ -517,6 +517,21 @@ xui_method_explain(xui_dockview, load_config,			void								)( FILE* file, get_p
 			add_dockpage(dockpage, DOCKSTYLE_F);
 		}
 	}
+
+	u08 cursor = CURSOR_DEFAULT;
+	switch (m_dockstyle)
+	{
+	case DOCKSTYLE_L:
+	case DOCKSTYLE_R:
+		cursor = CURSOR_WE;
+		break;
+	case DOCKSTYLE_T:
+	case DOCKSTYLE_B:
+		cursor = CURSOR_NS;
+		break;
+	}
+	xui_method_ptrcall(m_sizectrl, set_cursor	)(cursor);
+	xui_method_ptrcall(m_sizectrl, ini_component)(true, m_dockstyle != DOCKSTYLE_F);
 }
 
 /*

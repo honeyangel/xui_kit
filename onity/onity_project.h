@@ -12,6 +12,7 @@ enum
 	FILTER_ACTION,
 	FILTER_PARTICLE,
 	FILTER_CONTROLLER,
+	FILTER_JSON,
 };
 
 class onity_fileview;

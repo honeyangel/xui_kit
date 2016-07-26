@@ -502,16 +502,20 @@ xui_method_explain(onity_tileview, draw_leaf,					void				)( const xui_rect2d<s3
 	if (node->was_selected())
 		xui_convas::get_ins()->fill_rectangle(drawrt, xui_colour(0.5f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 
-	onity_treedata*     data = (onity_treedata*)node->get_linkdata();
-	onity_prop2dsasset* prop = dynamic_cast<onity_prop2dsasset*>(data->get_prop());
-	if (prop)
+	onity_treedata* data = (onity_treedata*)node->get_linkdata();
+	onity_prop2dsasset* prop2dsasset = dynamic_cast<onity_prop2dsasset*>(data->get_prop());
+	if (prop2dsasset)
 	{
-		NP2DSAsset* asset = prop->get_asset();
+		NP2DSAsset* asset = prop2dsasset->get_asset();
 		if		(NPIsExaKindOf(NP2DSImage, asset))	draw_image(drawrt, (NP2DSImage*)asset);
 		else if (NPIsExaKindOf(NP2DSFrame, asset))	draw_frame(drawrt, (NP2DSFrame*)asset);
 		else if (NPIsExaKindOf(NP2DSActor, asset))	draw_actor(drawrt, (NP2DSActor*)asset);
 		else
 		{}
+	}
+	else
+	{
+		draw_icon(drawrt, data->get_node());
 	}
 }
 xui_method_explain(onity_tileview, draw_texture,				void				)( const xui_rect2d<s32>& rt, xui_treenode* node )

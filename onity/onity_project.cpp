@@ -40,6 +40,9 @@
 #include "onity_propparticle.h"
 #include "onity_proppath.h"
 #include "onity_propactor.h"
+#include "onity_propjson.h"
+#include "onity_proptempold.h"
+#include "onity_tempdata.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_mainform.h"
@@ -136,6 +139,7 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_filter,	add_item			)(L"Action");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Particle");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Controller");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Json");
 	xui_method_ptrcall(m_filter,	ini_dropbox			)(0);
 
 	m_head		= new xui_panel(xui_vector<s32>(28));
@@ -393,6 +397,22 @@ xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfil
 					}
 				}
 			}
+
+			onity_propjson* propjson = dynamic_cast<onity_propjson*>(propfile);
+			if (propjson)
+			{
+				std::vector<xui_proproot*> subprop = propjson->get_templates();
+				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
+				{
+					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
+					Omiga::EntityTemplate* temp = proptemp->get_template();
+					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
+					{
+						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_local, proptemp));
+						++isubindex;
+					}
+				}
+			}
 		}
 	}
 }
@@ -644,7 +664,8 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 					else
 					if (suff == L".npModule" ||
 						suff == L".npSprite" ||
-						suff == L".npAction")
+						suff == L".npAction" ||
+						suff == L".json")
 					{
 						m_fileview->get_tileview()->set_viewfile(node);
 
@@ -1114,6 +1135,25 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 				}
 			}
 
+			onity_propjson* propjson = dynamic_cast<onity_propjson*>(prop);
+			if (propjson)
+			{
+				if (leafkey.length() > 0)
+					node->set_expanded(true);
+
+				std::vector<xui_proproot*> subprop = propjson->get_templates();
+				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
+				{
+					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
+					Omiga::EntityTemplate* temp = proptemp->get_template();
+					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
+					{
+						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_local, proptemp));
+						++isubindex;
+					}
+				}
+			}
+
 			++index;
 		}
 	}
@@ -1213,6 +1253,7 @@ xui_method_explain(onity_project, convert_filesuff,			std::wstring)( void )
 	case FILTER_ACTION:		return L".npAction";
 	case FILTER_PARTICLE:	return L".particle";
 	case FILTER_CONTROLLER:	return L".controller";
+	case FILTER_JSON:		return L".json";
 	}
 
 	return L"";

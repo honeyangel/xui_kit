@@ -38,6 +38,10 @@
     <ClInclude Include="onity_propctrl_particlemod.h" />
     <ClInclude Include="onity_propdata_texture.h" />
     <ClInclude Include="onity_propframekey.h" />
+    <ClInclude Include="onity_propjson.h" />
+    <ClInclude Include="onity_propkind_compold.h" />
+    <ClInclude Include="onity_propprefab.h" />
+    <ClInclude Include="onity_proptempold.h" />
     <ClInclude Include="onity_propkind_particlesrc.h" />
     <ClInclude Include="onity_proplayer.h" />
     <ClInclude Include="onity_propleaf.h" />
@@ -67,6 +71,7 @@
     <ClInclude Include="onity_selector.h" />
     <ClInclude Include="onity_state.h" />
     <ClInclude Include="onity_stateview.h" />
+    <ClInclude Include="onity_tempdata.h" />
     <ClInclude Include="onity_tileview.h" />
     <ClInclude Include="onity_timedata.h" />
     <ClInclude Include="onity_timeline.h" />
@@ -87,6 +92,8 @@
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
+    <ClCompile Include="onity_propjson.cpp" />
+    <ClCompile Include="onity_propkind_compold.cpp" />
     <ClCompile Include="onity_propkind_particlesrc.cpp" />
     <ClCompile Include="onity_layerdata.cpp" />
     <ClCompile Include="onity_lineview.cpp" />
@@ -112,6 +119,8 @@
     <ClCompile Include="onity_propframe.cpp" />
     <ClCompile Include="onity_propimageref.cpp" />
     <ClCompile Include="onity_propparticle.cpp" />
+    <ClCompile Include="onity_propprefab.cpp" />
+    <ClCompile Include="onity_proptempold.cpp" />
     <ClCompile Include="onity_proptexture.cpp" />
     <ClCompile Include="onity_proptransref.cpp" />
     <ClCompile Include="onity_recent.cpp" />
@@ -131,6 +140,7 @@
     <ClCompile Include="onity_selector.cpp" />
     <ClCompile Include="onity_state.cpp" />
     <ClCompile Include="onity_stateview.cpp" />
+    <ClCompile Include="onity_tempdata.cpp" />
     <ClCompile Include="onity_tileview.cpp" />
     <ClCompile Include="onity_timedata.cpp" />
     <ClCompile Include="onity_timeline.cpp" />

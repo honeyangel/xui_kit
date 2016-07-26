@@ -160,6 +160,21 @@
       <Filter>project</Filter>
     </ClInclude>
     <ClInclude Include="onity_config.h" />
+    <ClInclude Include="onity_propjson.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propprefab.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propkind_compold.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proptempold.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_tempdata.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -322,6 +337,21 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_config.cpp" />
+    <ClCompile Include="onity_propjson.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propprefab.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propkind_compold.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proptempold.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_tempdata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">
