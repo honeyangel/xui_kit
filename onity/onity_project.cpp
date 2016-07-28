@@ -26,6 +26,7 @@
 #include "xui_treedata.h"
 #include "xui_treenode.h"
 #include "xui_slider.h"
+#include "xui_toolbar.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
 #include "onity_pathdata.h"
@@ -109,20 +110,73 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_backpath,	set_drawcolor		)(true);
 	xui_method_ptrcall(m_backpath,	set_enable			)(false);
 	xui_method_ptrcall(m_backpath,	set_iconalign		)(IMAGE_C);
-	xui_method_ptrcall(m_backpath,	xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_pathtoolclick);
+	xui_method_ptrcall(m_backpath,	xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
 
 	m_forepath	= new xui_button(xui_vector<s32>(20));
 	xui_method_ptrcall(m_forepath,	ini_drawer			)(onity_resource::icon_right);
 	xui_method_ptrcall(m_forepath,	set_drawcolor		)(true);
 	xui_method_ptrcall(m_forepath,	set_enable			)(false);
 	xui_method_ptrcall(m_forepath,	set_iconalign		)(IMAGE_C);
-	xui_method_ptrcall(m_forepath,	xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_pathtoolclick);
+	xui_method_ptrcall(m_forepath,	xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
 
-	m_browse	= new xui_linebox(xui_vector<s32>(20));
-	xui_method_ptrcall(m_browse,	ini_component		)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_browse,	set_corner			)(3);
-	xui_method_ptrcall(m_browse,	add_linectrl		)(m_backpath);
-	xui_method_ptrcall(m_browse,	add_linectrl		)(m_forepath);
+	m_add		= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_add,		ini_drawer			)(onity_resource::icon_add);
+	xui_method_ptrcall(m_add,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_add,		set_enable			)(false);
+	xui_method_ptrcall(m_add,		set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_add,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
+
+	m_del		= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_del,		ini_drawer			)(onity_resource::icon_remove);
+	xui_method_ptrcall(m_del,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_del,		set_enable			)(false);
+	xui_method_ptrcall(m_del,		set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_del,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
+
+	m_copy		= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_copy,		ini_drawer			)(onity_resource::icon_copy);
+	xui_method_ptrcall(m_copy,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_copy,		set_enable			)(false);
+	xui_method_ptrcall(m_copy,		set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_copy,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
+
+	m_move		= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_move,		ini_drawer			)(onity_resource::icon_cut);
+	xui_method_ptrcall(m_move,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_move,		set_enable			)(false);
+	xui_method_ptrcall(m_move,		set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_move,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
+
+	m_paste		= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_paste,		ini_drawer			)(onity_resource::icon_paste);
+	xui_method_ptrcall(m_paste,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_paste,		set_enable			)(false);
+	xui_method_ptrcall(m_paste,		set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_paste,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_linetoolclick);
+
+	xui_linebox* linebox1 = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(linebox1,	set_corner			)(3);
+	xui_method_ptrcall(linebox1,	add_linectrl		)(m_backpath);
+	xui_method_ptrcall(linebox1,	add_linectrl		)(m_forepath);
+
+	xui_linebox* linebox2 = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(linebox2,	set_corner			)(3);
+	xui_method_ptrcall(linebox2,	add_linectrl		)(m_add);
+	xui_method_ptrcall(linebox2,	add_linectrl		)(m_del);
+
+	xui_linebox* linebox3 = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(linebox3,	set_corner			)(3);
+	xui_method_ptrcall(linebox3,	add_linectrl		)(m_copy);
+	xui_method_ptrcall(linebox3,	add_linectrl		)(m_move);
+	xui_method_ptrcall(linebox3,	add_linectrl		)(m_paste);
+
+	m_linetool	= new xui_toolbar(xui_vector<s32>(0, 20));
+	xui_method_ptrcall(m_linetool,	ini_component		)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_linetool,	add_item			)(linebox1);
+	xui_method_ptrcall(m_linetool,	add_separate		)();
+	xui_method_ptrcall(m_linetool,	add_item			)(linebox2);
+	xui_method_ptrcall(m_linetool,	add_separate		)();
+	xui_method_ptrcall(m_linetool,	add_item			)(linebox3);
 
 	m_filter	= new xui_dropbox(xui_vector<s32>(80, 20));
 	xui_method_ptrcall(m_filter,	xm_selection		) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_filterselection);
@@ -151,8 +205,8 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_head,		add_child			)(m_create);
 	xui_method_ptrcall(m_head,		add_child			)(m_search);
 	xui_method_ptrcall(m_head,		add_child			)(m_clear );
-	xui_method_ptrcall(m_head,		add_child			)(m_browse);
 	xui_method_ptrcall(m_head,		add_child			)(m_filter);
+	xui_method_ptrcall(m_head,		add_child			)(m_linetool);
 
 	xui_menu* menu2	= xui_menu::create(80);
 	m_showfind		= menu2->add_item(NULL, L"Show in Finder");
@@ -340,10 +394,6 @@ xui_method_explain(onity_project, loc_filenode,				void		)( const std::wstring& 
 
 				if (m_sizeroll->get_value() == 0)
 					m_sizeroll->set_value(10);
-				//viewpath->set_viewfile(viewfile);
-				//m_fileview->get_tileview()->set_viewfile(viewnode);
-				//m_sizeroll->set_value(viewpath->get_fileroll());
-				//refresh_pathtool();
 			}
 
 			break;
@@ -408,7 +458,7 @@ xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfil
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_local, proptemp));
+						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}
@@ -517,6 +567,7 @@ xui_method_explain(onity_project, on_searchtextchanged,		void		)( xui_component*
 			onity_propfile* viewfile = proppath->get_viewfile();
 			if (viewfile && viewfile->get_linkdata())
 			{
+				m_fileview->get_lineview()->set_allowmulti(true);
 				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
 				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 			}
@@ -527,7 +578,7 @@ xui_method_explain(onity_project, on_searchtextchanged,		void		)( xui_component*
 			refresh_tileview();
 		}
 	}
-	refresh_pathtool();
+	refresh_linetool();
 }
 xui_method_explain(onity_project, on_filterselection,		void		)( xui_component* sender, xui_method_args&	   args )
 {
@@ -543,8 +594,8 @@ xui_method_explain(onity_project, on_headperform,			void		)( xui_component* send
 	xui_method_ptrcall(m_search,	on_perform_w)(xui_min(w, 150));
 	xui_method_ptrcall(m_search,	on_perform_x)(m_create->get_renderx()+m_create->get_renderw()+6);
 	xui_method_ptrcall(m_clear,		on_perform_x)(m_create->get_renderx()+m_create->get_renderw()+6+m_search->get_renderw()-m_clear->get_renderw()-2);
-	xui_method_ptrcall(m_browse,	on_perform_x)(m_search->get_renderx()+m_search->get_renderw()+6);
-	xui_method_ptrcall(m_filter,	on_perform_x)(m_browse->get_renderx()+m_browse->get_renderw()+6);
+	xui_method_ptrcall(m_filter,	on_perform_x)(m_search->get_renderx()+m_search->get_renderw()+6);
+	xui_method_ptrcall(m_linetool,	on_perform_x)(m_filter->get_renderx()+m_filter->get_renderw()+6);
 }
 xui_method_explain(onity_project, on_fillperform,			void		)( xui_component* sender, xui_method_args&     args )
 {
@@ -606,22 +657,20 @@ xui_method_explain(onity_project, on_pathviewselection,		void		)( xui_component*
 			}
 		}
 
-		refresh_pathtool();
+		refresh_linetool();
 	}
 }
 xui_method_explain(onity_project, on_fileviewnodeclick,		void		)( xui_component* sender, xui_method_mouse&    args )
 {
+	xui_proproot_vec propvec;
 	std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
-	if (nodevec.size() > 0)
+	for (u32 i = 0; i < nodevec.size(); ++i)
 	{
-		xui_treenode*   node = nodevec.front();
+		xui_treenode*   node = nodevec[i];
 		onity_treedata* data = (onity_treedata*)node->get_linkdata();
 		onity_proppath* prop = dynamic_cast<onity_proppath*>(data->get_prop());
 		if (prop == NULL)
-		{
-			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-			inspector->set_proproot(data->get_prop());
-		}
+			propvec.push_back(data->get_prop());
 
 		if (node->get_rootnode() == NULL)
 		{
@@ -632,6 +681,11 @@ xui_method_explain(onity_project, on_fileviewnodeclick,		void		)( xui_component*
 			xui_method_ptrcall(m_status, set_iconsize	)(xui_vector<s32>(16));
 		}
 	}
+
+	refresh_linetool();
+
+	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+	inspector->set_proproot(propvec);
 }
 xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component* sender, xui_method_mouse&	   args )
 {
@@ -667,6 +721,8 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 						suff == L".npAction" ||
 						suff == L".json")
 					{
+						m_fileview->get_lineview()->non_selectednode();
+						m_fileview->get_lineview()->set_allowmulti(true);
 						m_fileview->get_tileview()->set_viewfile(node);
 
 						if (m_search->get_text().length() == 0)
@@ -675,7 +731,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 							onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 							onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
 							proppath->set_viewfile(prop);
-							refresh_pathtool();
+							refresh_linetool();
 							m_sizeroll->set_value(proppath->get_fileroll());
 						}
 						else
@@ -883,8 +939,9 @@ xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* se
 			onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 			onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
 			m_fileview->get_tileview()->set_viewfile(NULL);
+			m_fileview->get_lineview()->set_allowmulti(false);
 			m_fileview->get_lineview()->set_selectednode(viewfile, true);
-			refresh_pathtool();
+			refresh_linetool();
 
 			m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
 			refresh_tileview();
@@ -1009,7 +1066,7 @@ xui_method_explain(onity_project, on_loadtypeclick,			void		)( xui_component* se
 		set_loadtype(META_ACTION, pathname, flag);
 	}
 }
-xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_linetoolclick,			void		)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode*   pathnode = m_histroy[m_curridx];
 	onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
@@ -1020,6 +1077,7 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 	{
 		viewfile->set_expanded(false);
 		m_fileview->get_tileview()->set_viewfile(NULL);
+		m_fileview->get_lineview()->set_allowmulti(false);
 		m_fileview->get_lineview()->set_selectednode(viewfile, true);
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
 		refresh_tileview();
@@ -1030,6 +1088,8 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 		if (proppath->get_viewfile()->get_linkdata() == NULL)
 			return;
 
+		m_fileview->get_lineview()->non_selectednode();
+		m_fileview->get_lineview()->set_allowmulti(true);
 		m_fileview->get_tileview()->set_viewfile(proppath->get_viewfile()->get_linkdata()->get_node());
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 		refresh_tileview();
@@ -1053,6 +1113,7 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 			onity_propfile* viewfile = proppath->get_viewfile();
 			if (viewfile && viewfile->get_linkdata())
 			{
+				m_fileview->get_lineview()->set_allowmulti(true);
 				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
 				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 			}
@@ -1064,7 +1125,7 @@ xui_method_explain(onity_project, on_pathtoolclick,			void		)( xui_component* se
 		}
 	}
 
-	refresh_pathtool();
+	refresh_linetool();
 }
 
 /*
@@ -1148,7 +1209,7 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_local, proptemp));
+						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}
@@ -1158,6 +1219,7 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 		}
 	}
 
+	lineview->set_allowmulti(false);
 	lineview->refresh();
 	tileview->get_drawview()->refresh();
 }
@@ -1218,7 +1280,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void		)( void )
 		}
 	}
 }
-xui_method_explain(onity_project, refresh_pathtool,			void		)( void )
+xui_method_explain(onity_project, refresh_linetool,			void		)( void )
 {
 	bool backenable = false;
 	bool foreenable = false;
@@ -1239,8 +1301,15 @@ xui_method_explain(onity_project, refresh_pathtool,			void		)( void )
 		}
 	}
 
-	m_backpath->set_enable(backenable);
-	m_forepath->set_enable(foreenable);
+	std::vector<xui_treenode*> selectednode = m_fileview->get_lineview()->get_selectednode();
+	onity_filedata* viewfile = dynamic_cast<onity_filedata*>(m_fileview->get_tileview()->get_viewfile());
+	xui_method_ptrcall(m_backpath,	set_enable)(backenable);
+	xui_method_ptrcall(m_forepath,	set_enable)(foreenable);
+	xui_method_ptrcall(m_add,		set_enable)(viewfile != NULL);
+	xui_method_ptrcall(m_del,		set_enable)(viewfile != NULL && selectednode.size() > 0);
+	xui_method_ptrcall(m_copy,		set_enable)(viewfile != NULL && selectednode.size() > 0);
+	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && viewfile->get_suff() != L".json");
+	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL);
 }
 xui_method_explain(onity_project, convert_filesuff,			std::wstring)( void )
 {

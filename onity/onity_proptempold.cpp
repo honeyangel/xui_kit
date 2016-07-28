@@ -13,7 +13,7 @@ xui_create_explain(onity_proptempold)( onity_propfile* propfile, Omiga::EntityTe
 , m_template(temp)
 {
 	std::string name = m_template->GetName();		
-	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(name), "TemplateOld", xui_kindctrl::create, onity_resource::icon_local, true);
+	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(name), "TemplateOld", xui_kindctrl::create, onity_resource::icon_entity, true);
 	add_propkind(m_basekind);
 
 	BreezeGame::Json::Value* json = m_template->GetNode();
@@ -42,7 +42,7 @@ xui_method_explain(onity_proptempold, get_template,		Omiga::EntityTemplate*	)( v
 xui_method_explain(onity_proptempold, new_compkind,		void					)( BreezeGame::Json::Value* compnode )
 {
 	std::string   name = (*compnode)["ClassName"].asString();
-	xui_propkind* kind = new onity_propkind_compold(this, xui_global::ascii_to_unicode(name), onity_resource::icon_local, compnode);
+	xui_propkind* kind = new onity_propkind_compold(this, xui_global::ascii_to_unicode(name), onity_resource::icon_component, compnode);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_proptempold>(this, &onity_proptempold::on_propchanged);
 	m_compkind.push_back(kind);
 	add_propkind(kind);

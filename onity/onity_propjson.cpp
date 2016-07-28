@@ -12,7 +12,7 @@
 //constructor
 */
 xui_create_explain(onity_propjson)( const std::wstring& fullname )
-: onity_propfile(onity_resource::icon_local, fullname)
+: onity_propfile(onity_resource::icon_entity, fullname)
 , m_modify(false)
 {}
 

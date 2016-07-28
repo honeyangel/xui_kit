@@ -74,14 +74,14 @@ protected:
 	void						on_loadtypeclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_showfindclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_propertyclick	( xui_component* sender, xui_method_args&	  args );
-	void						on_pathtoolclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_linetoolclick	( xui_component* sender, xui_method_args&	  args );
 
 	/*
 	//method
 	*/
 	void						refresh_fileview	( void );
 	void						refresh_pathpane	( void );
-	void						refresh_pathtool	( void );
+	void						refresh_linetool	( void );
 	void						refresh_tileview	( void );
 	std::wstring				convert_filesuff	( void );
 	void						set_freetype		( u08 type, const std::string& pathname, u32 style );
@@ -103,14 +103,20 @@ protected:
 	xui_control*				m_sizectrl;
 	xui_treeview*				m_pathview;
 	onity_fileview*				m_fileview;
-	xui_button*					m_backpath;
-	xui_button*					m_forepath;
 	xui_panel*					m_pathpane;
 	xui_panel*					m_toolpane;
 	xui_slider*					m_sizeroll;
-	xui_linebox*				m_browse;
 	xui_dropbox*				m_filter;
 	xui_drawer*					m_status;
+
+	xui_toolbar*				m_linetool;
+	xui_button*					m_backpath;
+	xui_button*					m_forepath;
+	xui_button*					m_add;
+	xui_button*					m_del;
+	xui_button*					m_copy;
+	xui_button*					m_move;
+	xui_button*					m_paste;
 
 	xui_menuitem*				m_showfind;
 	xui_menuitem*				m_loadtype;

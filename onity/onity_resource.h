@@ -67,6 +67,14 @@ public:
 	static xui_bitmap*	icon_action;
 	static xui_bitmap*	icon_resource;
 	static xui_bitmap*	icon_framekey;
+	static xui_bitmap*	icon_entity;
+	static xui_bitmap*	icon_component;
+	static xui_bitmap*	icon_add;
+	static xui_bitmap*	icon_remove;
+	static xui_bitmap*	icon_copy;
+	static xui_bitmap*	icon_paste;
+	static xui_bitmap*	icon_cut;
+	static xui_bitmap*	icon_setting;
 };
 
 #endif//__onity_resource_h__

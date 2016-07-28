@@ -55,6 +55,14 @@ xui_bitmap* onity_resource::icon_sprite		= NULL;
 xui_bitmap* onity_resource::icon_action		= NULL;
 xui_bitmap* onity_resource::icon_resource	= NULL;
 xui_bitmap* onity_resource::icon_framekey	= NULL;
+xui_bitmap* onity_resource::icon_entity		= NULL;
+xui_bitmap* onity_resource::icon_component	= NULL;
+xui_bitmap* onity_resource::icon_add		= NULL;
+xui_bitmap* onity_resource::icon_remove		= NULL;
+xui_bitmap* onity_resource::icon_copy		= NULL;
+xui_bitmap* onity_resource::icon_paste		= NULL;
+xui_bitmap* onity_resource::icon_cut		= NULL;
+xui_bitmap* onity_resource::icon_setting	= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -111,6 +119,14 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_action		= xui_bitmap::create("icon/action.png");
 	icon_resource	= xui_bitmap::create("icon/resource.png");
 	icon_framekey	= xui_bitmap::create("icon/framekey.png");
+	icon_entity		= xui_bitmap::create("icon/entity.png");
+	icon_component	= xui_bitmap::create("icon/component.png");
+	icon_add		= xui_bitmap::create("icon/add.png");
+	icon_remove		= xui_bitmap::create("icon/remove.png");
+	icon_copy		= xui_bitmap::create("icon/copy.png");
+	icon_cut		= xui_bitmap::create("icon/cut.png");
+	icon_paste		= xui_bitmap::create("icon/paste.png");
+	icon_setting	= xui_bitmap::create("icon/setting.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

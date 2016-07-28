@@ -467,7 +467,7 @@ xui_method_explain(onity_selector, refresh_fileview,		void				)( void )
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_local, proptemp));
+						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}

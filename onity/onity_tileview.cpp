@@ -356,6 +356,18 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_compone
 {
 	if (args.mouse == MB_L)
 	{
+		xui_treeview* lineview = get_lineview();
+		std::vector<xui_treenode*> nodes = lineview->get_entirenode(false);
+		u32 selectedindex = -1;
+		xui_vecptr_addloop(nodes)
+		{
+			if (nodes[i]->was_selected())
+			{
+				selectedindex = i;
+				break;
+			}
+		}
+
 		xui_rect2d<s32> rt;
 		xui_vector<s32> pt = m_drawview->get_renderpt(args.point);
 		xui_treenode* node = get_tilenode(args.point, rt);
@@ -380,9 +392,38 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,		void				)( xui_compone
 			}
 			else
 			{
-				xui_treeview* lineview = get_lineview();
-				lineview->set_selectednode(node, true);
-				lineview->set_nodevisible (node);
+				lineview->set_nodevisible(node);
+
+				if (args.ctrl)
+				{
+					lineview->set_selectednode(node, !node->was_selected());
+				}
+				else
+				if (args.shift && selectedindex != -1)
+				{
+					u32 index = -1;
+					xui_vecptr_addloop(nodes)
+					{
+						if (nodes[i] == node)
+						{
+							index = i;
+							break;
+						}
+					}
+					u32 start = xui_min(index, selectedindex);
+					u32 final = xui_max(index, selectedindex);
+					std::vector<xui_treenode*> selectednodes;
+					for (u32 i = start; i <= final && i < nodes.size(); ++i)
+						selectednodes.push_back(nodes[i]);
+
+					lineview->set_selectednode(selectednodes);
+				}
+				else
+				if (node->was_selected() == false)
+				{
+					lineview->non_selectednode(false);
+					lineview->set_selectednode(node, true);
+				}
 			}
 		}
 	}
