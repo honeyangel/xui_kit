@@ -32,7 +32,7 @@ xui_method_explain(xui_proproot, has_propkind,	bool					)( xui_propkind* propkin
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
 		if (m_propkind[i]->get_func() == propkind->get_func() &&
-			m_propkind[i]->get_name() == propkind->get_name())
+			m_propkind[i]->get_type() == propkind->get_type())
 			return true;
 	}
 

@@ -49,7 +49,7 @@ public:
 	/*
 	//static
 	*/
-	static xui_kindctrl*		create			( xui_propkind* propkind );
+	static xui_kindctrl*		create				( xui_propkind* propkind );
 
 	/*
 	//constructor
@@ -60,7 +60,7 @@ protected:
 	/*
 	//override
 	*/
-	virtual void				set_propkindimpl( void );
+	virtual void				on_propkindchange	( void );
 };
 
 #endif//__onity_propkind_compold_h__

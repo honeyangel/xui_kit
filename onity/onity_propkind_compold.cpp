@@ -124,7 +124,7 @@ xui_method_explain(onity_kindctrl_compold, create,				xui_kindctrl*			)( xui_pro
 /*
 //override
 */
-xui_method_explain(onity_kindctrl_compold, set_propkindimpl,	void					)( void )
+xui_method_explain(onity_kindctrl_compold, on_propkindchange,	void					)( void )
 {
 	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
 	{
@@ -173,6 +173,6 @@ xui_method_explain(onity_kindctrl_compold, set_propkindimpl,	void					)( void )
 			m_propctrlvec.push_back(propctrl);
 		}
 
-		xui_kindctrl::set_propkindimpl();
+		xui_kindctrl::on_propkindchange();
 	}
 }

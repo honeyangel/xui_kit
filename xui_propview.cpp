@@ -487,7 +487,7 @@ xui_method_explain(xui_propview, get_samekind,		xui_propkind_vec		)( void )
 			for (xui_propkind_vec::iterator itor = result.begin(); itor != result.end(); ++itor)
 			{
 				if ((*itor)->get_func() == propkind->get_func() &&
-					(*itor)->get_name() == propkind->get_name())
+					(*itor)->get_type() == propkind->get_type())
 				{
 					hasexist = true;
 					break;
@@ -523,7 +523,7 @@ xui_method_explain(xui_propview, get_propkindall,	xui_propkind_vec		)( xui_propk
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			if (vec[i]->get_func() == propkind->get_func() &&
-				vec[i]->get_name() == propkind->get_name())
+				vec[i]->get_type() == propkind->get_type())
 			{
 				result.push_back(vec[i]);
 				break;
