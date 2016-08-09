@@ -15,6 +15,7 @@ public:
 	//override
 	*/
 	virtual std::wstring	get_text( u32 index );
+	virtual void			set_text( u32 index, const std::wstring& text );
 };
 
 #endif//__onity_tempdata_h__

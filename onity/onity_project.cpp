@@ -41,7 +41,7 @@
 #include "onity_propparticle.h"
 #include "onity_proppath.h"
 #include "onity_propactor.h"
-#include "onity_propjson.h"
+#include "onity_propjsones.h"
 #include "onity_proptempold.h"
 #include "onity_tempdata.h"
 #include "onity_resource.h"
@@ -305,7 +305,7 @@ xui_delete_explain(onity_project)( void )
 /*
 //method
 */
-xui_method_explain(onity_project, ini_pathtree,				void		)( void )
+xui_method_explain(onity_project, ini_pathtree,				void			)( void )
 {
 	std::vector<std::wstring> pathvec = xui_global::get_path(L"");
 	for (u32 i = 0; i < pathvec.size(); ++i)
@@ -315,7 +315,7 @@ xui_method_explain(onity_project, ini_pathtree,				void		)( void )
 		onity_pathdata::new_leafnode(node);
 	}
 }
-xui_method_explain(onity_project, get_pathfile,				void		)( const std::wstring& suff, xui_proproot_vec& filevec )
+xui_method_explain(onity_project, get_pathfile,				void			)( const std::wstring& suff, xui_proproot_vec& filevec )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_entirenode();
 	for (u32 i = 0; i < nodevec.size(); ++i)
@@ -331,7 +331,7 @@ xui_method_explain(onity_project, get_pathfile,				void		)( const std::wstring& 
 		}
 	}
 }
-xui_method_explain(onity_project, loc_filenode,				void		)( const std::wstring& path, const std::wstring& file, u32 id )
+xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, u32 id )
 {
 	m_search->set_text(L"");
 
@@ -414,7 +414,7 @@ xui_method_explain(onity_project, loc_filenode,				void		)( const std::wstring& 
 /*
 //notify
 */
-xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfile )
+xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfile )
 {
 	std::vector<std::string> itemvec = NPStringUtil::Split(xui_global::unicode_to_ascii(m_search->get_text()), ';');
 	std::wstring			 filekey = (itemvec.size() > 0) ? xui_global::ascii_to_unicode(itemvec[0]) : L"";
@@ -448,10 +448,10 @@ xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfil
 				}
 			}
 
-			onity_propjson* propjson = dynamic_cast<onity_propjson*>(propfile);
-			if (propjson)
+			onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
+			if (propjsones)
 			{
-				std::vector<xui_proproot*> subprop = propjson->get_templates();
+				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
 					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
@@ -466,7 +466,7 @@ xui_method_explain(onity_project, ntf_load,					void		)( onity_propfile* propfil
 		}
 	}
 }
-xui_method_explain(onity_project, ntf_rename,				void		)( const std::wstring& last, const std::wstring& curr )
+xui_method_explain(onity_project, ntf_rename,				void			)( const std::wstring& last, const std::wstring& curr )
 {
 	//lineview
 	std::vector<xui_treenode*> nodes = m_fileview->get_lineview()->get_entirenode();
@@ -505,7 +505,7 @@ xui_method_explain(onity_project, ntf_rename,				void		)( const std::wstring& la
 	if (propfile && propfile->get_fullname() == curr)
 		m_status->set_text(onity_filedata::get_file(curr));
 }
-xui_method_explain(onity_project, ntf_modify,				void		)( const std::wstring& path, const std::wstring& file )
+xui_method_explain(onity_project, ntf_modify,				void			)( const std::wstring& path, const std::wstring& file )
 {
 	std::vector<xui_treenode*> pathvec = m_pathview->get_entirenode();
 	for (u32 i = 0; i < pathvec.size(); ++i)
@@ -532,7 +532,7 @@ xui_method_explain(onity_project, ntf_modify,				void		)( const std::wstring& pa
 /*
 //event
 */
-xui_method_explain(onity_project, on_timertick,				void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_timertick,				void			)( xui_component* sender, xui_method_args&	   args )
 {
 	const xui_notify_vec& vec = xui_global::get_fwatch();
 	for (u32 i = 0; i < vec.size(); ++i)
@@ -546,11 +546,11 @@ xui_method_explain(onity_project, on_timertick,				void		)( xui_component* sende
 
 	xui_global::del_fwatch();
 }
-xui_method_explain(onity_project, on_clearclick,			void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_clearclick,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	m_search->set_text(L"");
 }
-xui_method_explain(onity_project, on_searchtextchanged,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_searchtextchanged,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_method_ptrcall(m_clear,		set_visible	)(m_search->get_text().length() >  0);
 	xui_method_ptrcall(m_pathpane,	set_enable	)(m_search->get_text().length() == 0);
@@ -580,14 +580,14 @@ xui_method_explain(onity_project, on_searchtextchanged,		void		)( xui_component*
 	}
 	refresh_linetool();
 }
-xui_method_explain(onity_project, on_filterselection,		void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_filterselection,		void			)( xui_component* sender, xui_method_args&	   args )
 {
 	if (m_search->get_text().length() > 0)
 	{
 		refresh_fileview();
 	}
 }
-xui_method_explain(onity_project, on_headperform,			void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_headperform,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt = m_head->get_renderrtins();
 	s32 w = rt.get_w()-m_create->get_renderw()-6;
@@ -597,14 +597,14 @@ xui_method_explain(onity_project, on_headperform,			void		)( xui_component* send
 	xui_method_ptrcall(m_filter,	on_perform_x)(m_search->get_renderx()+m_search->get_renderw()+6);
 	xui_method_ptrcall(m_linetool,	on_perform_x)(m_filter->get_renderx()+m_filter->get_renderw()+6);
 }
-xui_method_explain(onity_project, on_fillperform,			void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_fillperform,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt = m_pathview->get_renderrt()+m_pathview->get_renderpt();
 	m_sizectrl->on_perform_h(rt.get_h());
 	m_sizectrl->on_perform_x(rt.bx-m_sizectrl->get_renderw());
 	m_sizectrl->on_perform_y(rt.ay);
 }
-xui_method_explain(onity_project, on_fillrenderelse,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_fillrenderelse,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_rect2d<s32> rt;
 	rt = m_pathview->get_renderrtabs();
@@ -614,7 +614,7 @@ xui_method_explain(onity_project, on_fillrenderelse,		void		)( xui_component* se
 	rt = m_toolpane->get_renderrtabs();
 	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay), xui_colour::black);
 }
-xui_method_explain(onity_project, on_sizectrlmousemove,		void		)( xui_component* sender, xui_method_mouse&    args )
+xui_method_explain(onity_project, on_sizectrlmousemove,		void			)( xui_component* sender, xui_method_mouse&    args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -625,7 +625,7 @@ xui_method_explain(onity_project, on_sizectrlmousemove,		void		)( xui_component*
 		m_pathview->set_renderw(width);		
 	}
 }
-xui_method_explain(onity_project, on_pathviewselection,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_pathviewselection,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_method_ptrcall(m_search, ini_drawer	)(L"");
 	xui_method_ptrcall(m_clear,	 set_visible)(false);
@@ -660,7 +660,7 @@ xui_method_explain(onity_project, on_pathviewselection,		void		)( xui_component*
 		refresh_linetool();
 	}
 }
-xui_method_explain(onity_project, on_fileviewnodeclick,		void		)( xui_component* sender, xui_method_mouse&    args )
+xui_method_explain(onity_project, on_fileviewnodeclick,		void			)( xui_component* sender, xui_method_mouse&    args )
 {
 	xui_proproot_vec propvec;
 	std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
@@ -687,7 +687,7 @@ xui_method_explain(onity_project, on_fileviewnodeclick,		void		)( xui_component*
 	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
 	inspector->set_proproot(propvec);
 }
-xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component* sender, xui_method_mouse&	   args )
+xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component* sender, xui_method_mouse&	   args )
 {
 	if (args.mouse == MB_L)
 	{
@@ -755,7 +755,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void		)( xui_component*
 		}
 	}
 }
-xui_method_explain(onity_project, on_fileviewassetdrag,		void		)( xui_component* sender, xui_method_dragdrop& args )
+xui_method_explain(onity_project, on_fileviewassetdrag,		void			)( xui_component* sender, xui_method_dragdrop& args )
 {
 	std::string dragtype;
 	void*       dragdata = NULL;
@@ -789,7 +789,7 @@ xui_method_explain(onity_project, on_fileviewassetdrag,		void		)( xui_component*
 		args.allow = true;
 	}
 }
-xui_method_explain(onity_project, on_folderclick,			void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_folderclick,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	m_search->set_text(L"");
 
@@ -844,7 +844,7 @@ xui_method_explain(onity_project, on_folderclick,			void		)( xui_component* send
 		pathnode->set_edittext(0);
 	}
 }
-xui_method_explain(onity_project, on_controllerclick,		void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_controllerclick,		void			)( xui_component* sender, xui_method_args&	   args )
 {
 	m_search->set_text(L"");
 
@@ -885,7 +885,7 @@ xui_method_explain(onity_project, on_controllerclick,		void		)( xui_component* s
 		linenode->set_edittext(0);
 	}
 }
-xui_method_explain(onity_project, on_particleclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_particleclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	m_search->set_text(L"");
 
@@ -926,7 +926,7 @@ xui_method_explain(onity_project, on_particleclick,			void		)( xui_component* se
 		linenode->set_edittext(0);
 	}
 }
-xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_pathitemclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode* pathnode = (xui_treenode*)sender->get_data();
 	if (pathnode->was_selected())
@@ -941,10 +941,10 @@ xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* se
 			m_fileview->get_tileview()->set_viewfile(NULL);
 			m_fileview->get_lineview()->set_allowmulti(false);
 			m_fileview->get_lineview()->set_selectednode(viewfile, true);
-			refresh_linetool();
 
 			m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
 			refresh_tileview();
+			refresh_linetool();
 		}
 	}
 	else
@@ -953,7 +953,7 @@ xui_method_explain(onity_project, on_pathitemclick,			void		)( xui_component* se
 		xui_method_ptrcall(m_pathview, set_nodevisible	)(pathnode);
 	}
 }
-xui_method_explain(onity_project, on_pathtogglerender,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_pathtogglerender,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_toggle*     toggle = xui_dynamic_cast(xui_toggle, sender);
 	xui_colour      color  = toggle->get_rendercolor() * toggle->get_vertexcolor();
@@ -961,7 +961,7 @@ xui_method_explain(onity_project, on_pathtogglerender,		void		)( xui_component* 
 	xui_vector<s32> center = xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 	xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_RIGHT, color);
 }
-xui_method_explain(onity_project, on_pathtoggleclick,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_pathtoggleclick,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
 	if (toggle->was_push())
@@ -982,12 +982,12 @@ xui_method_explain(onity_project, on_pathtoggleclick,		void		)( xui_component* s
 		}
 	}
 }
-xui_method_explain(onity_project, on_sizerollscroll,		void		)( xui_component* sender, xui_method_args&     args )
+xui_method_explain(onity_project, on_sizerollscroll,		void			)( xui_component* sender, xui_method_args&     args )
 {
 	xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
 
 	s32 value = m_sizeroll->get_value();
-	if (value < 10 && value > 0)
+	if (value < 10 && (value > 0 || m_fileview->get_tileview()->get_viewfile() != NULL))
 	{
 		value = 10;
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), value);
@@ -1010,7 +1010,7 @@ xui_method_explain(onity_project, on_sizerollscroll,		void		)( xui_component* se
 	}
 }
 
-xui_method_explain(onity_project, on_showfindclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_showfindclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
 	if (vec.size() > 0)
@@ -1020,7 +1020,7 @@ xui_method_explain(onity_project, on_showfindclick,			void		)( xui_component* se
 		xui_global::set_showfind(proppath->get_fullname());
 	}
 }
-xui_method_explain(onity_project, on_propertyclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_propertyclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
 	if (vec.size() > 0)
@@ -1032,7 +1032,7 @@ xui_method_explain(onity_project, on_propertyclick,			void		)( xui_component* se
 		inspector->set_proproot(proppath);
 	}
 }
-xui_method_explain(onity_project, on_freetypeclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_freetypeclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	npu32 style = 0;
 	if		(sender == m_auto)		style = FS_AUTO;
@@ -1052,7 +1052,7 @@ xui_method_explain(onity_project, on_freetypeclick,			void		)( xui_component* se
 		set_freetype(META_ACTION, pathname, style);
 	}
 }
-xui_method_explain(onity_project, on_loadtypeclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_loadtypeclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	bool flag = (sender == m_on);
 	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
@@ -1066,13 +1066,50 @@ xui_method_explain(onity_project, on_loadtypeclick,			void		)( xui_component* se
 		set_loadtype(META_ACTION, pathname, flag);
 	}
 }
-xui_method_explain(onity_project, on_linetoolclick,			void		)( xui_component* sender, xui_method_args&	   args )
+xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode*   pathnode = m_histroy[m_curridx];
 	onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 	onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
 	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
 
+	xui_proproot_vec propvec;
+	std::vector<xui_treenode*> selectednode = m_fileview->get_lineview()->get_selectednode();
+	for (u32 i = 0; i < selectednode.size(); ++i)
+	{
+		onity_treedata* data = dynamic_cast<onity_treedata*>(selectednode[i]->get_linkdata());
+		onity_propleaf* prop = dynamic_cast<onity_propleaf*>(data->get_prop());
+		if (prop)
+			propvec.push_back(prop);
+	}
+
+	if (sender == m_add)
+	{
+		add_propleaf();
+	}
+	else
+	if (sender == m_del)
+	{
+		del_propleaf(propvec);
+	}
+	else
+	if (sender == m_copy)
+	{
+		m_copyprop = propvec;
+		m_moveprop.clear();
+	}
+	else
+	if (sender == m_move)
+	{
+		m_moveprop = propvec;
+		m_copyprop.clear();
+	}
+	else
+	if (sender == m_paste)
+	{
+
+	}
+	else
 	if (sender == m_backpath && viewfile)
 	{
 		viewfile->set_expanded(false);
@@ -1131,7 +1168,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void		)( xui_component* se
 /*
 //method
 */
-xui_method_explain(onity_project, refresh_fileview,			void		)( void )
+xui_method_explain(onity_project, refresh_fileview,			void			)( void )
 {
 	xui_method_ptrcall(m_status,	set_data)(NULL);
 	xui_method_ptrcall(m_fileview,	clear	)();
@@ -1196,13 +1233,13 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 				}
 			}
 
-			onity_propjson* propjson = dynamic_cast<onity_propjson*>(prop);
-			if (propjson)
+			onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(prop);
+			if (propjsones)
 			{
 				if (leafkey.length() > 0)
 					node->set_expanded(true);
 
-				std::vector<xui_proproot*> subprop = propjson->get_templates();
+				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
 					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
@@ -1223,7 +1260,7 @@ xui_method_explain(onity_project, refresh_fileview,			void		)( void )
 	lineview->refresh();
 	tileview->get_drawview()->refresh();
 }
-xui_method_explain(onity_project, refresh_pathpane,			void		)( void )
+xui_method_explain(onity_project, refresh_pathpane,			void			)( void )
 {
 	xui_method_ptrcall(m_pathpane, del_children	)();
 	xui_method_ptrcall(m_pathpane, set_enable	)(true);
@@ -1280,7 +1317,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void		)( void )
 		}
 	}
 }
-xui_method_explain(onity_project, refresh_linetool,			void		)( void )
+xui_method_explain(onity_project, refresh_linetool,			void			)( void )
 {
 	bool backenable = false;
 	bool foreenable = false;
@@ -1302,16 +1339,17 @@ xui_method_explain(onity_project, refresh_linetool,			void		)( void )
 	}
 
 	std::vector<xui_treenode*> selectednode = m_fileview->get_lineview()->get_selectednode();
-	onity_filedata* viewfile = dynamic_cast<onity_filedata*>(m_fileview->get_tileview()->get_viewfile());
+	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
+	onity_filedata* filedata = viewfile == NULL ? NULL : dynamic_cast<onity_filedata*>(viewfile->get_linkdata());
 	xui_method_ptrcall(m_backpath,	set_enable)(backenable);
 	xui_method_ptrcall(m_forepath,	set_enable)(foreenable);
 	xui_method_ptrcall(m_add,		set_enable)(viewfile != NULL);
 	xui_method_ptrcall(m_del,		set_enable)(viewfile != NULL && selectednode.size() > 0);
 	xui_method_ptrcall(m_copy,		set_enable)(viewfile != NULL && selectednode.size() > 0);
-	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && viewfile->get_suff() != L".json");
-	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL);
+	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && filedata->get_suff() != L".json");
+	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL && ( m_copyprop.size() > 0 || m_moveprop.size() > 0 ));
 }
-xui_method_explain(onity_project, convert_filesuff,			std::wstring)( void )
+xui_method_explain(onity_project, convert_filesuff,			std::wstring	)( void )
 {
 	u32 index = m_filter->get_selectedindex();
 	switch (index)
@@ -1327,7 +1365,7 @@ xui_method_explain(onity_project, convert_filesuff,			std::wstring)( void )
 
 	return L"";
 }
-xui_method_explain(onity_project, refresh_tileview,			void		)( void )
+xui_method_explain(onity_project, refresh_tileview,			void			)( void )
 {
 	s32 value = m_sizeroll->get_value();
 	xui_treeview*      lineview = m_fileview->get_lineview();
@@ -1348,7 +1386,7 @@ xui_method_explain(onity_project, refresh_tileview,			void		)( void )
 			tileview->set_tilevisible(leafvec.front());
 	}
 }
-xui_method_explain(onity_project, set_freetype,				void		)( u08 type, const std::string& pathname, u32 style )
+xui_method_explain(onity_project, set_freetype,				void			)( u08 type, const std::string& pathname, u32 style )
 {
 	NP2DSAssetFileMgr* file_mgr = NULL;
 	switch (type)
@@ -1385,7 +1423,7 @@ xui_method_explain(onity_project, set_freetype,				void		)( u08 type, const std:
 		}
 	}
 }
-xui_method_explain(onity_project, set_loadtype,				void		)( u08 type, const std::string& pathname, bool flag )
+xui_method_explain(onity_project, set_loadtype,				void			)( u08 type, const std::string& pathname, bool flag )
 {
 	NP2DSAssetFileMgr* file_mgr = NULL;
 	switch (type)
@@ -1413,5 +1451,58 @@ xui_method_explain(onity_project, set_loadtype,				void		)( u08 type, const std:
 			file->SetEntireLoad(flag);
 			file->SaveXml(temppath+tempfile);
 		}
+	}
+}
+xui_method_explain(onity_project, add_propleaf,				xui_proproot*	)( void )
+{
+	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
+	onity_treedata* filedata = dynamic_cast<onity_treedata*>(viewfile->get_linkdata());
+	onity_propfile* propfile = dynamic_cast<onity_propfile*>(filedata->get_prop());
+	xui_proproot*   propleaf = NULL;
+	xui_treedata*   linkdata = NULL;
+
+	onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
+	if (prop2dsres)
+	{
+		propleaf = prop2dsres->add_subprop();
+		onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(propleaf);
+		linkdata = new onity_2dsassetdata(propasset->get_resicon(), propasset);
+	}
+
+	onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
+	if (propjsones)
+	{
+		propleaf = propjsones->add_subprop();
+		linkdata = new onity_tempdata(onity_resource::icon_entity, propleaf);
+	}
+
+	if (linkdata)
+	{
+		u32 index = viewfile->get_leafnodecount();
+		viewfile->add_leafnode(index, linkdata);
+	}
+
+	return propleaf;
+}
+xui_method_explain(onity_project, del_propleaf,				void			)( const xui_proproot_vec& propvec )
+{
+	for (u32 i = 0; i < propvec.size(); ++i)
+	{
+		onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(propvec[i]);
+		onity_propfile* propfile = propleaf->get_propfile();
+		xui_treedata*   linkdata = propleaf->get_linkdata();
+		xui_treedata*	filedata = propfile->get_linkdata();
+		if (filedata && linkdata)
+		{
+			filedata->get_node()->del_leafnode(linkdata->get_node());
+		}
+
+		onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
+		if (prop2dsres)
+			prop2dsres->del_subprop(propleaf);
+
+		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
+		if (propjsones)
+			propjsones->del_subprop(propleaf);
 	}
 }

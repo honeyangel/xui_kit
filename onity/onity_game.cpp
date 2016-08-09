@@ -39,7 +39,7 @@ xui_create_explain(onity_game)( void )
 	m_iphone6	= menu->add_item(NULL, L"iPhone6");
 	m_iphone6p	= menu->add_item(NULL, L"iPhone6 Plus");
 	m_ipad		= menu->add_item(NULL, L"iPad");
-	xui_method_ptrcall(m_fill,		set_flag		)(true);
+	xui_method_ptrcall(m_iphone4,	set_flag		)(true);
 	xui_method_ptrcall(m_fill,		xm_click		) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_menuclick);
 	xui_method_ptrcall(m_iphone4,	xm_click		) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_menuclick);
 	xui_method_ptrcall(m_iphone5,	xm_click		) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_menuclick);

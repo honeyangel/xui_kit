@@ -38,7 +38,7 @@
     <ClInclude Include="onity_propctrl_particlemod.h" />
     <ClInclude Include="onity_propdata_texture.h" />
     <ClInclude Include="onity_propframekey.h" />
-    <ClInclude Include="onity_propjson.h" />
+    <ClInclude Include="onity_propjsones.h" />
     <ClInclude Include="onity_propkind_compold.h" />
     <ClInclude Include="onity_propprefab.h" />
     <ClInclude Include="onity_proptempold.h" />
@@ -92,7 +92,7 @@
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
-    <ClCompile Include="onity_propjson.cpp" />
+    <ClCompile Include="onity_propjsones.cpp" />
     <ClCompile Include="onity_propkind_compold.cpp" />
     <ClCompile Include="onity_propkind_particlesrc.cpp" />
     <ClCompile Include="onity_layerdata.cpp" />

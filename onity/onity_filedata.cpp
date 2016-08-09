@@ -14,7 +14,7 @@
 #include "onity_propsprite.h"
 #include "onity_propaction.h"
 #include "onity_propcontroller.h"
-#include "onity_propjson.h"
+#include "onity_propjsones.h"
 #include "onity_filedata.h"
 
 /*
@@ -172,7 +172,7 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	else if (suff == L".npAction")		return new onity_propaction		(full);
 	else if (suff == L".particle")		return new onity_propparticle	(full);
 	else if (suff == L".controller")	return new onity_propcontroller	(full);
-	else if (suff == L".json")			return new onity_propjson		(full);
+	else if (suff == L".json")			return new onity_propjsones		(full);
 	else
 	{
 		return NULL;

@@ -23,3 +23,8 @@ xui_method_explain(onity_tempdata, get_text, std::wstring	)( u32 index )
 	std::string name = prop->get_template()->GetName();
 	return xui_global::ascii_to_unicode(name);
 }
+xui_method_explain(onity_tempdata, set_text, void			)( u32 index, const std::wstring& text )
+{
+	onity_proptempold* prop = dynamic_cast<onity_proptempold*>(m_prop);
+	prop->rna_template(text);
+}

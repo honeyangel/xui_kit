@@ -21,7 +21,7 @@
 #include "onity_renderview.h"
 #include "onity_propfile.h"
 #include "onity_propleaf.h"
-#include "onity_propjson.h"
+#include "onity_propjsones.h"
 #include "onity_proptempold.h"
 #include "onity_preview.h"
 #include "onity_mainform.h"
@@ -454,13 +454,13 @@ xui_method_explain(onity_selector, refresh_fileview,		void				)( void )
 				}
 			}
 
-			onity_propjson* propjson = dynamic_cast<onity_propjson*>(prop);
-			if (propjson)
+			onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(prop);
+			if (propjsones)
 			{
 				if (leafkey.length() > 0)
 					node->set_expanded(true);
 
-				std::vector<xui_proproot*> subprop = propjson->get_templates();
+				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
 					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);

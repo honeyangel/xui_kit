@@ -5,6 +5,9 @@
 #include "NP2DSActorFileMgr.h"
 #include "NP2DSAsset.h"
 #include "NP2DSAssetFile.h"
+#include "NP2DSImageFile.h"
+#include "NP2DSFrameFile.h"
+#include "NP2DSActorFile.h"
 
 #include "xui_global.h"
 #include "xui_propdata.h"
@@ -16,6 +19,7 @@
 #include "onity_project.h"
 #include "onity_filedata.h"
 #include "onity_resource.h"
+#include "onity_prop2dsasset.h"
 #include "onity_prop2dsres.h"
 
 /*
@@ -170,6 +174,47 @@ xui_method_explain(onity_prop2dsres, save,			void						)( void )
 		xui_global::set_fwatchclose();
 		file->SaveXml(xui_global::unicode_to_ascii(m_fullname));
 		xui_global::set_fwatchstart(xui_global::get_workpath());
+	}
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_prop2dsres, add_subprop,	xui_proproot*				)( void )
+{
+	npu32 id = -1;
+	NP2DSAssetFile* file = get_resfile();
+	NP2DSImageFile* imagefile = NPDynamicCast(NP2DSImageFile, file);
+	NP2DSFrameFile* framefile = NPDynamicCast(NP2DSFrameFile, file);
+	NP2DSActorFile* actorfile = NPDynamicCast(NP2DSActorFile, file);
+	if (imagefile)	id = imagefile->AddImage(0, 0, 50, 50);
+	if (framefile)	id = framefile->AddFrame();
+	if (actorfile)	id = actorfile->AddActor();
+
+	if (id != -1)
+	{
+		xui_proproot* prop = new_subprop(id);
+		m_subprop.push_back(prop);
+		return prop;
+	}
+
+	return NULL;
+}
+xui_method_explain(onity_prop2dsres, del_subprop,	void						)( xui_proproot* prop )
+{
+	xui_proproot_vec::iterator itor = std::find(
+		m_subprop.begin(),
+		m_subprop.end(),
+		prop);
+
+	if (itor != m_subprop.end())
+	{
+		NP2DSAssetFile* file = get_resfile();
+		onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(prop);
+		file->DelAsset(propasset->get_assetid());
+
+		m_subprop.erase(itor);
+		delete prop;
 	}
 }
 

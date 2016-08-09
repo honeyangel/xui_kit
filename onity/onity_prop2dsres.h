@@ -37,6 +37,12 @@ public:
 	virtual void				save			( void );
 
 	/*
+	//method
+	*/
+	xui_proproot*				add_subprop		( void );
+	void						del_subprop		( xui_proproot* prop );
+
+	/*
 	//meta
 	*/
 	static void					load_meta		( u08 type, const std::string& fullname );
