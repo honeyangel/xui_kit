@@ -2,6 +2,7 @@
 #include "xui_convas.h"
 #include "xui_family_create.h"
 #include "xui_desktop.h"
+#include "xui_global.h"
 #include "xui_textbox.h"
 
 xui_implement_rtti(xui_textbox, xui_drawer);
@@ -547,6 +548,7 @@ xui_method_explain(xui_textbox, do_copy,			void					)( void )
 
 	std::wstring temp = get_selecttext();
 	xui_desktop::get_ins()->set_pastetext(temp);
+	xui_global::cpy_string(temp);
 }
 xui_method_explain(xui_textbox, do_cut,				void					)( void )
 {

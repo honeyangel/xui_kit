@@ -546,6 +546,18 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 		}
 	}
 }
+xui_method_explain(xui_global, cpy_string,		void						)( const std::wstring& text )
+{
+	HGLOBAL hGlobal = GlobalAlloc(GHND, (text.length() + 1) * sizeof(wchar_t));
+	wchar_t* buffer = (wchar_t*)GlobalLock(hGlobal);
+	wcscpy(buffer, text.c_str());
+	GlobalUnlock(hGlobal);
+
+	OpenClipboard(NULL);
+	EmptyClipboard();
+	SetClipboardData(CF_UNICODETEXT, hGlobal);
+	CloseClipboard();
+}
 
 bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {

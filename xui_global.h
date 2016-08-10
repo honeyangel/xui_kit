@@ -45,6 +45,7 @@ public:
 	static void								res_syswnd		( void );
 	static void								set_cursor		( u32 cursor );
 	static void								add_cursor		( u32 cursor, const std::wstring& filename );
+	static void								cpy_string		( const std::wstring& text );
 
 	/*
 	//screen
