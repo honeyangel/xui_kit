@@ -10,7 +10,9 @@
 #include "xui_linebox.h"
 #include "xui_desktop.h"
 #include "onity_resource.h"
+#include "onity_propjsones.h"
 #include "onity_proptempold.h"
+#include "onity_propctrl_compold.h"
 #include "onity_propkind_compold.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -23,49 +25,8 @@ xui_create_explain(onity_propkind_compold)( xui_proproot* root, const std::wstri
 : xui_propkind(root, name, "ComponentOld", onity_kindctrl_compold::create, icon, true)
 , m_node(node)
 {
-	std::vector<std::string> members = m_node->getMemberNames();
-	for (u32 i = 0; i < members.size(); ++i)
-	{
-		std::string member = members[i];
-		if (member == "ClassName" ||
-			member == "Family")
-			continue;
-
-		BreezeGame::Json::Value* data = &((*m_node)[member]);
-		if (data->isNumeric())
-		{
-			add_propdata(new xui_propdata_number_func(
-				this,
-				xui_global::ascii_to_unicode(member),
-				xui_propctrl_number::create,
-				get_number,
-				set_number,
-				data,
-				NT_FLOAT));
-		}
-		else
-		if (data->isBool())
-		{
-			add_propdata(new xui_propdata_bool(
-				this, 
-				xui_global::ascii_to_unicode(member), 
-				xui_propctrl_bool::create, 
-				get_bool, 
-				set_bool, 
-				data));
-		}
-		else
-		if (data->isString())
-		{
-			add_propdata(new xui_propdata_string(
-				this, 
-				xui_global::ascii_to_unicode(member),
-				xui_propctrl_string::create,
-				get_string,
-				set_string,
-				data));
-		}
-	}
+	xm_namechanged += new xui_method_member<xui_method_args, onity_propkind_compold>(this, &onity_propkind_compold::on_namechanged);
+	add_propdata(new xui_propdata(this, L"", onity_propctrl_compattr::create));
 }
 
 /*
@@ -77,37 +38,19 @@ xui_method_explain(onity_propkind_compold, get_node,			BreezeGame::Json::Value*)
 }
 
 /*
-//static
+//event
 */
-xui_method_explain(onity_propkind_compold, get_bool,			bool					)( void* userptr )
+xui_method_explain(onity_propkind_compold, on_namechanged,		void					)( xui_component* sender, xui_method_args& args )
 {
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	return data->asBool();
-}
-xui_method_explain(onity_propkind_compold, set_bool,			void					)( void* userptr, bool value )
-{
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	*data = BreezeGame::Json::Value(value);
-}
-xui_method_explain(onity_propkind_compold, get_number,			f64						)( void* userptr )
-{
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	return data->asDouble();
-}
-xui_method_explain(onity_propkind_compold, set_number,			void					)( void* userptr, f64  value )
-{
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	*data = BreezeGame::Json::Value(value);
-}
-xui_method_explain(onity_propkind_compold, get_string,			std::wstring			)( void* userptr )
-{
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	return xui_global::ascii_to_unicode(data->asString());
-}
-xui_method_explain(onity_propkind_compold, set_string,			void					)( void* userptr, const std::wstring& value )
-{
-	BreezeGame::Json::Value* data = (BreezeGame::Json::Value*)userptr;
-	*data = BreezeGame::Json::Value(xui_global::unicode_to_ascii(value));
+	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
+	std::wstring text = textbox->get_text();
+	if (text.length() > 0)
+	{
+		(*m_node)["ClassName"] = xui_global::unicode_to_ascii(text);
+
+		xui_method_propdata  other_args;
+		xm_propchanged(NULL, other_args);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -134,7 +77,7 @@ xui_create_explain(onity_kindctrl_compold)( xui_propkind* propkind )
 */
 xui_method_explain(onity_kindctrl_compold, create,				xui_kindctrl*			)( xui_propkind* propkind )
 {
-	return new onity_kindctrl_compold(NULL);
+	return new onity_kindctrl_compold(propkind);
 }
 
 /*
@@ -146,58 +89,6 @@ xui_method_explain(onity_kindctrl_compold, on_perform,			void					)( xui_method_
 	m_killctrl->on_perform_x(m_flagctrl->get_renderx()-4-m_killctrl->get_renderw());
 	m_killctrl->on_perform_y(m_flagctrl->get_rendery());
 	m_namectrl->on_perform_w(m_namectrl->get_renderw()-8-m_killctrl->get_renderw());
-}
-xui_method_explain(onity_kindctrl_compold, on_propkindchange,	void					)( void )
-{
-	for (u32 i = 0; i < m_propctrlvec.size(); ++i)
-	{
-		xui_propctrl* propctrl = m_propctrlvec[i];
-		xui_propdata_vec vec = propctrl->get_propdata();
-		for (xui_propdata_vec::iterator itor = vec.begin(); itor != vec.end(); ++itor)
-			(*itor)->non_ctrl();
-
-		std::vector<xui_component*>::iterator itor = std::find(
-			m_widgetvec.begin(), 
-			m_widgetvec.end(), 
-			propctrl);
-
-		if (itor != m_widgetvec.end())
-		{
-			m_widgetvec.erase(itor);
-			propctrl->set_parent(NULL);
-			xui_desktop::get_ins()->move_recycle(propctrl);
-		}
-	}
-	m_propctrlvec.clear();
-
-	bool same = true;
-	onity_propkind_compold* propkind = dynamic_cast<onity_propkind_compold*>(m_propkind);
-	BreezeGame::Json::Value* node = propkind->get_node();
-	for (u32 i = 1; i < m_propkindvec.size(); ++i)
-	{
-		onity_propkind_compold* tempkind = dynamic_cast<onity_propkind_compold*>(m_propkindvec[i]);
-		if (tempkind->get_node() != node)
-		{
-			same = false;
-			break;
-		}
-	}
-
-	if (same)
-	{
-		const xui_propdata_vec& vec = m_propkind->get_propdata();
-		for (u32 i = 0; i < vec.size(); ++i)
-		{
-			xui_prop_newctrl  func = vec[i]->get_func();
-			xui_propctrl* propctrl = (*func)(vec[i]);
-			propctrl->refresh();
-			propctrl->set_parent(this);
-			m_widgetvec.push_back(propctrl);
-			m_propctrlvec.push_back(propctrl);
-		}
-
-		xui_kindctrl::on_propkindchange();
-	}
 }
 
 /*

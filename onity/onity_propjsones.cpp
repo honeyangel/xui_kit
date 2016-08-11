@@ -158,6 +158,7 @@ xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 		delete [] buffer;
 		m3eFileClose(file);
 
+		std::map<Omiga::EntityTemplate*, xui_proproot*> propmap;
 		BreezeGame::Json::Value* value = &root["EntitySystem"]["EntityTemplate"]["Template"];
 		for(BreezeGame::Json::Value::iterator itor = value->begin(); itor != value->end(); itor++)
 		{
@@ -166,7 +167,8 @@ xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 			Omiga::EntityTemplate* temp = Omiga::EntityManager::Instance()->GetEntityTemplate(name);
 			if (temp)
 			{
-				temp->ChangeTemplate(node);
+				if (propmap.find(temp) == propmap.end())
+					temp->ChangeTemplate(node);
 			}
 			else
 			{
@@ -174,7 +176,12 @@ xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 				Omiga::EntityManager::Instance()->AddEntityTemplate(temp);
 			}
 
-			m_subprop.push_back(new onity_proptempold(this, temp));
+			if (propmap.find(temp) == propmap.end())
+			{
+				onity_proptempold* proptemp = new onity_proptempold(this, temp);
+				m_subprop.push_back(proptemp);
+				propmap[temp] = proptemp;
+			}
 		}
 	}
 

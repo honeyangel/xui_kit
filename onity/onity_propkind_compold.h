@@ -23,14 +23,9 @@ public:
 
 protected:
 	/*
-	//static
+	//event
 	*/
-	static f64					get_number		( void* userptr );
-	static void					set_number		( void* userptr, f64  value );
-	static bool					get_bool		( void* userptr );
-	static void					set_bool		( void* userptr, bool value );
-	static std::wstring			get_string		( void* userptr );
-	static void					set_string		( void* userptr, const std::wstring& value );
+	void						on_namechanged	( xui_component* sender, xui_method_args& args );
 
 	/*
 	//member
@@ -61,7 +56,6 @@ protected:
 	//override
 	*/
 	virtual void				on_perform				( xui_method_args& args );
-	virtual void				on_propkindchange		( void );
 
 	/*
 	//event

@@ -204,8 +204,8 @@ xui_method_explain(onity_proptempold, on_propchanged,	void					)( xui_component*
 	onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
 	propjsones->set_modify(true);
 
-	onity_propkind_compold* propkind = dynamic_cast<onity_propkind_compold*>(args.propdata->get_kind());
-	BreezeGame::Json::Value* node = propkind->get_node();
+	//onity_propkind_compold* propkind = dynamic_cast<onity_propkind_compold*>(args.propdata->get_kind());
+	//BreezeGame::Json::Value* node = propkind->get_node();
 }
 xui_method_explain(onity_proptempold, on_namechanged,	void					)( xui_component* sender, xui_method_args&     args )
 {

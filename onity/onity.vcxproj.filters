@@ -175,6 +175,9 @@
     <ClInclude Include="onity_propjsones.h">
       <Filter>project</Filter>
     </ClInclude>
+    <ClInclude Include="onity_propctrl_compold.h">
+      <Filter>project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -350,6 +353,9 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_propjsones.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_compold.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
