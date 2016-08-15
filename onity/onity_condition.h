@@ -22,6 +22,7 @@ public:
 	/*
 	//method
 	*/
+	bool				was_selected	( void ) const;
 	NP2DSCondition*		get_condition	( void );
 
 protected:
@@ -43,6 +44,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_toggle*			m_flagcheck;
 	xui_dropbox*		m_paramname;
 	xui_dropbox*		m_boolvalue;
 	xui_dropbox*		m_numbopera;

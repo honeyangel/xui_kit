@@ -88,6 +88,7 @@ protected:
 	void						set_loadtype		( u08 type, const std::string& pathname, bool flag );
 	xui_proproot*				add_propleaf		( void );
 	void						del_propleaf		( const xui_proproot_vec& propvec );
+	void						pst_propleaf		( void );
 
 	/*
 	//member
@@ -119,8 +120,7 @@ protected:
 	xui_button*					m_copy;
 	xui_button*					m_move;
 	xui_button*					m_paste;
-	xui_proproot_vec			m_copyprop;
-	xui_proproot_vec			m_moveprop;
+	xui_proproot_vec			m_menuprop;
 
 	xui_menuitem*				m_showfind;
 	xui_menuitem*				m_loadtype;

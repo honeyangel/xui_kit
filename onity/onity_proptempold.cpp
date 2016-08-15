@@ -53,6 +53,13 @@ xui_method_explain(onity_proptempold, rna_template,		void					)( const std::wstr
 	if (kindctrl)
 		kindctrl->refresh();
 }
+xui_method_explain(onity_proptempold, pst_template,		void					)( Omiga::EntityTemplate* temp )
+{
+	std::string name = m_template->GetName();
+	m_template->ChangeTemplate(temp->GetNode());
+	m_template->SetName(name);
+	add_compkind();
+}
 xui_method_explain(onity_proptempold, get_components,	const xui_propkind_vec&	)( void ) const
 {
 	return m_compkind;
@@ -211,6 +218,7 @@ xui_method_explain(onity_proptempold, on_namechanged,	void					)( xui_component*
 {
 	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
 	rna_template(textbox->get_text());
+	textbox->ini_drawer(xui_global::ascii_to_unicode(m_template->GetName()));
 	if (m_linkdata)
 	{
 		xui_treenode* node = m_linkdata->get_node();

@@ -211,19 +211,23 @@ xui_method_explain(onity_propctrl_condition, on_middleperform,		void			)( xui_co
 }
 xui_method_explain(onity_propctrl_condition, on_deleteclick,		void			)( xui_component* sender, xui_method_args& args )
 {
-	u32 childcount = m_middle->get_childcount();
-	if (childcount > 0)
-	{
-		onity_propdata_condition* datacondition = dynamic_cast<onity_propdata_condition*>(m_propdata);
-		NP2DSTransition* transition = datacondition->get_transition();
+	onity_propdata_condition* datacondition = dynamic_cast<onity_propdata_condition*>(m_propdata);
+	NP2DSTransition* transition = datacondition->get_transition();
 
-		onity_condition* ctrl = xui_dynamic_cast(onity_condition, m_middle->get_child(childcount-1));
-		transition->DelCondition(ctrl->get_condition());
-		xui_method_ptrcall(m_middle, del_child		)(ctrl);
-		xui_method_ptrcall(m_middle, refresh		)();
-		xui_method_ptrcall(m_delete, set_enable		)(m_middle->get_childcount() >  0);
-		xui_method_ptrcall(m_nontip, set_visible	)(m_middle->get_childcount() == 0);
+	std::vector<xui_control*> vec = m_middle->get_children();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		onity_condition* ctrl = xui_dynamic_cast(onity_condition, vec[i]);
+		if (ctrl->was_selected())
+		{
+			transition->DelCondition(ctrl->get_condition());
+			m_middle->del_child(ctrl);
+		}
 	}
+
+	xui_method_ptrcall(m_middle, refresh		)();
+	xui_method_ptrcall(m_delete, set_enable		)(m_middle->get_childcount() >  0);
+	xui_method_ptrcall(m_nontip, set_visible	)(m_middle->get_childcount() == 0);
 }
 xui_method_explain(onity_propctrl_condition, on_deleterenderself,	void			)( xui_component* sender, xui_method_args& args )
 {

@@ -21,6 +21,7 @@ public:
 	*/
 	xui_proproot_vec		get_subprop		( void );
 	xui_proproot*			add_subprop		( void );
+	xui_proproot*			add_subprop		( xui_proproot* prop );
 	void					del_subprop		( xui_proproot* prop );
 	void					set_modify		( bool flag );
 

@@ -64,6 +64,13 @@ xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( void )
 
 	return prop;
 }
+xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( xui_proproot* prop )
+{
+	onity_proptempold* propsrc = dynamic_cast<onity_proptempold*>(prop);
+	onity_proptempold* propdst = dynamic_cast<onity_proptempold*>(add_subprop());
+	propdst->pst_template(propsrc->get_template());
+	return propdst;
+}
 xui_method_explain(onity_propjsones, del_subprop,	void				)( xui_proproot* prop )
 {
 	xui_proproot_vec::iterator itor = std::find(

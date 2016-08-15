@@ -465,6 +465,16 @@ xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfi
 			}
 		}
 	}
+
+	if (m_copy->get_data() == propfile ||
+		m_move->get_data() == propfile)
+	{
+		m_copy->set_data(NULL);
+		m_move->set_data(NULL);
+		m_menuprop.clear();
+		refresh_linetool();
+	}
+
 }
 xui_method_explain(onity_project, ntf_rename,				void			)( const std::wstring& last, const std::wstring& curr )
 {
@@ -1095,19 +1105,23 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 	else
 	if (sender == m_copy)
 	{
-		m_copyprop = propvec;
-		m_moveprop.clear();
+		onity_treedata*  filedata = dynamic_cast<onity_treedata*>(viewfile->get_linkdata());
+		m_copy->set_data(filedata->get_prop());
+		m_move->set_data(NULL);
+		m_menuprop = propvec;
 	}
 	else
 	if (sender == m_move)
 	{
-		m_moveprop = propvec;
-		m_copyprop.clear();
+		onity_treedata*  filedata = dynamic_cast<onity_treedata*>(viewfile->get_linkdata());
+		m_move->set_data(filedata->get_prop());
+		m_copy->set_data(NULL);
+		m_menuprop = propvec;
 	}
 	else
 	if (sender == m_paste)
 	{
-
+		pst_propleaf();
 	}
 	else
 	if (sender == m_backpath && viewfile)
@@ -1347,7 +1361,7 @@ xui_method_explain(onity_project, refresh_linetool,			void			)( void )
 	xui_method_ptrcall(m_del,		set_enable)(viewfile != NULL && selectednode.size() > 0);
 	xui_method_ptrcall(m_copy,		set_enable)(viewfile != NULL && selectednode.size() > 0);
 	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && filedata->get_suff() != L".json");
-	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL && ( m_copyprop.size() > 0 || m_moveprop.size() > 0 ));
+	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL &&   m_menuprop.size() > 0);
 }
 xui_method_explain(onity_project, convert_filesuff,			std::wstring	)( void )
 {
@@ -1504,5 +1518,50 @@ xui_method_explain(onity_project, del_propleaf,				void			)( const xui_proproot_
 		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
 		if (propjsones)
 			propjsones->del_subprop(propleaf);
+	}
+}
+xui_method_explain(onity_project, pst_propleaf,				void			)( void )
+{
+	xui_treenode*   dstnode = m_fileview->get_tileview()->get_viewfile();
+	onity_treedata* dstdata = dynamic_cast<onity_treedata*>(dstnode->get_linkdata());
+	onity_propfile* dstfile = dynamic_cast<onity_propfile*>(dstdata->get_prop());
+	onity_propleaf* srcprop = dynamic_cast<onity_propleaf*>(m_menuprop.front());
+	onity_propfile* srcfile = srcprop->get_propfile();
+	std::wstring    dstfull = dstfile->get_fullname();
+	std::wstring    srcfull = srcfile->get_fullname();
+	if (onity_filedata::get_suff(dstfull) == onity_filedata::get_suff(srcfull))
+	{
+		onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(dstfile);
+		if (prop2dsres)
+		{
+			for (u32 i = 0; i < m_menuprop.size(); ++i)
+			{
+				onity_prop2dsasset* srcleaf = dynamic_cast<onity_prop2dsasset*>(m_menuprop[i]);
+				onity_prop2dsasset* dstleaf = dynamic_cast<onity_prop2dsasset*>(prop2dsres->add_subprop(srcleaf));
+				u32 index = dstnode->get_leafnodecount();
+				xui_treedata* linkdata = new onity_2dsassetdata(dstleaf->get_resicon(), dstleaf);
+				dstnode->add_leafnode(index, linkdata);
+			}
+		}
+
+		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(dstfile);
+		if (propjsones)
+		{
+			for (u32 i = 0; i < m_menuprop.size(); ++i)
+			{
+				onity_proptempold*  srcleaf = dynamic_cast<onity_proptempold* >(m_menuprop[i]);
+				onity_proptempold*  dstleaf = dynamic_cast<onity_proptempold* >(propjsones->add_subprop(srcleaf));
+				u32 index = dstnode->get_leafnodecount();
+				xui_treedata* linkdata = new onity_tempdata(onity_resource::icon_entity, dstleaf);
+				dstnode->add_leafnode(index, linkdata);
+			}
+		}
+	}
+
+	if (m_move->get_data())
+	{
+		m_move->set_data(NULL);
+		del_propleaf(m_menuprop);
+		m_menuprop.clear();
 	}
 }

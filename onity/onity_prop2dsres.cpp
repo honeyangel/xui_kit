@@ -200,6 +200,13 @@ xui_method_explain(onity_prop2dsres, add_subprop,	xui_proproot*				)( void )
 
 	return NULL;
 }
+xui_method_explain(onity_prop2dsres, add_subprop,	xui_proproot*				)( xui_proproot* prop )
+{
+	onity_prop2dsasset* propsrc = dynamic_cast<onity_prop2dsasset*>(prop);
+	onity_prop2dsasset* propdst = dynamic_cast<onity_prop2dsasset*>(add_subprop());
+	propdst->get_asset()->Clone(propsrc->get_asset());
+	return propdst;
+}
 xui_method_explain(onity_prop2dsres, del_subprop,	void						)( xui_proproot* prop )
 {
 	xui_proproot_vec::iterator itor = std::find(

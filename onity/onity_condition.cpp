@@ -7,6 +7,7 @@
 #include "xui_dropbox.h"
 #include "xui_textbox.h"
 #include "xui_itemtag.h"
+#include "xui_toggle.h"
 #include "onity_condition.h"
 
 class onity_param_itemtag : public xui_itemtag
@@ -79,6 +80,13 @@ xui_create_explain(onity_condition)( NP2DSCondition* condition )
 	xui_method_ptrcall(m_paramname, ini_component	)(0, ALIGNVERT_C, 0);
 	xui_method_ptrcall(m_paramname, ini_dropbox		)(selectedindex);
 
+	m_flagcheck = new xui_toggle(xui_vector<s32>(16), TOGGLE_NORMAL);
+	xui_method_ptrcall(m_flagcheck, set_parent		)(this);
+	xui_method_ptrcall(m_flagcheck, set_corner		)(3);
+	xui_method_ptrcall(m_flagcheck, set_drawcolor	)(true);
+	xui_method_ptrcall(m_flagcheck, set_backcolor	)(xui_colour::darkgray);
+	xui_method_ptrcall(m_flagcheck, ini_component	)(0, ALIGNVERT_C, 0);
+
 	m_boolvalue = new xui_dropbox(xui_vector<s32>(64, 18), NULL);
 	xui_method_ptrcall(m_boolvalue, xm_selection	) += new xui_method_member<xui_method_args, onity_condition>(this, &onity_condition::on_boolvalueselection);
 	xui_method_ptrcall(m_boolvalue,	set_parent		)(this);
@@ -134,6 +142,7 @@ xui_create_explain(onity_condition)( NP2DSCondition* condition )
 	xui_method_ptrcall(m_numbvalue,	ini_component	)(true, param->GetType() != DT_BOOL);
 	xui_method_ptrcall(m_numbvalue,	ini_drawer		)(text.str());
 
+	m_widgetvec.push_back(m_flagcheck);
 	m_widgetvec.push_back(m_paramname);
 	m_widgetvec.push_back(m_boolvalue);
 	m_widgetvec.push_back(m_numbopera);
@@ -143,6 +152,10 @@ xui_create_explain(onity_condition)( NP2DSCondition* condition )
 /*
 //method
 */
+xui_method_explain(onity_condition, was_selected,				bool			)( void ) const
+{
+	return m_flagcheck->was_push();
+}
 xui_method_explain(onity_condition, get_condition,				NP2DSCondition*	)( void )
 {
 	return m_condition;
@@ -157,9 +170,13 @@ xui_method_explain(onity_condition, on_perform,					void			)( xui_method_args& a
 
 	xui_rect2d<s32> rt = get_renderrtins();
 	s32 x = rt.ax;
-	s32 w = (rt.get_w()-4) / 2;
+	s32 w = (rt.get_w()-20) / 2;
+
+	//flagcheck
+	m_flagcheck->on_perform_x(x);
 
 	//paramname
+	x += 20;
 	m_paramname->on_perform_x(x);
 	m_paramname->on_perform_w(w);
 
