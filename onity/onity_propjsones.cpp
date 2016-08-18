@@ -47,7 +47,7 @@ xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( void )
 		while (true)
 		{
 			text.str("");
-			text << L"New Entity Template";
+			text << "New Entity Template";
 			text << number;
 			if (Omiga::EntityManager::Instance()->GetEntityTemplate(text.str()) == NULL)
 				break;

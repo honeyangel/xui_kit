@@ -565,29 +565,37 @@ xui_method_explain(onity_project, on_searchtextchanged,		void			)( xui_component
 	xui_method_ptrcall(m_clear,		set_visible	)(m_search->get_text().length() >  0);
 	xui_method_ptrcall(m_pathpane,	set_enable	)(m_search->get_text().length() == 0);
 	xui_method_ptrcall(m_fill,		refresh		)();
-	refresh_fileview();
-	if (m_search->get_text().length() == 0)
+	if (m_fileview->get_tileview()->get_viewfile())
 	{
-		std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-		if (nodevec.size() > 0)
+		m_fileview->get_tileview()->set_viewtext(m_search->get_text());
+	}
+	else
+	{
+		refresh_fileview();
+		if (m_search->get_text().length() == 0)
 		{
-			xui_treenode*   pathnode = nodevec.front();
-			onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-			onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-			onity_propfile* viewfile = proppath->get_viewfile();
-			if (viewfile && viewfile->get_linkdata())
+			std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+			if (nodevec.size() > 0)
 			{
-				m_fileview->get_lineview()->set_allowmulti(true);
-				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
-				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
+				xui_treenode*   pathnode = nodevec.front();
+				onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+				onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+				onity_propfile* viewfile = proppath->get_viewfile();
+				if (viewfile && viewfile->get_linkdata())
+				{
+					m_fileview->get_lineview()->set_allowmulti(true);
+					m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
+					m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
+				}
+				else
+				{
+					m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
+				}
+				refresh_tileview();
 			}
-			else
-			{
-				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
-			}
-			refresh_tileview();
 		}
 	}
+
 	refresh_linetool();
 }
 xui_method_explain(onity_project, on_filterselection,		void			)( xui_component* sender, xui_method_args&	   args )
