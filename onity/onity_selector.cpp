@@ -277,8 +277,15 @@ xui_method_explain(onity_selector, on_perform,				void				)( xui_method_args& ar
 xui_method_explain(onity_selector, on_searchtextchanged,	void				)( xui_component* sender, xui_method_args& args )
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
-	refresh_fileview();
-	refresh_backpath();
+	if (m_fileview->get_tileview()->get_viewfile())
+	{
+		m_fileview->get_tileview()->set_viewtext(m_search->get_text());
+	}
+	else
+	{
+		refresh_fileview();
+		refresh_backpath();
+	}
 }
 xui_method_explain(onity_selector, on_backpathclick,		void				)( xui_component* sender, xui_method_args& args )
 {
@@ -308,7 +315,7 @@ xui_method_explain(onity_selector, on_sliderscroll,			void				)( xui_component* 
 	xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
 
 	s32 value = m_slider->get_value();
-	if (value < 10 && value > 0)
+	if (value < 10 && (value > 0 && m_fileview->get_tileview()->get_viewfile() != NULL))
 	{
 		value = 10;
 		m_slider->ini_scroll(m_slider->get_range(), value);

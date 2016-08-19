@@ -702,8 +702,11 @@ xui_method_explain(onity_project, on_fileviewnodeclick,		void			)( xui_component
 
 	refresh_linetool();
 
-	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-	inspector->set_proproot(propvec);
+	if (propvec.size() > 0)
+	{
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->set_proproot(propvec);
+	}
 }
 xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component* sender, xui_method_mouse&	   args )
 {
