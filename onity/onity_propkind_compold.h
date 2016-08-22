@@ -14,7 +14,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_propkind_compold( xui_proproot* root, const std::wstring& name, xui_bitmap* icon, BreezeGame::Json::Value* node );
+	onity_propkind_compold( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node );
 
 	/*
 	//method

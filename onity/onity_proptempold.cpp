@@ -156,7 +156,8 @@ xui_method_explain(onity_proptempold, del_component,	void					)( xui_propkind* p
 xui_method_explain(onity_proptempold, new_compkind,		void					)( BreezeGame::Json::Value* compnode )
 {
 	std::string   name = (*compnode)["ClassName"].asString();
-	xui_propkind* kind = new onity_propkind_compold(this, xui_global::ascii_to_unicode(name), onity_resource::icon_component, compnode);
+	std::string   type = (*compnode)["Family"].asString() + "Old";
+	xui_propkind* kind = new onity_propkind_compold(this, xui_global::ascii_to_unicode(name), type, onity_resource::icon_component, compnode);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_proptempold>(this, &onity_proptempold::on_propchanged);
 	m_compkind.push_back(kind);
 	add_propkind(kind);

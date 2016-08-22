@@ -21,8 +21,8 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propkind_compold)( xui_proproot* root, const std::wstring& name, xui_bitmap* icon, BreezeGame::Json::Value* node )
-: xui_propkind(root, name, "ComponentOld", onity_kindctrl_compold::create, icon, true)
+xui_create_explain(onity_propkind_compold)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node )
+: xui_propkind(root, name, type, onity_kindctrl_compold::create, icon, true)
 , m_node(node)
 {
 	xm_namechanged += new xui_method_member<xui_method_args, onity_propkind_compold>(this, &onity_propkind_compold::on_namechanged);
