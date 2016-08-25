@@ -7,6 +7,9 @@
 #include "Game/Game.h"
 #include "Game/Profile/LocalSaveHelper.h"
 #include "Game/WorldLoader.h"
+#include "Game/Game.h"
+#include "Game/GameConfig.h"
+#include "Game/Profile/AccountLocalSaveHelper.h"
 
 #include "xui_desktop.h"
 #include "xui_syswnd.h"
@@ -27,6 +30,7 @@
 #include "onity_project.h"
 #include "onity_timeline.h"
 #include "onity_game.h"
+#include "onity_scene.h"
 #include "onity_animator.h"
 #include "onity_recent.h"
 #include "onity_config.h"
@@ -110,6 +114,7 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_timeline,		set_data		)(new onity_timeline);
 	xui_method_ptrcall(m_game,			set_data		)(new onity_game);
 	xui_method_ptrcall(m_animator,		set_data		)(new onity_animator);
+	xui_method_ptrcall(m_scene,			set_data		)(new onity_scene);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
@@ -117,6 +122,7 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_animator,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_scene,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
@@ -166,6 +172,7 @@ xui_method_explain(onity_mainform, get_pagename,		std::string			)( xui_dockpage*
 	else if (page == mainform->get_inspector())	return "inspector";
 	else if (page == mainform->get_project	())	return "project";
 	else if (page == mainform->get_game		())	return "game";
+	else if (page == mainform->get_scene	()) return "scene";
 	else if (page == mainform->get_animator	())	return "animator";
 	else if (page == mainform->get_console	())	return "console";
 	else if (page == mainform->get_timeline	())	return "timeline";
@@ -181,6 +188,7 @@ xui_method_explain(onity_mainform, get_pagectrl,		xui_dockpage*		)( const std::s
 	else if (name == "inspector")	return mainform->get_inspector();
 	else if (name == "project")		return mainform->get_project();
 	else if (name == "game")		return mainform->get_game();
+	else if (name == "scene")		return mainform->get_scene();
 	else if (name == "animator")	return mainform->get_animator();
 	else if (name == "console")		return mainform->get_console();
 	else if (name == "timeline")	return mainform->get_timeline();
@@ -208,6 +216,10 @@ xui_method_explain(onity_mainform, get_project,			onity_project*		)( void )
 xui_method_explain(onity_mainform, get_game,			onity_game*			)( void )
 {
 	return (onity_game*)		xui_method_ptrcall(m_game,		get_data)();
+}
+xui_method_explain(onity_mainform, get_scene,			onity_scene*		)( void )
+{
+	return (onity_scene*)		xui_method_ptrcall(m_scene,		get_data)();
 }
 xui_method_explain(onity_mainform, get_animator,		onity_animator*		)( void )
 {
@@ -314,16 +326,32 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 	{
 		if (m_run->was_push())
 		{
-			BreezeGame::ProfileManager::Instance()->Logout(true);
-			NPLoginService::GetInstance()->Logout();
-			BreezeGame::Game::Instance()->GetLoader()->Load( BreezeGame::LT_Splash );	
+			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_Splash);
 			BreezeGame::LocalSaveHelper::Instance()->SaveLocalInfo();
 			BreezeGame::Game::Instance()->Resume();
-			m3eFrameWorkUpdate();
+
+			onity_game* game = get_game();
+			if (m_mainview->get_showpage() != game)
+			{
+				BreezeGame::GameConfig::Instance()->SetGameVersion(BreezeGame::GV_DEBUG);
+				BreezeGame::ProfileManager::Instance()->SetLogin(true);
+				BreezeGame::AccountLocalSaveHelper::Instance()->Load();
+				BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_MainMenu);
+
+				set_pageshow(game);
+			}
+
+			m3eFrameWorkUpdate(1.0f);
 		}
 		else
 		{
 			m_pause->ini_toggle(false);
+
+			BreezeGame::ProfileManager::Instance()->Logout(true);
+			NPLoginService::GetInstance()->Logout();
+			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_None);
+			BreezeGame::Game::Instance()->Pause();
+			m3eFrameWorkUpdate(1.0f);
 		}
 	}
 }
@@ -531,8 +559,6 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 }
 xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args& args )
 {
-	m_run->ini_toggle(true);
-
 	NPRender::Init();
 	NP2DSLib::Init();
 	onity_project* project = get_project();
@@ -540,6 +566,7 @@ xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* s
 	xui_method_ptrcall(project, ini_pathtree)();
 	xui_method_ptrcall(game,	ini_game	)();
 	xui_global::set_fwatchstart(xui_global::get_workpath());
+	m3eFrameWorkUpdate(1.0f);
 
 	onity_config* dialog = xui_dynamic_cast(onity_config, sender);
 	dialog->set_visible(false);

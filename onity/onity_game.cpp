@@ -163,7 +163,7 @@ xui_method_explain(onity_game, on_viewupdateself,	void)( xui_component* sender, 
 	if (imeManager)
 		imeManager->Update();
 
-	m3eFrameWorkUpdate();
+	m3eFrameWorkUpdate(args.delta);
 }
 xui_method_explain(onity_game, on_viewrenderself,	void)( xui_component* sender, xui_method_args&	 args )
 {
