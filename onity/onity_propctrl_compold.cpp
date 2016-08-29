@@ -162,7 +162,7 @@ xui_method_explain(onity_compattr,			on_perform,				void				)( xui_method_args& 
 
 	//type
 	x += w+4;
-	w = (w-4) / 2;
+	w = (w-8) / 2;
 	m_typectrl->on_perform_x(x);
 	m_typectrl->on_perform_w(w);
 

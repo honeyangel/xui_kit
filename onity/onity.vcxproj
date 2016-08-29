@@ -18,6 +18,7 @@
     <ClInclude Include="onity_filectrl.h" />
     <ClInclude Include="onity_filedata.h" />
     <ClInclude Include="onity_fileview.h" />
+    <ClInclude Include="onity_filterdata.h" />
     <ClInclude Include="onity_game.h" />
     <ClInclude Include="onity_hierarchy.h" />
     <ClInclude Include="onity_inspector.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="onity_filectrl.cpp" />
     <ClCompile Include="onity_filedata.cpp" />
     <ClCompile Include="onity_fileview.cpp" />
+    <ClCompile Include="onity_filterdata.cpp" />
     <ClCompile Include="onity_game.cpp" />
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />

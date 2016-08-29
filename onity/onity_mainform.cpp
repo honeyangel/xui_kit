@@ -566,6 +566,8 @@ xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* s
 	xui_method_ptrcall(project, ini_pathtree)();
 	xui_method_ptrcall(game,	ini_game	)();
 	xui_global::set_fwatchstart(xui_global::get_workpath());
+	Omiga::EntityManager::Instance()->SetAddEvent(onity_hierarchy::on_entityadd);
+	Omiga::EntityManager::Instance()->SetDelEvent(onity_hierarchy::on_entitydel);
 	m3eFrameWorkUpdate(1.0f);
 
 	onity_config* dialog = xui_dynamic_cast(onity_config, sender);

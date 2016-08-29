@@ -1,4 +1,5 @@
 #include "xui_bitmap.h"
+#include "xui_global.h"
 #include "xui_panel.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
@@ -8,6 +9,7 @@
 #include "xui_treedata.h"
 #include "xui_treenode.h"
 #include "onity_resource.h"
+#include "onity_mainform.h"
 #include "onity_hierarchy.h"
 
 xui_implement_rtti(onity_hierarchy, xui_dockpage);
@@ -76,67 +78,65 @@ xui_create_explain(onity_hierarchy)( void )
 }
 
 /*
-//callback
+//method
 */
-//DEBUG
-class onity_entity_data : public xui_treedata
+xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*	)( Omiga::Entity* ent )
 {
-public:
-	/*
-	//constructor
-	*/
-	onity_entity_data( const std::wstring& text )
-	: xui_treedata(text)
-	{}
+	std::string   filtername = ent->GetTemplateName();
+	xui_treenode* filternode = get_filternode(filtername);
+	xui_treenode* entitynode = filternode->add_leafnode(
+		filternode->get_leafnodecount(), 
+		new xui_treedata(xui_global::ascii_to_unicode(ent->GetName())));
 
-	/*
-	//override
-	*/
-	virtual xui_family_render	get_textdraw	( u32 index )
+	entitynode->set_data(ent);
+	return entitynode;
+}
+xui_method_explain(onity_hierarchy, get_entitynode,			xui_treenode*	)( Omiga::Entity* ent )
+{
+	std::vector<xui_treenode*> nodes = m_tree->get_entirenode();
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
-		if (m_node && m_node->was_selected() == false)
-		{
-			s32 colorindex = rand()%8;
-			switch (colorindex)
-			{
-			case 4:
-				return xui_family_render(xui_colour::gray);
-			case 5:
-			case 6:
-				return xui_family_render(xui_colour(1.0f, 76.0f/255.0f, 128.0f/255.0f, 217.0f/255.0f));
-			case 7:
-				return xui_family_render(xui_colour::red);
-			}
-		}
-
-		return xui_family_render();
+		if (nodes[i]->get_data() == ent)
+			return nodes[i];
 	}
-};
 
-xui_method_explain(onity_hierarchy, on_load,				void)( xui_method_args& args )
+	return NULL;
+}
+xui_method_explain(onity_hierarchy, del_entitynode,			void			)( Omiga::Entity* ent )
 {
-	xui_dockpage::on_load(args);
+	xui_treenode* entitynode = get_entitynode(ent);
+	if (entitynode)
+	{
+		xui_treenode* filternode = entitynode->get_rootnode();
+		filternode->del_leafnode(entitynode);
 
-	xui_treenode* node = NULL;
-	m_tree->add_upmostnode(0, new onity_entity_data(L"Camera"));
-	node = m_tree->add_upmostnode(1, new onity_entity_data(L"SceneSpawnMgr"));
-	node->add_leafnode(0, new onity_entity_data(L"Monster"));
-	node->add_leafnode(1, new onity_entity_data(L"Star"));
-	node->add_leafnode(2, new onity_entity_data(L"LargeMonster"));
-	node->add_leafnode(3, new onity_entity_data(L"Ground"));
-	node = m_tree->add_upmostnode(2, new onity_entity_data(L"UI"));
-	node->add_leafnode(0, new onity_entity_data(L"GameHUD"));
-	m_tree->add_upmostnode(3, new onity_entity_data(L"Player"));
+		if (filternode->get_leafnodecount() == 0)
+			m_tree->del_upmostnode(filternode);
+	}
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_hierarchy, on_entityadd,			void			)( Omiga::Entity* ent )
+{
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	hierarchy->add_entitynode(ent);
+}
+xui_method_explain(onity_hierarchy, on_entitydel,			void			)( Omiga::Entity* ent )
+{
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	hierarchy->del_entitynode(ent);
 }
 
 /*
 //event
 */
-xui_method_explain(onity_hierarchy, on_clearclick,			void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_hierarchy, on_clearclick,			void			)( xui_component* sender, xui_method_args& args )
 {
 	m_search->set_text(L"");
 }
-xui_method_explain(onity_hierarchy, on_searchtextchanged,	void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_hierarchy, on_searchtextchanged,	void			)( xui_component* sender, xui_method_args& args )
 {
 	m_clear->ini_component(true, m_search->get_text().length() > 0);
 	if (m_search->get_text().empty())
@@ -144,15 +144,47 @@ xui_method_explain(onity_hierarchy, on_searchtextchanged,	void)( xui_component* 
 		m_tree->set_searchtext(L"");
 	}
 }
-xui_method_explain(onity_hierarchy, on_searchtextenter,		void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_hierarchy, on_searchtextenter,		void			)( xui_component* sender, xui_method_args& args )
 {
 	m_tree->set_searchtext(m_search->get_text());
 }
-xui_method_explain(onity_hierarchy, on_headperform,			void)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_hierarchy, on_headperform,			void			)( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_head->get_renderrtins();
 	s32 w = rt.get_w()-m_create->get_renderw()-6;
 	xui_method_ptrcall(m_search, on_perform_w)(xui_min(w, 150));
 	xui_method_ptrcall(m_search, on_perform_x)(rt.ax+m_create->get_renderw()+6);
 	xui_method_ptrcall(m_clear,  on_perform_x)(rt.ax+m_create->get_renderw()+6+m_search->get_renderw()-m_clear->get_renderw()-2);
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_hierarchy, add_filternode,			xui_treenode*	)( const std::string& name )
+{
+	return m_tree->add_upmostnode(
+		m_tree->get_upmostnodecount(), 
+		new xui_treedata(xui_global::ascii_to_unicode(name)));
+}
+xui_method_explain(onity_hierarchy, get_filternode,			xui_treenode*	)( const std::string& name )
+{
+	std::wstring  filtername = xui_global::ascii_to_unicode(name);
+	xui_treenode* filternode = NULL;
+	for (u32 i = 0; i < m_tree->get_upmostnodecount(); ++i)
+	{
+		xui_treenode* node = m_tree->get_upmostnode(i);
+		xui_treedata* data = node->get_linkdata();
+		if (data->get_text(0) == filtername)
+		{
+			filternode = node;
+			break;
+		}
+	}
+
+	if (filternode == NULL)
+	{
+		filternode = add_filternode(name);
+	}
+
+	return filternode;
 }

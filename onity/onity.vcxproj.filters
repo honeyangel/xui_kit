@@ -179,6 +179,9 @@
       <Filter>project</Filter>
     </ClInclude>
     <ClInclude Include="onity_scene.h" />
+    <ClInclude Include="onity_filterdata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -360,6 +363,9 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_scene.cpp" />
+    <ClCompile Include="onity_filterdata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">
@@ -373,6 +379,9 @@
     </Filter>
     <Filter Include="timeline">
       <UniqueIdentifier>{7c8e80c7-65ee-4f14-9c49-855f138f4660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hierarchy">
+      <UniqueIdentifier>{11b48a8f-1c51-444f-913c-41c0cd8caaa8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #ifndef __onity_hierarchy_h__
 #define __onity_hierarchy_h__
 
+#include "Entity/Entity.h"
 #include "xui_dockpage.h"
 
 class onity_hierarchy : public xui_dockpage
@@ -13,12 +14,20 @@ public:
 	*/
 	onity_hierarchy( void );
 
-protected:
 	/*
-	//callback
+	//static
 	*/
-	virtual void	on_load				( xui_method_args& args );
+	static void		on_entityadd		( Omiga::Entity* ent );
+	static void		on_entitydel		( Omiga::Entity* ent );
 
+	/*
+	//method
+	*/
+	xui_treenode*	add_entitynode		( Omiga::Entity* ent );
+	xui_treenode*	get_entitynode		( Omiga::Entity* ent );
+	void			del_entitynode		( Omiga::Entity* ent );
+
+protected:
 	/*
 	//event
 	*/
@@ -26,6 +35,12 @@ protected:
 	void			on_searchtextchanged( xui_component* sender, xui_method_args& args );
 	void			on_searchtextenter	( xui_component* sender, xui_method_args& args );
 	void			on_headperform		( xui_component* sender, xui_method_args& args );
+
+	/*
+	//method
+	*/
+	xui_treenode*	add_filternode		( const std::string& name );
+	xui_treenode*	get_filternode		( const std::string& name );
 
 	/*
 	//member
