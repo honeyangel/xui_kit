@@ -1,5 +1,5 @@
-#ifndef __onity_propkind_compold_h__
-#define __onity_propkind_compold_h__
+#ifndef __onity_propkind_entitycomp_h__
+#define __onity_propkind_entitycomp_h__
 
 #include "EntityTemplate.h"
 #include "xui_propkind.h"
@@ -8,13 +8,13 @@
 //////////////////////////////////////////////////////////////////////////
 //propkind
 //////////////////////////////////////////////////////////////////////////
-class onity_propkind_compold : public xui_propkind
+class onity_propkind_entitycomp : public xui_propkind
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_propkind_compold( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node );
+	onity_propkind_entitycomp( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node );
 
 	/*
 	//method
@@ -36,7 +36,7 @@ protected:
 //////////////////////////////////////////////////////////////////////////
 //kindctrl
 //////////////////////////////////////////////////////////////////////////
-class onity_kindctrl_compold : public xui_kindctrl
+class onity_kindctrl_entitycomp : public xui_kindctrl
 {
 	xui_declare_rtti
 
@@ -49,7 +49,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_kindctrl_compold( xui_propkind* propkind );
+	onity_kindctrl_entitycomp( xui_propkind* propkind );
 
 protected:
 	/*
@@ -67,7 +67,7 @@ protected:
 	*/
 	xui_button*					m_killctrl;
 };
-class onity_kindctrl_compadd : public xui_kindctrl
+class onity_kindctrl_entitycompadd : public xui_kindctrl
 {
 	xui_declare_rtti
 
@@ -80,7 +80,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_kindctrl_compadd( xui_propkind* propkind );
+	onity_kindctrl_entitycompadd( xui_propkind* propkind );
 
 protected:
 	/*
@@ -106,4 +106,4 @@ protected:
 	xui_textbox*				m_namectrl;
 };
 
-#endif//__onity_propkind_compold_h__
+#endif//__onity_propkind_entitycomp_h__

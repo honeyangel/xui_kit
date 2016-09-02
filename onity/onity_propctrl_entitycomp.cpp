@@ -5,8 +5,8 @@
 #include "xui_panel.h"
 #include "xui_global.h"
 #include "xui_convas.h"
-#include "onity_propkind_compold.h"
-#include "onity_propctrl_compold.h"
+#include "onity_propkind_entitycomp.h"
+#include "onity_propctrl_entitycomp.h"
 
 //////////////////////////////////////////////////////////////////////////
 //compattr
@@ -21,7 +21,7 @@ const s32 onity_compattr::default_height = 20;
 /*
 //constructor
 */
-xui_create_explain(onity_compattr)( onity_propkind_compold* compkind, const std::string& name )
+xui_create_explain(onity_compattr)( onity_propkind_entitycomp* compkind, const std::string& name )
 : xui_control(xui_vector<s32>(128, default_height))
 , m_compkind(compkind)
 , m_attrname(name)
@@ -340,9 +340,9 @@ xui_method_explain(onity_propctrl_compattr, create,					xui_propctrl*		)( xui_pr
 */
 xui_method_explain(onity_propctrl_compattr, on_linkpropdata,		void				)( void )
 {
-	onity_propkind_compold*  compkind = dynamic_cast<onity_propkind_compold*>(m_propdata->get_kind());
-	BreezeGame::Json::Value* node     = compkind->get_node();
-	std::vector<std::string> vec      = node->getMemberNames();
+	onity_propkind_entitycomp* compkind = dynamic_cast<onity_propkind_entitycomp*>(m_propdata->get_kind());
+	BreezeGame::Json::Value*   node     = compkind->get_node();
+	std::vector<std::string>   vec      = node->getMemberNames();
 
 	xui_method_ptrcall(m_middle, del_children	)();
 	for (u32 i = 0; i < vec.size(); ++i)
@@ -478,8 +478,8 @@ xui_method_explain(onity_propctrl_compattr, on_middleperform,		void				)( xui_co
 }
 xui_method_explain(onity_propctrl_compattr, on_deleteclick,			void				)( xui_component* sender, xui_method_args& args )
 {
-	onity_propkind_compold*  compkind = dynamic_cast<onity_propkind_compold*>(m_propdata->get_kind());
-	BreezeGame::Json::Value* node     = compkind->get_node();
+	onity_propkind_entitycomp* compkind = dynamic_cast<onity_propkind_entitycomp*>(m_propdata->get_kind());
+	BreezeGame::Json::Value*   node     = compkind->get_node();
 
 	bool modify = false;
 	std::vector<xui_control*> vec = m_middle->get_children();
@@ -517,8 +517,8 @@ xui_method_explain(onity_propctrl_compattr, on_deleterenderself,	void				)( xui_
 }
 xui_method_explain(onity_propctrl_compattr, on_insertclick,			void				)( xui_component* sender, xui_method_args& args )
 {
-	onity_propkind_compold*  compkind = dynamic_cast<onity_propkind_compold*>(m_propdata->get_kind());
-	BreezeGame::Json::Value* node     = compkind->get_node();
+	onity_propkind_entitycomp* compkind = dynamic_cast<onity_propkind_entitycomp*>(m_propdata->get_kind());
+	BreezeGame::Json::Value*   node     = compkind->get_node();
 
 	std::stringstream temp;
 	temp << "New Attribute";

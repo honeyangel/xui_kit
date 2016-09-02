@@ -558,6 +558,22 @@ xui_method_explain(xui_global, cpy_string,		void						)( const std::wstring& tex
 	SetClipboardData(CF_UNICODETEXT, hGlobal);
 	CloseClipboard();
 }
+xui_method_explain(xui_global, pst_string,		std::wstring				)( void )
+{
+	std::wstring result;
+
+	OpenClipboard(NULL);
+	HGLOBAL hGlobal = GetClipboardData(CF_UNICODETEXT);
+	if (hGlobal)
+	{
+		wchar_t* buffer = (wchar_t*)GlobalLock(hGlobal);
+		result = std::wstring(buffer);
+		GlobalUnlock(hGlobal);
+	}
+	CloseClipboard();
+
+	return result;
+}
 
 bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 {

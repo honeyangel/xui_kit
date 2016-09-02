@@ -206,14 +206,14 @@ xui_method_explain(xui_desktop, set_mousecurr,	void					)( const xui_vector<s32>
 /*
 //input
 */
-xui_method_explain(xui_desktop, get_pastetext, const std::wstring&		)( void ) const
-{
-	return m_pastetext;
-}
-xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& text )
-{
-	m_pastetext = text;
-}
+//xui_method_explain(xui_desktop, get_pastetext, const std::wstring&		)( void ) const
+//{
+//	return m_pastetext;
+//}
+//xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& text )
+//{
+//	m_pastetext = text;
+//}
 
 /*
 //modal

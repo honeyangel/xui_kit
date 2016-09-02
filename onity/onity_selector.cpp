@@ -13,7 +13,7 @@
 #include "onity_2dsassetdata.h"
 #include "onity_prop2dsres.h"
 #include "onity_prop2dsasset.h"
-#include "onity_tempdata.h"
+#include "onity_jsonestempdata.h"
 #include "onity_resource.h"
 #include "onity_treedata.h"
 #include "onity_fileview.h"
@@ -22,7 +22,7 @@
 #include "onity_propfile.h"
 #include "onity_propleaf.h"
 #include "onity_propjsones.h"
-#include "onity_proptempold.h"
+#include "onity_propjsonestemp.h"
 #include "onity_preview.h"
 #include "onity_mainform.h"
 #include "onity_project.h"
@@ -470,11 +470,11 @@ xui_method_explain(onity_selector, refresh_fileview,		void				)( void )
 				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
-					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
+					onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
+						node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}
@@ -497,6 +497,7 @@ xui_method_explain(onity_selector, convert_dropsuff,		std::wstring		)( const std
 	else if (droptype == "NP2DSImage")		return L".npModule";
 	else if (droptype == "NP2DSFrame")		return L".npSprite";
 	else if (droptype == "NP2DSActor")		return L".npAction";
+	else if (droptype == "NP2DSSceneFile")	return L".npCourse";
 	else if (droptype == "NPParticleSFX")	return L".particle";
 	else if (droptype == "NP2DSStateCtrl")	return L".controller";
 	else if (droptype == "EntityTemplate")	return L".json";

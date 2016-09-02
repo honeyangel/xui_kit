@@ -10,6 +10,7 @@ enum
 	FILTER_MODULE,
 	FILTER_SPRITE,
 	FILTER_ACTION,
+	FILTER_COURSE,
 	FILTER_PARTICLE,
 	FILTER_CONTROLLER,
 	FILTER_JSON,
@@ -63,6 +64,7 @@ protected:
 	void						on_folderclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_controllerclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_particleclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_courseclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
@@ -86,7 +88,7 @@ protected:
 	std::wstring				convert_filesuff	( void );
 	void						set_freetype		( u08 type, const std::string& pathname, u32 style );
 	void						set_loadtype		( u08 type, const std::string& pathname, bool flag );
-	xui_proproot*				add_propleaf		( void );
+	void						add_propleaf		( void );
 	void						del_propleaf		( const xui_proproot_vec& propvec );
 	void						pst_propleaf		( void );
 
@@ -98,6 +100,7 @@ protected:
 	xui_menuitem*				m_folder;
 	xui_menuitem*				m_controller;
 	xui_menuitem*				m_particle;
+	xui_menuitem*				m_course;
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 	xui_timer*					m_timer;

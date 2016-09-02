@@ -3,7 +3,7 @@
 #include "EntityTemplate.h"
 #include "xui_global.h"
 #include "onity_resource.h"
-#include "onity_proptempold.h"
+#include "onity_propjsonestemp.h"
 #include "onity_mainform.h"
 #include "onity_project.h"
 #include "onity_propjsones.h"
@@ -58,7 +58,7 @@ xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( void )
 
 	Omiga::EntityTemplate* temp = new Omiga::EntityTemplate(text.str());
 	Omiga::EntityManager::Instance()->AddEntityTemplate(temp);
-	onity_proptempold* prop = new onity_proptempold(this, temp);
+	onity_propjsonestemp* prop = new onity_propjsonestemp(this, temp);
 	m_subprop.push_back(prop);
 	m_modify = true;
 
@@ -66,8 +66,8 @@ xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( void )
 }
 xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( xui_proproot* prop )
 {
-	onity_proptempold* propsrc = dynamic_cast<onity_proptempold*>(prop);
-	onity_proptempold* propdst = dynamic_cast<onity_proptempold*>(add_subprop());
+	onity_propjsonestemp* propsrc = dynamic_cast<onity_propjsonestemp*>(prop);
+	onity_propjsonestemp* propdst = dynamic_cast<onity_propjsonestemp*>(add_subprop());
 	propdst->pst_template(propsrc->get_template());
 	return propdst;
 }
@@ -80,7 +80,7 @@ xui_method_explain(onity_propjsones, del_subprop,	void				)( xui_proproot* prop 
 
 	if (itor != m_subprop.end())
 	{
-		onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(prop);
+		onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(prop);
 		Omiga::EntityManager::Instance()->RemoveEntityTemplate(proptemp->get_template());
 
 		m_subprop.erase(itor);
@@ -124,8 +124,8 @@ xui_method_explain(onity_propjsones, save,			void				)( void )
 	(*node) = BreezeGame::Json::Value(BreezeGame::Json::arrayValue);
 	for (u32 i = 0; i < m_subprop.size(); ++i)
 	{
-		onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(m_subprop[i]);
-		BreezeGame::Json::Value* temp = proptemp->get_template()->GetNode();
+		onity_propjsonestemp*    prop = dynamic_cast<onity_propjsonestemp*>(m_subprop[i]);
+		BreezeGame::Json::Value* temp = prop->get_template()->GetNode();
 		node->append(*temp);
 	}
 	BreezeGame::Json::StyledWriter writer;
@@ -185,9 +185,9 @@ xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 
 			if (propmap.find(temp) == propmap.end())
 			{
-				onity_proptempold* proptemp = new onity_proptempold(this, temp);
-				m_subprop.push_back(proptemp);
-				propmap[temp] = proptemp;
+				onity_propjsonestemp* prop = new onity_propjsonestemp(this, temp);
+				m_subprop.push_back(prop);
+				propmap[temp] = prop;
 			}
 		}
 	}

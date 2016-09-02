@@ -49,8 +49,8 @@ public:
 	/*
 	//paste
 	*/
-	const std::wstring&			get_pastetext	( void ) const;
-	void						set_pastetext	( const std::wstring& text );
+	//const std::wstring&			get_pastetext	( void ) const;
+	//void						set_pastetext	( const std::wstring& text );
 
 	/*
 	//modal
@@ -106,12 +106,11 @@ protected:
 	xui_component*				m_catchctrl;
 	xui_component*				m_focusctrl;
 	xui_component*				m_hoverctrl;
-	//xui_component*				m_floatctrl;
 	u08							m_allowdrag;
 	void*						m_catchdata;
 	std::string					m_catchtype;
 	std::wstring				m_inputtext;
-	std::wstring				m_pastetext;
+	//std::wstring				m_pastetext;
 
 	xui_vector<s32>				m_mousedown;
 	xui_vector<s32>				m_mouselast;

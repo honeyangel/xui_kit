@@ -1,6 +1,7 @@
 #include "NPFileName.h"
 #include "NPStringUtil.h"
 #include "NP2DSStateCtrl.h"
+#include "NP2DSSceneFile.h"
 #include "NP2DSImageFile.h"
 #include "NP2DSFrameFile.h"
 #include "NP2DSActorFile.h"
@@ -42,13 +43,15 @@
 #include "onity_proppath.h"
 #include "onity_propactor.h"
 #include "onity_propjsones.h"
-#include "onity_proptempold.h"
-#include "onity_tempdata.h"
+#include "onity_propcourse.h"
+#include "onity_propjsonestemp.h"
+#include "onity_jsonestempdata.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_mainform.h"
 #include "onity_animator.h"
 #include "onity_timeline.h"
+#include "onity_hierarchy.h"
 #include "onity_project.h"
 
 xui_implement_rtti(onity_project, xui_dockpage);
@@ -67,9 +70,11 @@ xui_create_explain(onity_project)( void )
 	menu1->add_separate();
 	m_controller	= menu1->add_item(onity_resource::icon_animator, L"Animation Controller");
 	m_particle		= menu1->add_item(onity_resource::icon_particle, L"Particle");
+	m_course		= menu1->add_item(onity_resource::icon_scene,	 L"Scene");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
 	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
 	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_particleclick);
+	xui_method_ptrcall(m_course,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_courseclick);
 
 	m_timer		= xui_timermgr::get_ins()->add_timer(this, 1.0f, NULL);
 	xui_method_ptrcall(m_timer,		xm_tick				) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_timertick);
@@ -454,11 +459,11 @@ xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfi
 				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
-					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
+					onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
+						node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}
@@ -732,9 +737,16 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component
 					std::wstring suff = file->get_suff();
 					if (suff == L".controller")
 					{
-						onity_animator* animator = onity_mainform::get_ptr()->get_animator();
-						onity_mainform::get_ptr()->set_pageshow(animator);
-						animator->set_editprop((onity_propcontroller*)file->get_prop());
+						onity_animator*  page = onity_mainform::get_ptr()->get_animator();
+						onity_mainform::get_ptr()->set_pageshow(page);
+						page->set_editprop((onity_propcontroller*)file->get_prop());
+					}
+					else
+					if (suff == L".npCourse")
+					{
+						onity_hierarchy* page = onity_mainform::get_ptr()->get_hierarchy();
+						onity_mainform::get_ptr()->set_pageshow(page);
+						//page->set_editprop((onity_propcourse*    )file->get_prop());
 					}
 					else
 					if (suff == L".npModule" ||
@@ -938,6 +950,47 @@ xui_method_explain(onity_project, on_particleclick,			void			)( xui_component* s
 		}
 
 		onity_propparticle* propfile = new onity_propparticle(temp.str());
+		xui_method_ptrcall(proppath, add_fileprop)(propfile);
+		xui_method_ptrcall(propfile, save		 )();
+
+		xui_treeview* lineview = m_fileview->get_lineview();
+		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
+		lineview->refresh();
+		linenode->set_edittext(0);
+	}
+}
+xui_method_explain(onity_project, on_courseclick,			void			)( xui_component* sender, xui_method_args&	   args )
+{
+	m_search->set_text(L"");
+
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*   pathnode = nodevec.front();
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		std::wstringstream temp;
+		temp << pathdata->get_full().c_str();
+		temp << L"/New Level.npCourse";
+		if (xui_global::has_file(temp.str()))
+		{
+			s32 number  = 0;
+			while (true)
+			{
+				temp.str(L"");
+				temp << pathdata->get_full().c_str();
+				temp << L"/New Level";
+				temp << number;
+				temp << ".npCourse";
+				if (xui_global::has_file(temp.str()) == false)
+					break;
+
+				++number;
+			}
+		}
+
+		onity_propcourse* propfile = new onity_propcourse(temp.str());
 		xui_method_ptrcall(proppath, add_fileprop)(propfile);
 		xui_method_ptrcall(propfile, save		 )();
 
@@ -1267,11 +1320,11 @@ xui_method_explain(onity_project, refresh_fileview,			void			)( void )
 				std::vector<xui_proproot*> subprop = propjsones->get_subprop();
 				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
 				{
-					onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(subprop[isub]);
+					onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
 					Omiga::EntityTemplate* temp = proptemp->get_template();
 					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
 					{
-						node->add_leafnode(isubindex, new onity_tempdata(onity_resource::icon_entity, proptemp));
+						node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
 					}
 				}
@@ -1372,7 +1425,7 @@ xui_method_explain(onity_project, refresh_linetool,			void			)( void )
 	xui_method_ptrcall(m_del,		set_enable)(viewfile != NULL && selectednode.size() > 0);
 	xui_method_ptrcall(m_copy,		set_enable)(viewfile != NULL && selectednode.size() > 0);
 	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && filedata->get_suff() != L".json");
-	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL &&   m_menuprop.size() > 0);
+	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL && m_search->get_text().length() == 0 && m_menuprop.size() > 0);
 }
 xui_method_explain(onity_project, convert_filesuff,			std::wstring	)( void )
 {
@@ -1383,6 +1436,7 @@ xui_method_explain(onity_project, convert_filesuff,			std::wstring	)( void )
 	case FILTER_MODULE:		return L".npModule";
 	case FILTER_SPRITE:		return L".npSprite";
 	case FILTER_ACTION:		return L".npAction";
+	case FILTER_COURSE:		return L".npCourse";
 	case FILTER_PARTICLE:	return L".particle";
 	case FILTER_CONTROLLER:	return L".controller";
 	case FILTER_JSON:		return L".json";
@@ -1478,7 +1532,7 @@ xui_method_explain(onity_project, set_loadtype,				void			)( u08 type, const std
 		}
 	}
 }
-xui_method_explain(onity_project, add_propleaf,				xui_proproot*	)( void )
+xui_method_explain(onity_project, add_propleaf,				void			)( void )
 {
 	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
 	onity_treedata* filedata = dynamic_cast<onity_treedata*>(viewfile->get_linkdata());
@@ -1498,16 +1552,23 @@ xui_method_explain(onity_project, add_propleaf,				xui_proproot*	)( void )
 	if (propjsones)
 	{
 		propleaf = propjsones->add_subprop();
-		linkdata = new onity_tempdata(onity_resource::icon_entity, propleaf);
+		linkdata = new onity_jsonestempdata(onity_resource::icon_entity, propleaf);
 	}
 
 	if (linkdata)
 	{
 		u32 index = viewfile->get_leafnodecount();
-		viewfile->add_leafnode(index, linkdata);
-	}
+		xui_treenode*   node     = viewfile->add_leafnode(index, linkdata);
+		xui_treeview*   lineview = m_fileview->get_lineview();
+		onity_tileview* tileview = m_fileview->get_tileview();
+		xui_method_ptrcall(lineview, non_selectednode	)();
+		xui_method_ptrcall(lineview, set_selectednode	)(node, true);
+		xui_method_ptrcall(lineview, set_nodevisible	)(node);
+		xui_method_ptrcall(tileview, set_tilevisible	)(node);
 
-	return propleaf;
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->set_proproot(propleaf);
+	}
 }
 xui_method_explain(onity_project, del_propleaf,				void			)( const xui_proproot_vec& propvec )
 {
@@ -1542,6 +1603,7 @@ xui_method_explain(onity_project, pst_propleaf,				void			)( void )
 	std::wstring    srcfull = srcfile->get_fullname();
 	if (onity_filedata::get_suff(dstfull) == onity_filedata::get_suff(srcfull))
 	{
+		std::vector<onity_treedata*> vec;
 		onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(dstfile);
 		if (prop2dsres)
 		{
@@ -1550,8 +1612,9 @@ xui_method_explain(onity_project, pst_propleaf,				void			)( void )
 				onity_prop2dsasset* srcleaf = dynamic_cast<onity_prop2dsasset*>(m_menuprop[i]);
 				onity_prop2dsasset* dstleaf = dynamic_cast<onity_prop2dsasset*>(prop2dsres->add_subprop(srcleaf));
 				u32 index = dstnode->get_leafnodecount();
-				xui_treedata* linkdata = new onity_2dsassetdata(dstleaf->get_resicon(), dstleaf);
+				onity_treedata* linkdata = new onity_2dsassetdata(dstleaf->get_resicon(), dstleaf);
 				dstnode->add_leafnode(index, linkdata);
+				vec.push_back(linkdata);
 			}
 		}
 
@@ -1560,19 +1623,41 @@ xui_method_explain(onity_project, pst_propleaf,				void			)( void )
 		{
 			for (u32 i = 0; i < m_menuprop.size(); ++i)
 			{
-				onity_proptempold*  srcleaf = dynamic_cast<onity_proptempold* >(m_menuprop[i]);
-				onity_proptempold*  dstleaf = dynamic_cast<onity_proptempold* >(propjsones->add_subprop(srcleaf));
+				onity_propjsonestemp* srcleaf = dynamic_cast<onity_propjsonestemp*>(m_menuprop[i]);
+				onity_propjsonestemp* dstleaf = dynamic_cast<onity_propjsonestemp*>(propjsones->add_subprop(srcleaf));
 				u32 index = dstnode->get_leafnodecount();
-				xui_treedata* linkdata = new onity_tempdata(onity_resource::icon_entity, dstleaf);
+				onity_treedata* linkdata = new onity_jsonestempdata(onity_resource::icon_entity, dstleaf);
 				dstnode->add_leafnode(index, linkdata);
+				vec.push_back(linkdata);
 			}
 		}
-	}
 
-	if (m_move->get_data())
-	{
-		m_move->set_data(NULL);
-		del_propleaf(m_menuprop);
-		m_menuprop.clear();
+		if (m_move->get_data())
+		{
+			m_move->set_data(NULL);
+			del_propleaf(m_menuprop);
+			m_menuprop.clear();
+		}
+
+		if (vec.size() > 0)
+		{
+			std::vector<xui_treenode*> nodes;
+			for (u32 i = 0; i < vec.size(); ++i)
+				nodes.push_back(vec[i]->get_node());
+
+			xui_treeview*   lineview = m_fileview->get_lineview();
+			onity_tileview* tileview = m_fileview->get_tileview();
+			xui_method_ptrcall(lineview, non_selectednode	)();
+			xui_method_ptrcall(lineview, set_selectednode	)(nodes);
+			xui_method_ptrcall(lineview, set_nodevisible	)(nodes.front());
+			xui_method_ptrcall(tileview, set_tilevisible	)(nodes.front());
+
+			std::vector<xui_proproot*> props;
+			for (u32 i = 0; i < vec.size(); ++i)
+				props.push_back(vec[i]->get_prop());
+			
+			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+			inspector->set_proproot(props);
+		}
 	}
 }

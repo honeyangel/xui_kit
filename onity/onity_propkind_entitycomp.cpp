@@ -11,9 +11,9 @@
 #include "xui_desktop.h"
 #include "onity_resource.h"
 #include "onity_propjsones.h"
-#include "onity_proptempold.h"
-#include "onity_propctrl_compold.h"
-#include "onity_propkind_compold.h"
+#include "onity_propjsonestemp.h"
+#include "onity_propctrl_entitycomp.h"
+#include "onity_propkind_entitycomp.h"
 
 //////////////////////////////////////////////////////////////////////////
 //propkind
@@ -21,18 +21,18 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propkind_compold)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node )
-: xui_propkind(root, name, type, onity_kindctrl_compold::create, icon, true)
+xui_create_explain(onity_propkind_entitycomp)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_bitmap* icon, BreezeGame::Json::Value* node )
+: xui_propkind(root, name, type, onity_kindctrl_entitycomp::create, icon, true)
 , m_node(node)
 {
-	xm_namechanged += new xui_method_member<xui_method_args, onity_propkind_compold>(this, &onity_propkind_compold::on_namechanged);
+	xm_namechanged += new xui_method_member<xui_method_args, onity_propkind_entitycomp>(this, &onity_propkind_entitycomp::on_namechanged);
 	add_propdata(new xui_propdata(this, L"", onity_propctrl_compattr::create));
 }
 
 /*
 //method
 */
-xui_method_explain(onity_propkind_compold, get_node,			BreezeGame::Json::Value*)( void )
+xui_method_explain(onity_propkind_entitycomp,		get_node,			BreezeGame::Json::Value*)( void )
 {
 	return m_node;
 }
@@ -40,12 +40,13 @@ xui_method_explain(onity_propkind_compold, get_node,			BreezeGame::Json::Value*)
 /*
 //event
 */
-xui_method_explain(onity_propkind_compold, on_namechanged,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_propkind_entitycomp,		on_namechanged,		void					)( xui_component* sender, xui_method_args& args )
 {
 	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
 	std::wstring text = textbox->get_text();
 	if (text.length() > 0)
 	{
+		m_name = text;
 		(*m_node)["ClassName"] = xui_global::unicode_to_ascii(text);
 
 		xui_method_propdata  other_args;
@@ -56,16 +57,16 @@ xui_method_explain(onity_propkind_compold, on_namechanged,		void					)( xui_comp
 //////////////////////////////////////////////////////////////////////////
 //kindctrl
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(onity_kindctrl_compold, xui_kindctrl);
+xui_implement_rtti(onity_kindctrl_entitycomp, xui_kindctrl);
 
 /*
 //constructor
 */
-xui_create_explain(onity_kindctrl_compold)( xui_propkind* propkind )
+xui_create_explain(onity_kindctrl_entitycomp)( xui_propkind* propkind )
 : xui_kindctrl(propkind)
 {
 	m_killctrl = new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_killctrl, xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_kindctrl_compold>(this, &onity_kindctrl_compold::on_killctrlclick);
+	xui_method_ptrcall(m_killctrl, xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_kindctrl_entitycomp>(this, &onity_kindctrl_entitycomp::on_killctrlclick);
 	xui_method_ptrcall(m_killctrl, set_parent		)(this);
 	xui_method_ptrcall(m_killctrl, set_iconalign	)(IMAGE_C);
 	xui_method_ptrcall(m_killctrl, ini_drawer		)(onity_resource::icon_delete);
@@ -75,15 +76,15 @@ xui_create_explain(onity_kindctrl_compold)( xui_propkind* propkind )
 /*
 //static
 */
-xui_method_explain(onity_kindctrl_compold, create,				xui_kindctrl*			)( xui_propkind* propkind )
+xui_method_explain(onity_kindctrl_entitycomp,		create,				xui_kindctrl*			)( xui_propkind* propkind )
 {
-	return new onity_kindctrl_compold(propkind);
+	return new onity_kindctrl_entitycomp(propkind);
 }
 
 /*
 //override
 */
-xui_method_explain(onity_kindctrl_compold, on_perform,			void					)( xui_method_args& args )
+xui_method_explain(onity_kindctrl_entitycomp,		on_perform,			void					)( xui_method_args& args )
 {
 	xui_kindctrl::on_perform(args);
 	m_killctrl->on_perform_x(m_flagctrl->get_renderx()-4-m_killctrl->get_renderw());
@@ -94,18 +95,19 @@ xui_method_explain(onity_kindctrl_compold, on_perform,			void					)( xui_method_
 /*
 //event
 */
-xui_method_explain(onity_kindctrl_compold, on_killctrlclick,	void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_kindctrl_entitycomp,		on_killctrlclick,	void					)( xui_component* sender, xui_method_args& args )
 {
-	onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(m_propkind->get_root());
-	proptemp->del_component(m_propkind);
+	onity_propjsonestemp* propjsones = dynamic_cast<onity_propjsonestemp*>(m_propkind->get_root());
+	if (propjsones)
+		propjsones->del_component(m_propkind);
 }
 
-xui_implement_rtti(onity_kindctrl_compadd, xui_kindctrl);
+xui_implement_rtti(onity_kindctrl_entitycompadd, xui_kindctrl);
 
 /*
 //constructor
 */
-xui_create_explain(onity_kindctrl_compadd)( xui_propkind* propkind )
+xui_create_explain(onity_kindctrl_entitycompadd)( xui_propkind* propkind )
 : xui_kindctrl(propkind)
 {
 	xui_menu*     menu		= xui_menu::create(80);
@@ -115,12 +117,12 @@ xui_create_explain(onity_kindctrl_compadd)( xui_propkind* propkind )
 	xui_menuitem* physics	= menu->add_item(NULL, L"Physics");
 	xui_menuitem* action	= menu->add_item(NULL, L"InterAction");
 	xui_menuitem* gui		= menu->add_item(NULL, L"GUI");
-	xui_method_ptrcall(visual,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
-	xui_method_ptrcall(transform,	xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
-	xui_method_ptrcall(ai,			xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
-	xui_method_ptrcall(physics,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
-	xui_method_ptrcall(action,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
-	xui_method_ptrcall(gui,			xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_compadd>(this, &onity_kindctrl_compadd::on_menuitemclick);
+	xui_method_ptrcall(visual,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
+	xui_method_ptrcall(transform,	xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
+	xui_method_ptrcall(ai,			xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
+	xui_method_ptrcall(physics,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
+	xui_method_ptrcall(action,		xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
+	xui_method_ptrcall(gui,			xm_click		) += new xui_method_member<xui_method_args, onity_kindctrl_entitycompadd>(this, &onity_kindctrl_entitycompadd::on_menuitemclick);
 
 	m_menuctrl	= new xui_toggle(xui_vector<s32>(128, 18), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_menuctrl,	set_parent		)(this);
@@ -148,15 +150,15 @@ xui_create_explain(onity_kindctrl_compadd)( xui_propkind* propkind )
 /*
 //static
 */
-xui_method_explain(onity_kindctrl_compadd, create,				xui_kindctrl*			)( xui_propkind* propkind )
+xui_method_explain(onity_kindctrl_entitycompadd,	create,				xui_kindctrl*			)( xui_propkind* propkind )
 {
-	return new onity_kindctrl_compadd(propkind);
+	return new onity_kindctrl_entitycompadd(propkind);
 }
 
 /*
 //callback
 */
-xui_method_explain(onity_kindctrl_compadd, on_perform,			void					)( xui_method_args& args )
+xui_method_explain(onity_kindctrl_entitycompadd,	on_perform,			void					)( xui_method_args& args )
 {
 	xui_kindctrl::on_perform(args);
 	s32 indent = xui_propview::default_nodeindent;
@@ -177,11 +179,11 @@ xui_method_explain(onity_kindctrl_compadd, on_perform,			void					)( xui_method_
 /*
 //override
 */
-xui_method_explain(onity_kindctrl_compadd, get_elsectrlsize,	s32						)( void )
+xui_method_explain(onity_kindctrl_entitycompadd,	get_elsectrlsize,	s32						)( void )
 {
 	return KIND_HEIGHT;
 }
-xui_method_explain(onity_kindctrl_compadd, get_prevctrlsize,	s32						)( void )
+xui_method_explain(onity_kindctrl_entitycompadd,	get_prevctrlsize,	s32						)( void )
 {
 	return KIND_HEIGHT;
 }
@@ -189,7 +191,7 @@ xui_method_explain(onity_kindctrl_compadd, get_prevctrlsize,	s32						)( void )
 /*
 //event
 */
-xui_method_explain(onity_kindctrl_compadd, on_menuitemclick,	void					)( xui_component* sender, xui_method_args&	 args )
+xui_method_explain(onity_kindctrl_entitycompadd,	on_menuitemclick,	void					)( xui_component* sender, xui_method_args&	 args )
 {
 	xui_menuitem* item = xui_dynamic_cast(xui_menuitem, sender);
 	std::string   type = xui_global::unicode_to_ascii(item->get_text());
@@ -201,7 +203,9 @@ xui_method_explain(onity_kindctrl_compadd, on_menuitemclick,	void					)( xui_com
 		return;
 	}
 
-	onity_proptempold* proptemp = dynamic_cast<onity_proptempold*>(m_propkind->get_root());
-	proptemp->add_component(type, name);
 	m_namectrl->ini_drawer(L"");
+
+	onity_propjsonestemp* propjsones = dynamic_cast<onity_propjsonestemp*>(m_propkind->get_root());
+	if (propjsones)
+		propjsones->add_component(type, name);
 }

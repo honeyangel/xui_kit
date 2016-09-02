@@ -547,7 +547,7 @@ xui_method_explain(xui_textbox, do_copy,			void					)( void )
 		return;
 
 	std::wstring temp = get_selecttext();
-	xui_desktop::get_ins()->set_pastetext(temp);
+	//xui_desktop::get_ins()->set_pastetext(temp);
 	xui_global::cpy_string(temp);
 }
 xui_method_explain(xui_textbox, do_cut,				void					)( void )
@@ -563,7 +563,7 @@ xui_method_explain(xui_textbox, do_paste,			void					)( void )
 	if (m_readonly)
 		return;
 
-	std::wstring temp = xui_desktop::get_ins()->get_pastetext();
+	std::wstring temp = xui_global::pst_string();//xui_desktop::get_ins()->get_pastetext();
 	xui_method_keybd args;
 	for (u32 i = 0; i < temp.length(); ++i)
 	{

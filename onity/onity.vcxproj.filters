@@ -163,24 +163,36 @@
     <ClInclude Include="onity_propprefab.h">
       <Filter>project</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propkind_compold.h">
-      <Filter>project</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_proptempold.h">
-      <Filter>project</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_tempdata.h">
-      <Filter>project</Filter>
-    </ClInclude>
     <ClInclude Include="onity_propjsones.h">
-      <Filter>project</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_propctrl_compold.h">
       <Filter>project</Filter>
     </ClInclude>
     <ClInclude Include="onity_scene.h" />
     <ClInclude Include="onity_filterdata.h">
       <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propcourse.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propscenelayer.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propentitytemp.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propentity.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propjsonestemp.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propkind_entitycomp.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propctrl_entitycomp.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_jsonestempdata.h">
+      <Filter>project</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -347,24 +359,27 @@
     <ClCompile Include="onity_propprefab.cpp">
       <Filter>project</Filter>
     </ClCompile>
-    <ClCompile Include="onity_propkind_compold.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_proptempold.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_tempdata.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
     <ClCompile Include="onity_propjsones.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_propctrl_compold.cpp">
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="onity_scene.cpp" />
     <ClCompile Include="onity_filterdata.cpp">
       <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propcourse.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propjsonestemp.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propkind_entitycomp.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_entitycomp.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_jsonestempdata.cpp">
+      <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

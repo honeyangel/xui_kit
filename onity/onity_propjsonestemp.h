@@ -1,16 +1,16 @@
-#ifndef __onity_proptempold_h__
-#define __onity_proptempold_h__
+#ifndef __onity_propjsonestemp_h__
+#define __onity_propjsonestemp_h__
 
 #include "EntityTemplate.h"
 #include "onity_propleaf.h"
 
-class onity_proptempold : public onity_propleaf
+class onity_propjsonestemp : public onity_propleaf
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_proptempold( onity_propfile* propfile, Omiga::EntityTemplate* temp );
+	onity_propjsonestemp( onity_propfile* propfile, Omiga::EntityTemplate* temp );
 
 	/*
 	//method
@@ -51,4 +51,4 @@ protected:
 	xui_propkind*				m_menukind;
 };
 
-#endif//__onity_proptempold_h__
+#endif//__onity_propjsonestemp_h__

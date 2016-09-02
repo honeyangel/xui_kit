@@ -46,6 +46,7 @@ public:
 	static void								set_cursor		( u32 cursor );
 	static void								add_cursor		( u32 cursor, const std::wstring& filename );
 	static void								cpy_string		( const std::wstring& text );
+	static std::wstring						pst_string		( void );
 
 	/*
 	//screen
