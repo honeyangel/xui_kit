@@ -48,6 +48,7 @@
     <ClInclude Include="onity_propprefab.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="onity_proproot.h" />
     <ClInclude Include="onity_propscenelayer.h" />
     <ClInclude Include="onity_propjsonestemp.h" />
     <ClInclude Include="onity_propkind_particlesrc.h" />
@@ -81,6 +82,7 @@
     <ClInclude Include="onity_state.h" />
     <ClInclude Include="onity_stateview.h" />
     <ClInclude Include="onity_jsonestempdata.h" />
+    <ClInclude Include="onity_tempctrl.h" />
     <ClInclude Include="onity_tileview.h" />
     <ClInclude Include="onity_timedata.h" />
     <ClInclude Include="onity_timeline.h" />
@@ -104,6 +106,7 @@
     <ClCompile Include="onity_propcourse.cpp" />
     <ClCompile Include="onity_propctrl_entitycomp.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
+    <ClCompile Include="onity_propentitytemp.cpp" />
     <ClCompile Include="onity_propjsones.cpp" />
     <ClCompile Include="onity_propkind_entitycomp.cpp" />
     <ClCompile Include="onity_propkind_particlesrc.cpp" />
@@ -135,6 +138,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="onity_propjsonestemp.cpp" />
+    <ClCompile Include="onity_proproot.cpp" />
     <ClCompile Include="onity_proptexture.cpp" />
     <ClCompile Include="onity_proptransref.cpp" />
     <ClCompile Include="onity_recent.cpp" />
@@ -156,6 +160,7 @@
     <ClCompile Include="onity_state.cpp" />
     <ClCompile Include="onity_stateview.cpp" />
     <ClCompile Include="onity_jsonestempdata.cpp" />
+    <ClCompile Include="onity_tempctrl.cpp" />
     <ClCompile Include="onity_tileview.cpp" />
     <ClCompile Include="onity_timedata.cpp" />
     <ClCompile Include="onity_timeline.cpp" />

@@ -12,6 +12,7 @@
 #include "onity_resource.h"
 #include "onity_propjsones.h"
 #include "onity_propjsonestemp.h"
+#include "onity_propentitytemp.h"
 #include "onity_propctrl_entitycomp.h"
 #include "onity_propkind_entitycomp.h"
 
@@ -100,6 +101,9 @@ xui_method_explain(onity_kindctrl_entitycomp,		on_killctrlclick,	void					)( xui
 	onity_propjsonestemp* propjsones = dynamic_cast<onity_propjsonestemp*>(m_propkind->get_root());
 	if (propjsones)
 		propjsones->del_component(m_propkind);
+	onity_propentitytemp* propentity = dynamic_cast<onity_propentitytemp*>(m_propkind->get_root());
+	if (propentity)
+		propentity->del_component(m_propkind);
 }
 
 xui_implement_rtti(onity_kindctrl_entitycompadd, xui_kindctrl);
@@ -208,4 +212,7 @@ xui_method_explain(onity_kindctrl_entitycompadd,	on_menuitemclick,	void					)( x
 	onity_propjsonestemp* propjsones = dynamic_cast<onity_propjsonestemp*>(m_propkind->get_root());
 	if (propjsones)
 		propjsones->add_component(type, name);
+	onity_propentitytemp* propentity = dynamic_cast<onity_propentitytemp*>(m_propkind->get_root());
+	if (propentity)
+		propentity->add_component(type, name);
 }

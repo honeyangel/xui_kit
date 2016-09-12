@@ -10,7 +10,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_propjsonestemp( onity_propfile* propfile, Omiga::EntityTemplate* temp );
+	onity_propjsonestemp( onity_propfile* propfile, const std::string& tempname );
 
 	/*
 	//method
@@ -45,7 +45,7 @@ protected:
 	/*
 	//member
 	*/
-	Omiga::EntityTemplate*		m_template;
+	std::string					m_tempname;
 	xui_propkind*				m_basekind;
 	xui_propkind_vec			m_compkind;
 	xui_propkind*				m_menukind;

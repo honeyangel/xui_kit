@@ -15,12 +15,11 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propjsonestemp)( onity_propfile* propfile, Omiga::EntityTemplate* temp )
+xui_create_explain(onity_propjsonestemp)( onity_propfile* propfile, const std::string& tempname )
 : onity_propleaf(propfile)
-, m_template(temp)
+, m_tempname(tempname)
 {
-	std::string name = m_template->GetName();		
-	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(name), "JsonesTemplate", xui_kindctrl::create, onity_resource::icon_entity, true);
+	m_basekind = new xui_propkind(this, xui_global::ascii_to_unicode(tempname), "JsonesTemplate", xui_kindctrl::create, onity_resource::icon_entity, true);
 	m_basekind->xm_namechanged += new xui_method_member<xui_method_args, onity_propjsonestemp>(this, &onity_propjsonestemp::on_namechanged);
 	m_menukind = new xui_propkind(this, L"", "ComponentAdd", onity_kindctrl_entitycompadd::create, NULL, true, false, true);
 
@@ -36,7 +35,7 @@ xui_create_explain(onity_propjsonestemp)( onity_propfile* propfile, Omiga::Entit
 */
 xui_method_explain(onity_propjsonestemp, get_template,		Omiga::EntityTemplate*	)( void )
 {
-	return m_template;
+	return Omiga::EntityManager::Instance()->GetEntityTemplate(m_tempname);
 }
 xui_method_explain(onity_propjsonestemp, rna_template,		void					)( const std::wstring& text )
 {
@@ -44,21 +43,30 @@ xui_method_explain(onity_propjsonestemp, rna_template,		void					)( const std::w
 	if (Omiga::EntityManager::Instance()->GetEntityTemplate(name))
 		return;
 
-	Omiga::EntityManager::Instance()->RenameEntityTemplate(m_template, name);
-	onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
-	propjsones->set_modify(true);
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
+	{
+		m_tempname = name;
+		Omiga::EntityManager::Instance()->RenameEntityTemplate(temp, name);
+		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
+		propjsones->set_modify(true);
 
-	m_basekind->set_name(text);
-	xui_kindctrl* kindctrl = m_basekind->get_ctrl();
-	if (kindctrl)
-		kindctrl->refresh();
+		m_basekind->set_name(text);
+		xui_kindctrl* kindctrl = m_basekind->get_ctrl();
+		if (kindctrl)
+			kindctrl->refresh();
+	}
 }
 xui_method_explain(onity_propjsonestemp, pst_template,		void					)( Omiga::EntityTemplate* temp )
 {
-	std::string name = m_template->GetName();
-	m_template->ChangeTemplate(temp->GetNode());
-	m_template->SetName(name);
-	add_compkind();
+	Omiga::EntityTemplate* self = get_template();
+	if (self)
+	{
+		self->ChangeTemplate(temp->GetNode());
+		self->SetName(m_tempname);
+		del_compkind();
+		add_compkind();
+	}
 }
 xui_method_explain(onity_propjsonestemp, get_components,	const xui_propkind_vec&	)( void ) const
 {
@@ -77,81 +85,89 @@ xui_method_explain(onity_propjsonestemp, add_component,		void					)( const std::
 		}
 	}
 
-	onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
-	propjsones->set_modify(true);
-
-	BreezeGame::Json::Value* json = m_template->GetNode();
-	BreezeGame::Json::Value* root = NULL;
-	BreezeGame::Json::Value  comp(BreezeGame::Json::objectValue);
-	comp["Family"]    = type;
-	comp["ClassName"] = name;
-
-	if (json->isMember("Component"))
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
 	{
-		root = &(*json)["Component"];
-		if (root->isArray() == false)
+		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
+		propjsones->set_modify(true);
+
+		BreezeGame::Json::Value* json = temp->GetNode();
+		BreezeGame::Json::Value* root = NULL;
+		BreezeGame::Json::Value  comp(BreezeGame::Json::objectValue);
+		comp["Family"]    = type;
+		comp["ClassName"] = name;
+
+		if (json->isMember("Component"))
 		{
-			BreezeGame::Json::Value temp(BreezeGame::Json::arrayValue);
-			temp.append(*root);
-			(*root) = temp;
+			root = &(*json)["Component"];
+			if (root->isArray() == false)
+			{
+				BreezeGame::Json::Value temp(BreezeGame::Json::arrayValue);
+				temp.append(*root);
+				(*root) = temp;
+			}
+
+			root->append(comp);
+		}
+		else
+		{
+			(*json)["Component"] = BreezeGame::Json::Value(BreezeGame::Json::objectValue);
+			root = &(*json)["Component"];
+			(*root) = comp;
 		}
 
-		root->append(comp);
-	}
-	else
-	{
-		(*json)["Component"] = BreezeGame::Json::Value(BreezeGame::Json::objectValue);
-		root = &(*json)["Component"];
-		(*root) = comp;
-	}
+		del_compkind();
+		add_compkind();
 
-	del_compkind();
-	add_compkind();
-
-	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-	inspector->get_propview()->reset();
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->get_propview()->reset();
+	}
 }
 xui_method_explain(onity_propjsonestemp, del_component,		void					)( xui_propkind* propkind )
 {
-	onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
-	propjsones->set_modify(true);
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
+	{
+		onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(get_propfile());
+		propjsones->set_modify(true);
 
-	onity_propkind_entitycomp* comp = dynamic_cast<onity_propkind_entitycomp*>(propkind);
-	BreezeGame::Json::Value*   json = m_template->GetNode();
-	BreezeGame::Json::Value*   root = &(*json)["Component"];
-	if (root->isArray() == false || root->size() == 1)
-	{
-		json->removeMember("Component");
-	}
-	else
-	if (root->size() == 2)
-	{
-		BreezeGame::Json::Value temp(BreezeGame::Json::objectValue);
-		for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
+		onity_propkind_entitycomp* comp = dynamic_cast<onity_propkind_entitycomp*>(propkind);
+		BreezeGame::Json::Value*   json = temp->GetNode();
+		BreezeGame::Json::Value*   root = &(*json)["Component"];
+		if (root->isArray() == false || root->size() == 1)
 		{
-			if (comp->get_node() != &(*itor))
-				temp = (*itor);
+			json->removeMember("Component");
+		}
+		else
+		if (root->size() == 2)
+		{
+			BreezeGame::Json::Value temp(BreezeGame::Json::objectValue);
+			for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
+			{
+				if (comp->get_node() != &(*itor))
+					temp = (*itor);
+			}
+
+			(*root) = temp;
+		}
+		else
+		{
+			BreezeGame::Json::Value temp(BreezeGame::Json::arrayValue);
+			for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
+			{
+				if (comp->get_node() != &(*itor))
+					temp.append((*itor));
+			}
+
+			(*root) = temp;
 		}
 
-		(*root) = temp;
+		del_compkind();
+		add_compkind();
+
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->get_propview()->reset();
 	}
-	else
-	{
-		BreezeGame::Json::Value temp(BreezeGame::Json::arrayValue);
-		for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
-		{
-			if (comp->get_node() != &(*itor))
-				temp.append((*itor));
-		}
-
-		(*root) = temp;
-	}
-
-	del_compkind();
-	add_compkind();
-
-	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-	inspector->get_propview()->reset();
 }
 xui_method_explain(onity_propjsonestemp, new_compkind,		void					)( BreezeGame::Json::Value* compnode )
 {
@@ -164,19 +180,23 @@ xui_method_explain(onity_propjsonestemp, new_compkind,		void					)( BreezeGame::
 }
 xui_method_explain(onity_propjsonestemp, add_compkind,		void					)( void )
 {
-	BreezeGame::Json::Value* json = m_template->GetNode();
-	if (json->isMember("Component"))
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
 	{
-		BreezeGame::Json::Value* root = &(*json)["Component"];
-		if (root->isArray() == false)
+		BreezeGame::Json::Value* json = temp->GetNode();
+		if (json->isMember("Component"))
 		{
-			new_compkind(root);
-		}
-		else
-		{
-			for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
+			BreezeGame::Json::Value* root = &(*json)["Component"];
+			if (root->isArray() == false)
 			{
-				new_compkind(&(*itor));
+				new_compkind(root);
+			}
+			else
+			{
+				for (BreezeGame::Json::Value::iterator itor = root->begin(); itor != root->end(); itor++)
+				{
+					new_compkind(&(*itor));
+				}
 			}
 		}
 	}
@@ -201,7 +221,7 @@ xui_method_explain(onity_propjsonestemp, get_dragtype,		std::string				)( void )
 }
 xui_method_explain(onity_propjsonestemp, get_dragdata,		void*					)( void )
 {
-	return m_template;
+	return get_template();
 }
 
 /*
@@ -216,7 +236,7 @@ xui_method_explain(onity_propjsonestemp, on_namechanged,	void					)( xui_compone
 {
 	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
 	rna_template(textbox->get_text());
-	textbox->ini_drawer(xui_global::ascii_to_unicode(m_template->GetName()));
+	textbox->ini_drawer(xui_global::ascii_to_unicode(m_tempname));
 	if (m_linkdata)
 	{
 		xui_treenode* node = m_linkdata->get_node();

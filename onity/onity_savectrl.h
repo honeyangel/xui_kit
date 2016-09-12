@@ -34,8 +34,8 @@ protected:
 	/*
 	//override
 	*/
-	virtual s32				get_elsectrlsize	( void );
-	virtual s32				get_prevctrlsize	( void );
+	virtual s32				get_elsectrlsize( void );
+	virtual s32				get_prevctrlsize( void );
 
 	/*
 	//member

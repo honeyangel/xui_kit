@@ -9,12 +9,18 @@ public:
 	/*
 	//constructor
 	*/
-	onity_filterdata( xui_bitmap* icon, const std::wstring& text, xui_proproot* prop );
+	onity_filterdata( xui_bitmap* icon, const std::string& tempname );
+
+	/*
+	//destructor
+	*/
+	virtual ~onity_filterdata( void );
 
 	/*
 	//virtual
 	*/
-	//virtual std::wstring get_text( u32 index );
+	virtual std::wstring	get_text( u32 index );
+	virtual void			set_text( u32 index, const std::wstring& text );
 };
 
 #endif//__onity_filterdata_h__

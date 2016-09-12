@@ -58,7 +58,7 @@ xui_method_explain(onity_propjsones, add_subprop,	xui_proproot*		)( void )
 
 	Omiga::EntityTemplate* temp = new Omiga::EntityTemplate(text.str());
 	Omiga::EntityManager::Instance()->AddEntityTemplate(temp);
-	onity_propjsonestemp* prop = new onity_propjsonestemp(this, temp);
+	onity_propjsonestemp* prop = new onity_propjsonestemp(this, text.str());
 	m_subprop.push_back(prop);
 	m_modify = true;
 
@@ -185,7 +185,7 @@ xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 
 			if (propmap.find(temp) == propmap.end())
 			{
-				onity_propjsonestemp* prop = new onity_propjsonestemp(this, temp);
+				onity_propjsonestemp* prop = new onity_propjsonestemp(this, name);
 				m_subprop.push_back(prop);
 				propmap[temp] = prop;
 			}

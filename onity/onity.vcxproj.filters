@@ -173,15 +173,6 @@
     <ClInclude Include="onity_propcourse.h">
       <Filter>project</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propscenelayer.h">
-      <Filter>project</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_propentitytemp.h">
-      <Filter>project</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_propentity.h">
-      <Filter>project</Filter>
-    </ClInclude>
     <ClInclude Include="onity_propjsonestemp.h">
       <Filter>project</Filter>
     </ClInclude>
@@ -193,6 +184,21 @@
     </ClInclude>
     <ClInclude Include="onity_jsonestempdata.h">
       <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propscenelayer.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propentitytemp.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propentity.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proproot.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_tempctrl.h">
+      <Filter>hierarchy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +386,15 @@
     </ClCompile>
     <ClCompile Include="onity_jsonestempdata.cpp">
       <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propentitytemp.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proproot.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_tempctrl.cpp">
+      <Filter>hierarchy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

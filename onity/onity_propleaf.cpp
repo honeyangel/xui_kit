@@ -11,22 +11,10 @@
 //constructor
 */
 xui_create_explain(onity_propleaf)( onity_propfile* propfile )
-: xui_proproot()
-, m_linkdata(NULL)
+: onity_proproot()
 {
 	m_savekind = new onity_savekind(this, propfile);
 	add_propkind(m_savekind);
-}
-
-/*
-//destructor
-*/
-xui_delete_explain(onity_propleaf)( void )
-{
-	onity_treedata* treedata = dynamic_cast<onity_treedata*>(m_linkdata);
-	onity_timedata* timedata = dynamic_cast<onity_timedata*>(m_linkdata);
-	if (treedata)   treedata->set_null();
-	if (timedata)	timedata->set_null();
 }
 
 /*
@@ -35,14 +23,6 @@ xui_delete_explain(onity_propleaf)( void )
 xui_method_explain(onity_propleaf, get_propfile,	onity_propfile*	)( void )
 {
 	return m_savekind->get_propfile();
-}
-xui_method_explain(onity_propleaf, get_linkdata,	xui_treedata*	)( void )
-{
-	return m_linkdata;
-}
-xui_method_explain(onity_propleaf, set_linkdata,	void			)( xui_treedata* linkdata )
-{
-	m_linkdata = linkdata;
 }
 
 /*

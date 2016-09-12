@@ -1,10 +1,10 @@
 #ifndef __onity_propfile_h__
 #define __onity_propfile_h__
 
-#include "xui_proproot.h"
+#include "onity_proproot.h"
 
 class onity_savekind;
-class onity_propfile : public xui_proproot
+class onity_propfile : public onity_proproot
 {
 public:
 	/*
@@ -13,17 +13,10 @@ public:
 	onity_propfile( xui_bitmap* icon, const std::wstring& fullname );
 
 	/*
-	//destructor
-	*/
-	virtual ~onity_propfile( void );
-
-	/*
 	//method
 	*/
 	xui_bitmap*				get_fileicon	( void );
 	const std::wstring&		get_fullname	( void ) const;
-	xui_treedata*			get_linkdata	( void );
-	void					set_linkdata	( xui_treedata* linkdata );
 
 	/*
 	//virtual
@@ -53,7 +46,6 @@ protected:
 	/*
 	//member
 	*/
-	xui_treedata*			m_linkdata;
 	std::wstring			m_fullname;
 	xui_propkind*			m_basekind;
 	onity_savekind*			m_savekind;

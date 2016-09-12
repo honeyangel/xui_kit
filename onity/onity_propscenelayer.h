@@ -1,9 +1,9 @@
 #ifndef __onity_propscenelayer_h__
 #define __onity_propscenelayer_h__
 
-#include "xui_proproot.h"
+#include "onity_propentitytemp.h"
 
-class onity_propscenelayer : public xui_proproot
+class onity_propscenelayer : public onity_propentitytemp
 {
 public:
 };

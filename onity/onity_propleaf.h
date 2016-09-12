@@ -1,11 +1,11 @@
 #ifndef __onity_propleaf_h__
 #define __onity_propleaf_h__
 
-#include "xui_proproot.h"
+#include "onity_proproot.h"
 
 class onity_savekind;
 class onity_propfile;
-class onity_propleaf : public xui_proproot
+class onity_propleaf : public onity_proproot
 {
 public:
 	/*
@@ -14,16 +14,9 @@ public:
 	onity_propleaf( onity_propfile* propfile );
 
 	/*
-	//destructor
-	*/
-	virtual ~onity_propleaf( void );
-
-	/*
 	//method
 	*/
 	onity_propfile*			get_propfile	( void );
-	xui_treedata*			get_linkdata	( void );
-	void					set_linkdata	( xui_treedata* linkdata );
 
 	/*
 	//virtual
@@ -40,7 +33,6 @@ protected:
 	/*
 	//member
 	*/
-	xui_treedata*			m_linkdata;
 	onity_savekind*			m_savekind;
 };
 

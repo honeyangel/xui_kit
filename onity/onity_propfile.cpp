@@ -13,9 +13,8 @@
 //constructor
 */
 xui_create_explain(onity_propfile)( xui_bitmap* icon, const std::wstring& fullname )
-: xui_proproot()
+: onity_proproot()
 , m_fullname(fullname)
-, m_linkdata(NULL)
 , m_savekind(NULL)
 {
 	m_basekind = new xui_propkind(this, onity_filedata::get_safe(fullname), "File", onity_filectrl::create, icon, true);
@@ -30,16 +29,6 @@ xui_create_explain(onity_propfile)( xui_bitmap* icon, const std::wstring& fullna
 }
 
 /*
-//destructor
-*/
-xui_delete_explain(onity_propfile)( void )
-{
-	onity_treedata* treedata = dynamic_cast<onity_treedata*>(m_linkdata);
-	onity_timedata* timedata = dynamic_cast<onity_timedata*>(m_linkdata);
-	if (treedata)   treedata->set_null();
-	if (timedata)	timedata->set_null();
-}
-/*
 //method
 */
 xui_method_explain(onity_propfile, get_fileicon,		xui_bitmap*			)( void )
@@ -49,14 +38,6 @@ xui_method_explain(onity_propfile, get_fileicon,		xui_bitmap*			)( void )
 xui_method_explain(onity_propfile, get_fullname,		const std::wstring&	)( void ) const
 {
 	return m_fullname;
-}
-xui_method_explain(onity_propfile, get_linkdata,		xui_treedata*		)( void )
-{
-	return m_linkdata;
-}
-xui_method_explain(onity_propfile, set_linkdata,		void				)( xui_treedata* linkdata )
-{
-	m_linkdata = linkdata;
 }
 
 /*
