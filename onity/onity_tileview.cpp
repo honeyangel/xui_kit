@@ -268,10 +268,15 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,		void						)( xui_comp
 		s32 ir = 0;
 		xui_rect2d<s32> tilert;
 
-		std::vector<xui_treenode*> nodes = get_shownodes();
+		std::vector<xui_treenode*> nodes;
 		if (m_viewfile)
 		{
+			nodes = m_viewfile->get_leafnodearray();
 			draw_background(0, 0, c, g, w, h, nodes.size());
+		}
+		else
+		{
+			nodes = lineview->get_upmostnodearray();
 		}
 
 		for (u32 i = 0; i < nodes.size(); ++i)
