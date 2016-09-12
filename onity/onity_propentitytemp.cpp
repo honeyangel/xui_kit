@@ -75,17 +75,31 @@ xui_method_explain(onity_propentitytemp, get_template,		Omiga::EntityTemplate*	)
 xui_method_explain(onity_propentitytemp, rna_template,		void					)( const std::wstring& text )
 {
 	std::string name = xui_global::unicode_to_ascii(text);
-	if (Omiga::EntityManager::Instance()->GetEntityTemplate(name))
+	if (name == m_tempname)
 		return;
 
-	m_modify   = true;
-	m_tempname = name;
+	Omiga::EntityTemplate* temp = Omiga::EntityManager::Instance()->GetEntityTemplate(name);
+	m_modify   = (temp == NULL);
+	m_tempname =  name;
 	m_basekind->set_name(text);
-	(*m_jsonnode)["TemplateName"] = BreezeGame::Json::Value(m_tempname);
+	if (temp)
+	{
+		BreezeGame::Json::Value* tempnode = temp->GetNode();
+		(*m_jsonnode) = BreezeGame::Json::Value(*tempnode);
 
-	xui_kindctrl* kindctrl = m_basekind->get_ctrl();
-	if (kindctrl)
-		kindctrl->refresh();
+		del_compkind();
+		add_compkind();
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		inspector->get_propview()->reset();
+	}
+	else
+	{
+		(*m_jsonnode)["TemplateName"] = BreezeGame::Json::Value(m_tempname);
+
+		xui_kindctrl* kindctrl = m_basekind->get_ctrl();
+		if (kindctrl)
+			kindctrl->refresh();
+	}
 }
 xui_method_explain(onity_propentitytemp, get_components,	const xui_propkind_vec&	)( void ) const
 {

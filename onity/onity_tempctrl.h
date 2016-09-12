@@ -41,6 +41,7 @@ protected:
 	/*
 	//member
 	*/
+	xui_linebox*			m_linebox;
 	xui_button*				m_select;
 	xui_button*				m_apply;
 	xui_button*				m_revert;

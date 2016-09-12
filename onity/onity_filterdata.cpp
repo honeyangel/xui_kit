@@ -5,8 +5,8 @@
 /*
 //constructor
 */
-xui_create_explain(onity_filterdata)( xui_bitmap* icon, const std::string& tempname )
-: onity_treedata(icon, new onity_propentitytemp(tempname))
+xui_create_explain(onity_filterdata)( xui_bitmap* icon, xui_proproot* prop )
+: onity_treedata(icon, prop)
 {}
 
 /*

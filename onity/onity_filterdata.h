@@ -9,7 +9,7 @@ public:
 	/*
 	//constructor
 	*/
-	onity_filterdata( xui_bitmap* icon, const std::string& tempname );
+	onity_filterdata( xui_bitmap* icon, xui_proproot* prop );
 
 	/*
 	//destructor

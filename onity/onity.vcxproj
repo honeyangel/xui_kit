@@ -139,6 +139,7 @@
     </ClCompile>
     <ClCompile Include="onity_propjsonestemp.cpp" />
     <ClCompile Include="onity_proproot.cpp" />
+    <ClCompile Include="onity_propscenelayer.cpp" />
     <ClCompile Include="onity_proptexture.cpp" />
     <ClCompile Include="onity_proptransref.cpp" />
     <ClCompile Include="onity_recent.cpp" />

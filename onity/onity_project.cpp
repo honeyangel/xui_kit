@@ -191,11 +191,13 @@ xui_create_explain(onity_project)( void )
 	xui_method_ptrcall(m_filter,	set_corner			)(3);
 	xui_method_ptrcall(m_filter,	set_borderrt		)(xui_rect2d<s32>(4, 4, 0, 4));
 	xui_method_ptrcall(m_filter,	set_readonly		)(true);
+	xui_method_ptrcall(m_filter,	set_maxdrop			)(10);
 	xui_method_ptrcall(m_filter,	add_item			)(L"All");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Texture");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Module");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Sprite");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Action");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Course");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Particle");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Controller");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Json");
@@ -338,6 +340,12 @@ xui_method_explain(onity_project, get_pathfile,				void			)( const std::wstring&
 }
 xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, u32 id )
 {
+	std::wstringstream text;
+	text << id;
+	loc_filenode(path, file, text.str());
+}
+xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, const std::wstring& name )
+{
 	m_search->set_text(L"");
 
 	onity_proppath* viewpath = NULL;
@@ -381,7 +389,7 @@ xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring&
 		onity_propfile* propfile = dynamic_cast<onity_propfile*>(filedata->get_prop());
 		if (propfile == viewfile)
 		{
-			viewnode = filenode;
+			viewnode  = filenode;
 			const std::vector<xui_treenode*>& vec = filenode->get_leafnodearray();
 			if (vec.size() > 0)
 			{
@@ -389,12 +397,26 @@ xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring&
 				{
 					xui_treenode*		treenode = (*itor);
 					onity_treedata*		treedata = (onity_treedata*)treenode->get_linkdata();
-					onity_prop2dsasset* propleaf = dynamic_cast<onity_prop2dsasset*>(treedata->get_prop());
-					if (propleaf->get_assetid() == id)
+					if (treedata->get_text(0) == name)
 					{
 						viewnode = treenode;
-						break;
 					}
+					else
+					{
+						onity_prop2dsasset* propleaf = dynamic_cast<onity_prop2dsasset*>(treedata->get_prop());
+						if (propleaf)
+						{
+							std::wstringstream text;
+							text << propleaf->get_assetid();
+							if (text.str() == name)
+							{
+								viewnode = treenode;
+							}
+						}
+					}
+
+					if (viewnode)
+						break;
 				}
 
 				if (m_sizeroll->get_value() == 0)
@@ -746,7 +768,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component
 					{
 						onity_hierarchy* page = onity_mainform::get_ptr()->get_hierarchy();
 						onity_mainform::get_ptr()->set_pageshow(page);
-						//page->set_editprop((onity_propcourse*    )file->get_prop());
+						page->set_editprop((onity_propcourse*    )file->get_prop());
 					}
 					else
 					if (suff == L".npModule" ||

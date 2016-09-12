@@ -396,6 +396,9 @@
     <ClCompile Include="onity_tempctrl.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
+    <ClCompile Include="onity_propscenelayer.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">

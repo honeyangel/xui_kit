@@ -24,7 +24,8 @@ public:
 	void						set_modify		( bool flag );
 	const std::string&			get_tempname	( void ) const;
 	Omiga::EntityTemplate*		get_template	( void );
-	void						rna_template	( const std::wstring& text );
+	virtual void				rna_template	( const std::wstring& text );
+
 	const xui_propkind_vec&		get_components	( void ) const;
 	void						add_component	( const std::string&  type, const std::string& name );
 	void						del_component	( xui_propkind* propkind );

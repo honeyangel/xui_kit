@@ -26,7 +26,7 @@ xui_delete_explain(onity_propcourse)( void )
 /*
 //method
 */
-xui_method_explain(onity_propcourse, get_scenefile, NP2DSSceneFile*)( void )
+xui_method_explain(onity_propcourse, get_scenefile, NP2DSSceneFile*	)( void )
 {
 	if (m_scenefile == NULL)
 	{
@@ -36,21 +36,27 @@ xui_method_explain(onity_propcourse, get_scenefile, NP2DSSceneFile*)( void )
 
 	return m_scenefile;
 }
-xui_method_explain(onity_propcourse, was_modify,	bool)( void )
+xui_method_explain(onity_propcourse, ntf_detach,	void			)( xui_proproot* nextfile )
+{
+	xui_proproot_vec vec;
+	vec.push_back(nextfile);
+	onity_propfile::on_detach(vec);
+}
+xui_method_explain(onity_propcourse, was_modify,	bool			)( void )
 {
 	if (m_scenefile)
 		return m_scenefile->WasNeedSave();
 
 	return false;
 }
-xui_method_explain(onity_propcourse, save,			void)( void )
+xui_method_explain(onity_propcourse, save,			void			)( void )
 {
 	NP2DSSceneFile* file = get_scenefile();
 	xui_global::set_fwatchclose();
 	file->SaveXml(xui_global::unicode_to_ascii(m_fullname));
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
-xui_method_explain(onity_propcourse, load,			void)( void )
+xui_method_explain(onity_propcourse, load,			void			)( void )
 {
 	if (m_scenefile)
 	{
@@ -58,8 +64,8 @@ xui_method_explain(onity_propcourse, load,			void)( void )
 		m_scenefile = NULL;
 	}
 
-	//onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	//xui_proproot*    editprop  = hierarchy->get_editprop();
-	//if (editprop == this)
-	//	hierarchy->reset();
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	xui_proproot*    editprop  = hierarchy->get_editprop();
+	if (editprop == this)
+		hierarchy->reset();
 }
