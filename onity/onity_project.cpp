@@ -400,6 +400,7 @@ xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring&
 					if (treedata->get_text(0) == name)
 					{
 						viewnode = treenode;
+						break;
 					}
 					else
 					{
@@ -411,12 +412,10 @@ xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring&
 							if (text.str() == name)
 							{
 								viewnode = treenode;
+								break;
 							}
 						}
 					}
-
-					if (viewnode)
-						break;
 				}
 
 				if (m_sizeroll->get_value() == 0)

@@ -39,11 +39,11 @@ protected:
 	/*
 	//event
 	*/
-	void				on_clearclick		( xui_component* sender, xui_method_args& args );
-	void				on_searchtextchanged( xui_component* sender, xui_method_args& args );
-	void				on_searchtextenter	( xui_component* sender, xui_method_args& args );
-	void				on_headperform		( xui_component* sender, xui_method_args& args );
-	void				on_treeselection	( xui_component* sender, xui_method_args& args );
+	void				on_clearclick		( xui_component* sender, xui_method_args&  args );
+	void				on_searchtextchanged( xui_component* sender, xui_method_args&  args );
+	void				on_searchtextenter	( xui_component* sender, xui_method_args&  args );
+	void				on_headperform		( xui_component* sender, xui_method_args&  args );
+	void				on_treemouseclick	( xui_component* sender, xui_method_mouse& args );
 
 	/*
 	//method

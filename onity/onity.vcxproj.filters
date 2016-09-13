@@ -200,6 +200,15 @@
     <ClInclude Include="onity_tempctrl.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
+    <ClInclude Include="onity_prop2dsref.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propctrl_sceneparam.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_2dsrefdata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -397,6 +406,15 @@
       <Filter>hierarchy</Filter>
     </ClCompile>
     <ClCompile Include="onity_propscenelayer.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propctrl_sceneparam.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_prop2dsref.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_2dsrefdata.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
   </ItemGroup>

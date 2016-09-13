@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="onity_2dsrefdata.h" />
     <ClInclude Include="onity_animator.h" />
     <ClInclude Include="onity_2dsassetdata.h" />
     <ClInclude Include="onity_condition.h" />
@@ -33,12 +34,14 @@
     <ClInclude Include="onity_preview.h" />
     <ClInclude Include="onity_project.h" />
     <ClInclude Include="onity_prop2dsasset.h" />
+    <ClInclude Include="onity_prop2dsref.h" />
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propcourse.h" />
     <ClInclude Include="onity_propctrl_entitycomp.h" />
     <ClInclude Include="onity_propctrl_particlemod.h" />
+    <ClInclude Include="onity_propctrl_sceneparam.h" />
     <ClInclude Include="onity_propdata_texture.h" />
     <ClInclude Include="onity_propentity.h" />
     <ClInclude Include="onity_propentitytemp.h" />
@@ -91,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="onity_2dsrefdata.cpp" />
     <ClCompile Include="onity_animator.cpp" />
     <ClCompile Include="onity_2dsassetdata.cpp" />
     <ClCompile Include="onity_condition.cpp" />
@@ -103,9 +107,11 @@
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
+    <ClCompile Include="onity_prop2dsref.cpp" />
     <ClCompile Include="onity_propcourse.cpp" />
     <ClCompile Include="onity_propctrl_entitycomp.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
+    <ClCompile Include="onity_propctrl_sceneparam.cpp" />
     <ClCompile Include="onity_propentitytemp.cpp" />
     <ClCompile Include="onity_propjsones.cpp" />
     <ClCompile Include="onity_propkind_entitycomp.cpp" />
