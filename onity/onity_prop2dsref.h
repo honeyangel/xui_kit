@@ -1,9 +1,10 @@
 #ifndef __onity_prop2dsref_h__
 #define __onity_prop2dsref_h__
 
+#include "NP2DSTransRef.h"
 #include "onity_proproot.h"
 
-class NP2DSTransRef;
+typedef std::vector<NP2DSTransRef::SParam>& ParamVec;
 class onity_prop2dsref : public onity_proproot
 {
 public:
@@ -30,6 +31,10 @@ protected:
 	static void				set_rotation	( void* userptr, f64   value );
 	static void*			get_asset		( void* userptr );
 	static void				set_asset		( void* userptr, void* value );
+	static ParamVec&		get_params		( void* userptr );
+	static void				add_param		( void* userptr );
+	static void				del_param		( void* userptr );
+	static xui_propdata*	new_paramprop	( void* userptr, u32 i, xui_propkind* propkind );
 
 	/*
 	//member

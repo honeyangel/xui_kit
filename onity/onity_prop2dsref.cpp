@@ -11,7 +11,9 @@
 #include "xui_propctrl.h"
 #include "xui_kindctrl.h"
 #include "xui_propctrl_vector.h"
+#include "xui_propctrl_stdvec.h"
 #include "onity_propctrl_transref.h"
+#include "onity_propctrl_sceneparam.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
 #include "onity_prop2dsref.h"
@@ -57,6 +59,15 @@ xui_create_explain(onity_prop2dsref)( NP2DSTransRef* ref )
 		DROPTYPE_IMAGE|DROPTYPE_FRAME|DROPTYPE_ACTOR,
 		get_asset,
 		set_asset,
+		this));
+	m_paramkind->add_propdata(new xui_propdata_stdvec_func<NP2DSTransRef::SParam>(
+		m_paramkind,
+		L"Parameters",
+		xui_propctrl_stdvec::create,
+		add_param,
+		del_param,
+		new_paramprop,
+		get_params,
 		this));
 
 	add_propkind(m_transkind);
@@ -121,7 +132,7 @@ xui_method_explain(onity_prop2dsref, get_rotation,	f64				)( void* userptr )
 	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
 	return (f64)prop->get_2dsref()->GetWorldAngle();
 }
-xui_method_explain(onity_prop2dsref, set_rotation,	void			)( void* userptr, f64 value )
+xui_method_explain(onity_prop2dsref, set_rotation,	void			)( void* userptr, f64   value )
 {
 	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
 	prop->get_2dsref()->SetWorldAngle((npf32)value);
@@ -164,4 +175,27 @@ xui_method_explain(onity_prop2dsref, set_asset,		void			)( void* userptr, void* 
 	{
 		prop->get_2dsref()->SetAsset(-1, -1);
 	}
+}
+xui_method_explain(onity_prop2dsref, get_params,	ParamVec&		)( void* userptr )
+{
+	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	return prop->get_2dsref()->GetSceneParamVec();
+}
+xui_method_explain(onity_prop2dsref, add_param,		void			)( void* userptr )
+{
+	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	NP2DSTransRef::SParam param;
+	prop->get_2dsref()->AddSceneParam(param);
+}
+xui_method_explain(onity_prop2dsref, del_param,		void			)( void* userptr )
+{
+	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	u32 index = prop->get_2dsref()->GetSceneParamCount()-1;
+	prop->get_2dsref()->DelSceneParam(index);
+}
+xui_method_explain(onity_prop2dsref, new_paramprop, xui_propdata*	)( void* userptr, u32 i, xui_propkind* propkind )
+{
+	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	NP2DSTransRef::SParam* param = &(prop->get_2dsref()->GetSceneParamVec()[i]);
+	return new onity_propdata_sceneparam(propkind, L"Param", onity_propctrl_sceneparam::create, param);
 }
