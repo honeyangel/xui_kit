@@ -239,6 +239,7 @@ xui_method_explain(xui_textbox, on_keybddown,		void					)( xui_method_keybd& arg
 	case KEY_END:	do_end		(args.shift);	break;
 	case KEY_BACK:	do_back		();				break;
 	case KEY_ENTER:	do_enter	();				break;
+	case KEY_DELETE:do_delete	();				break;
 	}
 
 	if (args.ctrl == false)

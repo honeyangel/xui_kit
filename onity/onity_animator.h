@@ -33,8 +33,9 @@ protected:
 	/*
 	//event
 	*/
-	void					on_stateclick		( xui_component* sender, xui_method_args& args );
-	void					on_retargetclick	( xui_component* sender, xui_method_args& args );
+	void					on_stateclick		( xui_component* sender, xui_method_args&  args );
+	void					on_retargetclick	( xui_component* sender, xui_method_args&  args );
+	void					on_animatorkeybddown( xui_component* sender, xui_method_keybd& args );
 
 	/*
 	//member

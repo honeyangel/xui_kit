@@ -11,11 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="onity_2dsrefdata.h" />
+    <ClInclude Include="onity_maprefdata.h" />
     <ClInclude Include="onity_animator.h" />
     <ClInclude Include="onity_2dsassetdata.h" />
     <ClInclude Include="onity_condition.h" />
     <ClInclude Include="onity_console.h" />
+    <ClInclude Include="onity_entitydata.h" />
     <ClInclude Include="onity_filectrl.h" />
     <ClInclude Include="onity_filedata.h" />
     <ClInclude Include="onity_fileview.h" />
@@ -34,13 +35,15 @@
     <ClInclude Include="onity_preview.h" />
     <ClInclude Include="onity_project.h" />
     <ClInclude Include="onity_prop2dsasset.h" />
-    <ClInclude Include="onity_prop2dsref.h" />
+    <ClInclude Include="onity_propmapref.h" />
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
+    <ClInclude Include="onity_propnodeaction.h" />
     <ClInclude Include="onity_propactor.h" />
     <ClInclude Include="onity_propcourse.h" />
     <ClInclude Include="onity_propctrl_entitycomp.h" />
     <ClInclude Include="onity_propctrl_particlemod.h" />
+    <ClInclude Include="onity_propctrl_rendertree.h" />
     <ClInclude Include="onity_propctrl_sceneparam.h" />
     <ClInclude Include="onity_propdata_texture.h" />
     <ClInclude Include="onity_propentity.h" />
@@ -48,9 +51,14 @@
     <ClInclude Include="onity_propframekey.h" />
     <ClInclude Include="onity_propjsones.h" />
     <ClInclude Include="onity_propkind_entitycomp.h" />
+    <ClInclude Include="onity_propnodemodule.h" />
+    <ClInclude Include="onity_propnodeparticle.h" />
+    <ClInclude Include="onity_propnoderender.h" />
+    <ClInclude Include="onity_propnodesprite.h" />
     <ClInclude Include="onity_propprefab.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="onity_propnode2dsref.h" />
     <ClInclude Include="onity_proproot.h" />
     <ClInclude Include="onity_propscenelayer.h" />
     <ClInclude Include="onity_propjsonestemp.h" />
@@ -67,6 +75,7 @@
     <ClInclude Include="onity_proptexture.h" />
     <ClInclude Include="onity_proptransref.h" />
     <ClInclude Include="onity_recent.h" />
+    <ClInclude Include="onity_renderdata.h" />
     <ClInclude Include="onity_savectrl.h" />
     <ClInclude Include="onity_propcontroller.h" />
     <ClInclude Include="onity_propctrl_condition.h" />
@@ -94,11 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="onity_2dsrefdata.cpp" />
+    <ClCompile Include="onity_maprefdata.cpp" />
     <ClCompile Include="onity_animator.cpp" />
     <ClCompile Include="onity_2dsassetdata.cpp" />
     <ClCompile Include="onity_condition.cpp" />
     <ClCompile Include="onity_console.cpp" />
+    <ClCompile Include="onity_entitydata.cpp" />
     <ClCompile Include="onity_filectrl.cpp" />
     <ClCompile Include="onity_filedata.cpp" />
     <ClCompile Include="onity_fileview.cpp" />
@@ -107,11 +117,13 @@
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
-    <ClCompile Include="onity_prop2dsref.cpp" />
+    <ClCompile Include="onity_propmapref.cpp" />
     <ClCompile Include="onity_propcourse.cpp" />
     <ClCompile Include="onity_propctrl_entitycomp.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
+    <ClCompile Include="onity_propctrl_rendertree.cpp" />
     <ClCompile Include="onity_propctrl_sceneparam.cpp" />
+    <ClCompile Include="onity_propentity.cpp" />
     <ClCompile Include="onity_propentitytemp.cpp" />
     <ClCompile Include="onity_propjsones.cpp" />
     <ClCompile Include="onity_propkind_entitycomp.cpp" />
@@ -139,6 +151,12 @@
     <ClCompile Include="onity_propctrl_transref.cpp" />
     <ClCompile Include="onity_propframe.cpp" />
     <ClCompile Include="onity_propimageref.cpp" />
+    <ClCompile Include="onity_propnode2dsref.cpp" />
+    <ClCompile Include="onity_propnodeaction.cpp" />
+    <ClCompile Include="onity_propnodemodule.cpp" />
+    <ClCompile Include="onity_propnodeparticle.cpp" />
+    <ClCompile Include="onity_propnoderender.cpp" />
+    <ClCompile Include="onity_propnodesprite.cpp" />
     <ClCompile Include="onity_propparticle.cpp" />
     <ClCompile Include="onity_propprefab.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -149,6 +167,7 @@
     <ClCompile Include="onity_proptexture.cpp" />
     <ClCompile Include="onity_proptransref.cpp" />
     <ClCompile Include="onity_recent.cpp" />
+    <ClCompile Include="onity_renderdata.cpp" />
     <ClCompile Include="onity_savectrl.cpp" />
     <ClCompile Include="onity_propcontroller.cpp" />
     <ClCompile Include="onity_propctrl_condition.cpp" />
@@ -238,7 +257,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;winmm.lib;GLee_VC10.lib;pthreadVC2.lib;fmod_event.lib;fmodex_vc.lib;ws2_32.lib;wldap32.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../BreezeGameBranchFlyMode_V26/engine/lib/win32/extern;../../BreezeGameBranchFlyMode_V26/Game/Network/Platform/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../BreezeGame/engine/lib/win32/extern;../../BreezeGame/Game/Network/Platform/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>

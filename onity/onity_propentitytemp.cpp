@@ -194,7 +194,7 @@ xui_method_explain(onity_propentitytemp, del_component,		void					)( xui_propkin
 xui_method_explain(onity_propentitytemp, new_compkind,		void					)( BreezeGame::Json::Value* compnode )
 {
 	std::string   name = (*compnode)["ClassName"].asString();
-	std::string   type = (*compnode)["Family"].asString() + "Component";
+	std::string   type = "Template-" + (*compnode)["Family"].asString();
 	xui_propkind* kind = new onity_propkind_entitycomp(this, xui_global::ascii_to_unicode(name), type, onity_resource::icon_component, compnode);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_propentitytemp>(this, &onity_propentitytemp::on_propchanged);
 	m_compkind.push_back(kind);

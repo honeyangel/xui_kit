@@ -1,5 +1,6 @@
 #include "NP2DSSceneFile.h"
 #include "NP2DSSceneLayer.h"
+#include "Entity/Component/GUI/GUIComponent.h"
 
 #include "xui_bitmap.h"
 #include "xui_global.h"
@@ -15,9 +16,11 @@
 #include "onity_mainform.h"
 #include "onity_inspector.h"
 #include "onity_filterdata.h"
-#include "onity_2dsrefdata.h"
+#include "onity_maprefdata.h"
+#include "onity_entitydata.h"
 #include "onity_propcourse.h"
-#include "onity_prop2dsref.h"
+#include "onity_propmapref.h"
+#include "onity_propentity.h"
 #include "onity_propscenelayer.h"
 #include "onity_hierarchy.h"
 
@@ -84,6 +87,7 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_method_ptrcall(m_tree,		set_sidecolor	)(xui_colour::black);
 	xui_method_ptrcall(m_tree,		set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_tree,		set_hscrollauto	)(false);
+	xui_method_ptrcall(m_tree,		set_allowmulti	)(true);
 	add_pagectrl(m_head);
 	add_pagectrl(m_tree);
 }
@@ -109,7 +113,7 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 				{
 					NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, (*itor));
 					u32 index = root->get_leafnodecount();
-					root->add_leafnode(index, new onity_2dsrefdata(NULL, new onity_prop2dsref(transref)));
+					root->add_leafnode(index, new onity_maprefdata(NULL, new onity_propmapref(transref)));
 				}
 			}
 		}
@@ -125,7 +129,7 @@ xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*		)( Omiga::E
 	xui_treenode* filternode = get_filternode(filtername);
 	xui_treenode* entitynode = filternode->add_leafnode(
 		filternode->get_leafnodecount(), 
-		new xui_treedata(xui_global::ascii_to_unicode(ent->GetName())));
+		new onity_entitydata(NULL, new onity_propentity(ent)));
 
 	entitynode->set_data(ent);
 	return entitynode;
@@ -177,6 +181,9 @@ xui_method_explain(onity_hierarchy, set_editprop,			void				)( onity_propcourse*
 xui_method_explain(onity_hierarchy, on_entityadd,			void				)( Omiga::Entity* ent )
 {
 	if (onity_mainform::get_ptr()->was_gamerun() == false)
+		return;
+
+	if (ent->GetComponent<Omiga::GUIComponent>())
 		return;
 
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();

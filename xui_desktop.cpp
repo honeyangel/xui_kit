@@ -366,9 +366,10 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 	if (m_hoverctrl)
 	{
 		xui_component* root = m_hoverctrl;
+		root->on_mousewheel(args);
+
 		while (root && args.handle == false)
 		{
-			root->on_mousewheel(	  args);
 			root->xm_mousewheel(root, args);
 			if (xui_issub_kindof(xui_desktop, root))
 				break;
@@ -525,20 +526,36 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 }
 xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )
 {
-	xui_component* component = m_focusctrl;
-	if (component)
+	if (m_focusctrl)
 	{
-		component->on_keybddown(           args);
-		component->xm_keybddown(component, args);
+		xui_component* root = m_focusctrl;
+		root->on_keybddown(args);
+
+		while (root && args.handle == false)
+		{
+			root->xm_keybddown(root, args);
+			if (xui_issub_kindof(xui_desktop, root))
+				break;
+
+			root = root->get_parent();
+		}
 	}
 }
 xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args )
 {
-	xui_component* component = m_focusctrl;
-	if (component)
+	if (m_focusctrl)
 	{
-		component->on_keybdrise(           args);
-		component->xm_keybdrise(component, args);
+		xui_component* root = m_focusctrl;
+		root->on_keybdrise(args);
+
+		while (root && args.handle == false)
+		{
+			root->xm_keybdrise(root, args);
+			if (xui_issub_kindof(xui_desktop, root))
+				break;
+
+			root = root->get_parent();
+		}
 	}
 }
 xui_method_explain(xui_desktop, os_keybdchar,	void					)( u16 c )

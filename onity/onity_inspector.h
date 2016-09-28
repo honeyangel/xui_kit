@@ -4,6 +4,7 @@
 #include "xui_dockpage.h"
 #include "xui_propview.h"
 
+class NPObjectRef;
 class NPNode;
 class onity_preview;
 class onity_renderview;
@@ -33,7 +34,7 @@ public:
 	/*
 	//tips
 	*/
-	void				show_tips				( xui_propctrl* propctrl );
+	void				show_tips				( NPObjectRef* value, const xui_vector<s32>& pt );
 	void				hide_tips				( void );
 
 protected:
@@ -48,6 +49,7 @@ protected:
 	*/
 	void				on_sizectrlmousemove	( xui_component* sender, xui_method_mouse& args );
 	void				on_tipsviewrenderself	( xui_component* sender, xui_method_args&  args );
+	void				on_inspectorkeybddown	( xui_component* sender, xui_method_keybd& args );
 
 	/*
 	//method

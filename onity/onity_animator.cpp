@@ -23,6 +23,7 @@ xui_create_explain(onity_animator)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_A, 200, DOCKSTYLE_F)
 , m_editprop(NULL)
 {
+	xm_keybddown += new xui_method_member<xui_method_keybd, onity_animator>(this, &onity_animator::on_animatorkeybddown);
 	ini_namectrl(onity_resource::icon_animator, L"Animator");
 
 	xui_menu* menu1 = xui_menu::create(80);
@@ -127,7 +128,7 @@ xui_method_explain(onity_animator, get_paramview,		onity_paramview*		)( void )
 /*
 //event
 */
-xui_method_explain(onity_animator, on_stateclick,		void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_animator, on_stateclick,		void					)( xui_component* sender, xui_method_args&  args )
 {
 	if (m_editprop)
 	{
@@ -137,7 +138,7 @@ xui_method_explain(onity_animator, on_stateclick,		void					)( xui_component* se
 		m_stateview->add_state(pt);
 	}
 }
-xui_method_explain(onity_animator, on_retargetclick,	void					)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_animator, on_retargetclick,	void					)( xui_component* sender, xui_method_args&  args )
 {
 	if (m_editprop)
 	{
@@ -146,6 +147,17 @@ xui_method_explain(onity_animator, on_retargetclick,	void					)( xui_component* 
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			vec[i]->SetRetarget(flag);
+		}
+	}
+}
+xui_method_explain(onity_animator, on_animatorkeybddown,void					)( xui_component* sender, xui_method_keybd& args )
+{
+	if (args.kcode == KEY_S && args.ctrl)
+	{
+		if (m_editprop && m_editprop->was_modify())
+		{
+			m_editprop->save();
+			args.handle = true;
 		}
 	}
 }

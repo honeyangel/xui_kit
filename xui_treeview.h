@@ -212,6 +212,8 @@ public:
 	//method
 	*/
 	xui_method<xui_method_args>			xm_selectedchange;
+	xui_method<xui_method_args>			xm_treenodeenter;
+	xui_method<xui_method_args>			xm_treenodeleave;
 	xui_method<xui_method_treedragdrop>	xm_treedragover;
 	xui_method<xui_method_treedragdrop> xm_treedragdrop;
 

@@ -23,6 +23,7 @@
 #include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
+#include "onity_propcourse.h"
 #include "onity_resource.h"
 #include "onity_hierarchy.h"
 #include "onity_inspector.h"
@@ -44,6 +45,7 @@ xui_implement_rtti(onity_mainform, xui_window);
 xui_create_explain(onity_mainform)( void )
 : xui_window(xui_vector<s32>(0), false)
 {
+	xm_keybddown   += new xui_method_member<xui_method_keybd, onity_mainform>(this, &onity_mainform::on_globalkeybddown);
 	m_dockstyle		= DOCKSTYLE_F;
 
 	m_select		= xui_toggle::create(onity_resource::icon_select,		32);
@@ -272,7 +274,7 @@ xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args 
 /*
 //event
 */
-xui_method_explain(onity_mainform, on_clicktransform,	void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clicktransform,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_toggle* operator_toggle[4];
 	operator_toggle[0] = m_select;
@@ -284,7 +286,7 @@ xui_method_explain(onity_mainform, on_clicktransform,	void				)( xui_component* 
 		operator_toggle[i]->ini_toggle(sender == operator_toggle[i]);
 	}
 }
-xui_method_explain(onity_mainform, on_clickanchor,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickanchor,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, sender);
 	u08 toa = (u08)drawer->get_data();
@@ -302,7 +304,7 @@ xui_method_explain(onity_mainform, on_clickanchor,		void				)( xui_component* se
 		break;
 	}
 }
-xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_drawer* drawer = xui_dynamic_cast(xui_drawer, sender);
 	u08 toc = (u08)drawer->get_data();
@@ -320,7 +322,7 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component*
 		break;
 	}
 }
-xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	if (sender == m_run)
 	{
@@ -358,7 +360,7 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 		}
 	}
 }
-xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_dockpage* page = (xui_dockpage*)sender->get_data();
 	if (page)
@@ -370,7 +372,7 @@ xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* s
 		view->set_pageshow(page, !view->was_pageshow(page));
 	}
 }
-xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	extern std::wstring TOOLPATH;
 	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "onity.dock";
@@ -416,7 +418,7 @@ xui_method_explain(onity_mainform, on_clicksave,		void				)( xui_component* send
 		fclose(file);
 	}
 }
-xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	extern std::wstring TOOLPATH;
 	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "onity.dock";
@@ -461,7 +463,7 @@ xui_method_explain(onity_mainform, on_clickload,		void				)( xui_component* send
 		fclose(file);
 	}
 }
-xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	del_allview();
 	std::vector<xui_menuitem*> menulist;
@@ -484,7 +486,7 @@ xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sen
 		}
 	}
 }
-xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_colour      color	= sender->get_vertexcolor();
 	xui_rect2d<s32> rt		= sender->get_renderrtabs();
@@ -524,7 +526,7 @@ xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sen
 		xui_convas::get_ins()->fill_rectangle(rt, color);
 	}
 }
-xui_method_explain(onity_mainform, on_mainviewinvalid,	void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_mainviewinvalid,	void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_vector<s32> minlimit = m_mainview->get_minlimit();
 	minlimit.h += m_toolpane->get_renderh();
@@ -538,7 +540,7 @@ xui_method_explain(onity_mainform, on_mainviewinvalid,	void				)( xui_component*
 		set_clientsz(sz);
 	}
 }
-xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	onity_recent* dialog = xui_dynamic_cast(onity_recent, sender);
 	xui_global::set_workpath(dialog->get_selectpath());
@@ -560,7 +562,7 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	config->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
 	xui_desktop::get_ins()->add_child(config);
 }
-xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args& args )
+xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	NPRender::Init();
 	NP2DSLib::Init();
@@ -576,6 +578,15 @@ xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* s
 	onity_config* dialog = xui_dynamic_cast(onity_config, sender);
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
+}
+xui_method_explain(onity_mainform, on_globalkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
+{
+	if (args.kcode == KEY_S && args.ctrl && args.handle == false)
+	{
+		onity_propfile* propfile = get_hierarchy()->get_editprop();
+		if (propfile && propfile->was_modify())
+			propfile->save();
+	}
 }
 
 /*

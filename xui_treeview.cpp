@@ -908,9 +908,30 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 xui_method_explain(xui_treeview, on_mousemove,			void								)( xui_method_mouse&	args )
 {
 	xui_container::on_mousemove(args);
+
+	xui_treenode* hovernode = choose_node(get_renderpt(args.point));
+	if (m_mousehover != hovernode)
+	{
+		xui_method_args node_args;
+		if (m_mousehover)
+		{
+			node_args.wparam = m_mousehover;
+			node_args.handle = false;
+			xm_treenodeleave(this, node_args);
+		}
+
+		m_mousehover  = hovernode;
+
+		if (m_mousehover)
+		{
+			node_args.wparam = m_mousehover;
+			node_args.handle = false;
+			xm_treenodeenter(this, node_args);
+		}
+	}
+
 	if (has_catch())
 	{
-		m_mousehover = choose_node(get_renderpt(args.point));
 		m_allowplace = TREEDROP_NOTALLOW;
 
 		if (m_acceptdrag &&

@@ -1,23 +1,21 @@
-#ifndef __onity_prop2dsref_h__
-#define __onity_prop2dsref_h__
+#ifndef __onity_propnode2dsref_h__
+#define __onity_propnode2dsref_h__
 
-#include "NP2DSTransRef.h"
-#include "onity_proproot.h"
+#include "onity_propnoderender.h"
 
-typedef std::vector<NP2DSTransRef::SParam>& ParamVec;
-class onity_prop2dsref : public onity_proproot
+class NP2DSTransRef;
+class onity_propnode2dsref : public onity_propnoderender
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_prop2dsref( NP2DSTransRef* ref );
+	onity_propnode2dsref( NP2DSTransRef* ref );
 
 	/*
 	//method
 	*/
 	NP2DSTransRef*			get_2dsref		( void );
-	void					set_newref		( NP2DSAsset* asset );
 
 protected:
 	/*
@@ -31,17 +29,12 @@ protected:
 	static void				set_rotation	( void* userptr, f64   value );
 	static void*			get_asset		( void* userptr );
 	static void				set_asset		( void* userptr, void* value );
-	static ParamVec&		get_params		( void* userptr );
-	static void				add_param		( void* userptr );
-	static void				del_param		( void* userptr );
-	static xui_propdata*	new_paramprop	( void* userptr, u32 i, xui_propkind* propkind );
 
 	/*
 	//member
 	*/
 	NP2DSTransRef*			m_2dsref;
 	xui_propkind*			m_transkind;
-	xui_propkind*			m_paramkind;
 };
 
-#endif//__onity_prop2dsref_h__
+#endif//__onity_propnode2dsref_h__

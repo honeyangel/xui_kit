@@ -10,6 +10,7 @@
 #include "NP2DSImageRef.h"
 #include "NP2DSFrameRef.h"
 #include "NP2DSActorRef.h"
+#include "NP2DSStateCtrl.h"
 #include "NPParticleSFX.h"
 
 #include "xui_global.h"
@@ -69,6 +70,60 @@ xui_method_explain(onity_propdata_particle, on_doubleclick,			void				)( xui_com
 	if (particle)
 	{
 		std::string full = particle->GetSourceFileName();
+		std::string path = NPFileNameHelper::PathName(full);
+		std::string file = NPFileNameHelper::FileName(full);
+		path = path.substr(0, path.length()-1);
+		file = NPFileNameHelper::SafeName(file);
+
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->loc_filenode(xui_global::ascii_to_unicode(path), xui_global::ascii_to_unicode(file), 0);
+		onity_mainform::get_ptr()->set_pageshow(project);
+	}
+}
+
+/*
+//constructor
+*/
+xui_create_explain(onity_propdata_statectrl)( 
+	xui_propkind*			kind, 
+	const std::wstring&		name, 
+	get_func				userget, 
+	set_func				userset, 
+	void*					userptr )
+: xui_propdata_object_func(kind, name, xui_propctrl_object::create, "NP2DSStateCtrl", onity_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
+{
+	xm_doubleclick += new xui_method_member<xui_method_args, onity_propdata_statectrl>(this, &onity_propdata_statectrl::on_doubleclick);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_propdata_statectrl, get_icon,				xui_bitmap*			)( xui_propdata* propdata )
+{
+	return onity_resource::icon_animator;
+}
+xui_method_explain(onity_propdata_statectrl, get_name,				std::wstring		)( xui_propdata* propdata )
+{
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
+	NP2DSStateCtrl* statectrl = (NP2DSStateCtrl*)dataobject->get_value();
+	if (statectrl)
+	{
+		std::string name = NPFileNameHelper::SafeName(statectrl->GetSourceFile());
+		return xui_global::ascii_to_unicode(name);
+	}
+
+	return L"None";
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propdata_statectrl, on_doubleclick,		void				)( xui_component* sender, xui_method_args& args )
+{
+	NP2DSStateCtrl* statectrl = (NP2DSStateCtrl*)get_value();
+	if (statectrl)
+	{
+		std::string full = statectrl->GetSourceFile();
 		std::string path = NPFileNameHelper::PathName(full);
 		std::string file = NPFileNameHelper::FileName(full);
 		path = path.substr(0, path.length()-1);
@@ -253,6 +308,12 @@ xui_method_explain(onity_propctrl_asset,	on_editctrlmouseenter,	void				)( xui_c
 {
 	bool same = true;
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
+	if (dataobject->has_droptype("NPParticleSFX")	== false &&
+		dataobject->has_droptype("NP2DSImage")		== false &&
+		dataobject->has_droptype("NP2DSFrame")		== false &&
+		dataobject->has_droptype("NP2DSActor")		== false)
+		return;
+
 	void* value = dataobject->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
@@ -268,7 +329,7 @@ xui_method_explain(onity_propctrl_asset,	on_editctrlmouseenter,	void				)( xui_c
 		return;
 
 	onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-	inspector->show_tips(this);
+	inspector->show_tips((NPObjectRef*)value, get_screenpt());
 }
 xui_method_explain(onity_propctrl_asset,	on_editctrlmouseleave,	void				)( xui_component* sender, xui_method_mouse& args )
 {

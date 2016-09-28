@@ -28,6 +28,8 @@
 #include "xui_propctrl_object.h"
 #include "xui_propctrl_slider.h"
 #include "onity_renderview.h"
+#include "onity_propfile.h"
+#include "onity_propleaf.h"
 #include "onity_resource.h"
 #include "onity_preview.h"
 #include "onity_inspector.h"
@@ -41,6 +43,7 @@ xui_create_explain(onity_inspector)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_R)
 , m_tipsnode(NULL)
 {
+	xm_keybddown += new xui_method_member<xui_method_keybd, onity_inspector>(this, &onity_inspector::on_inspectorkeybddown);
 	ini_namectrl(onity_resource::icon_inspector, L"Inspector");
 
 	m_propview	= new xui_propview(xui_vector<s32>(200));
@@ -104,7 +107,7 @@ xui_method_explain(onity_inspector, set_proproot,			void			)( const xui_proproot
 /*
 //tips
 */
-xui_method_explain(onity_inspector, show_tips,				void			)( xui_propctrl* propctrl )
+xui_method_explain(onity_inspector, show_tips,				void			)( NPObjectRef* value, const xui_vector<s32>& pt )
 {
 	if (m_tipsnode)
 	{
@@ -112,57 +115,53 @@ xui_method_explain(onity_inspector, show_tips,				void			)( xui_propctrl* propct
 		m_tipsnode = NULL;
 	}
 
-	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propctrl->get_propdata().front());
-	if (dataobject->has_droptype("NPParticleSFX"))
+	if (NPIsExaKindOf(NPParticleSFX, value))
 	{
-		NPParticleSFX* particle = ((NPParticleSFX*)dataobject->get_value())->CreateInstance();
+		NPParticleSFX* particle = ((NPParticleSFX*)value)->CreateInstance();
 		particle->SetFlag(PARTICLESFX_LOOPPLAY, true);
 		particle->Active();
 		m_tipsnode = particle;
 	}
 	else
-	if (dataobject->has_droptype("NP2DSImage") ||
-		dataobject->has_droptype("NP2DSFrame") ||
-		dataobject->has_droptype("NP2DSActor"))
+	if (NPIsSubKindOf(NP2DSAsset, value))
 	{
-		NP2DSAsset* asset = (NP2DSAsset*)dataobject->get_value();
-		NP2DSImage* image = NPDynamicCast(NP2DSImage, asset);
-		NP2DSFrame* frame = NPDynamicCast(NP2DSFrame, asset);
-		NP2DSActor* actor = NPDynamicCast(NP2DSActor, asset);
+		NP2DSImage* image = NPDynamicCast(NP2DSImage, value);
+		NP2DSFrame* frame = NPDynamicCast(NP2DSFrame, value);
+		NP2DSActor* actor = NPDynamicCast(NP2DSActor, value);
 		if (image)
 		{
 			NP2DSImageRef* imageref = new NP2DSImageRef;
-			imageref->SetImage(asset->GetOwnedFile()->GetKey(), asset->GetKey());
+			imageref->SetImage(image->GetOwnedFile()->GetKey(), image->GetKey());
 			m_tipsnode = imageref;
 		}
 		if (frame)
 		{
 			NP2DSFrameRef* frameref = new NP2DSFrameRef;
-			frameref->SetFrame(asset->GetOwnedFile()->GetKey(), asset->GetKey());
+			frameref->SetFrame(frame->GetOwnedFile()->GetKey(), frame->GetKey());
 			m_tipsnode = frameref;
 		}
 		if (actor)
 		{
 			NP2DSActorRef* actorref = new NP2DSActorRef;
-			actorref->SetActor(asset->GetOwnedFile()->GetKey(), asset->GetKey());
+			actorref->SetActor(actor->GetOwnedFile()->GetKey(), actor->GetKey());
 			m_tipsnode = actorref;
 		}
 	}
 
 	set_localtransform();
 
-	xui_vector<s32> pt = propctrl->get_screenpt();
+	xui_vector<s32> finalpt = pt;
 	xui_window* window = get_window();
 	if (window->get_owner())
 	{
-		pt.y += propctrl->get_renderh();
+		finalpt.y += xui_propview::default_lineheight;
 	}
 	else
 	{
-		pt.x -= m_tipsview->get_renderw();
+		finalpt.x -= m_tipsview->get_renderw();
 	}
-	m_tipsview->set_data(propctrl);
-	m_tipsview->set_renderpt(pt);
+	m_tipsview->set_data(value);
+	m_tipsview->set_renderpt(finalpt);
 	xui_desktop::get_ins()->set_floatctrl(window, m_tipsview);
 }
 xui_method_explain(onity_inspector, hide_tips,				void			)( void )
@@ -191,6 +190,25 @@ xui_method_explain(onity_inspector, on_updateself,			void			)( xui_method_update
 /*
 //event
 */
+xui_method_explain(onity_inspector, on_inspectorkeybddown,	void			)( xui_component* sender, xui_method_keybd& args )
+{
+	if (args.kcode == KEY_S && args.ctrl)
+	{
+		xui_proproot_vec vec = m_propview->get_proproot();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(vec[i]);
+			onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(vec[i]);
+			if (propleaf)
+				propfile  = propleaf->get_propfile();
+			if (propfile && propfile->was_modify())
+			{
+				propfile->save();
+				args.handle = true;
+			}
+		}
+	}
+}
 xui_method_explain(onity_inspector, on_sizectrlmousemove,	void			)( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_sizectrl->has_catch() && m_drawview->was_visible())
@@ -214,35 +232,31 @@ xui_method_explain(onity_inspector, on_tipsviewrenderself,	void			)( xui_compone
 		m_tipsnode->Render();
 	else
 	{
-		xui_propctrl* propctrl = (xui_propctrl*)m_tipsview->get_data();
-		if (propctrl->get_propdata().size() > 0)
+		NPObjectRef* value = (NPObjectRef*)m_tipsview->get_data();
+		if (NPIsSubKindOf(NPTexture, value))
 		{
-			xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propctrl->get_propdata().front());
-			if (dataobject->has_droptype("NPSourceTexture"))
+			NPTexture* texture = NPDynamicCast(NPTexture, value);
+			if (texture)
 			{
-				NPTexture* texture = (NPSourceTexture*)dataobject->get_value();
-				if (texture)
-				{
-					npu32 w = texture->GetWidth ();
-					npu32 h = texture->GetHeight();
-					npf32 s = (npf32)(size.w) / xui_max(w, h);
-					npf32 x = 0.0f;
-					npf32 y = 0.0f;
-					NPTransform t;
-					t.SetIdentity();
-					t.SetS(NPVector3(s, s, 1.0f));
-					t.SetT(NPVector3(x, y, 0.0f));
-					NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
-					NP2DSRenderUtil::GetIns()->DrawImage(
-						&image, 
-						t.GetMatrix(),
-						NPColor::White, 
-						0,
-						0,
-						0,
-						0,
-						texture->GetKey());
-				}
+				npu32 w = texture->GetWidth ();
+				npu32 h = texture->GetHeight();
+				npf32 s = (npf32)(size.w) / xui_max(w, h);
+				npf32 x = 0.0f;
+				npf32 y = 0.0f;
+				NPTransform t;
+				t.SetIdentity();
+				t.SetS(NPVector3(s, s, 1.0f));
+				t.SetT(NPVector3(x, y, 0.0f));
+				NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
+				NP2DSRenderUtil::GetIns()->DrawImage(
+					&image, 
+					t.GetMatrix(),
+					NPColor::White, 
+					0,
+					0,
+					0,
+					0,
+					texture->GetKey());
 			}
 		}
 	}

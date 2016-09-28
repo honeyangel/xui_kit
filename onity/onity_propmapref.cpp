@@ -16,41 +16,14 @@
 #include "onity_propctrl_sceneparam.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
-#include "onity_prop2dsref.h"
+#include "onity_propmapref.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_prop2dsref)( NP2DSTransRef* ref )
-: onity_proproot()
-, m_2dsref(ref)
+xui_create_explain(onity_propmapref)( NP2DSTransRef* ref )
+: onity_propnode2dsref(ref)
 {
-	m_transkind = new xui_propkind(this, L"Transform", "Transform", xui_kindctrl::create, NULL, true);
-	m_transkind->add_propdata(new xui_propdata_vector(
-		m_transkind, 
-		L"Position", 
-		xui_propctrl_vector::create, 
-		get_position, 
-		set_position, 
-		this, 
-		NT_INT));
-	m_transkind->add_propdata(new xui_propdata_vector(
-		m_transkind,
-		L"Scale",
-		xui_propctrl_vector::create,
-		get_scale,
-		set_scale,
-		this,
-		NT_FLOAT));
-	m_transkind->add_propdata(new xui_propdata_number_func(
-		m_transkind,
-		L"Rotation",
-		xui_propctrl_number::create,
-		get_rotation,
-		set_rotation,
-		this,
-		NT_INT));
-
 	m_paramkind = new xui_propkind(this, L"Design", "SceneDesign", xui_kindctrl::create, NULL, true);
 	m_paramkind->add_propdata(new onity_propdata_2dsasset(
 		m_paramkind,
@@ -70,18 +43,13 @@ xui_create_explain(onity_prop2dsref)( NP2DSTransRef* ref )
 		get_params,
 		this));
 
-	add_propkind(m_transkind);
 	add_propkind(m_paramkind);
 }
 
 /*
 //method
 */
-xui_method_explain(onity_prop2dsref, get_2dsref,	NP2DSTransRef*	)( void )
-{
-	return m_2dsref;
-}
-xui_method_explain(onity_prop2dsref, set_newref,	void			)( NP2DSAsset* asset )
+xui_method_explain(onity_propmapref, set_newref,	void			)( NP2DSAsset* asset )
 {
 	NP2DSSceneLayer* scenelayer = NPDynamicCast(NP2DSSceneLayer, m_2dsref->GetParent());
 	NP2DSTransRef* newref = NULL;
@@ -105,41 +73,9 @@ xui_method_explain(onity_prop2dsref, set_newref,	void			)( NP2DSAsset* asset )
 /*
 //static
 */
-xui_method_explain(onity_prop2dsref, get_position,	xui_vector<f64>	)( void* userptr )
+xui_method_explain(onity_propmapref, get_asset,		void*			)( void* userptr )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	NPVector3 trans = prop->get_2dsref()->GetWorldTrans();
-	return xui_vector<f64>((f64)trans.x, (f64)trans.y);
-}
-xui_method_explain(onity_prop2dsref, set_position,	void			)( void* userptr, const xui_vector<f64>& value )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	prop->get_2dsref()->SetWorldTrans(NPVector3((npf32)value.x, (npf32)value.y, 0.0f));
-}
-xui_method_explain(onity_prop2dsref, get_scale,		xui_vector<f64>	)( void* userptr )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	NPVector3 scale = prop->get_2dsref()->GetWorldScale();
-	return xui_vector<f64>((f64)scale.x, (f64)scale.y);
-}
-xui_method_explain(onity_prop2dsref, set_scale,		void			)( void* userptr, const xui_vector<f64>& value )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	prop->get_2dsref()->SetWorldScale(NPVector3((npf32)value.x, (npf32)value.y, 1.0f));
-}
-xui_method_explain(onity_prop2dsref, get_rotation,	f64				)( void* userptr )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	return (f64)prop->get_2dsref()->GetWorldAngle();
-}
-xui_method_explain(onity_prop2dsref, set_rotation,	void			)( void* userptr, f64   value )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
-	prop->get_2dsref()->SetWorldAngle((npf32)value);
-}
-xui_method_explain(onity_prop2dsref, get_asset,		void*			)( void* userptr )
-{
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	NP2DSTransRef* transref = prop->get_2dsref();
 	NP2DSImageRef* imageref = NPDynamicCast(NP2DSImageRef, transref);
 	NP2DSFrameRef* frameref = NPDynamicCast(NP2DSFrameRef, transref);
@@ -150,9 +86,9 @@ xui_method_explain(onity_prop2dsref, get_asset,		void*			)( void* userptr )
 
 	return NULL;
 }
-xui_method_explain(onity_prop2dsref, set_asset,		void			)( void* userptr, void* value )
+xui_method_explain(onity_propmapref, set_asset,		void			)( void* userptr, void* value )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	NP2DSAsset* asset = (NP2DSAsset*)value;
 	if (asset)
 	{
@@ -176,26 +112,26 @@ xui_method_explain(onity_prop2dsref, set_asset,		void			)( void* userptr, void* 
 		prop->get_2dsref()->SetAsset(-1, -1);
 	}
 }
-xui_method_explain(onity_prop2dsref, get_params,	ParamVec&		)( void* userptr )
+xui_method_explain(onity_propmapref, get_params,	ParamVec&		)( void* userptr )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	return prop->get_2dsref()->GetSceneParamVec();
 }
-xui_method_explain(onity_prop2dsref, add_param,		void			)( void* userptr )
+xui_method_explain(onity_propmapref, add_param,		void			)( void* userptr )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	NP2DSTransRef::SParam param;
 	prop->get_2dsref()->AddSceneParam(param);
 }
-xui_method_explain(onity_prop2dsref, del_param,		void			)( void* userptr )
+xui_method_explain(onity_propmapref, del_param,		void			)( void* userptr )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	u32 index = prop->get_2dsref()->GetSceneParamCount()-1;
 	prop->get_2dsref()->DelSceneParam(index);
 }
-xui_method_explain(onity_prop2dsref, new_paramprop, xui_propdata*	)( void* userptr, u32 i, xui_propkind* propkind )
+xui_method_explain(onity_propmapref, new_paramprop, xui_propdata*	)( void* userptr, u32 i, xui_propkind* propkind )
 {
-	onity_prop2dsref* prop = (onity_prop2dsref*)userptr;
+	onity_propmapref* prop = (onity_propmapref*)userptr;
 	NP2DSTransRef::SParam* param = &(prop->get_2dsref()->GetSceneParamVec()[i]);
 	return new onity_propdata_sceneparam(propkind, L"Param", onity_propctrl_sceneparam::create, param);
 }

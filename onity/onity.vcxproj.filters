@@ -191,22 +191,49 @@
     <ClInclude Include="onity_propentitytemp.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propentity.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="onity_proproot.h">
       <Filter>project</Filter>
     </ClInclude>
     <ClInclude Include="onity_tempctrl.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_prop2dsref.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="onity_propctrl_sceneparam.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_2dsrefdata.h">
+    <ClInclude Include="onity_propentity.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propctrl_rendertree.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_entitydata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnodemodule.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnode2dsref.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnodeaction.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnodeparticle.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propmapref.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_maprefdata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnodesprite.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_renderdata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propnoderender.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
   </ItemGroup>
@@ -411,10 +438,40 @@
     <ClCompile Include="onity_propctrl_sceneparam.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
-    <ClCompile Include="onity_prop2dsref.cpp">
+    <ClCompile Include="onity_propentity.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
-    <ClCompile Include="onity_2dsrefdata.cpp">
+    <ClCompile Include="onity_propctrl_rendertree.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_entitydata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnode2dsref.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propmapref.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_maprefdata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnodemodule.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnodeaction.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnodesprite.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_renderdata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnodeparticle.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propnoderender.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
   </ItemGroup>
