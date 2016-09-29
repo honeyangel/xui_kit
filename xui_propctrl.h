@@ -24,7 +24,7 @@ public:
 	void					set_propdata	( xui_propdata* propdata );
 	void					set_propdata	( const xui_propdata_vec& propdata );
 	void					del_propdata	( void );
-	virtual void			on_linkpropdata	( void ) = 0;
+	virtual void			on_linkpropdata	( bool selfupdate = false ) = 0;
 	virtual void			on_editvalue	( xui_propedit* sender ) = 0;
 
 	/*
@@ -40,7 +40,8 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_lock			( xui_method_args& args );
+	virtual void			on_lock			( xui_method_args&   args );
+	virtual void			on_updateself	( xui_method_update& args );
 
 	/*
 	//member
@@ -70,7 +71,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 
 protected:
 	/*
@@ -97,11 +98,11 @@ public:																		\
 																			\
 	class_name( xui_propdata* data );										\
 																			\
-	virtual void			on_linkpropdata	( void );						\
+	virtual void			on_linkpropdata	( bool selfupdate = false );		\
 	virtual void			on_editvalue	( xui_propedit* sender );		\
 																			\
 protected:																	\
-	virtual void			on_perform		( xui_method_args& args );		\
+	virtual void			on_perform		( xui_method_args& args );	\
 };
 
 xui_propctrl_declare(xui_propctrl_bool)

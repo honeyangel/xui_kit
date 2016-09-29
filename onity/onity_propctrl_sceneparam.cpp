@@ -56,11 +56,14 @@ xui_method_explain(onity_propctrl_sceneparam, create,			xui_propctrl*	)( xui_pro
 /*
 //propdata
 */
-xui_method_explain(onity_propctrl_sceneparam, on_linkpropdata,	void			)( void )
+xui_method_explain(onity_propctrl_sceneparam, on_linkpropdata,	void			)( bool selfupdate )
 {
-	m_nameedit->reset();
-	m_textedit->reset();
-	m_namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_nameedit->reset();
+		m_textedit->reset();
+		m_namectrl->set_text(m_propdata->get_name());
+	}
 
 	bool samename = true;
 	bool sametext = true;

@@ -73,26 +73,28 @@ xui_method_explain(onity_propctrl_condition, create,				xui_propctrl*	)( xui_pro
 /*
 //override
 */
-xui_method_explain(onity_propctrl_condition, on_linkpropdata,		void			)( void )
+xui_method_explain(onity_propctrl_condition, on_linkpropdata,		void			)( bool selfupdate )
 {
 	onity_propdata_condition* datacondition = dynamic_cast<onity_propdata_condition*>(m_propdata);
 	NP2DSTransition* transition = datacondition->get_transition();
 	const NP2DSTransition::ConditionVec& vec = transition->GetConditionVec();
 
-	xui_method_ptrcall(m_middle, del_children	)();
-	for (u32 i = 0; i < vec.size(); ++i)
+	if (selfupdate == false || m_middle->get_childcount() != vec.size())
 	{
-		m_middle->add_child(new onity_condition(vec[i]));
+		xui_method_ptrcall(m_middle, del_children	)();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			m_middle->add_child(new onity_condition(vec[i]));
+		}
+
+		xui_method_ptrcall(m_middle, refresh		)();
+		xui_method_ptrcall(m_insert, set_enable		)(transition->GetSelfState()->GetStateCtrl()->GetParamVec().size() > 0);
+		xui_method_ptrcall(m_delete, set_enable		)(vec.size() >  0);
+		xui_method_ptrcall(m_nontip, set_visible	)(vec.size() == 0);
 	}
-	xui_method_ptrcall(m_middle, refresh		)();
-	xui_method_ptrcall(m_insert, set_enable		)(transition->GetSelfState()->GetStateCtrl()->GetParamVec().size() > 0);
-	xui_method_ptrcall(m_delete, set_enable		)(vec.size() >  0);
-	xui_method_ptrcall(m_nontip, set_visible	)(vec.size() == 0);
 }
 xui_method_explain(onity_propctrl_condition, on_editvalue,			void			)( xui_propedit* sender )
-{
-
-}
+{}
 
 /*
 //callback

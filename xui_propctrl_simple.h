@@ -26,7 +26,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 	virtual void			on_editvalue	( xui_propedit* sender );
 
 protected:

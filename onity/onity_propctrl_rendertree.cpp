@@ -126,19 +126,22 @@ xui_method_explain(onity_propctrl_rendertree, create,				xui_propctrl*	)( xui_pr
 /*
 //override
 */
-xui_method_explain(onity_propctrl_rendertree, on_linkpropdata,		void			)( void )
+xui_method_explain(onity_propctrl_rendertree, on_linkpropdata,		void			)( bool selfupdate )
 {
-	xui_method_ptrcall(m_middle, del_upmostnodeall	)();
-	if (m_propdatavec.size() == 1)
+	if (selfupdate == false)
 	{
-		onity_propdata_rendertree* datarender = dynamic_cast<onity_propdata_rendertree*>(m_propdata);
-		NPNode* renderroot = datarender->get_root();
-		add_rendernode(NULL, renderroot);
-	}
+		xui_method_ptrcall(m_middle, del_upmostnodeall	)();
+		if (m_propdatavec.size() == 1)
+		{
+			onity_propdata_rendertree* datarender = dynamic_cast<onity_propdata_rendertree*>(m_propdata);
+			NPNode* renderroot = datarender->get_root();
+			add_rendernode(NULL, renderroot);
+		}
 
-	xui_method_ptrcall(m_multip, ini_component		)(true, m_middle->get_upmostnodecount() == 0);
-	xui_method_ptrcall(m_delete, set_enable			)(false);
-	xui_method_ptrcall(m_middle, refresh			)();
+		xui_method_ptrcall(m_multip, ini_component		)(true, m_middle->get_upmostnodecount() == 0);
+		xui_method_ptrcall(m_delete, ini_component		)(false, true);
+		xui_method_ptrcall(m_middle, refresh			)();
+	}
 }
 xui_method_explain(onity_propctrl_rendertree, on_editvalue,			void			)( xui_propedit* sender )
 {}
@@ -244,19 +247,19 @@ xui_method_explain(onity_propctrl_rendertree, on_middlenodeenter,	void			)( xui_
 	onity_propnoderender* prop = dynamic_cast<onity_propnoderender*>(data->get_prop());
 	NPNode* rendernode  = prop->get_node();
 	NPObjectRef* value  = NULL;
-	if (NPIsExaKindOf(NP2DSImageRef, rendernode))
+	if (NPIsSubKindOf(NP2DSImageRef, rendernode))
 	{
 		NP2DSImageRef* imageref = NPDynamicCast(NP2DSImageRef, rendernode);
 		value = imageref->GetImage();
 	}
 	else
-	if (NPIsExaKindOf(NP2DSFrameRef, rendernode))
+	if (NPIsSubKindOf(NP2DSFrameRef, rendernode))
 	{
 		NP2DSFrameRef* frameref = NPDynamicCast(NP2DSFrameRef, rendernode);
 		value = frameref->GetFrame();
 	}
 	else
-	if (NPIsExaKindOf(NP2DSActorRef, rendernode))
+	if (NPIsSubKindOf(NP2DSActorRef, rendernode))
 	{
 		NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, rendernode);
 		value = actorref->GetActor();
@@ -379,9 +382,9 @@ xui_method_explain(onity_propctrl_rendertree, add_rendernode,		void			)( xui_tre
 	xui_treenode* node = NULL;
 	xui_proproot* prop = NULL;
 	if		(NPIsExaKindOf(NPParticleSFX, rendernode))	prop = new onity_propnodeparticle	(NPDynamicCast(NPParticleSFX, rendernode));
-	else if (NPIsExaKindOf(NP2DSImageRef, rendernode))	prop = new onity_propnodemodule		(NPDynamicCast(NP2DSTransRef, rendernode));
-	else if (NPIsExaKindOf(NP2DSFrameRef, rendernode))	prop = new onity_propnodesprite		(NPDynamicCast(NP2DSTransRef, rendernode));
-	else if (NPIsExaKindOf(NP2DSActorRef, rendernode))	prop = new onity_propnodeaction		(NPDynamicCast(NP2DSTransRef, rendernode));
+	else if (NPIsSubKindOf(NP2DSImageRef, rendernode))	prop = new onity_propnodemodule		(NPDynamicCast(NP2DSTransRef, rendernode));
+	else if (NPIsSubKindOf(NP2DSFrameRef, rendernode))	prop = new onity_propnodesprite		(NPDynamicCast(NP2DSTransRef, rendernode));
+	else if (NPIsSubKindOf(NP2DSActorRef, rendernode))	prop = new onity_propnodeaction		(NPDynamicCast(NP2DSTransRef, rendernode));
 	else if (NPIsExaKindOf(NP2DSTransRef, rendernode))	prop = new onity_propnode2dsref		(NPDynamicCast(NP2DSTransRef, rendernode));
 	else												prop = new onity_propnoderender		(rendernode);
 	if (root == NULL)

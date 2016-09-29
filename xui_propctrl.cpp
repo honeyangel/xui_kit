@@ -1,3 +1,4 @@
+#include "xui_desktop.h"
 #include "xui_textbox.h"
 #include "xui_dropbox.h"
 #include "xui_toggle.h"
@@ -92,10 +93,20 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 
 	return depth * xui_propview::default_nodeindent;
 }
-xui_method_explain(xui_propctrl,		on_lock,			void					)( xui_method_args& args )
+xui_method_explain(xui_propctrl,		on_lock,			void					)( xui_method_args&   args )
 {
 	xui_control::on_lock(args);
 	m_maskcolor = xui_colour(1.0f, 0.7f);
+}
+xui_method_explain(xui_propctrl,		on_updateself,		void					)( xui_method_update& args )
+{
+	xui_control::on_updateself(args);
+
+	xui_component* focusctrl = xui_desktop::get_ins()->get_focusctrl();
+	if (focusctrl == NULL || focusctrl->was_ancestor(this) == false)
+	{
+		on_linkpropdata(true);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,11 +131,14 @@ xui_delete_explain(xui_propctrl_base)( void )
 /*
 //override
 */
-xui_method_explain(xui_propctrl_base,	on_linkpropdata,	void					)( void )
+xui_method_explain(xui_propctrl_base,	on_linkpropdata,	void					)( bool selfupdate )
 {
-	m_propedit->reset();
-	xui_drawer* namectrl = m_propedit->get_namectrl();
-	namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_propedit->reset();
+		xui_drawer* namectrl = m_propedit->get_namectrl();
+		namectrl->set_text(m_propdata->get_name());
+	}
 }
 xui_method_explain(xui_propctrl_base,	on_perform,			void					)( xui_method_args& args )
 {
@@ -147,9 +161,9 @@ xui_method_explain(xui_propctrl_base,	on_perform,			void					)( xui_method_args&
 	m_propedit = name;															\
 
 #define xui_propctrl_implement_link(class_name, propedit, propdata, datatype)	\
-void	class_name::on_linkpropdata( void )										\
+void	class_name::on_linkpropdata( bool selfupdate )							\
 {																				\
-	xui_propctrl_base::on_linkpropdata();										\
+	xui_propctrl_base::on_linkpropdata(selfupdate);								\
 																				\
 	bool same = true;															\
 	propdata* data = (propdata*)m_propdata;										\

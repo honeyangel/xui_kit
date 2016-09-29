@@ -28,7 +28,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 	virtual void			on_editvalue	( xui_propedit* sender );
 
 protected:
@@ -74,7 +74,7 @@ public:
 	/*
 	//override
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 };
 
 class xui_propctrl_expand_number : public xui_propctrl_expand
@@ -100,7 +100,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 	virtual void			on_editvalue	( xui_propedit* sender );
 
 protected:
@@ -138,7 +138,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 	virtual void			on_editvalue	( xui_propedit* sender );
 
 protected:
@@ -176,7 +176,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void			on_linkpropdata	( void );
+	virtual void			on_linkpropdata	( bool selfupdate = false );
 	virtual void			on_editvalue	( xui_propedit* sender );
 
 protected:

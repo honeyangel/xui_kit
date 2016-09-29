@@ -32,9 +32,9 @@ xui_method_explain(onity_renderdata, get_text, std::wstring	)( u32 index )
 	onity_propnoderender* prop = dynamic_cast<onity_propnoderender*>(m_prop);
 	NPNode* node = prop->get_node();
 	if		(NPIsExaKindOf(NP2DSTransRef, node)) return L"Container";
-	else if	(NPIsExaKindOf(NP2DSImageRef, node)) return L"Module";
-	else if (NPIsExaKindOf(NP2DSFrameRef, node)) return L"Sprite";
-	else if (NPIsExaKindOf(NP2DSActorRef, node)) return L"Action";
+	else if	(NPIsSubKindOf(NP2DSImageRef, node)) return L"Module";
+	else if (NPIsSubKindOf(NP2DSFrameRef, node)) return L"Sprite";
+	else if (NPIsSubKindOf(NP2DSActorRef, node)) return L"Action";
 	else if (NPIsExaKindOf(NPParticleSFX, node)) return L"Particle";
 	{
 		return L"Node";

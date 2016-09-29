@@ -345,7 +345,7 @@ void xui_demo::test_propview( xui_window* window )
 
 	xui_propdata_vec subprop;
 	subprop.push_back(new xui_propdata_bool(propkind, L"sub_bool", xui_propctrl_bool::create, NULL, NULL, &bool_value));
-	subprop.push_back(new xui_propdata_number_impl<s32>(propkind, L"sub_s32", xui_propctrl_slider::create, &prop_value, 2, -50, 50));
+	subprop.push_back(new xui_propdata_number_impl<s32>(propkind, L"sub_s32", xui_propctrl_slider::create, &prop_value, NT_INT, 2, -50, 50));
 	subprop.push_back(new xui_propdata_enum_impl<u08>(propkind, L"sub_enum", xui_propctrl_enum::create, enum_map, &enum_value));
 	subprop.push_back(new xui_propdata_string(propkind, L"sub_string", xui_propctrl_string::create, NULL, NULL, &string_value));
 	std::map<s32, std::vector<u32>> showmap;

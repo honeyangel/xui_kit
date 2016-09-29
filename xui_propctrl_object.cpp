@@ -58,11 +58,14 @@ xui_delete_explain(xui_propctrl_object)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
+xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( bool selfupdate )
 {
-	m_propedit->reset();
-	xui_drawer* namectrl = m_propedit->get_namectrl();
-	namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_propedit->reset();
+		xui_drawer* namectrl = m_propedit->get_namectrl();
+		namectrl->set_text(m_propdata->get_name());
+	}
 
 	bool same = true;
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
@@ -80,7 +83,7 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( void )
 	xui_drawer* textctrl = xui_dynamic_cast(xui_drawer, m_propedit->get_editctrl());
 	if (same)
 	{
-		if (dataobject->get_value())
+		if (value)
 		{
 			xui_prop_getname namefunc = dataobject->get_namefunc();
 			if (namefunc)

@@ -58,11 +58,14 @@ xui_delete_explain(xui_propctrl_vector)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_vector,			on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_vector,			on_linkpropdata,	void			)( bool selfupdate )
 {
-	m_subxedit->reset();
-	m_subyedit->reset();
-	m_namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_subxedit->reset();
+		m_subyedit->reset();
+		m_namectrl->set_text(m_propdata->get_name());
+	}
 
 	bool same = true;
 	xui_propdata_vector* datavector = dynamic_cast<xui_propdata_vector*>(m_propdata);
@@ -196,10 +199,12 @@ xui_create_explain(xui_propctrl_vector_button)( xui_propdata* propdata )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_vector_button,	on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_vector_button,	on_linkpropdata,	void			)( bool selfupdate )
 {
-	m_zeroctrl->set_text(m_propdata->get_name());
-	xui_propctrl_vector::on_linkpropdata();
+	xui_propctrl_vector::on_linkpropdata(selfupdate);
+
+	if (selfupdate == false)
+		m_zeroctrl->set_text(m_propdata->get_name());
 }
 
 /*

@@ -65,9 +65,9 @@ xui_method_explain(onity_propctrl_pivot, create,					xui_propctrl*	)( xui_propda
 /*
 //propdata
 */
-xui_method_explain(onity_propctrl_pivot, on_linkpropdata,			void			)( void )
+xui_method_explain(onity_propctrl_pivot, on_linkpropdata,			void			)( bool selfupdate )
 {
-	xui_propctrl_vector::on_linkpropdata();
+	xui_propctrl_vector::on_linkpropdata(selfupdate);
 
 	xui_method_args args;
 	on_editctrltextchanged(m_subxedit->get_editctrl(), args);

@@ -56,8 +56,21 @@ xui_delete_explain(xui_textbox)( void )
 xui_method_explain(xui_textbox, ini_textbox,		void					)( const std::wstring& text )
 {
 	m_text = text;
-	non_selecttext();
-	set_caretindex(0);
+
+	//确保索引不超范围
+	if (m_selectstart > m_text.length())
+		m_selectstart = 0;
+	if (m_selectfinal > m_text.length())
+		m_selectfinal = 0;
+
+	u32 index = m_caretcurrindex;
+	if (index > m_text.length())
+		index = m_text.length();
+
+	m_caretcurrindex = index;
+	m_caretdragindex = index;
+	set_caretvisible();
+	set_caretrect();
 }
 
 /*

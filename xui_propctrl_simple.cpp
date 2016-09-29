@@ -60,9 +60,10 @@ xui_delete_explain(xui_propctrl_simple)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_simple, on_linkpropdata,	void				)( void )
+xui_method_explain(xui_propctrl_simple, on_linkpropdata,	void				)( bool selfupdate )
 {
-	m_namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+		m_namectrl->set_text(m_propdata->get_name());
 
 	xui_expandbase* dataexpand = dynamic_cast<xui_expandbase*>(m_propdata);
 	for (u32 i = 0; i < m_propeditvec.size(); ++i)
@@ -71,7 +72,8 @@ xui_method_explain(xui_propctrl_simple, on_linkpropdata,	void				)( void )
 		if (edit == NULL)
 			continue;
 
-		edit->reset();
+		if (selfupdate == false)
+			edit->reset();
 
 		xui_propdata_vec vec = dataexpand->get_subprop();
 		set_samedata(vec[i], get_propdataall(i), edit);

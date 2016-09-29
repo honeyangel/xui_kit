@@ -47,11 +47,14 @@ xui_delete_explain(xui_propctrl_slider)( void )
 /*
 //override
 */
-xui_method_explain(xui_propctrl_slider, on_linkpropdata,	void			)( void )
+xui_method_explain(xui_propctrl_slider, on_linkpropdata,	void			)( bool selfupdate )
 {
-	m_propedit->reset();
-	xui_drawer* namectrl = m_propedit->get_editnumb()->get_namectrl();
-	namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_propedit->reset();
+		xui_drawer* namectrl = m_propedit->get_editnumb()->get_namectrl();
+		namectrl->set_text(m_propdata->get_name());
+	}
 
 	bool same = true;
 	xui_propdata_number* datanumber = (xui_propdata_number*)m_propdata;

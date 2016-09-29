@@ -75,13 +75,16 @@ xui_delete_explain(xui_propctrl_rect2d)( void )
 /*
 //propdata
 */
-xui_method_explain(xui_propctrl_rect2d, on_linkpropdata,	void)( void )
+xui_method_explain(xui_propctrl_rect2d, on_linkpropdata,	void)( bool selfupdate )
 {
-	m_subxedit->reset();
-	m_subyedit->reset();
-	m_subwedit->reset();
-	m_subhedit->reset();
-	m_namectrl->set_text(m_propdata->get_name());
+	if (selfupdate == false)
+	{
+		m_subxedit->reset();
+		m_subyedit->reset();
+		m_subwedit->reset();
+		m_subhedit->reset();
+		m_namectrl->set_text(m_propdata->get_name());
+	}
 
 	bool same = true;
 	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(m_propdata);

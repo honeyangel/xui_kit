@@ -1146,12 +1146,15 @@ xui_method_explain(onity_propctrl_curve,		create,						xui_propctrl*			)( xui_pr
 /*
 //override
 */
-xui_method_explain(onity_propctrl_curve,		on_linkpropdata,			void					)( void )
+xui_method_explain(onity_propctrl_curve,		on_linkpropdata,			void					)( bool selfupdate )
 {
-	m_namectrl->set_text(m_propdata->get_name());
-	m_timectrl->ini_textbox(L"");
-	m_enumctrl->ini_dropbox(-1);
-	m_numbctrl->ini_textbox(L"");
+	if (selfupdate == false)
+	{
+		m_namectrl->set_text(m_propdata->get_name());
+		m_timectrl->ini_textbox(L"");
+		m_enumctrl->ini_dropbox(-1);
+		m_numbctrl->ini_textbox(L"");
+	}
 
 	onity_propdata_curve* datacurve = dynamic_cast<onity_propdata_curve*>(m_propdata);
 	NPCurveControlPoint value = datacurve->get_value();
@@ -1375,24 +1378,27 @@ xui_method_explain(onity_propctrl_particlemod,	create,						xui_propctrl*			)( x
 /*
 //override
 */
-xui_method_explain(onity_propctrl_particlemod,	on_linkpropdata,			void					)( void )
+xui_method_explain(onity_propctrl_particlemod,	on_linkpropdata,			void					)( bool selfupdate )
 {
 	onity_propdata_particlemod*  dataspritemod = dynamic_cast<onity_propdata_particlemod*>(m_propdata);
 	const xui_propdata_vec& datavec = dataspritemod->get_modifydatavec();
 
-	xui_method_ptrcall(m_middle, del_itemall)();
-	for (u32 i = 0; i < datavec.size(); ++i)
+	if (selfupdate == false || m_middle->get_itemcount() != datavec.size())
 	{
-		xui_propdata*  data = datavec[i];
-		if (data)
+		xui_method_ptrcall(m_middle, del_itemall)();
+		for (u32 i = 0; i < datavec.size(); ++i)
 		{
-			xui_listitem * item = m_middle->add_item(data->get_name());
-			item->set_data(data);
+			xui_propdata*  data = datavec[i];
+			if (data)
+			{
+				xui_listitem * item = m_middle->add_item(data->get_name());
+				item->set_data(data);
+			}
 		}
+		xui_method_ptrcall(m_expand, ini_component	)(true, false);
+		xui_method_ptrcall(m_nontip, ini_component	)(true, datavec.size() == 0);
+		xui_method_ptrcall(m_middle, refresh		)();
 	}
-	xui_method_ptrcall(m_expand, ini_component	)(true, false);
-	xui_method_ptrcall(m_nontip, ini_component	)(true, datavec.size() == 0);
-	xui_method_ptrcall(m_middle, refresh		)();
 }
 xui_method_explain(onity_propctrl_particlemod,	on_editvalue,				void					)( xui_propedit* sender )
 {}

@@ -49,7 +49,7 @@ public:
 	/*
 	//propdata
 	*/
-	virtual void					on_linkpropdata			( void );
+	virtual void					on_linkpropdata			( bool selfupdate = false );
 
 protected:
 	/*

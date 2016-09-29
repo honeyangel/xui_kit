@@ -49,11 +49,14 @@ xui_method_explain(onity_propctrl_flip, create,				xui_propctrl*	)( xui_propdata
 /*
 //override
 */
-xui_method_explain(onity_propctrl_flip, on_linkpropdata,	void			)( void )
+xui_method_explain(onity_propctrl_flip, on_linkpropdata,	void			)( bool selfupdate )
 {
-	m_namectrl->set_text(m_propdata->get_name());
-	m_horzctrl->ini_toggle(false);
-	m_vertctrl->ini_toggle(false);
+	if (selfupdate == false)
+	{
+		m_namectrl->set_text(m_propdata->get_name());
+		m_horzctrl->ini_toggle(false);
+		m_vertctrl->ini_toggle(false);
+	}
 
 	bool same = true;
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(m_propdata);

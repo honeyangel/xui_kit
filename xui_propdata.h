@@ -383,6 +383,11 @@ public:
 		m_editmap = editmap;
 	}
 
+	/*
+	//virtual
+	*/
+	virtual void				syn_subprop		( void ) = 0;
+
 protected:
 	/*
 	//method
@@ -515,9 +520,7 @@ public:
 		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
 	: xui_propdata_bool(kind, name, func, userget, userset, userptr), xui_expandvary(subprop, subfold, showmap, editmap)
 	{
-		bool value = get_value();
-		set_subshow(value ? 1 : 0);
-		set_subedit(value ? 1 : 0);
+		syn_subprop();
 	}
 
 	/*
@@ -529,6 +532,12 @@ public:
 		for (u32 i = 0; i < m_subprop.size(); ++i)
 			m_subprop[i]->non_ctrl();
 	}
+	virtual void				syn_subprop		( void )
+	{
+		bool value = get_value();
+		set_subshow(value ? 1 : 0);
+		set_subedit(value ? 1 : 0);
+	}
 
 protected:
 	/*
@@ -536,9 +545,7 @@ protected:
 	*/
 	virtual void				on_valuechanged	( void )
 	{
-		bool value = get_value();
-		set_subshow(value ? 1 : 0);
-		set_subedit(value ? 1 : 0);
+		syn_subprop();
 		xui_propdata_bool::on_valuechanged();
 	}
 };
@@ -562,9 +569,7 @@ public:
 		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
 	: xui_propdata_enum_func(kind, name, func, textmap, userget, userset, userptr), xui_expandvary(subprop, subfold, showmap, editmap)
 	{
-		s32 value = (*m_userget)(m_userptr);
-		set_subshow(value);
-		set_subedit(value);
+		syn_subprop();
 	}
 
 	/*
@@ -576,6 +581,12 @@ public:
 		for (u32 i = 0; i < m_subprop.size(); ++i)
 			m_subprop[i]->non_ctrl();
 	}
+	virtual void				syn_subprop		( void )
+	{
+		s32 value = (*m_userget)(m_userptr);
+		set_subshow(value);
+		set_subedit(value);
+	}
 
 protected:
 	/*
@@ -583,9 +594,7 @@ protected:
 	*/
 	virtual void				on_valuechanged	( void )
 	{
-		s32 value = (*m_userget)(m_userptr);
-		set_subshow(value);
-		set_subedit(value);
+		syn_subprop();
 		xui_propdata_enum_func::on_valuechanged();
 	}
 };
@@ -608,9 +617,7 @@ public:
 		const std::map<s32, std::vector<u32> >&		editmap = xui_expandvary::empty_map )
 	: xui_propdata_enum_impl<T>(kind, name, func, textmap, ptr), xui_expandvary(subprop, subfold, showmap, editmap)
 	{
-		s32 value = (s32)(*m_ptr);
-		set_subshow(value);
-		set_subedit(value);
+		syn_subprop();
 	}
 
 	/*
@@ -622,6 +629,12 @@ public:
 		for (u32 i = 0; i < m_subprop.size(); ++i)
 			m_subprop[i]->non_ctrl();
 	}
+	virtual void				syn_subprop		( void )
+	{
+		s32 value = (s32)(*m_ptr);
+		set_subshow(value);
+		set_subedit(value);
+	}
 
 protected:
 	/*
@@ -629,9 +642,7 @@ protected:
 	*/
 	virtual void				on_valuechanged	( void )
 	{
-		s32 value = (s32)(*m_ptr);
-		set_subshow(value);
-		set_subedit(value);
+		syn_subprop();
 		xui_propdata_enum_impl<T>::on_valuechanged();
 	}
 };

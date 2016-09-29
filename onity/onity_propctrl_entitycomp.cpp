@@ -338,25 +338,29 @@ xui_method_explain(onity_propctrl_compattr, create,					xui_propctrl*		)( xui_pr
 /*
 //override
 */
-xui_method_explain(onity_propctrl_compattr, on_linkpropdata,		void				)( void )
+xui_method_explain(onity_propctrl_compattr, on_linkpropdata,		void				)( bool selfupdate )
 {
 	onity_propkind_entitycomp* compkind = dynamic_cast<onity_propkind_entitycomp*>(m_propdata->get_kind());
 	BreezeGame::Json::Value*   node     = compkind->get_node();
 	std::vector<std::string>   vec      = node->getMemberNames();
 
-	xui_method_ptrcall(m_middle, del_children	)();
-	for (u32 i = 0; i < vec.size(); ++i)
+	if (selfupdate == false || m_middle->get_childcount() != vec.size())
 	{
-		if (vec[i] == "ClassName" ||
-			vec[i] == "Family")
-			continue;
+		xui_method_ptrcall(m_middle, del_children	)();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			if (vec[i] == "ClassName" ||
+				vec[i] == "Family")
+				continue;
 
-		m_middle->add_child(new onity_compattr(compkind, vec[i]));
+			m_middle->add_child(new onity_compattr(compkind, vec[i]));
+		}
+
+		xui_method_ptrcall(m_middle, refresh		)();
+		xui_method_ptrcall(m_insert, set_enable		)(true);
+		xui_method_ptrcall(m_delete, set_enable		)(m_middle->get_childcount() >  0);
+		xui_method_ptrcall(m_nontip, set_visible	)(m_middle->get_childcount() == 0);
 	}
-	xui_method_ptrcall(m_middle, refresh		)();
-	xui_method_ptrcall(m_insert, set_enable		)(true);
-	xui_method_ptrcall(m_delete, set_enable		)(m_middle->get_childcount() >  0);
-	xui_method_ptrcall(m_nontip, set_visible	)(m_middle->get_childcount() == 0);
 }
 xui_method_explain(onity_propctrl_compattr, on_editvalue,			void				)( xui_propedit* sender )
 {}
