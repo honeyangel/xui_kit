@@ -20,6 +20,8 @@ public:
 	//override
 	*/
 	virtual std::wstring		get_text			( u32 index );
+	virtual bool				get_flag			( u32 index );
+	virtual void				set_flag			( u32 index, bool flag );
 };
 
 #endif//__onity_renderdata_h__

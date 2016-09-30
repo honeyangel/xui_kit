@@ -93,12 +93,12 @@ xui_method_explain(onity_tileview, get_viewfile,				xui_treenode*				)( void )
 {
 	return m_viewfile;
 }
-xui_method_explain(onity_tileview, set_viewfile,				void						)( xui_treenode* viewfile )
+xui_method_explain(onity_tileview, set_viewfile,				void						)( xui_treenode* viewfile, const std::wstring& viewtext )
 {
 	if (m_viewfile != viewfile)
 	{
 		m_viewfile  = viewfile;
-		m_viewtext  = L"";
+		m_viewtext  = viewtext;
 		xui_method_ptrcall(m_drawview, refresh	)();
 		xui_method_ptrcall(m_viewroll, set_value)(0);
 
@@ -271,7 +271,7 @@ xui_method_explain(onity_tileview, on_drawviewrenderself,		void						)( xui_comp
 		std::vector<xui_treenode*> nodes;
 		if (m_viewfile)
 		{
-			nodes = m_viewfile->get_leafnodearray();
+			nodes = get_shownodes();
 			draw_background(0, 0, c, g, w, h, nodes.size());
 		}
 		else

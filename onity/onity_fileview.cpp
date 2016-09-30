@@ -94,7 +94,7 @@ xui_method_explain(onity_fileview, clear,					void			)( void )
 	if (tileroll) tileroll->set_value(0);
 
 	xui_method_ptrcall(m_lineview,	del_upmostnodeall	)();
-	xui_method_ptrcall(m_tileview,	set_viewfile		)(NULL);
+	xui_method_ptrcall(m_tileview,	set_viewfile		)(NULL, L"");
 }
 
 /*
@@ -116,7 +116,7 @@ xui_method_explain(onity_fileview, on_updateself,			void			)( xui_method_update&
 */
 xui_method_explain(onity_fileview, on_lineviewshow,			void			)( xui_component* sender, xui_method_args&     args )
 {
-	m_tileview->set_viewfile(NULL);
+	m_tileview->set_viewfile(NULL, L"");
 }
 xui_method_explain(onity_fileview, on_lineviewrenderelse,	void			)( xui_component* sender, xui_method_args&     args )
 {

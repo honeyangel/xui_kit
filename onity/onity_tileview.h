@@ -30,7 +30,7 @@ public:
 	xui_scroll*					get_viewroll				( void );
 	xui_treenode*				get_viewfile				( void );
 	s32							get_tilesize				( void ) const;
-	void						set_viewfile				( xui_treenode* viewfile );
+	void						set_viewfile				( xui_treenode* viewfile, const std::wstring& viewtext );
 	void						set_viewtext				( const std::wstring& viewtext );
 	void						set_tilesize				( s32 size );
 	void						get_tileinfo				( s32& s, s32& c, s32& g, s32& w, s32& h );

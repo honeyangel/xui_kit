@@ -40,3 +40,13 @@ xui_method_explain(onity_renderdata, get_text, std::wstring	)( u32 index )
 		return L"Node";
 	}
 }
+xui_method_explain(onity_renderdata, get_flag, bool			)( u32 index )
+{
+	onity_propnoderender* prop = dynamic_cast<onity_propnoderender*>(m_prop);
+	return prop->get_node()->WasVisible();
+}
+xui_method_explain(onity_renderdata, set_flag, void			)( u32 index, bool flag )
+{
+	onity_propnoderender* prop = dynamic_cast<onity_propnoderender*>(m_prop);
+	prop->get_node()->SetVisible(flag);
+}

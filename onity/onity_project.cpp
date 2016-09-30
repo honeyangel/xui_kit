@@ -610,7 +610,7 @@ xui_method_explain(onity_project, on_searchtextchanged,		void			)( xui_component
 				if (viewfile && viewfile->get_linkdata())
 				{
 					m_fileview->get_lineview()->set_allowmulti(true);
-					m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
+					m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), m_search->get_text());
 					m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 				}
 				else
@@ -777,7 +777,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component
 					{
 						m_fileview->get_lineview()->non_selectednode();
 						m_fileview->get_lineview()->set_allowmulti(true);
-						m_fileview->get_tileview()->set_viewfile(node);
+						m_fileview->get_tileview()->set_viewfile(node, m_search->get_text());
 
 						if (m_search->get_text().length() == 0)
 						{
@@ -1033,7 +1033,7 @@ xui_method_explain(onity_project, on_pathitemclick,			void			)( xui_component* s
 
 			onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
 			onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-			m_fileview->get_tileview()->set_viewfile(NULL);
+			m_fileview->get_tileview()->set_viewfile(NULL, L"");
 			m_fileview->get_lineview()->set_allowmulti(false);
 			m_fileview->get_lineview()->set_selectednode(viewfile, true);
 
@@ -1212,7 +1212,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 	if (sender == m_backpath && viewfile)
 	{
 		viewfile->set_expanded(false);
-		m_fileview->get_tileview()->set_viewfile(NULL);
+		m_fileview->get_tileview()->set_viewfile(NULL, L"");
 		m_fileview->get_lineview()->set_allowmulti(false);
 		m_fileview->get_lineview()->set_selectednode(viewfile, true);
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_pathroll());
@@ -1226,7 +1226,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 
 		m_fileview->get_lineview()->non_selectednode();
 		m_fileview->get_lineview()->set_allowmulti(true);
-		m_fileview->get_tileview()->set_viewfile(proppath->get_viewfile()->get_linkdata()->get_node());
+		m_fileview->get_tileview()->set_viewfile(proppath->get_viewfile()->get_linkdata()->get_node(), m_search->get_text());
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 		refresh_tileview();
 	}
@@ -1250,7 +1250,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 			if (viewfile && viewfile->get_linkdata())
 			{
 				m_fileview->get_lineview()->set_allowmulti(true);
-				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node());
+				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), m_search->get_text());
 				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 			}
 			else

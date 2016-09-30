@@ -292,7 +292,7 @@ xui_method_explain(onity_selector, on_backpathclick,		void				)( xui_component* 
 	if (m_fileview->get_tileview()->get_viewfile())
 	{
 		m_fileview->get_tileview()->get_viewfile()->set_expanded(false);
-		m_fileview->get_tileview()->set_viewfile(NULL);
+		m_fileview->get_tileview()->set_viewfile(NULL, L"");
 	}
 
 	m_slider->set_value((s32)m_slider->get_data());
@@ -363,7 +363,7 @@ xui_method_explain(onity_selector, on_fileviewdoubleclk,	void				)( xui_componen
 			if (prop && prop->get_dragtype().length() == 0)
 			{
 				onity_tileview* tileview = m_fileview->get_tileview();
-				tileview->set_viewfile(node);
+				tileview->set_viewfile(node, m_search->get_text());
 				refresh_backpath();
 
 				m_slider->set_data((void*)m_slider->get_value());

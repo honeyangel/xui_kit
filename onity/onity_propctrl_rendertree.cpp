@@ -75,6 +75,7 @@ xui_create_explain(onity_propctrl_rendertree)( void )
 	xui_method_ptrcall(m_delete,	xm_renderself		) += new xui_method_member<xui_method_args, onity_propctrl_rendertree>(this, &onity_propctrl_rendertree::on_deleterenderself);
 
 	std::vector<xui_treecolumn> columninfo;
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL, 20,  L"show"));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, false));
 	m_middle	= new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_SYMBOL, false, false, true);
 	xui_method_ptrcall(m_middle,	set_parent			)(this);

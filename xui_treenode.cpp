@@ -514,20 +514,14 @@ xui_method_explain(xui_treenode, has_findtext,		bool								)( u32 index, const 
 {
 	m_leafpart.clear();
 	m_treeplus->set_visible(false);
-	if (m_leafnode.empty())
+	bool result = (m_linkdata && m_linkdata->get_text(index).find(text) != -1);
+	for (u32 i = 0; i < m_leafnode.size(); ++i)
 	{
-		return (m_linkdata && m_linkdata->get_text(index).find(text) != -1);
+		if (m_leafnode[i]->has_findtext(index, text))
+			m_leafpart.push_back(m_leafnode[i]);
 	}
-	else
-	{
-		for (u32 i = 0; i < m_leafnode.size(); ++i)
-		{
-			if (m_leafnode[i]->has_findtext(index, text))
-				m_leafpart.push_back(m_leafnode[i]);
-		}
 
-		return (m_leafpart.size() > 0);
-	}
+	return result || (m_leafpart.size() > 0);
 }
 xui_method_explain(xui_treenode, non_findtext,		void								)( void )
 {

@@ -4,6 +4,7 @@
 #include "Entity/Entity.h"
 #include "xui_dockpage.h"
 
+class NP2DSAsset;
 class onity_propcourse;
 class onity_hierarchy : public xui_dockpage
 {
@@ -39,28 +40,50 @@ protected:
 	/*
 	//event
 	*/
-	void				on_clearclick		( xui_component* sender, xui_method_args&  args );
-	void				on_searchtextchanged( xui_component* sender, xui_method_args&  args );
-	void				on_searchtextenter	( xui_component* sender, xui_method_args&  args );
-	void				on_headperform		( xui_component* sender, xui_method_args&  args );
-	void				on_treemouseclick	( xui_component* sender, xui_method_mouse& args );
+	void				on_clearclick		( xui_component* sender, xui_method_args&	  args );
+	void				on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
+	void				on_searchtextenter	( xui_component* sender, xui_method_args&	  args );
+	void				on_headperform		( xui_component* sender, xui_method_args&	  args );
+	void				on_menuclick		( xui_component* sender, xui_method_args&	  args );
+	void				on_treemenuclick	( xui_component* sender, xui_method_args&	  args );
+	void				on_treekeybddown	( xui_component* sender, xui_method_keybd&	  args );
+	void				on_treemouseclick	( xui_component* sender, xui_method_mouse&	  args );
+	void				on_treemousedragover( xui_component* sender, xui_method_dragdrop& args );
+	void				on_treemousedragdrop( xui_component* sender, xui_method_dragdrop& args );
 
 	/*
 	//method
 	*/
+	xui_treenode*		add_maprefnode		( xui_treenode* root, NP2DSAsset* asset );
+	xui_treenode*		add_scenelayer		( const std::string& name );
 	xui_treenode*		add_filternode		( const std::string& name );
 	xui_treenode*		get_filternode		( const std::string& name );
+	void				del_coursenode		( void );
+	void				del_scenelayer		( xui_treenode* root );
+	void				del_maprefnode		( xui_treenode* node );
+
+	/*
+	//typedef
+	*/
+	typedef std::map<Omiga::Entity*, xui_treenode*>
+		onity_entity_map;
 
 	/*
 	//member
 	*/
 	xui_toggle*			m_create;
-	xui_menuitem*		m_entity;
+	xui_menuitem*		m_layer;
+	xui_menuitem*		m_instance;
+	xui_menuitem*		m_delete;
+	xui_menuitem*		m_copy;
+	xui_menuitem*		m_move;
+	xui_menuitem*		m_paste;
 	xui_textbox*		m_search;
 	xui_button*			m_clear;
 	xui_panel*			m_head;
 	xui_treeview*		m_tree;
 	onity_propcourse*	m_editprop;
+	onity_entity_map	m_entitymap;
 };
 
 #endif//__onity_hierarchy_h__
