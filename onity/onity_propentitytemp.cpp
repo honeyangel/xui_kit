@@ -228,6 +228,29 @@ xui_method_explain(onity_propentitytemp, del_compkind,		void					)( void )
 
 	m_compkind.clear();
 }
+xui_method_explain(onity_propentitytemp, save,				void					)( void )
+{
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
+	{
+		temp->ChangeTemplate(m_jsonnode);
+		m_modify = false;
+	}
+}
+xui_method_explain(onity_propentitytemp, load,				void					)( void )
+{
+	Omiga::EntityTemplate* temp = get_template();
+	if (temp)
+	{
+		delete m_jsonnode;
+		BreezeGame::Json::Value* node = temp->GetNode();
+		m_jsonnode = new BreezeGame::Json::Value(*node);
+
+		del_compkind();
+		add_compkind();
+		m_modify = false;
+	}
+}
 
 /*
 //event

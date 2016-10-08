@@ -19,6 +19,14 @@ bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam );
 /*
 //string
 */
+xui_method_explain(xui_global, get_upper,		std::wstring					)( const std::wstring& src )
+{
+	std::wstring result;
+	for (u32 i = 0; i < src.length(); ++i)
+		result.push_back((src[i] >= L'a' && src[i] <= L'z') ? (src[i]-32) : src[i]);
+
+	return result;
+}
 xui_method_explain(xui_global, unicode_to_utf8, std::string						)( const std::wstring& src )
 {
 	std::string result;

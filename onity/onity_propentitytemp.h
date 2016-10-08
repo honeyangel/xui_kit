@@ -30,6 +30,9 @@ public:
 	void						add_component	( const std::string&  type, const std::string& name );
 	void						del_component	( xui_propkind* propkind );
 
+	void						save			( void );
+	void						load			( void );
+
 protected:
 	/*
 	//method

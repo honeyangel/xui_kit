@@ -27,6 +27,7 @@ public:
 	/*
 	//string
 	*/
+	static std::wstring						get_upper		( const std::wstring& src );
 	static std::string						unicode_to_utf8	( const std::wstring& src );
 	static std::wstring						utf8_to_unicode	( const std::string&  src );
 	static std::string						unicode_to_ascii( const std::wstring& src );

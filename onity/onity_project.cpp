@@ -443,8 +443,8 @@ xui_method_explain(onity_project, loc_filenode,				void			)( const std::wstring&
 xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfile )
 {
 	std::vector<std::string> itemvec = NPStringUtil::Split(xui_global::unicode_to_ascii(m_search->get_text()), ';');
-	std::wstring			 filekey = (itemvec.size() > 0) ? xui_global::ascii_to_unicode(itemvec[0]) : L"";
-	std::string				 leafkey = (itemvec.size() > 1) ? itemvec[1] : "";
+	std::wstring			 filekey = xui_global::get_upper((itemvec.size() > 0) ? xui_global::ascii_to_unicode(itemvec[0]) : L"");
+	std::wstring			 leafkey = xui_global::get_upper((itemvec.size() > 1) ? xui_global::ascii_to_unicode(itemvec[1]) : L"");
 
 	xui_treeview* lineview = m_fileview->get_lineview();
 	const std::vector<xui_treenode*>& nodes = lineview->get_upmostnodearray();
@@ -464,9 +464,9 @@ xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfi
 				{
 					onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(subprop[isub]);
 					NP2DSAsset* asset = propasset->get_asset();
-					std::stringstream keytext;
+					std::wstringstream keytext;
 					keytext << asset->GetKey();
-					if (leafkey.length() == 0 || leafkey == keytext.str() || asset->GetName().find(leafkey) != -1)
+					if (leafkey.length() == 0 || leafkey == keytext.str() || xui_global::get_upper(xui_global::ascii_to_unicode(asset->GetName())).find(leafkey) != -1)
 					{
 						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
 						++isubindex;
@@ -482,7 +482,7 @@ xui_method_explain(onity_project, ntf_load,					void			)( onity_propfile* propfi
 				{
 					onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
 					Omiga::EntityTemplate* temp = proptemp->get_template();
-					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
+					if (leafkey.length() == 0 || xui_global::get_upper(xui_global::ascii_to_unicode(temp->GetName())).find(leafkey) != -1)
 					{
 						node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;
@@ -593,7 +593,7 @@ xui_method_explain(onity_project, on_searchtextchanged,		void			)( xui_component
 	xui_method_ptrcall(m_fill,		refresh		)();
 	if (m_fileview->get_tileview()->get_viewfile())
 	{
-		m_fileview->get_tileview()->set_viewtext(m_search->get_text());
+		m_fileview->get_tileview()->set_viewtext(xui_global::get_upper(m_search->get_text()));
 	}
 	else
 	{
@@ -610,7 +610,7 @@ xui_method_explain(onity_project, on_searchtextchanged,		void			)( xui_component
 				if (viewfile && viewfile->get_linkdata())
 				{
 					m_fileview->get_lineview()->set_allowmulti(true);
-					m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), m_search->get_text());
+					m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), xui_global::get_upper(m_search->get_text()));
 					m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 				}
 				else
@@ -777,7 +777,7 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component
 					{
 						m_fileview->get_lineview()->non_selectednode();
 						m_fileview->get_lineview()->set_allowmulti(true);
-						m_fileview->get_tileview()->set_viewfile(node, m_search->get_text());
+						m_fileview->get_tileview()->set_viewfile(node, xui_global::get_upper(m_search->get_text()));
 
 						if (m_search->get_text().length() == 0)
 						{
@@ -1226,7 +1226,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 
 		m_fileview->get_lineview()->non_selectednode();
 		m_fileview->get_lineview()->set_allowmulti(true);
-		m_fileview->get_tileview()->set_viewfile(proppath->get_viewfile()->get_linkdata()->get_node(), m_search->get_text());
+		m_fileview->get_tileview()->set_viewfile(proppath->get_viewfile()->get_linkdata()->get_node(), xui_global::get_upper(m_search->get_text()));
 		m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 		refresh_tileview();
 	}
@@ -1250,7 +1250,7 @@ xui_method_explain(onity_project, on_linetoolclick,			void			)( xui_component* s
 			if (viewfile && viewfile->get_linkdata())
 			{
 				m_fileview->get_lineview()->set_allowmulti(true);
-				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), m_search->get_text());
+				m_fileview->get_tileview()->set_viewfile(viewfile->get_linkdata()->get_node(), xui_global::get_upper(m_search->get_text()));
 				m_sizeroll->ini_scroll(m_sizeroll->get_range(), proppath->get_fileroll());
 			}
 			else
@@ -1302,13 +1302,13 @@ xui_method_explain(onity_project, refresh_fileview,			void			)( void )
 	}
 
 	std::vector<std::string> itemvec = NPStringUtil::Split(xui_global::unicode_to_ascii(m_search->get_text()), ';');
-	std::wstring			 filekey = (itemvec.size() > 0) ? xui_global::ascii_to_unicode(itemvec[0]) : L"";
-	std::string				 leafkey = (itemvec.size() > 1) ? itemvec[1] : "";
+	std::wstring			 filekey = xui_global::get_upper((itemvec.size() > 0) ? xui_global::ascii_to_unicode(itemvec[0]) : L"");
+	std::wstring			 leafkey = xui_global::get_upper((itemvec.size() > 1) ? xui_global::ascii_to_unicode(itemvec[1]) : L"");
 
 	for (u32 i = 0; i < filevec.size(); ++i)
 	{
 		onity_propfile* prop = dynamic_cast<onity_propfile*>(filevec[i]);
-		if (filekey.length() == 0 || onity_filedata::get_file(prop->get_fullname()).find(filekey) != -1)
+		if (filekey.length() == 0 || xui_global::get_upper(onity_filedata::get_file(prop->get_fullname())).find(filekey) != -1)
 		{
 			xui_treenode* node = lineview->add_upmostnode(index, new onity_filedata(prop->get_fileicon(), prop->get_fullname(), prop));
 			onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(prop);
@@ -1322,9 +1322,9 @@ xui_method_explain(onity_project, refresh_fileview,			void			)( void )
 				{
 					onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(subprop[isub]);
 					NP2DSAsset* asset = propasset->get_asset();
-					std::stringstream keytext;
+					std::wstringstream keytext;
 					keytext << asset->GetKey();
-					if (leafkey.length() == 0 || leafkey == keytext.str() || asset->GetName().find(leafkey) != -1)
+					if (leafkey.length() == 0 || leafkey == keytext.str() || xui_global::get_upper(xui_global::ascii_to_unicode(asset->GetName())).find(leafkey) != -1)
 					{
 						node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
 						++isubindex;
@@ -1343,7 +1343,7 @@ xui_method_explain(onity_project, refresh_fileview,			void			)( void )
 				{
 					onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
 					Omiga::EntityTemplate* temp = proptemp->get_template();
-					if (leafkey.length() == 0 || temp->GetName().find(leafkey) != -1)
+					if (leafkey.length() == 0 || xui_global::get_upper(xui_global::ascii_to_unicode(temp->GetName())).find(leafkey) != -1)
 					{
 						node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
 						++isubindex;

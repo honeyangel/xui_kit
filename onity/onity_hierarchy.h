@@ -5,6 +5,8 @@
 #include "xui_dockpage.h"
 
 class NP2DSAsset;
+class NP2DSTransRef;
+class NP2DSSceneLayer;
 class onity_propcourse;
 class onity_hierarchy : public xui_dockpage
 {
@@ -35,11 +37,13 @@ public:
 	void				del_entitynode		( Omiga::Entity* ent );
 	onity_propcourse*	get_editprop		( void );
 	void				set_editprop		( onity_propcourse* editprop );
+	xui_treeview*		get_treeview		( void );
 
 protected:
 	/*
 	//event
 	*/
+	void				on_toggleclick		( xui_component* sender, xui_method_args&     args );
 	void				on_clearclick		( xui_component* sender, xui_method_args&	  args );
 	void				on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
 	void				on_searchtextenter	( xui_component* sender, xui_method_args&	  args );
@@ -47,6 +51,7 @@ protected:
 	void				on_menuclick		( xui_component* sender, xui_method_args&	  args );
 	void				on_treemenuclick	( xui_component* sender, xui_method_args&	  args );
 	void				on_treekeybddown	( xui_component* sender, xui_method_keybd&	  args );
+	void				on_treemousedown	( xui_component* sender, xui_method_mouse&	  args );
 	void				on_treemouseclick	( xui_component* sender, xui_method_mouse&	  args );
 	void				on_treemousedragover( xui_component* sender, xui_method_dragdrop& args );
 	void				on_treemousedragdrop( xui_component* sender, xui_method_dragdrop& args );
@@ -54,19 +59,24 @@ protected:
 	/*
 	//method
 	*/
-	xui_treenode*		add_maprefnode		( xui_treenode* root, NP2DSAsset* asset );
+	xui_treenode*		add_maprefnode		( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src );
+	xui_treenode*		add_scenelayer		( NP2DSSceneLayer* src );
 	xui_treenode*		add_scenelayer		( const std::string& name );
 	xui_treenode*		add_filternode		( const std::string& name );
 	xui_treenode*		get_filternode		( const std::string& name );
-	void				del_coursenode		( void );
+	void				del_coursenode		( const std::vector<xui_treenode*>& nodes );
 	void				del_scenelayer		( xui_treenode* root );
 	void				del_maprefnode		( xui_treenode* node );
+	void				pst_coursenode		( void );
 
 	/*
 	//typedef
 	*/
 	typedef std::map<Omiga::Entity*, xui_treenode*>
 		onity_entity_map;
+
+	typedef std::vector<NP2DSTransRef*>
+		onity_transref_vec;
 
 	/*
 	//member
@@ -78,6 +88,7 @@ protected:
 	xui_menuitem*		m_copy;
 	xui_menuitem*		m_move;
 	xui_menuitem*		m_paste;
+	onity_transref_vec	m_menuvec;
 	xui_textbox*		m_search;
 	xui_button*			m_clear;
 	xui_panel*			m_head;

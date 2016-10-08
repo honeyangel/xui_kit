@@ -208,7 +208,7 @@ xui_method_explain(onity_tileview, get_shownodes,				std::vector<xui_treenode*>	
 		{
 			xui_treenode* node = vec[i];
 			xui_treedata* data = node->get_linkdata();
-			if (m_viewtext.length() == 0 || data->get_text(0).find(m_viewtext) != -1)
+			if (m_viewtext.length() == 0 || xui_global::get_upper(data->get_text(0)).find(m_viewtext) != -1)
 				nodes.push_back(node);
 		}
 	}

@@ -1,6 +1,7 @@
 #ifndef __onity_propjsones_h__
 #define __onity_propjsones_h__
 
+#include "EntityTemplate.h"
 #include "onity_propfile.h"
 
 class onity_propjsones : public onity_propfile
@@ -23,6 +24,7 @@ public:
 	xui_proproot*			add_subprop		( void );
 	xui_proproot*			add_subprop		( xui_proproot* prop );
 	void					del_subprop		( xui_proproot* prop );
+	xui_proproot*			get_subprop		( Omiga::EntityTemplate* temp );
 	void					set_modify		( bool flag );
 
 	/*

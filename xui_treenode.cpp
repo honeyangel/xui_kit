@@ -1,3 +1,4 @@
+#include "xui_global.h"
 #include "xui_desktop.h"
 #include "xui_textbox.h"
 #include "xui_bitmap.h"
@@ -514,7 +515,7 @@ xui_method_explain(xui_treenode, has_findtext,		bool								)( u32 index, const 
 {
 	m_leafpart.clear();
 	m_treeplus->set_visible(false);
-	bool result = (m_linkdata && m_linkdata->get_text(index).find(text) != -1);
+	bool result = (m_linkdata && xui_global::get_upper(m_linkdata->get_text(index)).find(xui_global::get_upper(text)) != -1);
 	for (u32 i = 0; i < m_leafnode.size(); ++i)
 	{
 		if (m_leafnode[i]->has_findtext(index, text))

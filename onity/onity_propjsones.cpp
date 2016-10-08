@@ -88,6 +88,18 @@ xui_method_explain(onity_propjsones, del_subprop,	void				)( xui_proproot* prop 
 		m_modify = true;
 	}
 }
+xui_method_explain(onity_propjsones, get_subprop,	xui_proproot*		)( Omiga::EntityTemplate* temp )
+{
+	xui_proproot_vec vec = get_subprop();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		onity_propjsonestemp* prop = dynamic_cast<onity_propjsonestemp*>(vec[i]);
+		if (prop->get_template() == temp)
+			return prop;
+	}
+
+	return NULL;
+}
 xui_method_explain(onity_propjsones, set_modify,	void				)( bool flag )
 {
 	m_modify = flag;

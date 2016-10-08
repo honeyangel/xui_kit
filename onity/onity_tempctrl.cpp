@@ -4,9 +4,16 @@
 #include "xui_button.h"
 #include "xui_linebox.h"
 #include "xui_textbox.h"
+#include "xui_treenode.h"
+#include "xui_propview.h"
+#include "xui_treeview.h"
 #include "onity_propentitytemp.h"
+#include "onity_propjsones.h"
+#include "onity_propjsonestemp.h"
 #include "onity_mainform.h"
 #include "onity_project.h"
+#include "onity_hierarchy.h"
+#include "onity_treedata.h"
 #include "onity_tempctrl.h"
 
 xui_implement_rtti(onity_tempctrl, xui_kindctrl);
@@ -66,9 +73,10 @@ xui_method_explain(onity_tempctrl, on_updateself,		void			)( xui_method_update& 
 	onity_propentitytemp*  proptemp = dynamic_cast<onity_propentitytemp*>(m_propkind->get_root());
 	Omiga::EntityTemplate* temp     = proptemp->get_template();
 
-	xui_method_ptrcall(m_select, set_enable)(temp != NULL);
-	xui_method_ptrcall(m_apply,  set_enable)(temp != NULL && proptemp->was_modify());
-	xui_method_ptrcall(m_revert, set_enable)(temp != NULL && proptemp->was_modify());
+	bool enable = (onity_mainform::get_ptr()->was_gamerun() == false);
+	xui_method_ptrcall(m_select,	set_enable)(temp != NULL);
+	xui_method_ptrcall(m_apply,		set_enable)(enable && temp != NULL && proptemp->was_modify());
+	xui_method_ptrcall(m_revert,	set_enable)(enable && temp != NULL && proptemp->was_modify());
 }
 xui_method_explain(onity_tempctrl, on_perform,			void			)( xui_method_args&   args )
 {
@@ -104,11 +112,54 @@ xui_method_explain(onity_tempctrl, on_clickselect,		void			)( xui_component* sen
 }
 xui_method_explain(onity_tempctrl, on_clickapply,		void			)( xui_component* sender, xui_method_args& args )
 {
+	onity_propentitytemp* proptemp = dynamic_cast<onity_propentitytemp*>(m_propkind->get_root());
+	proptemp->save();
 
+	Omiga::EntityTemplate* temp = proptemp->get_template();
+	if (temp)
+	{
+		onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+		std::vector<xui_treenode*> nodes = hierarchy->get_treeview()->get_upmostnodearray();
+		for (u32 i = 0; i < nodes.size(); ++i)
+		{
+			xui_treenode*			node = nodes[i];
+			onity_treedata*			data = (onity_treedata*)node->get_linkdata();
+			onity_propentitytemp*	prop = dynamic_cast<onity_propentitytemp*>(data->get_prop());
+			if (prop != proptemp && prop->get_template() == temp)
+				prop->load();
+		}
+
+		xui_proproot_vec props;
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->get_pathfile(L".json", props);
+		for (u32 i = 0; i < props.size(); ++i)
+		{
+			onity_propjsones* propjson = dynamic_cast<onity_propjsones*>(props[i]);
+			if (propjson)
+			{
+				onity_propjsonestemp* prop = dynamic_cast<onity_propjsonestemp*>(propjson->get_subprop(temp));
+				if (prop)
+				{
+					prop->del_compkind();
+					prop->add_compkind();
+					propjson->set_modify(true);
+					break;
+				}
+			}
+		}
+	}
 }
 xui_method_explain(onity_tempctrl, on_clickrevert,		void			)( xui_component* sender, xui_method_args& args )
 {
+	onity_propentitytemp* proptemp = dynamic_cast<onity_propentitytemp*>(m_propkind->get_root());
+	proptemp->load();
 
+	Omiga::EntityTemplate* temp = proptemp->get_template();
+	if (temp)
+	{
+		xui_propview* propview = proptemp->get_ctrl();
+		propview->reset();
+	}
 }
 
 /*

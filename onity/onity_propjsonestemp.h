@@ -6,6 +6,8 @@
 
 class onity_propjsonestemp : public onity_propleaf
 {
+	friend class onity_tempctrl;
+
 public:
 	/*
 	//constructor
