@@ -14,8 +14,14 @@
 #include "xui_panel.h"
 #include "xui_menu.h"
 #include "xui_menuitem.h"
+#include "xui_dockview.h"
+#include "xui_treeview.h"
+#include "xui_treenode.h"
 #include "onity_resource.h"
+#include "onity_propedit.h"
+#include "onity_treedata.h"
 #include "onity_mainform.h"
+#include "onity_hierarchy.h"
 #include "onity_game.h"
 
 xui_implement_rtti(onity_game, xui_dockpage);
@@ -67,6 +73,7 @@ xui_create_explain(onity_game)( void )
 	m_view = new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048));
 	xui_method_ptrcall(m_view,		xm_updateself	) += new xui_method_member<xui_method_update,	onity_game>(this, &onity_game::on_viewupdateself);
 	xui_method_ptrcall(m_view,		xm_renderself	) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_viewrenderself);
+	xui_method_ptrcall(m_view,		xm_renderelse	) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_viewrenderelse);
 	xui_method_ptrcall(m_view,		xm_setrendersz	) += new xui_method_member<xui_method_args,		onity_game>(this, &onity_game::on_viewsetrendersz);
 	xui_method_ptrcall(m_view,		xm_mousedown	) += new xui_method_member<xui_method_mouse,	onity_game>(this, &onity_game::on_viewmousedown);
 	xui_method_ptrcall(m_view,		xm_mousemove	) += new xui_method_member<xui_method_mouse,	onity_game>(this, &onity_game::on_viewmousemove);
@@ -126,10 +133,14 @@ xui_method_explain(onity_game, on_perform,			void)( xui_method_args& args )
 xui_method_explain(onity_game, on_renderself,		void)( xui_method_args& args )
 {
 	xui_dockpage::on_renderself(args);
-	xui_rect2d<s32> rt = m_head->get_renderrtabs();
-	xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	rt.by);
-	xui_vector<s32> p2 = xui_vector<s32>(rt.bx,	rt.by);
-	xui_convas::get_ins()->draw_line(p1, p2, xui_colour::black);
+	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
+	if (dockview->get_showpage() == this)
+	{
+		xui_rect2d<s32> rt = m_head->get_renderrtabs();
+		xui_vector<s32> p1 = xui_vector<s32>(rt.ax,	rt.by);
+		xui_vector<s32> p2 = xui_vector<s32>(rt.bx,	rt.by);
+		xui_convas::get_ins()->draw_line(p1, p2, xui_colour::black);
+	}
 }
 
 /*
@@ -180,6 +191,32 @@ xui_method_explain(onity_game, on_viewrenderself,	void)( xui_component* sender, 
 	NP2DSRenderStep::GetIns()->SetEntryLocalT(NPVector3::Zero);
 	NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
 	m3eFrameWorkRender();
+}
+xui_method_explain(onity_game, on_viewrenderelse,	void)( xui_component* sender, xui_method_args&	 args )
+{
+	if (onity_mainform::get_ptr()->was_gamerun() == false)
+		return;
+
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(m_view->get_renderrtabs()));
+
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	std::vector<xui_treenode*> nodevec = hierarchy->get_treeview()->get_selectednode();;
+
+	xui_vector<s32> pt = m_view->get_screenpt();
+	for (u32 i = 0; i < nodevec.size(); ++i)
+	{
+		if (nodevec[i]->get_rootnode() == NULL)
+			continue;
+
+		xui_treenode*   node = nodevec[i];
+		onity_treedata* data = (onity_treedata*)node->get_linkdata();
+		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
+		xui_rect2d<s32> rt   = prop->get_bounding();
+		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.7f));
+	}
+
+	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 xui_method_explain(onity_game, on_viewsetrendersz,	void)( xui_component* sender, xui_method_args&   args )
 {

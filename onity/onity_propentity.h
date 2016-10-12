@@ -2,9 +2,11 @@
 #define __onity_propentity_h__
 
 #include "Entity.h"
-#include "onity_proproot.h"
+#include "onity_propedit.h"
 
-class onity_propentity : public onity_proproot
+class NPNode;
+class NPRect;
+class onity_propentity : public onity_propedit
 {
 public:
 	/*
@@ -16,6 +18,9 @@ public:
 	//method
 	*/
 	Omiga::Entity*			get_entity		( void );
+	virtual xui_rect2d<s32>	get_bounding	( void );
+	virtual xui_vector<s32> get_position	( void );
+	virtual void			set_position	( const xui_vector<s32>& pos );
 
 protected:
 	/*
@@ -37,6 +42,11 @@ protected:
 	static void				set_gravity		( void* userptr, f64   value );
 	static xui_vector<f64>	get_velocity	( void* userptr );
 	static void				set_velocity	( void* userptr, const xui_vector<f64>& value );
+
+	/*
+	//method
+	*/
+	void					cal_bounding	( NPNode* node, NPRect* result );
 
 	/*
 	//member

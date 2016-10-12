@@ -891,6 +891,7 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 
 			set_selectednode(selectednodes);
 		}
+		else
 		if (node->was_selected() == false)
 		{
 			non_selectednode(false);

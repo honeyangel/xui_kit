@@ -51,6 +51,10 @@ public:
 	/*
 	// operator
 	*/
+	xui_vector<T>  operator - ( void ) const
+	{
+		return xui_vector<T>(-x, -y);
+	}
 	xui_vector<T>  operator + ( const xui_vector<T>& other ) const
 	{
 		return xui_vector<T>(x+other.x, y+other.y);

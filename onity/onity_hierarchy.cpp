@@ -20,9 +20,11 @@
 #include "xui_treeview.h"
 #include "xui_treedata.h"
 #include "xui_treenode.h"
+#include "xui_propview.h"
 #include "onity_resource.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
+#include "onity_scene.h"
 #include "onity_filterdata.h"
 #include "onity_maprefdata.h"
 #include "onity_entitydata.h"
@@ -46,75 +48,77 @@ xui_create_explain(onity_hierarchy)( void )
 	xui_menu* menu1 = xui_menu::create(80);
 	m_layer		= menu1->add_item(NULL, L"Layer");
 	m_instance	= menu1->add_item(NULL, L"Instance");
-	xui_method_ptrcall(m_layer,		xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_menuclick);
-	xui_method_ptrcall(m_instance,	xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_menuclick);
+	xui_method_ptrcall(m_layer,		xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_menuclick);
+	xui_method_ptrcall(m_instance,	xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_menuclick);
 
 	m_create	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
-	xui_method_ptrcall(m_create,	xm_toggleclick	) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_toggleclick);
-	xui_method_ptrcall(m_create,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_create,	set_corner		)(3);
-	xui_method_ptrcall(m_create,	set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_create,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_create,	set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(m_create,	set_iconsize	)(xui_vector<s32>(0));
-	xui_method_ptrcall(m_create,	ini_drawer		)(L"Create");
-	xui_method_ptrcall(m_create,	set_menu		)(menu1);
+	xui_method_ptrcall(m_create,	xm_toggleclick		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_toggleclick);
+	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_create,	set_corner			)(3);
+	xui_method_ptrcall(m_create,	set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_create,	set_drawcolor		)(true);
+	xui_method_ptrcall(m_create,	set_textalign		)(TEXTALIGN_LC);
+	xui_method_ptrcall(m_create,	set_iconsize		)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_create,	ini_drawer			)(L"Create");
+	xui_method_ptrcall(m_create,	set_menu			)(menu1);
 
 	m_search	= new xui_textbox(xui_vector<s32>(100, 20));
-	xui_method_ptrcall(m_search,	xm_textchanged	) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_searchtextchanged);
-	xui_method_ptrcall(m_search,	xm_textenter	) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_searchtextenter);
-	xui_method_ptrcall(m_search,	ini_component	)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_search,	ini_drawer		)(onity_resource::icon_search);
-	xui_method_ptrcall(m_search,	set_backcolor	)(xui_colour(1.0f, 0.20f));
-	xui_method_ptrcall(m_search,	set_drawcolor	)(true);
-	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_search,	set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(m_search,	set_textoffset	)(xui_vector<s32>(2, 0));
-	xui_method_ptrcall(m_search,	set_borderrt	)(xui_rect2d<s32>(8, 2, 24, 2));
-	xui_method_ptrcall(m_search,	set_corner		)(10);
+	xui_method_ptrcall(m_search,	xm_textchanged		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_searchtextchanged);
+	xui_method_ptrcall(m_search,	xm_textenter		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_searchtextenter);
+	xui_method_ptrcall(m_search,	ini_component		)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_search,	ini_drawer			)(onity_resource::icon_search);
+	xui_method_ptrcall(m_search,	set_backcolor		)(xui_colour(1.0f, 0.20f));
+	xui_method_ptrcall(m_search,	set_drawcolor		)(true);
+	xui_method_ptrcall(m_search,	set_borderrt		)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_search,	set_textalign		)(TEXTALIGN_LC);
+	xui_method_ptrcall(m_search,	set_textoffset		)(xui_vector<s32>(2, 0));
+	xui_method_ptrcall(m_search,	set_borderrt		)(xui_rect2d<s32>(8, 2, 24, 2));
+	xui_method_ptrcall(m_search,	set_corner			)(10);
 
 	m_clear		= new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_clear,		xm_buttonclick	) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_clearclick);
-	xui_method_ptrcall(m_clear,		ini_component	)(true, false);
-	xui_method_ptrcall(m_clear,		ini_component	)(0, ALIGNVERT_C, 0);
-	xui_method_ptrcall(m_clear,		set_corner		)(8);
-	xui_method_ptrcall(m_clear,		set_drawcolor	)(true);
-	xui_method_ptrcall(m_clear,		ini_drawer		)(onity_resource::icon_clear);
+	xui_method_ptrcall(m_clear,		xm_buttonclick		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_clearclick);
+	xui_method_ptrcall(m_clear,		ini_component		)(true, false);
+	xui_method_ptrcall(m_clear,		ini_component		)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_clear,		set_corner			)(8);
+	xui_method_ptrcall(m_clear,		set_drawcolor		)(true);
+	xui_method_ptrcall(m_clear,		ini_drawer			)(onity_resource::icon_clear);
 
 	m_head		= new xui_panel(xui_vector<s32>(28));
-	xui_method_ptrcall(m_head,		xm_perform		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_headperform);
-	xui_method_ptrcall(m_head,		ini_component	)(0, 0, DOCKSTYLE_T);
-	xui_method_ptrcall(m_head,		set_drawcolor	)(false);
-	xui_method_ptrcall(m_head,		set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
-	xui_method_ptrcall(m_head,		set_hscrollauto	)(false);
-	xui_method_ptrcall(m_head,		add_child		)(m_create);
-	xui_method_ptrcall(m_head,		add_child		)(m_search);
-	xui_method_ptrcall(m_head,		add_child		)(m_clear );
+	xui_method_ptrcall(m_head,		xm_perform			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_headperform);
+	xui_method_ptrcall(m_head,		ini_component		)(0, 0, DOCKSTYLE_T);
+	xui_method_ptrcall(m_head,		set_drawcolor		)(false);
+	xui_method_ptrcall(m_head,		set_borderrt		)(xui_rect2d<s32>(8, 4, 8, 4));
+	xui_method_ptrcall(m_head,		set_hscrollauto		)(false);
+	xui_method_ptrcall(m_head,		add_child			)(m_create);
+	xui_method_ptrcall(m_head,		add_child			)(m_search);
+	xui_method_ptrcall(m_head,		add_child			)(m_clear );
 
 	xui_menu* menu2 = xui_menu::create(80);
 	m_copy		= menu2->add_item(NULL, L"Copy");
 	m_move		= menu2->add_item(NULL, L"Cut");
 	m_paste		= menu2->add_item(NULL, L"Paste");
 	m_delete	= menu2->add_item(NULL, L"Delete");
-	xui_method_ptrcall(m_copy,		xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
-	xui_method_ptrcall(m_move,		xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
-	xui_method_ptrcall(m_paste,		xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
-	xui_method_ptrcall(m_delete,	xm_click		) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
+	xui_method_ptrcall(m_copy,		xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
+	xui_method_ptrcall(m_move,		xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
+	xui_method_ptrcall(m_paste,		xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
+	xui_method_ptrcall(m_delete,	xm_click			) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treemenuclick);
 
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 100, L"name", NULL, 0));
 	m_tree		= new xui_treeview(xui_vector<s32>(100), columninfo, 20, PLUSRENDER_NORMAL, false, false);
-	xui_method_ptrcall(m_tree,		xm_keybddown	) += new xui_method_member<xui_method_keybd,	onity_hierarchy>(this, &onity_hierarchy::on_treekeybddown);
-	xui_method_ptrcall(m_tree,		xm_mousedown	) += new xui_method_member<xui_method_mouse,	onity_hierarchy>(this, &onity_hierarchy::on_treemousedown);
-	xui_method_ptrcall(m_tree,		xm_mouseclick	) += new xui_method_member<xui_method_mouse,	onity_hierarchy>(this, &onity_hierarchy::on_treemouseclick);
-	xui_method_ptrcall(m_tree,		xm_mousedragover) += new xui_method_member<xui_method_dragdrop, onity_hierarchy>(this, &onity_hierarchy::on_treemousedragover);
-	xui_method_ptrcall(m_tree,		xm_mousedragdrop) += new xui_method_member<xui_method_dragdrop, onity_hierarchy>(this, &onity_hierarchy::on_treemousedragdrop);
-	xui_method_ptrcall(m_tree,		ini_component	)(0, 0, DOCKSTYLE_F);
-	xui_method_ptrcall(m_tree,		set_sidecolor	)(xui_colour::black);
-	xui_method_ptrcall(m_tree,		set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(m_tree,		set_hscrollauto	)(false);
-	xui_method_ptrcall(m_tree,		set_allowmulti	)(true);
-	xui_method_ptrcall(m_tree,		set_contextmenu	)(menu2);
+	xui_method_ptrcall(m_tree,		xm_selectedchange	) += new xui_method_member<xui_method_args,		onity_hierarchy>(this, &onity_hierarchy::on_treeselection);
+	xui_method_ptrcall(m_tree,		xm_keybddown		) += new xui_method_member<xui_method_keybd,	onity_hierarchy>(this, &onity_hierarchy::on_treekeybddown);
+	xui_method_ptrcall(m_tree,		xm_mousedown		) += new xui_method_member<xui_method_mouse,	onity_hierarchy>(this, &onity_hierarchy::on_treemousedown);
+	xui_method_ptrcall(m_tree,		xm_mouseclick		) += new xui_method_member<xui_method_mouse,	onity_hierarchy>(this, &onity_hierarchy::on_treemouseclick);
+	xui_method_ptrcall(m_tree,		xm_mousedoubleclick	) += new xui_method_member<xui_method_mouse,	onity_hierarchy>(this, &onity_hierarchy::on_treemousedoubleclick);
+	xui_method_ptrcall(m_tree,		xm_mousedragover	) += new xui_method_member<xui_method_dragdrop, onity_hierarchy>(this, &onity_hierarchy::on_treemousedragover);
+	xui_method_ptrcall(m_tree,		xm_mousedragdrop	) += new xui_method_member<xui_method_dragdrop, onity_hierarchy>(this, &onity_hierarchy::on_treemousedragdrop);
+	xui_method_ptrcall(m_tree,		ini_component		)(0, 0, DOCKSTYLE_F);
+	xui_method_ptrcall(m_tree,		set_sidecolor		)(xui_colour::black);
+	xui_method_ptrcall(m_tree,		set_sidestyle		)(SIDESTYLE_S);
+	xui_method_ptrcall(m_tree,		set_hscrollauto		)(false);
+	xui_method_ptrcall(m_tree,		set_allowmulti		)(true);
+	xui_method_ptrcall(m_tree,		set_contextmenu		)(menu2);
 	add_pagectrl(m_head);
 	add_pagectrl(m_tree);
 }
@@ -181,6 +185,71 @@ xui_method_explain(onity_hierarchy, del_entitynode,			void				)( Omiga::Entity* 
 
 		if (filternode->get_leafnodecount() == 0)
 			m_tree->del_upmostnode(filternode);
+	}
+}
+xui_method_explain(onity_hierarchy, add_maprefnode,			void				)( const xui_vector<s32>& pos, NP2DSAsset* asset )
+{
+	xui_treenode* root = NULL;
+	std::vector<xui_treenode*> nodevec = m_tree->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		root = nodevec.front();
+		if (root->get_rootnode())
+			root = root->get_rootnode();
+	}
+	else
+	{
+		root = m_tree->get_upmostnode(0);
+	}
+
+	xui_treenode*	  node = add_maprefnode(root, asset, NULL);
+	onity_treedata*	  data = (onity_treedata*)node->get_linkdata();
+	onity_propmapref* prop = dynamic_cast<onity_propmapref*>(data->get_prop());
+	prop->set_position(pos);
+
+	m_tree->non_selectednode(false);
+	m_tree->set_selectednode(node, true);
+}
+xui_method_explain(onity_hierarchy, del_coursenode,			void				)( void )
+{
+	if (onity_mainform::get_ptr()->was_gamerun())
+		return;
+
+	xui_treenode* next = NULL;
+	std::vector<xui_treenode*> nodes = m_tree->get_selectednode();
+	for (s32 i = nodes.size()-1; i >= 0; --i)
+	{
+		xui_treenode* root = nodes[i]->get_rootnode();
+		if (root)
+		{
+			std::vector<xui_treenode*>::iterator itor = std::find(
+				nodes.begin(),
+				nodes.end(),
+				root);
+			if (itor != nodes.end())
+				nodes.erase(nodes.begin()+i);
+			else
+			{
+				if (next == NULL)
+				{
+					for (u32 ileaf = 0; ileaf < root->get_leafnodecount(); ++ileaf)
+					{
+						xui_treenode* leaf = root->get_leafnode(ileaf);
+						if (leaf->was_selected() == false)
+						{
+							next = leaf;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	del_coursenode(nodes);
+	if (next)
+	{
+		m_tree->set_selectednode(next, true);
 	}
 }
 xui_method_explain(onity_hierarchy, get_editprop,			onity_propcourse*	)( void )
@@ -286,6 +355,7 @@ xui_method_explain(onity_hierarchy, on_menuclick,			void				)( xui_component* se
 }
 xui_method_explain(onity_hierarchy, on_treemenuclick,		void				)( xui_component* sender, xui_method_args&		args )
 {
+	xui_treenode* next = NULL;
 	std::vector<xui_treenode*> nodes = m_tree->get_selectednode();
 	for (s32 i = nodes.size()-1; i >= 0; --i)
 	{
@@ -298,6 +368,21 @@ xui_method_explain(onity_hierarchy, on_treemenuclick,		void				)( xui_component*
 				root);
 			if (itor != nodes.end())
 				nodes.erase(nodes.begin()+i);
+			else
+			{
+				if (next == NULL)
+				{
+					for (u32 ileaf = 0; ileaf < root->get_leafnodecount(); ++ileaf)
+					{
+						xui_treenode* leaf = root->get_leafnode(ileaf);
+						if (leaf->was_selected() == false)
+						{
+							next = leaf;
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -314,6 +399,10 @@ xui_method_explain(onity_hierarchy, on_treemenuclick,		void				)( xui_component*
 	if (sender == m_delete)
 	{
 		del_coursenode(nodes);
+		if (next)
+		{
+			m_tree->set_selectednode(next, true);
+		}
 	}
 	else
 	if (sender == m_copy)
@@ -332,26 +421,32 @@ xui_method_explain(onity_hierarchy, on_treemenuclick,		void				)( xui_component*
 		pst_coursenode();
 	}
 }
+xui_method_explain(onity_hierarchy, on_treeselection,		void				)( xui_component* sender, xui_method_args&		args )
+{
+	std::vector<xui_proproot*> props;
+	std::vector<xui_treenode*> nodes = m_tree->get_selectednode();
+	for (u32 i = 0; i < nodes.size(); ++i)
+	{
+		onity_treedata* data = (onity_treedata*)nodes[i]->get_linkdata();
+		props.push_back(data->get_prop());
+	}
+	if (props.size() > 0)
+	{
+		onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
+		if (inspector->get_propview()->get_proproot() != props)
+			inspector->get_propview()->set_proproot(props);
+	}
+
+	if (nodes.size() > 0)
+	{
+		m_tree->set_nodevisible(nodes.front());
+	}
+}
 xui_method_explain(onity_hierarchy, on_treekeybddown,		void				)( xui_component* sender, xui_method_keybd&     args )
 {
 	if (args.kcode == KEY_DELETE)
 	{
-		std::vector<xui_treenode*> nodes = m_tree->get_selectednode();
-		for (s32 i = nodes.size()-1; i >= 0; --i)
-		{
-			xui_treenode* root = nodes[i]->get_rootnode();
-			if (root)
-			{
-				std::vector<xui_treenode*>::iterator itor = std::find(
-					nodes.begin(),
-					nodes.end(),
-					root);
-				if (itor != nodes.end())
-					nodes.erase(nodes.begin()+i);
-			}
-		}
-
-		del_coursenode(nodes);
+		del_coursenode();
 	}
 }
 xui_method_explain(onity_hierarchy, on_treemousedown,		void				)( xui_component* sender, xui_method_mouse&		args )
@@ -370,19 +465,8 @@ xui_method_explain(onity_hierarchy, on_treemouseclick,		void				)( xui_component
 {
 	if (args.mouse == MB_L)
 	{
-		std::vector<xui_proproot*> props;
-		std::vector<xui_treenode*> nodes = m_tree->get_selectednode();
-		for (u32 i = 0; i < nodes.size(); ++i)
-		{
-			onity_treedata* data = (onity_treedata*)nodes[i]->get_linkdata();
-			props.push_back(data->get_prop());
-		}
-
-		if (props.size() > 0)
-		{
-			onity_inspector* inspector = onity_mainform::get_ptr()->get_inspector();
-			inspector->set_proproot(props);
-		}
+		xui_method_args other_args;
+		on_treeselection(sender, other_args);
 	}
 }
 xui_method_explain(onity_hierarchy, on_treemousedragover,	void				)( xui_component* sender, xui_method_dragdrop&	args )
@@ -422,6 +506,19 @@ xui_method_explain(onity_hierarchy, on_treemousedragdrop,	void				)( xui_compone
 				root = root->get_rootnode();
 
 			add_maprefnode(root, (NP2DSAsset*)args.data, NULL);
+		}
+	}
+}
+xui_method_explain(onity_hierarchy, on_treemousedoubleclick,void				)( xui_component* sender, xui_method_mouse&     args )
+{
+	if (args.mouse == MB_L)
+	{
+		xui_vector<s32> pt = m_tree->get_renderpt(args.point);
+		xui_treenode* node = m_tree->choose_node(pt);
+		if (node->get_rootnode())
+		{
+			onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+			scene->set_nodevisible(node);
 		}
 	}
 }
@@ -521,9 +618,6 @@ xui_method_explain(onity_hierarchy, add_maprefnode,			xui_treenode*		)( xui_tree
 }
 xui_method_explain(onity_hierarchy, del_coursenode,			void				)( const std::vector<xui_treenode*>& nodes )
 {
-	if (m_editprop == NULL || onity_mainform::get_ptr()->was_gamerun())
-		return;
-
 	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_treenode* node = nodes[i];

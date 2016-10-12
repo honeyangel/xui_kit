@@ -17,6 +17,9 @@ public:
 	//method
 	*/
 	void					set_newref		( NP2DSAsset* asset );
+	virtual xui_rect2d<s32>	get_bounding	( void );
+	virtual xui_vector<s32> get_position	( void );
+	virtual void			set_position	( const xui_vector<s32>& pos );
 
 protected:
 	/*

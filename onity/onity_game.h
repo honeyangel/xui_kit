@@ -32,6 +32,7 @@ protected:
 	void				on_menuclick		( xui_component* sender, xui_method_args&	args );
 	void				on_viewupdateself	( xui_component* sender, xui_method_update& args );
 	void				on_viewrenderself	( xui_component* sender, xui_method_args&	args );
+	void				on_viewrenderelse	( xui_component* sender, xui_method_args&   args );
 	void				on_viewsetrendersz	( xui_component* sender, xui_method_args&	args );
 	void				on_viewmousedown	( xui_component* sender, xui_method_mouse&	args );
 	void				on_viewmousemove	( xui_component* sender, xui_method_mouse&	args );

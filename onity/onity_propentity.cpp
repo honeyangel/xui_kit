@@ -1,8 +1,11 @@
-#include "NP2DSTransRef.h"
+#include "NP2DSImageRef.h"
+#include "NP2DSFrameRef.h"
+#include "NP2DSActorRef.h"
 #include "Entity.h"
 #include "Component/Transform/TransformComponent.h"
 #include "Component/InterAction/IAComponent.h"
 #include "Entity/Component/Visual/WGVisualComponent.h"
+#include "Entity/Component/Visual/WGVisualManager.h"
 #include "Entity/Component/Physics/PhysicsComponent.h"
 #include "Entity/Component/AI/GameObjAIComponent.h"
 #include "Game/Jetpack/Base/JPBox2dPhysComp.h"
@@ -20,7 +23,8 @@
 //constructor
 */
 xui_create_explain(onity_propentity)( Omiga::Entity* entity )
-: m_entity(entity)
+: onity_propedit()
+, m_entity(entity)
 , m_transkind(NULL)
 , m_graphkind(NULL)
 , m_boundkind(NULL)
@@ -161,6 +165,37 @@ xui_method_explain(onity_propentity, get_entity,		Omiga::Entity*	)( void )
 {
 	return m_entity;
 }
+xui_method_explain(onity_propentity, get_bounding,		xui_rect2d<s32>	)( void )
+{
+	NPRect rt = NPRect::Empty;
+
+	BreezeGame::WGVisualComponent* component = m_entity->GetComponent<BreezeGame::WGVisualComponent>();
+	if (component)
+	{
+		cal_bounding(component->GetNode(), &rt);
+	}
+
+	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
+}
+xui_method_explain(onity_propentity, get_position,		xui_vector<s32>	)( void )
+{
+	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+	if (transform)
+	{
+		Omiga::Vec2Df pos = transform->GetPosition();
+		return xui_vector<s32>((s32)pos.x, (s32)pos.y);
+	}
+
+	return xui_vector<s32>(0);
+}
+xui_method_explain(onity_propentity, set_position,		void			)( const xui_vector<s32>& pos )
+{
+	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+	if (transform)
+	{
+		transform->SetPosition(Omiga::Vec2Df((f32)pos.x, (f32)pos.y));
+	}
+}
 
 /*
 //static
@@ -281,4 +316,35 @@ xui_method_explain(onity_propentity, set_gravity,		void			)( void* userptr, f64 
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	body->SetGravityScale((f32)value);
+}
+
+/*
+//method
+*/
+xui_method_explain(onity_propentity, cal_bounding,		void			)( NPNode* node, NPRect* result )
+{
+	if (node && node->WasVisible())
+	{
+		if (NPIsExaKindOf(NP2DSImageRef, node) ||
+			NPIsExaKindOf(NP2DSFrameRef, node) ||
+			NPIsSubKindOf(NP2DSActorRef, node))
+		{
+			NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, node);
+			(*result) = result->GetUnion(transref->GetFinalBounding());
+		}
+
+		if (NPIsExaKindOf(NPNode,		 node) == false &&
+			NPIsExaKindOf(NP2DSTransRef, node) == false &&
+			NPIsExaKindOf(NP2DSActorRef, node) == false &&
+			NPIsExaKindOf(NP2DSFrameRef, node) == false &&
+			NPIsExaKindOf(NP2DSImageRef, node) == false)
+			return;
+
+		std::list<NPRenderObject*> children = node->GetChildren();
+		for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)
+		{
+			NPNode* child = NPDynamicCast(NPNode, (*itor));
+			cal_bounding(child, result);
+		}
+	}
 }

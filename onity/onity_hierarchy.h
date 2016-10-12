@@ -21,53 +21,57 @@ public:
 	/*
 	//static
 	*/
-	static void			on_entityadd		( Omiga::Entity* ent );
-	static void			on_entitydel		( Omiga::Entity* ent );
+	static void			on_entityadd			( Omiga::Entity* ent );
+	static void			on_entitydel			( Omiga::Entity* ent );
 
 	/*
 	//reset
 	*/
-	void				reset				( bool forcedel = false );
+	void				reset					( bool forcedel = false );
 
 	/*
 	//method
 	*/
-	xui_treenode*		add_entitynode		( Omiga::Entity* ent );
-	xui_treenode*		get_entitynode		( Omiga::Entity* ent );
-	void				del_entitynode		( Omiga::Entity* ent );
-	onity_propcourse*	get_editprop		( void );
-	void				set_editprop		( onity_propcourse* editprop );
-	xui_treeview*		get_treeview		( void );
+	xui_treenode*		add_entitynode			( Omiga::Entity* ent );
+	xui_treenode*		get_entitynode			( Omiga::Entity* ent );
+	void				del_entitynode			( Omiga::Entity* ent );
+	void				add_maprefnode			( const xui_vector<s32>& pos, NP2DSAsset* asset );
+	void				del_coursenode			( void );
+	onity_propcourse*	get_editprop			( void );
+	void				set_editprop			( onity_propcourse* editprop );
+	xui_treeview*		get_treeview			( void );
 
 protected:
 	/*
 	//event
 	*/
-	void				on_toggleclick		( xui_component* sender, xui_method_args&     args );
-	void				on_clearclick		( xui_component* sender, xui_method_args&	  args );
-	void				on_searchtextchanged( xui_component* sender, xui_method_args&	  args );
-	void				on_searchtextenter	( xui_component* sender, xui_method_args&	  args );
-	void				on_headperform		( xui_component* sender, xui_method_args&	  args );
-	void				on_menuclick		( xui_component* sender, xui_method_args&	  args );
-	void				on_treemenuclick	( xui_component* sender, xui_method_args&	  args );
-	void				on_treekeybddown	( xui_component* sender, xui_method_keybd&	  args );
-	void				on_treemousedown	( xui_component* sender, xui_method_mouse&	  args );
-	void				on_treemouseclick	( xui_component* sender, xui_method_mouse&	  args );
-	void				on_treemousedragover( xui_component* sender, xui_method_dragdrop& args );
-	void				on_treemousedragdrop( xui_component* sender, xui_method_dragdrop& args );
+	void				on_toggleclick			( xui_component* sender, xui_method_args&     args );
+	void				on_clearclick			( xui_component* sender, xui_method_args&	  args );
+	void				on_searchtextchanged	( xui_component* sender, xui_method_args&	  args );
+	void				on_searchtextenter		( xui_component* sender, xui_method_args&	  args );
+	void				on_headperform			( xui_component* sender, xui_method_args&	  args );
+	void				on_menuclick			( xui_component* sender, xui_method_args&	  args );
+	void				on_treeselection		( xui_component* sender, xui_method_args&     args );
+	void				on_treemenuclick		( xui_component* sender, xui_method_args&	  args );
+	void				on_treekeybddown		( xui_component* sender, xui_method_keybd&	  args );
+	void				on_treemousedown		( xui_component* sender, xui_method_mouse&	  args );
+	void				on_treemouseclick		( xui_component* sender, xui_method_mouse&	  args );
+	void				on_treemousedragover	( xui_component* sender, xui_method_dragdrop& args );
+	void				on_treemousedragdrop	( xui_component* sender, xui_method_dragdrop& args );
+	void				on_treemousedoubleclick	( xui_component* sender, xui_method_mouse&    args );
 
 	/*
 	//method
 	*/
-	xui_treenode*		add_maprefnode		( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src );
-	xui_treenode*		add_scenelayer		( NP2DSSceneLayer* src );
-	xui_treenode*		add_scenelayer		( const std::string& name );
-	xui_treenode*		add_filternode		( const std::string& name );
-	xui_treenode*		get_filternode		( const std::string& name );
-	void				del_coursenode		( const std::vector<xui_treenode*>& nodes );
-	void				del_scenelayer		( xui_treenode* root );
-	void				del_maprefnode		( xui_treenode* node );
-	void				pst_coursenode		( void );
+	xui_treenode*		add_maprefnode			( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src );
+	xui_treenode*		add_scenelayer			( NP2DSSceneLayer* src );
+	xui_treenode*		add_scenelayer			( const std::string& name );
+	xui_treenode*		add_filternode			( const std::string& name );
+	xui_treenode*		get_filternode			( const std::string& name );
+	void				del_coursenode			( const std::vector<xui_treenode*>& nodes );
+	void				del_scenelayer			( xui_treenode* root );
+	void				del_maprefnode			( xui_treenode* node );
+	void				pst_coursenode			( void );
 
 	/*
 	//typedef

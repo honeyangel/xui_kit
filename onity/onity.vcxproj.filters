@@ -236,6 +236,10 @@
     <ClInclude Include="onity_propnoderender.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
+    <ClInclude Include="onity_gradpane.h" />
+    <ClInclude Include="onity_propedit.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -472,6 +476,10 @@
       <Filter>hierarchy</Filter>
     </ClCompile>
     <ClCompile Include="onity_propnoderender.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_gradpane.cpp" />
+    <ClCompile Include="onity_propedit.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
   </ItemGroup>

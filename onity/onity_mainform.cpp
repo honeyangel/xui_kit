@@ -329,6 +329,10 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 		onity_hierarchy* hierarchy = get_hierarchy();
 		hierarchy->reset(true);
 
+		onity_scene* scene = get_scene();
+		scene->set_trans(xui_vector<s32>(0));
+		scene->set_ratio(1.0);
+
 		if (m_run->was_push())
 		{
 			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_Splash);
