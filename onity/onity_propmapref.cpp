@@ -69,7 +69,7 @@ xui_method_explain(onity_propmapref, set_newref,	void			)( NP2DSAsset* asset )
 		inspector->get_propview()->reset();
 	}
 }
-xui_method_explain(onity_propmapref, get_bounding,	xui_rect2d<s32>	)( void )
+xui_method_explain(onity_propmapref, ori_bounding,	xui_rect2d<s32>	)( void )
 {
 	NP2DSTransRef* transref = get_2dsref();
 	if (transref)
@@ -80,7 +80,7 @@ xui_method_explain(onity_propmapref, get_bounding,	xui_rect2d<s32>	)( void )
 
 	return xui_rect2d<s32>(0);
 }
-xui_method_explain(onity_propmapref, get_position,	xui_vector<s32>	)( void )
+xui_method_explain(onity_propmapref, ori_position,	xui_vector<s32>	)( void )
 {
 	NP2DSTransRef* transref = get_2dsref();
 	if (transref)
@@ -88,6 +88,8 @@ xui_method_explain(onity_propmapref, get_position,	xui_vector<s32>	)( void )
 		NPVector3 pos = transref->GetWorldTrans();
 		return xui_vector<s32>((s32)pos.x, (s32)pos.y);
 	}
+
+	return xui_vector<s32>(0);
 }
 xui_method_explain(onity_propmapref, set_position,	void			)( const xui_vector<s32>& pos )
 {

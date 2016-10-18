@@ -7,6 +7,8 @@
 #include "onity_mainform.h"
 #include "onity_gradpane.h"
 
+extern s32 xui_round( f64 value );
+
 /*
 //dialog
 */
@@ -140,8 +142,8 @@ xui_method_explain(onity_gradpane, on_mousedown,		void					)( xui_method_mouse& 
 	xui_vector<s32> pt = get_renderpt(args.point);
 	switch (m_flowstyle)
 	{
-	case FLOWSTYLE_H: line = (s32)(pt.x/m_ratio) - m_trans; break;
-	case FLOWSTYLE_V: line = (s32)(pt.y/m_ratio) - m_trans; break;
+	case FLOWSTYLE_H: line = xui_round(pt.x/m_ratio) - m_trans; break;
+	case FLOWSTYLE_V: line = xui_round(pt.y/m_ratio) - m_trans; break;
 	}
 
 	for (u32 i = 0; i < m_linearray.size(); ++i)
@@ -169,8 +171,8 @@ xui_method_explain(onity_gradpane, on_mousemove,		void					)( xui_method_mouse& 
 	xui_vector<s32> pt = get_renderpt(args.point);
 	switch (m_flowstyle)
 	{
-	case FLOWSTYLE_H: line = (s32)(pt.x/m_ratio) - m_trans; break;
-	case FLOWSTYLE_V: line = (s32)(pt.y/m_ratio) - m_trans; break;
+	case FLOWSTYLE_H: line = xui_round(pt.x/m_ratio) - m_trans; break;
+	case FLOWSTYLE_V: line = xui_round(pt.y/m_ratio) - m_trans; break;
 	}
 
 	if (has_catch() && m_downindex != -1)
@@ -242,8 +244,8 @@ xui_method_explain(onity_gradpane, on_mousedoubleclick, void					)( xui_method_m
 	s32 line = 0;
 	switch (m_flowstyle)
 	{
-	case FLOWSTYLE_H: line = (s32)(pt.x/m_ratio) - m_trans; break;
-	case FLOWSTYLE_V: line = (s32)(pt.y/m_ratio) - m_trans; break;
+	case FLOWSTYLE_H: line = xui_round(pt.x/m_ratio) - m_trans; break;
+	case FLOWSTYLE_V: line = xui_round(pt.y/m_ratio) - m_trans; break;
 	}
 
 	if (args.mouse == MB_L)
@@ -277,7 +279,7 @@ xui_method_explain(onity_gradpane, on_renderself,		void					)( xui_method_args& 
 	for (s32 i = 0; i < gradnum+1; ++i)
 	{
 		s32 grad	 = (gradidx+i) * grap;
-		s32 position = (s32)((grad+m_trans) * m_ratio);
+		s32 position = xui_round((grad+m_trans) * m_ratio);
 		s32 length	 = ((gradidx+i) % 5 == 0) ? 24 : 32;
 		xui_vector<s32> p1;
 		xui_vector<s32> p2;

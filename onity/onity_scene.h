@@ -61,6 +61,39 @@ protected:
 	f64						get_incratio				( void );
 	f64						get_decratio				( void );
 	xui_proproot_vec		get_propcand				( void );
+	void					cal_snapinfo				( const xui_rect2d<s32>& self, xui_treenode* root, u08 mode );
+	void					use_snapinfo				( const xui_vector<s32>& curr );
+
+	/*
+	//snapinfo
+	*/
+	class snap_info
+	{
+	public:
+		snap_info( xui_proproot* _curr, xui_proproot* _next = NULL )
+		{
+			curr = _curr;
+			next = _next;
+		}
+
+		xui_proproot*		curr;
+		xui_proproot*		next;
+	};
+
+	/*
+	//drawsnap
+	*/
+	void					draw_horzsnap				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec );
+	void					draw_vertsnap				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec );
+	void					draw_horzstep				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr );
+	void					draw_vertstep				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr );
+	void					draw_locknode				( const std::vector<xui_treenode*>& nodevec );				
+
+	/*
+	//typedef
+	*/
+	typedef std::map< s32, std::vector<snap_info> >
+		onity_snapinfo_map;
 
 	/*
 	//member
@@ -78,7 +111,13 @@ protected:
 	onity_gradpane*			m_horzgrad;
 	onity_gradpane*			m_vertgrad;
 	xui_action_ctrl*		m_animctrl;
+	xui_action_ctrl*		m_lockctrl;
 	bool					m_dragview;
+	bool					m_dragprop;
+	onity_snapinfo_map		m_horzsnap;
+	onity_snapinfo_map		m_vertsnap;
+	onity_snapinfo_map		m_horzstep;
+	onity_snapinfo_map		m_vertstep;
 };
 
 #endif//__onity_scene_h__

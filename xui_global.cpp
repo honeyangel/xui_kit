@@ -665,6 +665,9 @@ bool def_deviceproc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam )
 			xui_method_mouse args;
 			args.wparam = hwnd;
 			args.point  = xui_vector<s32>((s32)pt.x, (s32)pt.y);
+			args.ctrl   = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+			args.shift  = (GetKeyState(VK_SHIFT)   & 0x8000) != 0;
+			args.alt    = (GetKeyState(VK_MENU)    & 0x8000) != 0;
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 		break;

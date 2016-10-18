@@ -212,7 +212,7 @@ xui_method_explain(onity_game, on_viewrenderelse,	void)( xui_component* sender, 
 		xui_treenode*   node = nodevec[i];
 		onity_treedata* data = (onity_treedata*)node->get_linkdata();
 		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-		xui_rect2d<s32> rt   = prop->get_bounding();
+		xui_rect2d<s32> rt   = prop->ori_bounding();
 		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.7f));
 	}
 

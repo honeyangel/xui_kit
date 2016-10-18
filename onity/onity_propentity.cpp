@@ -165,7 +165,7 @@ xui_method_explain(onity_propentity, get_entity,		Omiga::Entity*	)( void )
 {
 	return m_entity;
 }
-xui_method_explain(onity_propentity, get_bounding,		xui_rect2d<s32>	)( void )
+xui_method_explain(onity_propentity, ori_bounding,		xui_rect2d<s32>	)( void )
 {
 	NPRect rt = NPRect::Empty;
 
@@ -177,7 +177,7 @@ xui_method_explain(onity_propentity, get_bounding,		xui_rect2d<s32>	)( void )
 
 	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
 }
-xui_method_explain(onity_propentity, get_position,		xui_vector<s32>	)( void )
+xui_method_explain(onity_propentity, ori_position,		xui_vector<s32>	)( void )
 {
 	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
 	if (transform)
