@@ -66,7 +66,7 @@ xui_method_explain(xui_listview, set_iconsize,			void						)( const xui_vector<s
 	if (m_iconsize != iconsize)
 	{
 		m_iconsize  = iconsize;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_iconsize(m_iconsize);
@@ -84,7 +84,7 @@ xui_method_explain(xui_listview, set_textfont,			void						)( const xui_family& 
 	if (m_textfont != textfont)
 	{
 		m_textfont  = textfont;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_textfont(m_textfont);
@@ -100,7 +100,7 @@ xui_method_explain(xui_listview, set_textdraw,			void						)( const xui_family_r
 	if (m_textdraw != textdraw)
 	{
 		m_textdraw  = textdraw;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_textdraw(m_textdraw);
@@ -116,7 +116,7 @@ xui_method_explain(xui_listview, set_textalign,			void						)( u08 textalign )
 	if (m_textalign != textalign)
 	{
 		m_textalign  = textalign;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_textalign(m_textalign);
@@ -132,7 +132,7 @@ xui_method_explain(xui_listview, set_iconalign,			void						)( u08 iconalign )
 	if (m_iconalign != iconalign)
 	{
 		m_iconalign  = iconalign;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_iconalign(m_iconalign);
@@ -164,7 +164,7 @@ xui_method_explain(xui_listview, set_itemborder,		void						)( const xui_rect2d<
 	if (m_itemborder != itemborder)
 	{
 		m_itemborder  = itemborder;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_borderrt(m_itemborder);
@@ -180,7 +180,7 @@ xui_method_explain(xui_listview, set_iconoffset,		void						)( const xui_vector<
 	if (m_iconoffset != iconoffset)
 	{
 		m_iconoffset  = iconoffset;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_iconoffset(m_iconoffset);
@@ -198,7 +198,7 @@ xui_method_explain(xui_listview, set_textoffset,		void						)( const xui_vector<
 	if (m_textoffset != textoffset)
 	{
 		m_textoffset  = textoffset;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 			item->set_textoffset(m_textoffset);
@@ -230,7 +230,7 @@ xui_method_explain(xui_listview, set_selecteditem,		void						)( xui_listitem* i
 		item->set_selected(selected);
 		if (selected && m_allowmulti == false)
 		{
-			xui_vecptr_addloop(m_ascrollitem)
+			for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 			{
 				xui_listitem* temp = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 				if (temp != item)
@@ -289,7 +289,7 @@ xui_method_explain(xui_listview, non_selecteditem,		void						)( bool fireMethod
 xui_method_explain(xui_listview, get_selecteditem,		std::vector<xui_listitem*>	)( void )
 {
 	std::vector<xui_listitem*> selecteditem;
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 		if (item->was_selected())
@@ -301,7 +301,7 @@ xui_method_explain(xui_listview, get_selecteditem,		std::vector<xui_listitem*>	)
 xui_method_explain(xui_listview, get_selecteditemindex,	std::vector<u32>			)( void )
 {
 	std::vector<u32> selectedindex;
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 		if (item->was_selected())
@@ -320,7 +320,7 @@ xui_method_explain(xui_listview, get_itemcount,			u32							)( void ) const
 }
 xui_method_explain(xui_listview, get_itemindex,			u32							)( xui_listitem* item )
 {
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		if (m_ascrollitem[i] == item)
 			return i;
@@ -391,7 +391,7 @@ xui_method_explain(xui_listview, del_item,				void						)( xui_listitem* item, b
 }
 xui_method_explain(xui_listview, del_itemall,			void						)( void )
 {
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		m_ascrollitem[i]->set_parent(NULL);
 		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
@@ -419,7 +419,7 @@ xui_method_explain(xui_listview, set_itemvisible,		void						)( xui_listitem* it
 xui_method_explain(xui_listview, on_invalid,			void						)( xui_method_args& args )
 {
 	s32 maxwidth = 0;
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		xui_listitem* item = xui_dynamic_cast(xui_listitem, m_ascrollitem[i]);
 		maxwidth = xui_max(maxwidth, item->get_maxwidth());
@@ -449,7 +449,7 @@ xui_method_explain(xui_listview, on_perform,			void						)( xui_method_args& arg
 	pt.y = m_border.ay;
 	sz.w = get_clientw();
 	sz.h = m_lineheight;
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		m_ascrollitem[i]->on_perform_pt(pt);
 		m_ascrollitem[i]->on_perform_sz(sz);

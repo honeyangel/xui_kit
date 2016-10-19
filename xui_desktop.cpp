@@ -322,7 +322,7 @@ xui_method_explain(xui_desktop, choose_else,	xui_component*			)( const xui_vecto
 		if (rt.was_inside(pt))
 		{
 			xui_vector<s32> relative = pt - m_render.get_pt();
-			xui_vecptr_delloop(m_childctrl)
+			for (s32 i = (s32)m_childctrl.size()-1; i >= 0; --i)
 			{
 				xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
 				if (window->get_owner())
@@ -346,7 +346,7 @@ xui_method_explain(xui_desktop, update,			void					)( f32 delta )
 xui_method_explain(xui_desktop, render,			void					)( void )
 {
 	xui_convas::get_ins()->set_cliprect(m_render);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
 		if (window->get_owner())

@@ -71,10 +71,10 @@ typedef          double f64;
 #define xui_method_inscall(type, method)				 type::get_ins()->method
 #define xui_static_inscall(type, method)				 type::method
 
-#define xui_lstptr_addloop(type, name)	for(std::list<type*>::iterator itor = name.begin(); itor != name.end(); ++itor)
-#define xui_lstptr_delloop(type, name)	for(std::list<type*>::reverse_iterator itor = name.rbegin(); itor != name.rend(); ++itor)
-#define xui_vecptr_addloop(name)		for(u32 i = 0; i < name.size(); ++i)
-#define xui_vecptr_delloop(name)		for(s32 i = (s32)name.size()-1; i >= 0; --i)
+//#define xui_lstptr_addloop(type, name)	for(std::list<type*>::iterator itor = name.begin(); itor != name.end(); ++itor)
+//#define xui_lstptr_delloop(type, name)	for(std::list<type*>::reverse_iterator itor = name.rbegin(); itor != name.rend(); ++itor)
+//#define xui_vecptr_addloop(name)		for(u32 i = 0; i < name.size(); ++i)
+//#define xui_vecptr_delloop(name)		for(s32 i = (s32)name.size()-1; i >= 0; --i)
 
 class   xui_colour;
 class   xui_bitmap;

@@ -90,6 +90,7 @@ protected:
 	void					draw_horzstep				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr );
 	void					draw_vertstep				( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr );
 	void					draw_locknode				( const std::vector<xui_treenode*>& nodevec );				
+	void					draw_multisel				( void );
 
 	/*
 	//typedef
@@ -116,6 +117,7 @@ protected:
 	xui_action_ctrl*		m_lockctrl;
 	bool					m_dragview;
 	bool					m_dragprop;
+	bool					m_multisel;
 	onity_snapinfo_map		m_horzsnap;
 	onity_snapinfo_map		m_vertsnap;
 	onity_snapinfo_map		m_horzmidd;

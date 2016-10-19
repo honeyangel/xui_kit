@@ -356,7 +356,7 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,		void						)( xui_compo
 		xui_treeview* lineview = get_lineview();
 		std::vector<xui_treenode*> nodes = lineview->get_entirenode(false);
 		u32 selectedindex = -1;
-		xui_vecptr_addloop(nodes)
+		for (u32 i = 0; i < nodes.size(); ++i)
 		{
 			if (nodes[i]->was_selected())
 			{
@@ -399,7 +399,7 @@ xui_method_explain(onity_tileview, on_drawviewmousedown,		void						)( xui_compo
 				if (args.shift && selectedindex != -1)
 				{
 					u32 index = -1;
-					xui_vecptr_addloop(nodes)
+					for (u32 i = 0; i < nodes.size(); ++i)
 					{
 						if (nodes[i] == node)
 						{

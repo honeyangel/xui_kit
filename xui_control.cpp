@@ -33,7 +33,7 @@ xui_create_explain(xui_control)( const xui_vector<s32>& size )
 */
 xui_delete_explain(xui_control)( void )
 {
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 		delete m_widgetvec[i];
 }
 
@@ -221,7 +221,7 @@ xui_method_explain(xui_control, choose_else,		xui_component*			)( const xui_vect
 	if (m_render.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt();
-		xui_vecptr_delloop(m_widgetvec)
+		for (s32 i = (s32)m_widgetvec.size()-1; i >= 0; --i)
 		{
 			if (component = m_widgetvec[i]->choose(relative))
 				return component;
@@ -241,7 +241,7 @@ xui_method_explain(xui_control, update,				void					)( f32 delta )
 }
 xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 {
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
 			m_widgetvec[i]->update(delta);
@@ -304,7 +304,7 @@ xui_method_explain(xui_control, render_else,		void					)( void )
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtabs());
 	xui_convas::get_ins()->set_cliprect(currrect);
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		if (m_widgetvec[i]->was_visible() && currrect.get_inter(m_widgetvec[i]->get_renderrtabs()).was_valid())
 			m_widgetvec[i]->render();

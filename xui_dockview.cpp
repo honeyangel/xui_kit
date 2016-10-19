@@ -126,7 +126,7 @@ xui_method_explain(xui_dockview, has_dockpage,			bool								)( xui_dockpage* pa
 xui_method_explain(xui_dockview, get_freerect,			xui_rect2d<s32>						)( void ) const
 {
 	xui_rect2d<s32> rt = get_renderrtins();
-	xui_vecptr_addloop(m_viewlist)
+	for (u32 i = 0; i < m_viewlist.size(); ++i)
 	{
 		switch (m_viewlist[i]->get_dockstyle())
 		{
@@ -145,8 +145,8 @@ xui_method_explain(xui_dockview, get_namerect,			xui_rect2d<s32>						)( void ) 
 	if (m_pagelist.size() > 0)
 	{
 		s32 maxtotal = get_freerect().get_w()-32;
-		s32 total = 0;
-		xui_vecptr_addloop(m_pagelist)
+		s32 total  = 0;
+		for (u32 i = 0; i < m_pagelist.size(); ++i)
 		{
 			total += m_pagelist[i]->get_namesize();
 		}
@@ -200,7 +200,7 @@ xui_method_explain(xui_dockview, use_portions,			void								)( void )
 		m_portions = portions;
 	}
 
-	xui_vecptr_addloop(m_viewlist)
+	for (u32 i = 0; i < m_viewlist.size(); ++i)
 	{
 		m_viewlist[i]->use_portions();
 	}
@@ -218,18 +218,18 @@ xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>						)( void )
 	case DOCKSTYLE_R:
 		{
 			minlimit.h = get_renderh();
-			xui_vecptr_addloop(m_pagelist)
+			for (u32 i = 0; i < m_pagelist.size(); ++i)
 			{
 				minlimit.w = xui_max(minlimit.w, m_pagelist[i]->get_minlimit());
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_T ||
 					view->get_dockstyle() == DOCKSTYLE_B)
 					minlimit.w  = xui_max(minlimit.w, view->get_minlimit().w);
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_L ||
@@ -242,18 +242,18 @@ xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>						)( void )
 	case DOCKSTYLE_B:
 		{
 			minlimit.w = get_renderw();
-			xui_vecptr_addloop(m_pagelist)
+			for (u32 i = 0; i < m_pagelist.size(); ++i)
 			{
 				minlimit.h = xui_max(minlimit.h, m_pagelist[i]->get_minlimit());
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_L ||
 					view->get_dockstyle() == DOCKSTYLE_R)
 					minlimit.h  = xui_max(minlimit.h, view->get_minlimit().h);
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_T ||
@@ -264,19 +264,19 @@ xui_method_explain(xui_dockview, get_minlimit,			xui_vector<s32>						)( void )
 		break;
 	case DOCKSTYLE_F:
 		{
-			xui_vecptr_addloop(m_pagelist)
+			for (u32 i = 0; i < m_pagelist.size(); ++i)
 			{
 				minlimit.w = xui_max(minlimit.w, m_pagelist[i]->get_minlimit());
 				minlimit.h = xui_max(minlimit.h, m_pagelist[i]->get_minlimit());
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_L ||
 					view->get_dockstyle() == DOCKSTYLE_R)
 					minlimit.w += xui_max(view->get_renderw(), view->get_minlimit().w);
 			}
-			xui_vecptr_addloop(m_viewlist)
+			for (u32 i = 0; i < m_viewlist.size(); ++i)
 			{
 				xui_dockview* view = m_viewlist[i];
 				if (view->get_dockstyle() == DOCKSTYLE_T ||
@@ -298,7 +298,7 @@ xui_method_explain(xui_dockview, get_maxlimit,			xui_vector<s32>						)( void )
 		xui_rect2d<s32> freerect = rootview->get_freerect();
 		s32 minlimit = 0;
 		const std::vector<xui_dockpage*>& pagelist = rootview->get_pagelist();
-		xui_vecptr_addloop(pagelist)
+		for (u32 i = 0; i < pagelist.size(); ++i)
 		{
 			minlimit = xui_max(minlimit, pagelist[i]->get_minlimit());
 		}
@@ -344,7 +344,7 @@ xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* pa
 			return;
 
 		xui_dockview* view = NULL;
-		xui_vecptr_addloop(m_viewlist)
+		for (u32 i = 0; i < m_viewlist.size(); ++i)
 		{
 			if (m_viewlist[i]->get_dockstyle() == dockstyle)
 			{
@@ -377,7 +377,7 @@ xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* pa
 xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* page )
 {
 	del_dockctrl(page);
-	xui_vecptr_addloop(m_pagelist)
+	for (u32 i = 0; i < m_pagelist.size(); ++i)
 	{
 		if (page == m_pagelist[i])
 		{
@@ -395,7 +395,7 @@ xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* pa
 xui_method_explain(xui_dockview, del_dockview,			void								)( xui_dockview* view )
 {
 	del_dockctrl(view);
-	xui_vecptr_addloop(m_viewlist)
+	for (u32 i = 0; i < m_viewlist.size(); ++i)
 	{
 		if (view == m_viewlist[i])
 		{
@@ -409,7 +409,7 @@ xui_method_explain(xui_dockview, del_dockview,			void								)( xui_dockview* vi
 }
 xui_method_explain(xui_dockview, mov_dockview,			void								)( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview )
 {
-	xui_vecptr_addloop(viewlist)
+	for (u32 i = 0; i < viewlist.size(); ++i)
 	{
 		xui_dockview* view = viewlist[i];
 		xui_method_ptrcall(view, set_parent		)(this);
@@ -571,7 +571,7 @@ xui_method_explain(xui_dockview, on_invalid,			void								)( xui_method_args&  
 			{
 				set_rendersz(sz);
 				cal_portions();
-				xui_vecptr_addloop(m_viewlist)
+				for (u32 i = 0; i < m_viewlist.size(); ++i)
 				{
 					m_viewlist[i]->cal_portions();
 				}
@@ -617,8 +617,8 @@ xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args&  
 	if (m_pagelist.size() > 0)
 	{
 		s32 maxtotal = freert.get_w()-32;
-		s32 total = 0;
-		xui_vecptr_addloop(m_pagelist)
+		s32 total  = 0;
+		for (u32 i = 0; i < m_pagelist.size(); ++i)
 		{
 			total += m_pagelist[i]->get_namesize();
 		}
@@ -627,7 +627,7 @@ xui_method_explain(xui_dockview, on_perform,			void								)( xui_method_args&  
 		s32 x = 2;
 		s32 y = 2;
 		s32 w = maxtotal / m_pagelist.size();
-		xui_vecptr_addloop(m_pagelist)
+		for (u32 i = 0; i < m_pagelist.size(); ++i)
 		{
 			xui_dockpage* page = m_pagelist[i];
 
@@ -725,7 +725,7 @@ xui_method_explain(xui_dockview, add_dockctrl,			void								)( xui_component* c
 xui_method_explain(xui_dockview, del_dockctrl,			void								)( xui_component* comp )
 {
 	comp->set_parent(NULL);
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		if (comp == m_widgetvec[i])
 		{

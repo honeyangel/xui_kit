@@ -47,7 +47,7 @@ xui_method_explain(xui_menu, was_series,		bool						)( xui_component* comp )
 	if (comp == this)
 		return true;
 
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		if (m_widgetvec[i] == comp)
 			return true;
@@ -197,7 +197,7 @@ xui_method_explain(xui_menu, on_invalid,		void						)( xui_method_args& args )
 {
 	s32 maxw = 0;
 	s32 curh = 0;
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		curh += m_widgetvec[i]->get_renderh();
 		xui_menuitem* item = xui_dynamic_cast(xui_menuitem, m_widgetvec[i]);
@@ -223,7 +223,7 @@ xui_method_explain(xui_menu, on_perform,		void						)( xui_method_args& args )
 {
 	xui_vector<s32> pt(m_border.ax, m_border.ay);
 	xui_rect2d<s32> rt = get_renderrtins();
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		xui_component* comp = m_widgetvec[i];
 		xui_menuitem*  item = xui_dynamic_cast(xui_menuitem, comp);

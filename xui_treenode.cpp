@@ -134,7 +134,7 @@ xui_method_explain(xui_treenode, set_expanded,		void								)( bool flag, bool r
 	m_treeplus->set_expanded(flag);
 	if (recursion)
 	{
-		xui_vecptr_addloop(m_leafnode)
+		for (u32 i = 0; i < m_leafnode.size(); ++i)
 		{
 			m_leafnode[i]->set_expanded(flag, recursion);
 		}
@@ -168,12 +168,12 @@ xui_method_explain(xui_treenode, get_leafnodetotal, void								)( std::vector<x
 	{
 		if (treeview->get_searchtext().length() > 0 || treeview->get_columnsort() != TREESORT_NONE)
 		{
-			xui_vecptr_addloop(m_leafpart)
+			for (u32 i = 0; i < m_leafpart.size(); ++i)
 				m_leafpart[i]->get_leafnodetotal(nodes, total);
 		}
 		else
 		{
-			xui_vecptr_addloop(m_leafnode)
+			for (u32 i = 0; i < m_leafnode.size(); ++i)
 				m_leafnode[i]->get_leafnodetotal(nodes, total);
 		}
 	}
@@ -203,38 +203,42 @@ xui_method_explain(xui_treenode, add_leafnode,		xui_treenode*						)( u32 index,
 	treeview->invalid();
 	return node;
 }
-xui_method_explain(xui_treenode, add_leafnode,		void								)( u32 index, xui_treenode* node )
+//xui_method_explain(xui_treenode, add_leafnode,		void								)( u32 index, xui_treenode* node )
+//{
+//	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+//	if (node->get_parent() != treeview)
+//		return;
+//
+//	treeview->insert_node(node);
+//	node->m_rootnode = this;
+//	m_leafnode.insert(m_leafnode.begin()+index, node);
+//
+//	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE)
+//		m_treeplus->set_visible(true);
+//
+//	treeview->invalid();
+//}
+xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* node )
 {
 	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-	if (node->get_parent() != treeview)
-		return;
 
-	treeview->insert_node(node);
-	node->m_rootnode = this;
-	m_leafnode.insert(m_leafnode.begin()+index, node);
-
-	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE)
-		m_treeplus->set_visible(true);
-
-	treeview->invalid();
-}
-xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* node, bool destroy )
-{
-	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-
+	bool exist = false;
 	std::vector<xui_treenode*>::iterator itor;
 	itor = std::find(m_leafpart.begin(), m_leafpart.end(), node);
 	if (itor != m_leafpart.end())
 	{
+		exist = true;
 		m_leafpart.erase(itor);
 	}
 	itor = std::find(m_leafnode.begin(), m_leafnode.end(), node);
 	if (itor != m_leafnode.end())
 	{
+		exist = true;
 		m_leafnode.erase(itor);
-		if (destroy)
-			treeview->delete_node(node);
 	}
+
+	if (exist)
+		treeview->delete_node(node);
 
 	if (treeview->get_searchtext().empty() && treeview->get_columnsort() == TREESORT_NONE && m_leafnode.empty())
 		m_treeplus->set_visible(false);
@@ -244,7 +248,7 @@ xui_method_explain(xui_treenode, del_leafnode,		void								)( xui_treenode* nod
 xui_method_explain(xui_treenode, del_leafnodeall,	void								)( void )
 {
 	xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
-	xui_vecptr_addloop(m_leafnode)
+	for (u32 i = 0; i < m_leafnode.size(); ++i)
 	{
 		treeview->delete_node(m_leafnode[i]);
 	}
@@ -313,7 +317,7 @@ xui_method_explain(xui_treenode, choose,			xui_component*						)( const xui_vect
 	if (m_enable && m_visible && m_render.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt();
-		xui_vecptr_addloop(m_widgetvec)
+		for (u32 i = 0; i < m_widgetvec.size(); ++i)
 		{
 			if (xui_equal_kindof(xui_drawer, m_widgetvec[i]))
 				continue;

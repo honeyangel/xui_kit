@@ -1376,7 +1376,7 @@ xui_method_explain(onity_project, refresh_pathpane,			void			)( void )
 			root = root->get_rootnode();
 		}
 
-		xui_vecptr_delloop(pathvec)
+		for (s32 i = (s32)pathvec.size()-1; i >= 0; --i)
 		{
 			xui_treenode*    pathnode = pathvec[i];
 			onity_pathdata*  pathdata = (onity_pathdata*)pathnode->get_linkdata();

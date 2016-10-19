@@ -50,6 +50,7 @@ xui_create_explain(onity_scene)( void )
 , m_ratio(1.0)
 , m_dragview(false)
 , m_dragprop(false)
+, m_multisel(false)
 {
 	ini_namectrl(onity_resource::icon_scene, L"Scene");
 
@@ -463,6 +464,7 @@ xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_componen
 	}
 	
 	draw_locknode(nodevec);
+	draw_multisel();
 	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 xui_method_explain(onity_scene, on_drawviewsetrendersz,		void					)( xui_component* sender, xui_method_args&		args )
@@ -474,6 +476,7 @@ xui_method_explain(onity_scene, on_drawviewnoncatch,		void					)( xui_component*
 {
 	m_dragview = false;
 	m_dragprop = false;
+	m_multisel = false;
 	m_drawview->set_cursor(CURSOR_DEFAULT);
 	xui_global::set_cursor(CURSOR_DEFAULT);
 
@@ -557,6 +560,7 @@ xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component
 
 		onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
 		xui_treeview* treeview = hierarchy->get_treeview();
+
 		if (pick)
 		{
 			xui_treenode* node = pick->get_linkdata()->get_node();
@@ -627,7 +631,7 @@ xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component
 		}
 		else
 		{
-			//Multi-Select
+			m_multisel = true;
 		}
 	}
 	else
@@ -644,14 +648,14 @@ xui_method_explain(onity_scene, on_drawviewmousemove,		void					)( xui_component
 	if (gInitCompleted == false)
 		return;
 
-	xui_vector<s32> move = xui_desktop::get_ins()->get_mousemove();
-	xui_vector<s32> delta(0);
+	xui_vector<s32> move(0);
+	xui_vector<s32> drag = xui_desktop::get_ins()->get_mousemove();
 
 	if (m_dragview)
 	{
-		delta.x = xui_round(move.x/m_ratio);
-		delta.y = xui_round(move.y/m_ratio);
-		set_trans(m_trans+delta);
+		move.x = xui_round(drag.x/m_ratio);
+		move.y = xui_round(drag.y/m_ratio);
+		set_trans(m_trans+move);
 	}
 	else
 	if (m_dragprop)
@@ -668,9 +672,9 @@ xui_method_explain(onity_scene, on_drawviewmousemove,		void					)( xui_component
 			{}
 
 			if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_X)
-				delta.x = move.x;
+				move.x = drag.x;
 			if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_Y)
-				delta.y = move.y;
+				move.y = drag.y;
 
 			for (u32 i = 0; i < nodevec.size(); ++i)
 			{
@@ -679,7 +683,7 @@ xui_method_explain(onity_scene, on_drawviewmousemove,		void					)( xui_component
 				onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
 				if (prop)
 				{
-					prop->mov_position(delta);
+					prop->mov_position(move);
 
 					xui_vector<s32> pos = prop->get_position(m_trans, m_ratio);
 					pos.x = xui_round(pos.x/m_ratio - m_trans.x);
@@ -702,8 +706,37 @@ xui_method_explain(onity_scene, on_drawviewmouserise,		void					)( xui_component
 			use_snapinfo();
 		}
 		else
+		if (m_multisel)
 		{
+			xui_vector<s32> p1 = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousedown());
+			xui_vector<s32> p2 = m_drawview->get_renderpt(args.point);
+			xui_rect2d<s32> rt;
+			rt.ax = xui_min(p1.x, p2.x);
+			rt.bx = xui_max(p1.x, p2.x);
+			rt.ay = xui_min(p1.y, p2.y);
+			rt.by = xui_max(p1.y, p2.y);
 
+			std::vector<xui_treenode*> nextvec;
+			xui_proproot_vec propvec = get_propcand();
+			for (u32 i = 0; i < propvec.size(); ++i)
+			{
+				onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
+				xui_rect2d<s32> temp = prop->get_bounding(m_trans, m_ratio);
+				if (temp.get_inter(rt).was_valid())
+				{
+					nextvec.push_back(prop->get_linkdata()->get_node());
+				}
+			}
+
+			if (nextvec.size() > 0)
+			{
+				onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+				xui_treeview* treeview = hierarchy->get_treeview();
+				if (args.ctrl == false)
+					treeview->non_selectednode(false);
+
+				treeview->set_selectednode(nextvec);
+			}
 		}
 	}
 	else
@@ -797,16 +830,16 @@ xui_method_explain(onity_scene, get_propcand,				xui_proproot_vec		)( void )
 	xui_treeview* treeview = hierarchy->get_treeview();
 
 	std::vector<xui_treenode*> rootvec;
-	std::vector<xui_treenode*> selnode = treeview->get_selectednode();
-	if (onity_mainform::get_ptr()->was_gamerun() || selnode.empty())
+	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+	if (onity_mainform::get_ptr()->was_gamerun() || nodevec.empty())
 	{
 		rootvec = treeview->get_upmostnodearray();
 	}
 	else
 	{
-		for (u32 i = 0; i < selnode.size(); ++i)
+		for (u32 i = 0; i < nodevec.size(); ++i)
 		{
-			xui_treenode* root = selnode[i];
+			xui_treenode* root = nodevec[i];
 			if (root->get_rootnode())
 				root = root->get_rootnode();
 
@@ -1032,21 +1065,28 @@ xui_method_explain(onity_scene, cal_snapmove,				xui_vector<s32>			)( const std:
 			onity_treedata* data = (onity_treedata*)leaf->get_linkdata();
 			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
 			xui_rect2d<s32> rect = prop->ori_bounding();
+			xui_rect2d<s32> temp = rect.get_inter(self);
 
 			s32 horzstep = 0;
 			s32 vertstep = 0;
-			if		(self.ax > rect.bx) horzstep = self.ax - rect.bx;
-			else if (self.bx < rect.ax) horzstep = rect.ax - self.bx;
-			//else if (self.ax > rect.ax) horzstep = self.ax - rect.ax;
-			//else if (self.ax < rect.ax) horzstep = rect.ax - self.ax;
-			else
-			{}
-			if		(self.ay > rect.by) vertstep = self.ay - rect.by;
-			else if (self.by < rect.ay) vertstep = rect.ay - self.by;
-			//else if (self.ay > rect.ay) vertstep = self.ay - rect.ay;
-			//else if (self.ay < rect.ay) vertstep = rect.ay - self.ay;
-			else
-			{}
+			if (temp.get_h() > 0)
+			{
+				if		(self.ax > rect.bx) horzstep = self.ax - rect.bx;
+				else if (self.bx < rect.ax) horzstep = rect.ax - self.bx;
+				//else if (self.ax > rect.ax) horzstep = self.ax - rect.ax;
+				//else if (self.ax < rect.ax) horzstep = rect.ax - self.ax;
+				else
+				{}
+			}
+			if (temp.get_w() > 0)
+			{
+				if		(self.ay > rect.by) vertstep = self.ay - rect.by;
+				else if (self.by < rect.ay) vertstep = rect.ay - self.by;
+				//else if (self.ay > rect.ay) vertstep = self.ay - rect.ay;
+				//else if (self.ay < rect.ay) vertstep = rect.ay - self.ay;
+				else
+				{}
+			}
 
 			s32 steparray[5] = {0, -1, 1, -2, 2};
 			if (horzstep > 0)
@@ -1236,7 +1276,7 @@ xui_method_explain(onity_scene, draw_vertstep,				void					)( const xui_rect2d<s
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }
-xui_method_explain(onity_scene, draw_locknode,			void			)( const std::vector<xui_treenode*>& nodevec )
+xui_method_explain(onity_scene, draw_locknode,				void					)( const std::vector<xui_treenode*>& nodevec )
 {
 	if (m_lockctrl->was_play() && nodevec.size() > 0)
 	{
@@ -1258,5 +1298,21 @@ xui_method_explain(onity_scene, draw_locknode,			void			)( const std::vector<xui
 		drawrt.set_w((s32)fw);
 		drawrt.set_h((s32)fh);
 		xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+	}
+}
+xui_method_explain(onity_scene, draw_multisel,				void					)( void )
+{
+	if (m_multisel)
+	{
+		xui_vector<s32> pt = m_drawview->get_screenpt();
+		xui_vector<s32> p1 = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousedown());
+		xui_vector<s32> p2 = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
+		xui_rect2d<s32> rt;
+		rt.ax = xui_min(p1.x, p2.x);
+		rt.bx = xui_max(p1.x, p2.x);
+		rt.ay = xui_min(p1.y, p2.y);
+		rt.by = xui_max(p1.y, p2.y);
+		xui_convas::get_ins()->fill_rectangle(rt+pt, xui_colour(0.5f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
+		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.0f, 0.9f, 0.9f));
 	}
 }

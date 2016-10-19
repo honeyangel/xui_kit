@@ -480,7 +480,7 @@ xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sen
 	menulist.push_back(m_game);
 	menulist.push_back(m_animator);
 
-	xui_vecptr_addloop(menulist)
+	for (u32 i = 0; i < menulist.size(); ++i)
 	{
 		xui_dockpage* page = (xui_dockpage*)menulist[i]->get_data();
 		if (page)
@@ -608,7 +608,7 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 	menulist.push_back(m_scene);
 	menulist.push_back(m_animator);
 
-	xui_vecptr_addloop(menulist)
+	for (u32 i = 0; i < menulist.size(); ++i)
 	{
 		xui_dockpage* page = (xui_dockpage*)menulist[i]->get_data();
 		if (page)

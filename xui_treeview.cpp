@@ -76,14 +76,10 @@ xui_create_explain(xui_treeview)( const xui_vector<s32>& size, const std::vector
 */
 xui_delete_explain(xui_treeview)( void )
 {
-	xui_vecptr_addloop(m_columngrid)
-	{
+	for (u32 i = 0; i < m_columngrid.size(); ++i)
 		delete m_columngrid[i];
-	}
-	xui_vecptr_addloop(m_columnhead)
-	{
+	for (u32 i = 0; i < m_columnhead.size(); ++i)
 		delete m_columnhead[i];
-	}
 }
 
 /*
@@ -111,7 +107,7 @@ xui_method_explain(xui_treeview, set_nodeindent,		void								)( s32 indent )
 	if (m_nodeindent != indent)
 	{
 		m_nodeindent  = indent;
-		xui_vecptr_addloop(m_ascrollitem)
+		for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		{
 			m_ascrollitem[i]->refresh();
 		}
@@ -287,15 +283,22 @@ xui_method_explain(xui_treeview, ini_selectednode,		void								)( xui_treenode*
 {
 	if (node->was_selected() != selected)
 	{
-		node->set_selected(selected);
 		if (selected && m_allowmulti == false)
+			non_selectednode(false);
+
+		node->set_selected(selected);
+		if (selected)
 		{
-			xui_vecptr_addloop(m_ascrollitem)
-			{
-				xui_treenode* temp = xui_dynamic_cast(xui_treenode, m_ascrollitem[i]);
-				if (temp != node)
-					temp->set_selected(false);
-			}
+			m_selectnode.push_back(node);
+		}
+		else
+		{
+			std::vector<xui_treenode*>::iterator itor = std::find(
+				m_selectnode.begin(),
+				m_selectnode.end(),
+				node);
+			if (itor != m_selectnode.end())
+				m_selectnode.erase(itor);
 		}
 	}
 }
@@ -303,15 +306,22 @@ xui_method_explain(xui_treeview, set_selectednode,		void								)( xui_treenode*
 {
 	if (node->was_selected() != selected)
 	{
-		node->set_selected(selected);
 		if (selected && m_allowmulti == false)
+			non_selectednode(false);
+
+		node->set_selected(selected);
+		if (selected)
 		{
-			xui_vecptr_addloop(m_ascrollitem)
-			{
-				xui_treenode* temp = xui_dynamic_cast(xui_treenode, m_ascrollitem[i]);
-				if (temp != node)
-					temp->set_selected(false);
-			}
+			m_selectnode.push_back(node);
+		}
+		else
+		{
+			std::vector<xui_treenode*>::iterator itor = std::find(
+				m_selectnode.begin(),
+				m_selectnode.end(),
+				node);
+			if (itor != m_selectnode.end())
+				m_selectnode.erase(itor);
 		}
 
 		xui_method_args args;
@@ -324,12 +334,13 @@ xui_method_explain(xui_treeview, set_selectednode,		void								)( const std::ve
 		return;
 
 	bool selectedchange = false;
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		if (nodes[i]->was_selected() == false)
 		{
-			nodes[i]->set_selected(true);
 			selectedchange = true;
+			nodes[i]->set_selected(true);
+			m_selectnode.push_back(nodes[i]);
 		}
 	}
 
@@ -339,36 +350,26 @@ xui_method_explain(xui_treeview, set_selectednode,		void								)( const std::ve
 		xm_selectedchange(this, args);
 	}
 }
-xui_method_explain(xui_treeview, non_selectednode,		void								)( bool fireMethod )
+xui_method_explain(xui_treeview, non_selectednode,		void								)( bool firemethod )
 {
-	bool selectedchange = false;
-	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
+	if (m_selectnode.size() > 0)
 	{
-		xui_treenode* node = xui_dynamic_cast(xui_treenode, m_ascrollitem[i]);
-		if (node->was_selected())
+		for (u32 i = 0; i < m_selectnode.size(); ++i)
 		{
-			node->set_selected(false);
-			selectedchange = true;
+			m_selectnode[i]->set_selected(false);
+		}
+		m_selectnode.clear();
+
+		if (firemethod)
+		{
+			xui_method_args args;
+			xm_selectedchange(this, args);
 		}
 	}
-
-	if (selectedchange && fireMethod)
-	{
-		xui_method_args args;
-		xm_selectedchange(this, args);
-	}
 }
-xui_method_explain(xui_treeview, get_selectednode,		std::vector<xui_treenode*>			)( void )
+xui_method_explain(xui_treeview, get_selectednode,		const std::vector<xui_treenode*>&	)( void ) const
 {
-	std::vector<xui_treenode*> selectednode;
-	xui_vecptr_addloop(m_ascrollitem)
-	{
-		xui_treenode* node = xui_dynamic_cast(xui_treenode, m_ascrollitem[i]);
-		if (node->was_selected())
-			selectednode.push_back(node);
-	}
-
-	return selectednode;
+	return m_selectnode;
 }
 
 /*
@@ -379,12 +380,12 @@ xui_method_explain(xui_treeview, get_entirenode,		std::vector<xui_treenode*>			)
 	std::vector<xui_treenode*> nodes;
 	if (m_searchtext.length() > 0 || m_columnsort != TREESORT_NONE)
 	{
-		xui_vecptr_addloop(m_upmostpart)
+		for (u32 i = 0; i < m_upmostpart.size(); ++i)
 			m_upmostpart[i]->get_leafnodetotal(nodes, total);
 	}
 	else
 	{
-		xui_vecptr_addloop(m_upmostnode)
+		for (u32 i = 0; i < m_upmostnode.size(); ++i)
 			m_upmostnode[i]->get_leafnodetotal(nodes, total);
 	}
 
@@ -429,31 +430,34 @@ xui_method_explain(xui_treeview, add_upmostnode,		xui_treenode*						)( u32 inde
 	invalid();
 	return node;
 }
-xui_method_explain(xui_treeview, add_upmostnode,		void								)( u32 index, xui_treenode* node )
+//xui_method_explain(xui_treeview, add_upmostnode,		void								)( u32 index, xui_treenode* node )
+//{
+//	if (node->get_parent() != this)
+//		return;
+//
+//	insert_node(node);
+//	m_upmostnode.insert(m_upmostnode.begin()+index, node);
+//	invalid();
+//}
+xui_method_explain(xui_treeview, del_upmostnode,		void								)( xui_treenode* node )
 {
-	if (node->get_parent() != this)
-		return;
-
-	insert_node(node);
-	m_upmostnode.insert(m_upmostnode.begin()+index, node);
-	invalid();
-}
-xui_method_explain(xui_treeview, del_upmostnode,		void								)( xui_treenode* node, bool destroy )
-{
+	bool exist = false;
 	std::vector<xui_treenode*>::iterator itor;
 	itor = std::find(m_upmostpart.begin(), m_upmostpart.end(), node);
 	if (itor != m_upmostpart.end())
 	{
+		exist = true;
 		m_upmostpart.erase(itor);
 	}
 	itor = std::find(m_upmostnode.begin(), m_upmostnode.end(), node);
 	if (itor != m_upmostnode.end())
 	{
+		exist = true;
 		m_upmostnode.erase(itor);
-
-		if (destroy)
-			delete_node(node);
 	}
+
+	if (exist)
+		delete_node(node);
 
 	invalid();
 }
@@ -462,7 +466,7 @@ xui_method_explain(xui_treeview, del_upmostnodeall,		void								)( void )
 	m_upmostnode.clear();
 	m_upmostpart.clear();
 
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		m_ascrollitem[i]->set_parent(NULL);
 		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
@@ -525,7 +529,7 @@ xui_method_explain(xui_treeview, choose_node,			xui_treenode*						)( const xui_
 		scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 		xui_vector<s32> relative = pt + scrollpt;
 		std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-		xui_vecptr_addloop(alltreenodes)
+		for (u32 i = 0; i < alltreenodes.size(); ++i)
 		{
 			xui_treenode* node = alltreenodes[i];
 			if (node->get_renderrt().was_inside(relative-node->get_renderpt()))
@@ -546,7 +550,7 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 		xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
 		if (component == NULL && m_renderhead && m_rendergrid)
 		{
-			xui_vecptr_delloop(m_columngrid)
+			for (s32 i = (s32)m_columngrid.size()-1; i >= 0; --i)
 			{
 				if (component = m_columngrid[i]->choose(relative))
 					return component;
@@ -554,7 +558,7 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 		}
 		if (component == NULL && m_renderhead)
 		{
-			xui_vecptr_delloop(m_columnhead)
+			for (s32 i = (s32)m_columnhead.size()-1; i >= 0; --i)
 			{
 				if (component = m_columnhead[i]->choose(relative))
 					return component;
@@ -571,7 +575,7 @@ xui_method_explain(xui_treeview, choose_else,			xui_component*						)( const xui
 		if (component == NULL)
 		{
 			std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-			xui_vecptr_addloop(alltreenodes)
+			for (u32 i = 0; i < alltreenodes.size(); ++i)
 			{
 				if (component = alltreenodes[i]->choose(relative))
 					return component;
@@ -585,17 +589,17 @@ xui_method_explain(xui_treeview, update_else,			void								)( f32 delta )
 {
 	xui_control::update_else(delta);
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-	xui_vecptr_addloop(alltreenodes)
+	for (u32 i = 0; i < alltreenodes.size(); ++i)
 	{
 		if (alltreenodes[i]->was_enable() && alltreenodes[i]->was_visible())
 			alltreenodes[i]->update(delta);
 	}
-	xui_vecptr_addloop(m_columngrid)
+	for (u32 i = 0; i < m_columngrid.size(); ++i)
 	{
 		if (m_columngrid[i]->was_enable() && m_columngrid[i]->was_visible())
 			m_columngrid[i]->update(delta);
 	}
-	xui_vecptr_addloop(m_columnhead)
+	for (u32 i = 0; i < m_columnhead.size(); ++i)
 	{
 		if (m_columnhead[i]->was_enable() && m_columnhead[i]->was_visible())
 			m_columnhead[i]->update(delta);
@@ -608,7 +612,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 
 	xui_convas::get_ins()->set_cliprect(currrect);
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-	xui_vecptr_addloop(alltreenodes)
+	for (u32 i = 0; i < alltreenodes.size(); ++i)
 	{
 		if (currrect.get_inter(alltreenodes[i]->get_renderrtabs()).was_valid())
 			alltreenodes[i]->render();
@@ -621,7 +625,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
 	if (m_renderhead)
 	{
-		xui_vecptr_addloop(m_columnhead)
+		for (u32 i = 0; i < m_columnhead.size(); ++i)
 		{
 			m_columnhead[i]->render();
 		}
@@ -633,7 +637,7 @@ xui_method_explain(xui_treeview, render_else,			void								)( void )
 	if (m_rendergrid)
 	{
 		rt = (m_vscroll == NULL) ? get_renderrt() : get_renderrtins();
-		xui_vecptr_addloop(m_columngrid)
+		for (u32 i = 0; i < m_columngrid.size(); ++i)
 		{
 			p1 = m_columngrid[i]->get_screenpt();
 			p2 = p1 + xui_vector<s32>(0, rt.by);
@@ -716,7 +720,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 	xui_container::on_perform(args);
 
 	s32 width = 0;
-	xui_vecptr_addloop(m_columninfo)
+	for (u32 i = 0; i < m_columninfo.size(); ++i)
 	{
 		width += m_columninfo[i].size;
 	}
@@ -724,7 +728,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 	xui_rect2d<s32> rt = get_renderrtins();
 	if (width < rt.get_w() && width > 0)
 	{
-		xui_vecptr_addloop(m_columninfo)
+		for (u32 i = 0; i < m_columninfo.size(); ++i)
 		{
 			if (m_columninfo[i].type == TREECOLUMN_MAIN)
 			{
@@ -742,7 +746,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 	//head
 	pt.x = m_border.ax;
 	pt.y = m_border.ay;
-	xui_vecptr_addloop(m_columnhead)
+	for (u32 i = 0; i < m_columnhead.size(); ++i)
 	{
 		sz.w  = m_columninfo[i].size;
 		sz.h  = m_lineheight;
@@ -754,7 +758,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 	//grid
 	pt.x = m_border.ax;
 	pt.y = 0;
-	xui_vecptr_addloop(m_columngrid)
+	for (u32 i = 0; i < m_columngrid.size(); ++i)
 	{
 		pt.x += m_columninfo[i].size;
 		sz.w  = 4;
@@ -765,7 +769,7 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 
 	//node
 	std::vector<xui_treenode*> alltreenodes = get_entirenode(false);
-	xui_vecptr_addloop(alltreenodes)
+	for (u32 i = 0; i < alltreenodes.size(); ++i)
 	{
 		pt.x = m_border.ax;
 		pt.y = m_border.ay + i*m_lineheight + (m_renderhead ? m_lineheight : 0);
@@ -778,11 +782,11 @@ xui_method_explain(xui_treeview, on_perform,			void								)( xui_method_args&		
 xui_method_explain(xui_treeview, on_horzvalue,			void								)( xui_method_args&		args )
 {
 	xui_container::on_horzvalue(args);
-	xui_vecptr_addloop(m_columnhead)
+	for (u32 i = 0; i < m_columnhead.size(); ++i)
 	{
 		m_columnhead[i]->set_scrollx(m_hscroll->get_value());
 	}
-	xui_vecptr_addloop(m_columngrid)
+	for (u32 i = 0; i < m_columngrid.size(); ++i)
 	{
 		m_columngrid[i]->set_scrollx(m_hscroll->get_value());
 	}
@@ -851,7 +855,7 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 
 	std::vector<xui_treenode*> nodes = get_entirenode(false);
 	u32 selectedindex = -1;
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		if (nodes[i]->was_selected())
 		{
@@ -875,7 +879,7 @@ xui_method_explain(xui_treeview, on_mousedown,			void								)( xui_method_mouse
 		if (args.shift && selectedindex != -1)
 		{
 			u32 index = -1;
-			xui_vecptr_addloop(nodes)
+			for (u32 i = 0; i < nodes.size(); ++i)
 			{
 				if (nodes[i] == node)
 				{
@@ -981,13 +985,13 @@ xui_method_explain(xui_treeview, on_mouserise,			void								)( xui_method_mouse
 /*
 //method
 */
-xui_method_explain(xui_treeview, insert_node,			void								)( xui_treenode* node )
-{
-	xui_vector<s32> pt;
-	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
-	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
-	node->set_scrollpt(pt);
-}
+//xui_method_explain(xui_treeview, insert_node,			void								)( xui_treenode* node )
+//{
+//	xui_vector<s32> pt;
+//	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
+//	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
+//	node->set_scrollpt(pt);
+//}
 xui_method_explain(xui_treeview, create_node,			xui_treenode*						)( xui_treedata* data )
 {
 	xui_treenode* node = new xui_treenode(data, this);
@@ -1009,6 +1013,14 @@ xui_method_explain(xui_treeview, delete_node,			void								)( xui_treenode* nod
 
 	if (itor != m_ascrollitem.end())
 	{
+		if (node->was_selected())
+		{
+			m_selectnode.erase(std::find(
+				m_selectnode.begin(),
+				m_selectnode.end(),
+				node));
+		}
+
 		m_ascrollitem.erase(itor);
 		node->del_leafnodeall();
 		node->set_parent(NULL);
@@ -1021,7 +1033,7 @@ xui_method_explain(xui_treeview, delete_node,			void								)( xui_treenode* nod
 */
 xui_method_explain(xui_treeview, on_headclick,			void								)( xui_component* sender, xui_method_mouse& args )
 {
-	xui_vecptr_addloop(m_columnhead)
+	for (u32 i = 0; i < m_columnhead.size(); ++i)
 	{
 		if (m_columnhead[i] == sender)
 		{

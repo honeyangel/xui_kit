@@ -259,7 +259,7 @@ xui_method_explain(xui_timeview, was_rectmove,				bool						)( xui_component* la
 	{
 		s32 index = -1;
 		std::vector<xui_timeline*> lines = get_timelinetotal(false);
-		xui_vecptr_addloop(lines)
+		for (u32 i = 0; i < lines.size(); ++i)
 		{
 			if (lines[i] == layer)
 			{
@@ -363,7 +363,7 @@ xui_method_explain(xui_timeview, has_selectedline,			bool						)( const std::vec
 xui_method_explain(xui_timeview, set_selectedline,			void						)( s32 start, s32 final, bool selected )
 {
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline*	line = (xui_timeline*)nodes[i]->get_data();
 		if (selected)	line->add_selframe(start, final);
@@ -376,7 +376,7 @@ xui_method_explain(xui_timeview, set_selectedline,			void						)( s32 start, s32
 xui_method_explain(xui_timeview, non_selectedline,			void						)( bool fireMethod )
 {
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode();
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline* line = (xui_timeline*)nodes[i]->get_data();
 		line->set_selframe(std::vector<s32>());
@@ -392,7 +392,7 @@ xui_method_explain(xui_timeview, get_selectedline,			std::vector<xui_timeline*>	
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode();
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline* line = (xui_timeline*)nodes[i]->get_data();
 		if (line->has_selframe())
@@ -409,7 +409,7 @@ xui_method_explain(xui_timeview, get_timelinetotal,			std::vector<xui_timeline*>
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(total);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		lines.push_back((xui_timeline*)nodes[i]->get_data());
 	}
@@ -424,7 +424,7 @@ xui_method_explain(xui_timeview, get_timelinearray,			std::vector<xui_timeline*>
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_upmostnodearray();
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		lines.push_back((xui_timeline*)nodes[i]->get_data());
 	}
@@ -547,7 +547,7 @@ xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_
 				return m_timehead;
 
 			std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-			xui_vecptr_delloop(nodes)
+			for (s32 i = (s32)nodes.size()-1; i >= 0; --i)
 			{
 				xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 				if (component = timeline->choose(relative))
@@ -572,7 +572,7 @@ xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 		m_tldelete->update(delta);
 
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 		if (timeline->was_enable() && timeline->was_visible())
@@ -595,7 +595,7 @@ xui_method_explain(xui_timeview, render_else,				void						)( void )
 	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
 	xui_convas::get_ins()->set_cliprect(currrect);
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 		if (currrect.get_inter(timeline->get_renderrtabs()).was_valid())
@@ -617,7 +617,7 @@ xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& ar
 {
 	m_allframe.clear();
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		xui_timeline* timeline = (xui_timeline*)nodes[i]->get_data();
 		std::vector<s32> allframe = timeline->get_linkdata()->get_allframe();
@@ -693,7 +693,7 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 	m_timehead->on_perform_sz(sz);
 
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		pt.y += m_timetree->get_lineheight();
 

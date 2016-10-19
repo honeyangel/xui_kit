@@ -170,7 +170,7 @@ xui_method_explain(xui_dockpage, choose_else,			xui_component*			)( const xui_ve
 		xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 		if (dockview->get_showpage() == this)
 		{
-			xui_vecptr_delloop(m_widgetvec)
+			for (s32 i = (s32)m_widgetvec.size()-1; i >= 0; --i)
 			{
 				if (component = m_widgetvec[i]->choose(relative))
 					return component;
@@ -189,7 +189,7 @@ xui_method_explain(xui_dockpage, update_else,			void					)( f32 delta )
 	xui_dockview* dockview = xui_dynamic_cast(xui_dockview, m_parent);
 	if (dockview->get_showpage() == this)
 	{
-		xui_vecptr_addloop(m_widgetvec)
+		for (u32 i = 0; i < m_widgetvec.size(); ++i)
 		{
 			if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
 				m_widgetvec[i]->update(delta);
@@ -212,7 +212,7 @@ xui_method_explain(xui_dockpage, render_else,			void					)( void )
 	{
 		xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
 		xui_convas::get_ins()->set_cliprect(currrect);
-		xui_vecptr_addloop(m_widgetvec)
+		for (u32 i = 0; i < m_widgetvec.size(); ++i)
 		{
 			if (m_widgetvec[i] == m_namectrl)
 				continue;

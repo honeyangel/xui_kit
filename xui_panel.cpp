@@ -38,7 +38,7 @@ xui_method_explain(xui_panel, get_childcount,	u32									)( void ) const
 }
 xui_method_explain(xui_panel, get_childindex,	u32									)( xui_control* child ) const
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i] == child)
 			return i;
@@ -61,7 +61,7 @@ xui_method_explain(xui_panel, set_childindex,	void								)( xui_control* child,
 }
 xui_method_explain(xui_panel, was_child,		bool								)( xui_control* child ) const
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i] == child)
 			return true;
@@ -75,7 +75,7 @@ xui_method_explain(xui_panel, get_child,		xui_control*						)( u32 index ) const
 }
 xui_method_explain(xui_panel, get_child,		xui_control*						)( const std::string& name ) const
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i]->get_name() == name)
 			return m_childctrl[i];
@@ -85,7 +85,7 @@ xui_method_explain(xui_panel, get_child,		xui_control*						)( const std::string
 }
 xui_method_explain(xui_panel, was_descendant,	bool								)( xui_control* child ) const
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i] == child)
 			return true;
@@ -99,7 +99,7 @@ xui_method_explain(xui_panel, was_descendant,	bool								)( xui_control* child 
 }
 xui_method_explain(xui_panel, get_descendant,	xui_control*						)( const std::string& name ) const
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i]->get_name() == name)
 			return m_childctrl[i];
@@ -166,8 +166,10 @@ xui_method_explain(xui_panel, del_child,		void								)( xui_control* child, boo
 xui_method_explain(xui_panel, del_children,		void								)( void )
 {
 	std::vector<xui_control*> temp = m_childctrl;
-	xui_vecptr_addloop(temp)
+	for (u32 i = 0; i < temp.size(); ++i)
+	{
 		del_child(temp[i]);
+	}
 }
 
 /*
@@ -187,7 +189,7 @@ xui_method_explain(xui_panel, movback,			void								)( xui_control* child )
 }
 xui_method_explain(xui_panel, realign,			void								)( void )
 {
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		xui_panel* panel = xui_dynamic_cast(xui_panel, m_childctrl[i]);
 		if (panel)
@@ -212,7 +214,7 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 			scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 			scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 			xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
-			xui_vecptr_delloop(m_childctrl)
+			for (s32 i = (s32)m_childctrl.size()-1; i >= 0; --i)
 			{
 				if (component = m_childctrl[i]->choose(relative))
 					return component;
@@ -225,7 +227,7 @@ xui_method_explain(xui_panel, choose_else,		xui_component*						)( const xui_vec
 xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 {
 	xui_container::update_else(delta);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i]->was_enable() && m_childctrl[i]->was_visible())
 			m_childctrl[i]->update(delta);
@@ -236,7 +238,7 @@ xui_method_explain(xui_panel, render_else,		void								)( void )
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
 	xui_convas::get_ins()->set_cliprect(currrect);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i]->was_visible() && currrect.get_inter(m_childctrl[i]->get_renderrtabs()).was_valid())
 			m_childctrl[i]->render();
@@ -263,7 +265,7 @@ xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args 
 	if (m_childctrl.size() > 0)
 	{
 		std::vector<xui_component*> vec;
-		xui_vecptr_addloop(m_childctrl)
+		for (u32 i = 0; i < m_childctrl.size(); ++i)
 		{
 			vec.push_back(m_childctrl[i]);
 		}
@@ -277,7 +279,7 @@ xui_method_explain(xui_panel, on_perform,		void								)( xui_method_args& args 
 xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args )
 {
 	xui_vector<s32> sz(0);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		if (m_childctrl[i]->get_dockstyle() == DOCKSTYLE_F ||
 			m_childctrl[i]->get_dockstyle() == DOCKSTYLE_U)
@@ -316,7 +318,7 @@ xui_method_explain(xui_panel, on_invalid,		void								)( xui_method_args& args 
 xui_method_explain(xui_panel, on_vertvalue,		void								)( xui_method_args& args )
 {
 	xui_container::on_vertvalue(args);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		m_childctrl[i]->set_scrolly(m_vscroll->get_value());
 	}
@@ -324,7 +326,7 @@ xui_method_explain(xui_panel, on_vertvalue,		void								)( xui_method_args& arg
 xui_method_explain(xui_panel, on_horzvalue,		void								)( xui_method_args& args )
 {
 	xui_container::on_horzvalue(args);
-	xui_vecptr_addloop(m_childctrl)
+	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		m_childctrl[i]->set_scrollx(m_hscroll->get_value());
 	}

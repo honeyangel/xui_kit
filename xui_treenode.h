@@ -43,8 +43,8 @@ public:
 	const std::vector<xui_treenode*>&	get_leafnodearray	( void ) const;
 	xui_treenode*						get_leafnode		( u32 index );
 	xui_treenode*						add_leafnode		( u32 index, xui_treedata* data );
-	void								add_leafnode		( u32 index, xui_treenode* node );
-	void								del_leafnode		( xui_treenode* node, bool destroy = true );
+	//void								add_leafnode		( u32 index, xui_treenode* node );
+	void								del_leafnode		( xui_treenode* node );
 	void								del_leafnodeall		( void );
 
 	/*

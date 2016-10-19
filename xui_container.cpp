@@ -33,10 +33,8 @@ xui_create_explain(xui_container)( const xui_vector<s32>& size )
 xui_delete_explain(xui_container)( void )
 {
 	xui_desktop::get_ins()->move_recycle(m_contextmenu);
-	xui_vecptr_addloop(m_ascrollitem)
-	{
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		delete m_ascrollitem[i];
-	}
 }
 
 /*
@@ -135,7 +133,7 @@ xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vect
 		scrollpt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 		scrollpt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
 		xui_vector<s32> relative = pt - m_render.get_pt() + scrollpt;
-		xui_vecptr_delloop(m_ascrollitem)
+		for (s32 i = (s32)m_ascrollitem.size()-1; i >= 0; --i)
 		{
 			if (component = m_ascrollitem[i]->choose(relative))
 				return component;
@@ -147,20 +145,18 @@ xui_method_explain(xui_container, choose_else,		xui_component*	)( const xui_vect
 xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 {
 	xui_control::update_else(delta);
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		if (m_ascrollitem[i]->was_enable() && m_ascrollitem[i]->was_visible())
 			m_ascrollitem[i]->update(delta);
 	}
-	//if (m_contextmenu)
-	//	m_contextmenu->update(delta);
 }
 xui_method_explain(xui_container, render_else,		void			)( void )
 {
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
 	xui_convas::get_ins()->set_cliprect(currrect);
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		if (m_ascrollitem[i]->was_visible() && currrect.get_inter(m_ascrollitem[i]->get_renderrtabs()).was_valid())
 			m_ascrollitem[i]->render();
@@ -272,14 +268,14 @@ xui_method_explain(xui_container, on_scroll,		void			)( xui_component* sender, x
 }
 xui_method_explain(xui_container, on_vertvalue,		void			)( xui_method_args&  args )
 {
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		m_ascrollitem[i]->set_scrolly(m_vscroll->get_value());
 	}
 }
 xui_method_explain(xui_container, on_horzvalue,		void			)( xui_method_args&  args )
 {
-	xui_vecptr_addloop(m_ascrollitem)
+	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
 		m_ascrollitem[i]->set_scrollx(m_hscroll->get_value());
 	}

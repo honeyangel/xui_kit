@@ -97,7 +97,7 @@ xui_delete_explain(onity_console)( void )
 {
 	for (u08 itype = 0; itype < LOGTYPE_MAX; ++itype)
 	{
-		xui_vecptr_addloop(m_logvec[itype])
+		for (u32 i = 0; i < m_logvec[itype].size(); ++i)
 			delete m_logvec[itype][i];
 	}
 }
@@ -163,7 +163,7 @@ xui_method_explain(onity_console, del_logall,			void)( void )
 	m_list->del_itemall();
 	for (u08 itype = 0; itype < LOGTYPE_MAX; ++itype)
 	{
-		xui_vecptr_addloop(m_logvec[itype])
+		for (u32 i = 0; i < m_logvec[itype].size(); ++i)
 			delete m_logvec[itype][i];
 
 		m_logvec[itype].clear();
@@ -232,7 +232,7 @@ xui_method_explain(onity_console, add_item,				void)( u08 type, xui_listitem* it
 xui_method_explain(onity_console, add_item,				void)( u08 type )
 {
 	std::vector<xui_listitem*>& vec = m_logvec[type];
-	xui_vecptr_addloop(vec)
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
 		add_item(type, vec[i]);
 	}

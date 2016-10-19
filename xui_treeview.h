@@ -175,8 +175,8 @@ public:
 	void								ini_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( const std::vector<xui_treenode*>& nodes );
-	void								non_selectednode	( bool fireMethod = true );
-	std::vector<xui_treenode*>			get_selectednode	( void );
+	void								non_selectednode	( bool firemethod = true );
+	const std::vector<xui_treenode*>&	get_selectednode	( void ) const;
 
 	/*
 	//node
@@ -188,8 +188,8 @@ public:
 	void								set_upmostnodeindex	( xui_treenode* node, u32 index );
 	xui_treenode*						get_upmostnode		( u32 index );
 	xui_treenode*						add_upmostnode		( u32 index, xui_treedata* data );
-	void								add_upmostnode		( u32 index, xui_treenode* node );
-	void								del_upmostnode		( xui_treenode* node, bool destroy = true );
+	//void								add_upmostnode		( u32 index, xui_treenode* node );
+	void								del_upmostnode		( xui_treenode* node );
 	void								del_upmostnodeall	( void );
 	void								set_nodevisible		( xui_treenode* node );
 
@@ -234,7 +234,7 @@ protected:
 	/*
 	//method
 	*/
-	void								insert_node			( xui_treenode* node );
+	//void								insert_node			( xui_treenode* node );
 	xui_treenode*						create_node			( xui_treedata* data );
 	void								delete_node			( xui_treenode* node );
 
@@ -255,6 +255,7 @@ protected:
 	bool								m_rendergrid;
 	bool								m_renderhead;
 	bool								m_lighttrace;
+	std::vector<xui_treenode*>			m_selectnode;
 	std::vector<xui_treenode*>			m_upmostnode;
 	std::vector<xui_treenode*>			m_upmostpart;
 	std::vector<xui_treecolumn>			m_columninfo;

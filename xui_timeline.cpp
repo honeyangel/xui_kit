@@ -106,7 +106,7 @@ xui_method_explain(xui_timeline, get_timelinetotal,		void						)( std::vector<xu
 {
 	std::vector<xui_treenode*> nodes;
 	m_linkdata->get_node()->get_leafnodetotal(nodes, total);
-	xui_vecptr_addloop(nodes)
+	for (u32 i = 0; i < nodes.size(); ++i)
 	{
 		lines.push_back((xui_timeline*)nodes[i]->get_data());
 	}

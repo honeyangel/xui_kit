@@ -178,7 +178,7 @@ xui_method_explain(xui_linebox, on_invalid,		void			)( xui_method_args& args )
 xui_method_explain(xui_linebox, on_perform,		void			)( xui_method_args& args )
 {
 	xui_vector<s32> pt(0);
-	xui_vecptr_addloop(m_widgetvec)
+	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		xui_component* comp = m_widgetvec[i];
 		comp->on_perform_pt(pt);

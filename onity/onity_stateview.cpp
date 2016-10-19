@@ -135,7 +135,7 @@ xui_method_explain(onity_stateview, get_statectrl,		onity_state*	)( const xui_ve
 {
 	xui_component* component = NULL;
 	xui_vector<s32> relative = pt + m_dragvalue;
-	xui_vecptr_delloop(m_statectrl)
+	for (s32 i = (s32)m_statectrl.size()-1; i >= 0; --i)
 	{
 		if (component = m_statectrl[i]->choose(relative))
 			return xui_dynamic_cast(onity_state, component);
@@ -283,7 +283,7 @@ xui_method_explain(onity_stateview, choose_else,		xui_component*	)( const xui_ve
 	if (rt.was_inside(pt))
 	{
 		xui_vector<s32> relative = pt - m_render.get_pt() + m_dragvalue;
-		xui_vecptr_delloop(m_statectrl)
+		for (s32 i = (s32)m_statectrl.size()-1; i >= 0; --i)
 		{
 			if (component = m_statectrl[i]->choose(relative))
 				return component;
