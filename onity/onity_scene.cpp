@@ -340,7 +340,8 @@ xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_componen
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(m_drawview->get_renderrtabs()));
 
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	std::vector<xui_treenode*>    nodevec = hierarchy->get_treeview()->get_selectednode();
+	xui_treeview* treeview = hierarchy->get_treeview();
+	std::vector<xui_treenode*>    nodevec = treeview->get_selectednode();
 	std::vector<NP2DSSceneLayer*> currvec;
 
 	xui_vector<s32> pt = m_drawview->get_screenpt();
@@ -420,105 +421,44 @@ xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_componen
 
 	if (m_dragprop && nodevec.size() > 0)
 	{
+		xui_vector<s32> snap;
+		xui_vector<s32> step;
 		xui_rect2d<s32> self;
-		xui_treenode*   root = NULL;
-		onity_propedit* pick = NULL;
-		xui_vector<s32> curr = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*   node = nodevec[i];
-			onity_treedata* data = (onity_treedata*)node->get_linkdata();
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-			xui_rect2d<s32> rect = prop->get_bounding(m_trans, m_ratio);
-			if (rect.was_inside(curr))
-			{
-				pick = prop;
-				root = node->get_rootnode();
-				self = prop->ori_bounding();
-				break;
-			}
-		}
+		xui_rect2d<s32> horz;
+		xui_rect2d<s32> vert;
+		cal_snapmove(nodevec, snap, step, self, &horz, &vert);
 
-		bool horzsnap = false;
-		bool vertsnap = false;
 		onity_snapinfo_map::iterator itor;
-		for (itor = m_horzsnap.begin(); itor != m_horzsnap.end(); ++itor)
+		if (step.x == 0)
 		{
-			s32 line = (*itor).first;
-			if ((self.ax >= line-2 && self.ax <= line+2) ||
-				(self.bx >= line-2 && self.bx <= line+2))
-			{
-				horzsnap  = true;
-				draw_horzsnap(self, line, (*itor).second);
-			}
+			itor = m_horzsnap.find(snap.x);
+			if (itor != m_horzsnap.end())
+				draw_horzsnap(self, (*itor).first, (*itor).second);
+			itor = m_horzmidd.find(snap.x);
+			if (itor != m_horzmidd.end())
+				draw_horzsnap(self, (*itor).first, (*itor).second);
 		}
-		for (itor = m_vertsnap.begin(); itor != m_vertsnap.end(); ++itor)
+		if (step.y == 0)
 		{
-			s32 line = (*itor).first;
-			if ((self.ay >= line-2 && self.ay <= line+2) ||
-				(self.by >= line-2 && self.by <= line+2))
-			{
-				vertsnap  = true;
-				draw_vertsnap(self, line, (*itor).second);
-			}
+			itor = m_vertsnap.find(snap.y);
+			if (itor != m_vertsnap.end())
+				draw_vertsnap(self, (*itor).first, (*itor).second);
+			itor = m_vertmidd.find(snap.y);
+			if (itor != m_vertmidd.end())
+				draw_vertsnap(self, (*itor).first, (*itor).second);
 		}
 
-		for (u32 i = 0; i < root->get_leafnodecount(); ++i)
+		if (step.x != 0)
 		{
-			xui_treenode*   leaf = root->get_leafnode(i);
-			onity_treedata* data = (onity_treedata*)leaf->get_linkdata();
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-			xui_rect2d<s32> rect = prop->ori_bounding();
-			xui_rect2d<s32> temp = rect.get_inter(self);
-
-			s32 horzstep = 0;
-			s32 vertstep = 0;
-			if (horzsnap == false && temp.get_h() > 0)
-			{
-				if		(self.ax > rect.bx) horzstep = self.ax - rect.bx;
-				else if (self.bx < rect.ax) horzstep = rect.ax - self.bx;
-				else if (self.ax > rect.ax) horzstep = self.ax - rect.ax;
-				else if (self.ax < rect.ax) horzstep = rect.ax - self.ax;
-				else
-				{}
-			}
-			if (vertsnap == false && temp.get_w() > 0)
-			{
-				if		(self.ay > rect.by) vertstep = self.ay - rect.by;
-				else if (self.by < rect.ay) vertstep = rect.ay - self.by;
-				else if (self.ay > rect.ay) vertstep = self.ay - rect.ay;
-				else if (self.ay < rect.ay) vertstep = rect.ay - self.ay;
-				else
-				{}
-			}
-
-			s32 steparray[5] = {0, -1, 1, -2, 2};
-			if (horzstep > 0)
-			{
-				for (u08 istep = 0; istep < 5; ++istep)
-				{
-					s32 line = horzstep + steparray[istep];
-					itor = m_horzstep.find(line);
-					if (itor != m_horzstep.end())
-					{
-						draw_horzstep(self, line, (*itor).second, rect);
-						break;
-					}
-				}
-			}
-			if (vertstep > 0)
-			{
-				for (u08 istep = 0; istep < 5; ++istep)
-				{
-					s32 line = vertstep + steparray[istep];
-					itor = m_vertstep.find(line);
-					if (itor != m_vertstep.end())
-					{
-						draw_vertstep(self, line, (*itor).second, rect);
-						break;
-					}
-				}
-			}
+			itor = m_horzstep.find(step.x);
+			if (itor != m_horzstep.end())
+				draw_horzstep(self, (*itor).first, (*itor).second, horz);
+		}
+		if (step.y != 0)
+		{
+			itor = m_vertstep.find(step.y);
+			if (itor != m_vertstep.end())
+				draw_vertstep(self, (*itor).first, (*itor).second, vert);
 		}
 	}
 	
@@ -622,14 +562,27 @@ xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component
 			xui_treenode* node = pick->get_linkdata()->get_node();
 			if (args.alt  && onity_mainform::get_ptr()->was_gamerun() == false)
 			{
-				onity_propmapref* mapref = dynamic_cast<onity_propmapref*>(pick);
-				xui_treenode*     next   = hierarchy->add_maprefnode(node->get_rootnode(), NULL, mapref->get_2dsref());
-				onity_treedata*   data   = (onity_treedata*)next->get_linkdata();
-				onity_propedit*   prop   = dynamic_cast<onity_propedit*>(data->get_prop());
-				node = next;
-				pick = prop;
+				std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+				std::vector<xui_treenode*> nextvec;
+				for (u32 i = 0; i < nodevec.size(); ++i)
+				{
+					xui_treenode*		currnode = nodevec[i];
+					onity_treedata*		currdata = (onity_treedata*)currnode->get_linkdata();
+					onity_propmapref*	currprop = dynamic_cast<onity_propmapref*>(currdata->get_prop());
+					xui_treenode*		nextnode = hierarchy->add_maprefnode(currnode->get_rootnode(), NULL, currprop->get_2dsref());
+					onity_treedata*		nextdata = (onity_treedata*)nextnode->get_linkdata();
+					onity_propmapref*	nextprop = dynamic_cast<onity_propmapref*>(nextdata->get_prop());
+
+					if (node == currnode)
+					{
+						node =  nextnode;
+						pick =  nextprop;
+					}
+
+					nextvec.push_back(nextnode);
+				}
 				xui_method_ptrcall(treeview,	non_selectednode)(false);
-				xui_method_ptrcall(treeview,	set_selectednode)(node, true);
+				xui_method_ptrcall(treeview,	set_selectednode)(nextvec);
 			}
 			else
 			if (args.ctrl && !args.shift)
@@ -746,7 +699,7 @@ xui_method_explain(onity_scene, on_drawviewmouserise,		void					)( xui_component
 	{
 		if (m_dragprop)
 		{
-			use_snapinfo(m_drawview->get_renderpt(args.point));
+			use_snapinfo();
 		}
 		else
 		{
@@ -885,6 +838,8 @@ xui_method_explain(onity_scene, cal_snapinfo,				void					)( const xui_rect2d<s3
 	m_vertsnap.clear();
 	m_horzstep.clear();
 	m_vertstep.clear();
+	m_horzmidd.clear();
+	m_vertmidd.clear();
 
 	s32 snaplength = 0;
 	onity_treedata*		  rootdata = (onity_treedata*)root->get_linkdata();
@@ -912,13 +867,21 @@ xui_method_explain(onity_scene, cal_snapinfo,				void					)( const xui_rect2d<s3
 
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_X)
 		{
-			m_horzsnap[currrect.ax].push_back(snap_info(currprop));
-			m_horzsnap[currrect.bx].push_back(snap_info(currprop));
+			s32 l = currrect.ax;
+			s32 r = currrect.bx;
+			s32 c = currrect.ax+currrect.get_w()/2;
+			m_horzsnap[l].push_back(snap_info(currprop));
+			m_horzsnap[r].push_back(snap_info(currprop));
+			m_horzmidd[c].push_back(snap_info(currprop));
 		}
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_Y)
 		{
-			m_vertsnap[currrect.ay].push_back(snap_info(currprop));
-			m_vertsnap[currrect.by].push_back(snap_info(currprop));
+			s32 t = currrect.ay;
+			s32 b = currrect.by;
+			s32 c = currrect.ay+currrect.get_h()/2;
+			m_vertsnap[t].push_back(snap_info(currprop));
+			m_vertsnap[b].push_back(snap_info(currprop));
+			m_vertmidd[c].push_back(snap_info(currprop));
 		}
 	}
 
@@ -940,18 +903,22 @@ xui_method_explain(onity_scene, cal_snapinfo,				void					)( const xui_rect2d<s3
 		onity_propedit* nextprop = dynamic_cast<onity_propedit*>(nextdata->get_prop());
 		xui_rect2d<s32> nextrect = nextprop->ori_bounding();
 
+		if (snaplength > 0)
+		{
+			if (currrect.bx < self.ax-snaplength ||
+				currrect.ax > self.bx+snaplength)
+				continue;
+		}
+
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_X)
 		{
 			s32 horzstep = 0;
-			if (nextrect.get_inter(currrect).get_h() > 0)
-			{
-				if		(nextrect.ax > currrect.bx) horzstep = nextrect.ax - currrect.bx;
-				else if (nextrect.bx < currrect.ax) horzstep = currrect.ax - nextrect.bx;
-				else if (nextrect.ax > currrect.ax) horzstep = nextrect.ax - currrect.ax;
-				else if (nextrect.ax < currrect.ax) horzstep = currrect.ax - nextrect.ax;
-				else
-				{}
-			}
+			if		(nextrect.ax > currrect.bx) horzstep = nextrect.ax - currrect.bx;
+			else if (nextrect.bx < currrect.ax) horzstep = currrect.ax - nextrect.bx;
+			//else if (nextrect.ax > currrect.ax) horzstep = nextrect.ax - currrect.ax;
+			//else if (nextrect.ax < currrect.ax) horzstep = currrect.ax - nextrect.ax;
+			else
+			{}
 
 			if (horzstep > 0)
 				m_horzstep[horzstep].push_back(snap_info(currprop, nextprop));
@@ -959,30 +926,57 @@ xui_method_explain(onity_scene, cal_snapinfo,				void					)( const xui_rect2d<s3
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_Y)
 		{
 			s32 vertstep = 0;
-			if (nextrect.get_inter(currrect).get_w() > 0)
-			{
-				if		(nextrect.ay > currrect.by) vertstep = nextrect.ay - currrect.by;
-				else if (nextrect.by < currrect.ay) vertstep = currrect.ay - nextrect.by;
-				else if (nextrect.ay > currrect.ay) vertstep = nextrect.ay - currrect.ay;
-				else if (nextrect.ay < currrect.ay) vertstep = currrect.ay - nextrect.ay;
-				else
-				{}
-			}
+			if		(nextrect.ay > currrect.by) vertstep = nextrect.ay - currrect.by;
+			else if (nextrect.by < currrect.ay) vertstep = currrect.ay - nextrect.by;
+			//else if (nextrect.ay > currrect.ay) vertstep = nextrect.ay - currrect.ay;
+			//else if (nextrect.ay < currrect.ay) vertstep = currrect.ay - nextrect.ay;
+			else
+			{}
 
 			if (vertstep > 0)
 				m_vertstep[vertstep].push_back(snap_info(currprop, nextprop));
 		}
 	}
 }
-xui_method_explain(onity_scene, use_snapinfo,				void					)( const xui_vector<s32>& curr )
+xui_method_explain(onity_scene, use_snapinfo,				void					)( void )
 {
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
 	xui_treeview* treeview = hierarchy->get_treeview();
 	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+
+	xui_vector<s32> snap;
+	xui_vector<s32> step;
+	xui_rect2d<s32> self;
+	xui_vector<s32> move = cal_snapmove(nodevec, snap, step, self, NULL, NULL);
+	for (u32 i = 0; i < nodevec.size(); ++i)
+	{
+		xui_treenode*   node = nodevec[i];
+		onity_treedata* data = (onity_treedata*)node->get_linkdata();
+		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
+		if (prop)
+		{
+			prop->set_position(prop->ori_position()+move);
+		}
+	}
+}
+xui_method_explain(onity_scene, cal_linestep,				bool					)( s32& last, s32 temp )
+{
+	if (last == 0 || abs(last) > abs(temp))
+	{
+		last = temp;
+		return true;
+	}
+
+	return false;
+}
+xui_method_explain(onity_scene, cal_snapmove,				xui_vector<s32>			)( const std::vector<xui_treenode*>& nodevec, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>& self, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert )
+{
+	xui_vector<s32> move(0);
+	xui_vector<s32> curr = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
+
 	if (nodevec.size() > 0)
 	{
-		xui_treenode*   root = NULL;
-		xui_rect2d<s32> self;
+		xui_treenode* root = NULL;
 		for (u32 i = 0; i < nodevec.size(); ++i)
 		{
 			xui_treenode*   node = nodevec[i];
@@ -997,53 +991,62 @@ xui_method_explain(onity_scene, use_snapinfo,				void					)( const xui_vector<s3
 			}
 		}
 
-		xui_rect2d<s32> grap(0);
 		onity_snapinfo_map::iterator itor;
 		for (itor = m_horzsnap.begin(); itor != m_horzsnap.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (self.ax >= line-2 && self.ax <= line+2)
-				grap.ax  = line-self.ax;
-			if (self.bx >= line-2 && self.bx <= line+2)
-				grap.bx  = line-self.bx;
+			if (self.ax >= line-2 && self.ax <= line+2 && cal_linestep(move.x, line-self.ax))
+				snap.x   = line;
+			if (self.bx >= line-2 && self.bx <= line+2 && cal_linestep(move.x, line-self.bx))
+				snap.x   = line;
 		}
 		for (itor = m_vertsnap.begin(); itor != m_vertsnap.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (self.ay >= line-2 && self.ay <= line+2)
-				grap.ay  = line-self.ay;
-			if (self.by >= line-2 && self.by <= line+2)
-				grap.by  = line-self.by;
+			if (self.ay >= line-2 && self.ay <= line+2 && cal_linestep(move.y, line-self.ay))
+				snap.y   = line;
+			if (self.by >= line-2 && self.by <= line+2 && cal_linestep(move.y, line-self.by))
+				snap.y   = line;
+		}
+
+		xui_vector<s32> midd(self.ax+self.get_w()/2, self.ay+self.get_h()/2);
+		for (itor = m_horzmidd.begin(); itor != m_horzmidd.end(); ++itor)
+		{
+			s32 line = (*itor).first;
+			if (midd.x  >= line-2 && midd.x  <= line+2 && cal_linestep(move.x, line-midd.x))
+				snap.x   = line;
+		}
+		for (itor = m_vertmidd.begin(); itor != m_vertmidd.end(); ++itor)
+		{
+			s32 line = (*itor).first;
+			if (midd.y  >= line-2 && midd.y  <= line+2 && cal_linestep(move.y, line-midd.y))
+				snap.y   = line;
 		}
 
 		for (u32 i = 0; i < root->get_leafnodecount(); ++i)
 		{
+			if (root->get_leafnode(i)->was_selected())
+				continue;
+
 			xui_treenode*   leaf = root->get_leafnode(i);
 			onity_treedata* data = (onity_treedata*)leaf->get_linkdata();
 			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
 			xui_rect2d<s32> rect = prop->ori_bounding();
-			xui_rect2d<s32> temp = rect.get_inter(self);
 
 			s32 horzstep = 0;
 			s32 vertstep = 0;
-			if (grap.ax == 0 && grap.bx == 0 && temp.get_h() > 0)
-			{
-				if		(self.ax > rect.bx) horzstep = self.ax - rect.bx;
-				else if (self.bx < rect.ax) horzstep = rect.ax - self.bx;
-				else if (self.ax > rect.ax) horzstep = self.ax - rect.ax;
-				else if (self.ax < rect.ax) horzstep = rect.ax - self.ax;
-				else
-				{}
-			}
-			if (grap.ay == 0 && grap.by == 0 && temp.get_w() > 0)
-			{
-				if		(self.ay > rect.by) vertstep = self.ay - rect.by;
-				else if (self.by < rect.ay) vertstep = rect.ay - self.by;
-				else if (self.ay > rect.ay) vertstep = self.ay - rect.ay;
-				else if (self.ay < rect.ay) vertstep = rect.ay - self.ay;
-				else
-				{}
-			}
+			if		(self.ax > rect.bx) horzstep = self.ax - rect.bx;
+			else if (self.bx < rect.ax) horzstep = rect.ax - self.bx;
+			//else if (self.ax > rect.ax) horzstep = self.ax - rect.ax;
+			//else if (self.ax < rect.ax) horzstep = rect.ax - self.ax;
+			else
+			{}
+			if		(self.ay > rect.by) vertstep = self.ay - rect.by;
+			else if (self.by < rect.ay) vertstep = rect.ay - self.by;
+			//else if (self.ay > rect.ay) vertstep = self.ay - rect.ay;
+			//else if (self.ay < rect.ay) vertstep = rect.ay - self.ay;
+			else
+			{}
 
 			s32 steparray[5] = {0, -1, 1, -2, 2};
 			if (horzstep > 0)
@@ -1051,13 +1054,16 @@ xui_method_explain(onity_scene, use_snapinfo,				void					)( const xui_vector<s3
 				for (u08 istep = 0; istep < 5; ++istep)
 				{
 					s32 line = horzstep + steparray[istep];
+					if (step.x != 0 && line >= step.x)
+						continue;
+
 					itor = m_horzstep.find(line);
 					if (itor != m_horzstep.end())
 					{
-						if		(self.ax > rect.bx) grap.ax = rect.bx + line - self.ax;
-						else if (self.bx < rect.ax) grap.bx = rect.ax - line - self.bx;
-						else if (self.ax > rect.ax) grap.ax = rect.ax + line - self.ax;
-						else if (self.ax < rect.ax) grap.bx = rect.ax - line - self.ax;
+						if		(self.ax > rect.bx && cal_linestep(move.x, rect.bx+line-self.ax)) { step.x = line; if (horz) *horz = rect; }
+						else if (self.bx < rect.ax && cal_linestep(move.x, rect.ax-line-self.bx)) { step.x = line; if (horz) *horz = rect; }
+						//else if (self.ax > rect.ax && cal_linestep(move.x, rect.ax+line-self.ax)) { step.x = line; if (horz) *horz = rect; }
+						//else if (self.ax < rect.ax && cal_linestep(move.x, rect.ax-line-self.ax)) { step.x = line; if (horz) *horz = rect; }
 						else
 						{}
 
@@ -1070,13 +1076,16 @@ xui_method_explain(onity_scene, use_snapinfo,				void					)( const xui_vector<s3
 				for (u08 istep = 0; istep < 5; ++istep)
 				{
 					s32 line = vertstep + steparray[istep];
+					if (step.y != 0 && line >= step.y)
+						continue;
+
 					itor = m_vertstep.find(line);
 					if (itor != m_vertstep.end())
 					{
-						if		(self.ay > rect.by) grap.ay = rect.by + line - self.ay;
-						else if (self.by < rect.ay) grap.by = rect.ay - line - self.by;
-						else if (self.ay > rect.ay) grap.ay = rect.ay + line - self.ay;
-						else if (self.ay < rect.ay) grap.by = rect.ay - line - self.ay;
+						if		(self.ay > rect.by && cal_linestep(move.y, rect.by+line-self.ay)) { step.y = line; if (vert) *vert = rect; }
+						else if (self.by < rect.ay && cal_linestep(move.y, rect.ay-line-self.by)) { step.y = line; if (vert) *vert = rect; }
+						//else if (self.ay > rect.ay && cal_linestep(move.y, rect.ay+line-self.ay)) { step.y = line; if (vert) *vert = rect; }
+						//else if (self.ay < rect.ay && cal_linestep(move.y, rect.ay-line-self.ay)) { step.y = line; if (vert) *vert = rect; }
 						else
 						{}
 
@@ -1085,26 +1094,11 @@ xui_method_explain(onity_scene, use_snapinfo,				void					)( const xui_vector<s3
 				}
 			}
 		}
-
-		xui_vector<s32> move;
-		if		(grap.ax != 0 && grap.bx != 0)	move.x = abs(grap.ax) < abs(grap.bx) ? grap.ax : grap.bx;
-		else if (grap.ax != 0)					move.x = grap.ax;
-		else									move.x = grap.bx;
-		if		(grap.ay != 0 && grap.by != 0)	move.y = abs(grap.ay) < abs(grap.by) ? grap.ay : grap.by;
-		else if (grap.ay != 0)					move.y = grap.ay;
-		else									move.y = grap.by;
-
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*   node = nodevec[i];
-			onity_treedata* data = (onity_treedata*)node->get_linkdata();
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-			if (prop)
-			{
-				prop->set_position(prop->ori_position()+move);
-			}
-		}
 	}
+
+	return xui_vector<s32>(
+		((move.x == 10) ? 0 : move.x),
+		((move.y == 10) ? 0 : move.y));
 }
 
 /*
@@ -1125,7 +1119,7 @@ xui_method_explain(onity_scene, draw_horzsnap,				void					)( const xui_rect2d<s
 	xui_vector<s32> pt = m_drawview->get_screenpt();
 	xui_vector<s32> p1(xui_round(snap*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
 	xui_vector<s32> p2(xui_round(snap*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
-	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour(0.5f, 0.0f, 0.0f, 1.0f));
+	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
 xui_method_explain(onity_scene, draw_vertsnap,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
 {
@@ -1142,7 +1136,7 @@ xui_method_explain(onity_scene, draw_vertsnap,				void					)( const xui_rect2d<s
 	xui_vector<s32> pt = m_drawview->get_screenpt();
 	xui_vector<s32> p1(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(snap*m_ratio + m_trans.y*m_ratio));
 	xui_vector<s32> p2(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(snap*m_ratio + m_trans.y*m_ratio));
-	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour(0.5f, 0.0f, 0.0f, 1.0f));
+	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
 xui_method_explain(onity_scene, draw_horzstep,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
 {
@@ -1169,17 +1163,28 @@ xui_method_explain(onity_scene, draw_horzstep,				void					)( const xui_rect2d<s
 		s32 xmin = 0;
 		if		(nextrect.ax > currrect.bx) xmin = currrect.bx;
 		else if (nextrect.bx < currrect.ax) xmin = nextrect.bx;
-		else if (nextrect.ax > currrect.ax) xmin = currrect.ax;
-		else if (nextrect.ax < currrect.ax) xmin = nextrect.ax;
+		//else if (nextrect.ax > currrect.ax) xmin = currrect.ax;
+		//else if (nextrect.ax < currrect.ax) xmin = nextrect.ax;
 		else
 		{}
 
 		s32 xmax = xmin + snap;
-		s32 y    = temprect.ay + temprect.get_h()/2; 
+		s32 ymid = (temprect.get_h() > 0) ? (temprect.ay+temprect.get_h()/2) : (nextrect.ay+nextrect.get_h()/2); 
 
-		xui_vector<s32> p1(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(y*m_ratio + m_trans.y*m_ratio));
-		xui_vector<s32> p2(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(y*m_ratio + m_trans.y*m_ratio));
-		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour(0.5f, 0.0f, 0.0f, 1.0f));
+		xui_vector<s32> p1;
+		xui_vector<s32> p2;
+		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(ymid*m_ratio + m_trans.y*m_ratio));
+		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(ymid*m_ratio + m_trans.y*m_ratio));
+		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::white);
+		if (temprect.get_h() > 0)
+			continue;
+
+		s32 ymin = xui_min(currrect.ay, nextrect.ay);
+		s32 ymax = xui_max(currrect.by, nextrect.by);
+		s32 temp = nextrect.ax > currrect.bx ? currrect.bx : currrect.ax;
+		p1 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
+		p2 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
+		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }
 xui_method_explain(onity_scene, draw_vertstep,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
@@ -1207,17 +1212,28 @@ xui_method_explain(onity_scene, draw_vertstep,				void					)( const xui_rect2d<s
 		s32 ymin = 0;
 		if		(nextrect.ay > currrect.by) ymin = currrect.by;
 		else if (nextrect.by < currrect.ay) ymin = nextrect.by;
-		else if (nextrect.ay > currrect.ay) ymin = currrect.ay;
-		else if (nextrect.ay < currrect.ay) ymin = nextrect.ay;
+		//else if (nextrect.ay > currrect.ay) ymin = currrect.ay;
+		//else if (nextrect.ay < currrect.ay) ymin = nextrect.ay;
 		else
 		{}
 
 		s32 ymax = ymin + snap;
-		s32 x    = temprect.ax + temprect.get_w()/2; 
+		s32 xmid = (temprect.get_w() > 0) ? (temprect.ax+temprect.get_w()/2) : (nextrect.ax+nextrect.get_w()/2); 
 
-		xui_vector<s32> p1(xui_round(x*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
-		xui_vector<s32> p2(xui_round(x*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
-		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour(0.5f, 0.0f, 0.0f, 1.0f));
+		xui_vector<s32> p1;
+		xui_vector<s32> p2;
+		p1 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
+		p2 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
+		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::white);
+		if (temprect.get_w() > 0)
+			continue;
+
+		s32 xmin = xui_min(currrect.ax, nextrect.ax);
+		s32 xmax = xui_max(currrect.bx, nextrect.bx);
+		s32 temp = nextrect.ay > currrect.by ? currrect.by : currrect.ay;
+		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(temp*m_ratio + m_trans.y*m_ratio));
+		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(temp*m_ratio + m_trans.y*m_ratio));
+		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }
 xui_method_explain(onity_scene, draw_locknode,			void			)( const std::vector<xui_treenode*>& nodevec )

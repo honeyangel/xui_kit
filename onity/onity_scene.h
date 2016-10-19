@@ -62,7 +62,9 @@ protected:
 	f64						get_decratio				( void );
 	xui_proproot_vec		get_propcand				( void );
 	void					cal_snapinfo				( const xui_rect2d<s32>& self, xui_treenode* root, u08 mode );
-	void					use_snapinfo				( const xui_vector<s32>& curr );
+	void					use_snapinfo				( void );
+	bool					cal_linestep				( s32& last, s32 temp );
+	xui_vector<s32>			cal_snapmove				( const std::vector<xui_treenode*>& nodevec, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>& self, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert );
 
 	/*
 	//snapinfo
@@ -116,6 +118,8 @@ protected:
 	bool					m_dragprop;
 	onity_snapinfo_map		m_horzsnap;
 	onity_snapinfo_map		m_vertsnap;
+	onity_snapinfo_map		m_horzmidd;
+	onity_snapinfo_map		m_vertmidd;
 	onity_snapinfo_map		m_horzstep;
 	onity_snapinfo_map		m_vertstep;
 };
