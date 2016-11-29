@@ -465,6 +465,7 @@ xui_method_explain(xui_treeview, del_upmostnodeall,		void								)( void )
 {
 	m_upmostnode.clear();
 	m_upmostpart.clear();
+	m_selectnode.clear();
 
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
@@ -472,7 +473,10 @@ xui_method_explain(xui_treeview, del_upmostnodeall,		void								)( void )
 		xui_desktop::get_ins()->move_recycle(m_ascrollitem[i]);
 	}
 	m_ascrollitem.clear();
-	invalid();
+	refresh();
+
+	xui_method_args args;
+	xm_selectedchange(this, args);
 }
 xui_method_explain(xui_treeview, set_nodevisible,		void								)( xui_treenode* node )
 {

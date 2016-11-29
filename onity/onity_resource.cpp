@@ -63,6 +63,27 @@ xui_bitmap* onity_resource::icon_copy		= NULL;
 xui_bitmap* onity_resource::icon_paste		= NULL;
 xui_bitmap* onity_resource::icon_cut		= NULL;
 xui_bitmap* onity_resource::icon_setting	= NULL;
+xui_bitmap* onity_resource::icon_horzleft	= NULL;
+xui_bitmap* onity_resource::icon_horzcenter	= NULL;
+xui_bitmap* onity_resource::icon_horzright	= NULL;
+xui_bitmap* onity_resource::icon_verttop	= NULL;
+xui_bitmap* onity_resource::icon_vertcenter	= NULL;
+xui_bitmap* onity_resource::icon_vertbottom	= NULL;
+xui_bitmap* onity_resource::icon_horzinc	= NULL;
+xui_bitmap* onity_resource::icon_horzdec	= NULL;
+xui_bitmap* onity_resource::icon_horzcancel	= NULL;
+xui_bitmap* onity_resource::icon_horzequal	= NULL;
+xui_bitmap* onity_resource::icon_vertinc	= NULL;
+xui_bitmap* onity_resource::icon_vertdec	= NULL;
+xui_bitmap* onity_resource::icon_vertcancel = NULL;
+xui_bitmap* onity_resource::icon_vertequal	= NULL;
+xui_bitmap* onity_resource::icon_cwrotate	= NULL;
+xui_bitmap* onity_resource::icon_ccrotate	= NULL;
+xui_bitmap*	onity_resource::icon_bigpivot	= NULL;
+xui_bitmap* onity_resource::icon_biglarrow	= NULL;
+xui_bitmap*	onity_resource::icon_bigrarrow	= NULL;
+xui_bitmap* onity_resource::icon_bigtarrow	= NULL;
+xui_bitmap*	onity_resource::icon_bigbarrow	= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -127,6 +148,27 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_cut		= xui_bitmap::create("icon/cut.png");
 	icon_paste		= xui_bitmap::create("icon/paste.png");
 	icon_setting	= xui_bitmap::create("icon/setting.png");
+	icon_horzleft	= xui_bitmap::create("icon/horzleft.png");
+	icon_horzcenter	= xui_bitmap::create("icon/horzcenter.png");
+	icon_horzright	= xui_bitmap::create("icon/horzright.png");
+	icon_verttop	= xui_bitmap::create("icon/verttop.png");
+	icon_vertcenter	= xui_bitmap::create("icon/vertcenter.png");
+	icon_vertbottom	= xui_bitmap::create("icon/vertbottom.png");
+	icon_horzinc	= xui_bitmap::create("icon/horzinc.png");
+	icon_horzdec	= xui_bitmap::create("icon/horzdec.png");
+	icon_horzcancel	= xui_bitmap::create("icon/horzcancel.png");
+	icon_horzequal	= xui_bitmap::create("icon/horzequal.png");
+	icon_vertinc	= xui_bitmap::create("icon/vertinc.png");
+	icon_vertdec	= xui_bitmap::create("icon/vertdec.png");
+	icon_vertcancel	= xui_bitmap::create("icon/vertcancel.png");
+	icon_vertequal	= xui_bitmap::create("icon/vertequal.png");
+	icon_cwrotate	= xui_bitmap::create("icon/cwrotate.png");
+	icon_ccrotate	= xui_bitmap::create("icon/ccrotate.png");
+	icon_bigpivot	= xui_bitmap::create("icon/bigpivot.png");
+	icon_biglarrow	= xui_bitmap::create("icon/biglarrow.png");
+	icon_bigrarrow	= xui_bitmap::create("icon/bigrarrow.png");
+	icon_bigtarrow	= xui_bitmap::create("icon/bigtarrow.png");
+	icon_bigbarrow	= xui_bitmap::create("icon/bigbarrow.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

@@ -5,6 +5,9 @@
 
 class onity_renderview;
 class onity_gradpane;
+class onity_alignbox;
+class onity_blankbox;
+class onity_pivotbox;
 class onity_scene : public xui_dockpage
 {
 	xui_declare_rtti
@@ -21,6 +24,11 @@ public:
 	virtual ~onity_scene( void );
 
 	/*
+	//static
+	*/
+	static xui_proproot_vec	get_selectedprop			( void );
+
+	/*
 	//method
 	*/
 	const xui_vector<s32>&	get_trans					( void ) const;
@@ -28,6 +36,7 @@ public:
 	f64						get_ratio					( void ) const;
 	void					set_ratio					( f64 ratio );
 	void					set_nodevisible				( xui_treenode* node );
+	void					set_toolupdate				( void );
 
 protected:
 	/*
@@ -39,14 +48,16 @@ protected:
 	//event
 	*/
 	void					on_buttonclick				( xui_component* sender, xui_method_args&		args );
+	void					on_toggleclick				( xui_component* sender, xui_method_args&		args );
 	void					on_fillpaneperform			( xui_component* sender, xui_method_args&		args );
 	void					on_fillpanerenderelse		( xui_component* sender, xui_method_args&		args );
+	void					on_fillpanekeybddown		( xui_component* sender, xui_method_keybd&		args );
 	void					on_drawviewnoncatch			( xui_component* sender, xui_method_args&		args );
 	void					on_drawviewupdateself		( xui_component* sender, xui_method_update&		args );
 	void					on_drawviewrenderself		( xui_component* sender, xui_method_args&		args );
 	void					on_drawviewrenderelse		( xui_component* sender, xui_method_args&		args );
 	void					on_drawviewsetrendersz		( xui_component* sender, xui_method_args&		args );
-	void					on_drawviewkeybddown		( xui_component* sender, xui_method_keybd&		args );
+	void					on_drawviewmouseenter		( xui_component* sender, xui_method_mouse&		args );
 	void					on_drawviewmousedown		( xui_component* sender, xui_method_mouse&		args );
 	void					on_drawviewmousemove		( xui_component* sender, xui_method_mouse&		args );
 	void					on_drawviewmouserise		( xui_component* sender, xui_method_mouse&		args );
@@ -65,6 +76,8 @@ protected:
 	void					use_snapinfo				( void );
 	bool					cal_linestep				( s32& last, s32 temp );
 	xui_vector<s32>			cal_snapmove				( const std::vector<xui_treenode*>& nodevec, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>& self, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert );
+	void					mir_proproot				( const xui_proproot_vec& propvec, const xui_vector<s32>& pivot, s32 style );
+	void					rot_proproot				( const xui_proproot_vec& propvec, const xui_vector<s32>& pivot, s32 angle );
 
 	/*
 	//snapinfo
@@ -109,7 +122,9 @@ protected:
 	xui_button*				m_clear;
 	xui_panel*				m_cubepane;
 	xui_panel*				m_headpane;
+	xui_toolbar*			m_linetool;
 	xui_panel*				m_fillpane;
+	xui_panel*				m_drawpane;
 	onity_renderview*		m_drawview;
 	onity_gradpane*			m_horzgrad;
 	onity_gradpane*			m_vertgrad;
@@ -124,6 +139,15 @@ protected:
 	onity_snapinfo_map		m_vertmidd;
 	onity_snapinfo_map		m_horzstep;
 	onity_snapinfo_map		m_vertstep;
+	xui_toggle*				m_snapctrl;
+	onity_alignbox*			m_alignbox;
+	onity_blankbox*			m_blankbox;
+	onity_pivotbox*			m_pivotbox;
+	xui_toggle*				m_showrect;
+	xui_button*				m_horzflip;
+	xui_button*				m_vertflip;
+	xui_button*				m_cwrotate;
+	xui_button*				m_ccrotate;
 };
 
 #endif//__onity_scene_h__

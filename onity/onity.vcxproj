@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="onity_alignbox.h" />
+    <ClInclude Include="onity_blankbox.h" />
     <ClInclude Include="onity_gradpane.h" />
     <ClInclude Include="onity_maprefdata.h" />
     <ClInclude Include="onity_animator.h" />
@@ -102,9 +104,12 @@
     <ClInclude Include="onity_timeline.h" />
     <ClInclude Include="onity_renderview.h" />
     <ClInclude Include="onity_treedata.h" />
+    <ClInclude Include="onity_pivotbox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="onity_alignbox.cpp" />
+    <ClCompile Include="onity_blankbox.cpp" />
     <ClCompile Include="onity_gradpane.cpp" />
     <ClCompile Include="onity_maprefdata.cpp" />
     <ClCompile Include="onity_animator.cpp" />
@@ -120,6 +125,7 @@
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
+    <ClCompile Include="onity_pivotbox.cpp" />
     <ClCompile Include="onity_propedit.cpp" />
     <ClCompile Include="onity_propmapref.cpp" />
     <ClCompile Include="onity_propcourse.cpp" />

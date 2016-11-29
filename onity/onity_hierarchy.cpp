@@ -441,6 +441,9 @@ xui_method_explain(onity_hierarchy, on_treeselection,		void				)( xui_component*
 	{
 		m_tree->set_nodevisible(nodes.front());
 	}
+
+	onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+	scene->set_toolupdate();
 }
 xui_method_explain(onity_hierarchy, on_treekeybddown,		void				)( xui_component* sender, xui_method_keybd&     args )
 {

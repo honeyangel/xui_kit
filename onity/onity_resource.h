@@ -75,6 +75,27 @@ public:
 	static xui_bitmap*	icon_paste;
 	static xui_bitmap*	icon_cut;
 	static xui_bitmap*	icon_setting;
+	static xui_bitmap*	icon_horzleft;
+	static xui_bitmap*	icon_horzcenter;
+	static xui_bitmap*	icon_horzright;
+	static xui_bitmap*	icon_verttop;
+	static xui_bitmap*	icon_vertcenter;
+	static xui_bitmap*	icon_vertbottom;
+	static xui_bitmap*	icon_horzinc;
+	static xui_bitmap*	icon_horzdec;
+	static xui_bitmap*	icon_horzcancel;
+	static xui_bitmap*	icon_horzequal;
+	static xui_bitmap*	icon_vertinc;
+	static xui_bitmap*	icon_vertdec;
+	static xui_bitmap*	icon_vertcancel;
+	static xui_bitmap*	icon_vertequal;
+	static xui_bitmap*	icon_cwrotate;
+	static xui_bitmap*	icon_ccrotate;
+	static xui_bitmap*	icon_bigpivot;
+	static xui_bitmap*	icon_biglarrow;
+	static xui_bitmap*	icon_bigrarrow;
+	static xui_bitmap*	icon_bigtarrow;
+	static xui_bitmap*	icon_bigbarrow;
 };
 
 #endif//__onity_resource_h__

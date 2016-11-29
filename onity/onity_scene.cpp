@@ -17,6 +17,8 @@
 #include "xui_toggle.h"
 #include "xui_panel.h"
 #include "xui_menu.h"
+#include "xui_toolbar.h"
+#include "xui_linebox.h"
 #include "xui_menuitem.h"
 #include "xui_treeview.h"
 #include "xui_treenode.h"
@@ -29,6 +31,9 @@
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_gradpane.h"
+#include "onity_alignbox.h"
+#include "onity_blankbox.h"
+#include "onity_pivotbox.h"
 #include "onity_mainform.h"
 #include "onity_hierarchy.h"
 #include "onity_scene.h"
@@ -54,27 +59,105 @@ xui_create_explain(onity_scene)( void )
 {
 	ini_namectrl(onity_resource::icon_scene, L"Scene");
 
+	m_snapctrl	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_snapctrl,	ini_component	)(0, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_snapctrl,	set_corner		)(3);
+	xui_method_ptrcall(m_snapctrl,	set_borderrt	)(xui_rect2d<s32>(4));
+	xui_method_ptrcall(m_snapctrl,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_snapctrl,	set_textalign	)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_snapctrl,	set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_snapctrl,	ini_drawer		)(L"Attract");
+	xui_method_ptrcall(m_snapctrl,	ini_toggle		)(true);
+
+	m_showrect	= new xui_toggle(xui_vector<s32>(20, 20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_showrect,	ini_drawer		)(onity_resource::icon_pivot);
+	xui_method_ptrcall(m_showrect,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_showrect,	set_enable		)(false);
+	xui_method_ptrcall(m_showrect,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_showrect,	xm_toggleclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_toggleclick);
+
+	m_horzflip	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_horzflip,	ini_drawer		)(onity_resource::icon_leftright);
+	xui_method_ptrcall(m_horzflip,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_horzflip,	set_enable		)(false);
+	xui_method_ptrcall(m_horzflip,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_horzflip,	xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_buttonclick);
+	m_vertflip	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_vertflip,	ini_drawer		)(onity_resource::icon_topbottom);
+	xui_method_ptrcall(m_vertflip,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_vertflip,	set_enable		)(false);
+	xui_method_ptrcall(m_vertflip,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_vertflip,	xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_buttonclick);
+	xui_linebox* linebox1 = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(linebox1,	set_corner		)(3);
+	xui_method_ptrcall(linebox1,	add_linectrl	)(m_horzflip);
+	xui_method_ptrcall(linebox1,	add_linectrl	)(m_vertflip);
+	xui_method_ptrcall(linebox1,	refresh			)();
+
+	m_cwrotate	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_cwrotate,	ini_drawer		)(onity_resource::icon_cwrotate);
+	xui_method_ptrcall(m_cwrotate,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_cwrotate,	set_enable		)(false);
+	xui_method_ptrcall(m_cwrotate,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_cwrotate,	xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_buttonclick);
+	m_ccrotate	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_ccrotate,	ini_drawer		)(onity_resource::icon_ccrotate);
+	xui_method_ptrcall(m_ccrotate,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_ccrotate,	set_enable		)(false);
+	xui_method_ptrcall(m_ccrotate,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_ccrotate,	xm_buttonclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_buttonclick);
+	xui_linebox* linebox2 = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(linebox2,	set_corner		)(3);
+	xui_method_ptrcall(linebox2,	add_linectrl	)(m_ccrotate);
+	xui_method_ptrcall(linebox2,	add_linectrl	)(m_cwrotate);
+	xui_method_ptrcall(linebox2,	refresh			)();
+
+	m_alignbox	= new onity_alignbox(xui_vector<s32>(20), get_selectedprop);
+	m_blankbox	= new onity_blankbox(xui_vector<s32>(20), get_selectedprop);
+	m_linetool	= new xui_toolbar(xui_vector<s32>(0, 20));
+	xui_method_ptrcall(m_linetool,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+	xui_method_ptrcall(m_linetool,	add_item		)(m_snapctrl);
+	xui_method_ptrcall(m_linetool,	add_separate	)();
+	xui_method_ptrcall(m_linetool,	add_item		)(m_alignbox->get_horzline());
+	xui_method_ptrcall(m_linetool,	add_separate	)();
+	xui_method_ptrcall(m_linetool,	add_item		)(m_alignbox->get_vertline());
+	xui_method_ptrcall(m_linetool,	add_separate	)();
+	xui_method_ptrcall(m_linetool,	add_item		)(m_blankbox->get_horzline());
+	xui_method_ptrcall(m_linetool,	add_separate	)();
+	xui_method_ptrcall(m_linetool,	add_item		)(m_blankbox->get_vertline());
+	xui_method_ptrcall(m_linetool,	add_separate	)();
+	xui_method_ptrcall(m_linetool,	add_item		)(m_showrect);
+	xui_method_ptrcall(m_linetool,	add_item		)(linebox1);
+	xui_method_ptrcall(m_linetool,	add_item		)(linebox2);
+
 	m_headpane  = new xui_panel(xui_vector<s32>(28));
 	xui_method_ptrcall(m_headpane,	ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_headpane,	set_drawcolor	)(false);
 	xui_method_ptrcall(m_headpane,	set_borderrt	)(xui_rect2d<s32>(8, 4, 8, 4));
 	xui_method_ptrcall(m_headpane,	set_hscrollauto	)(false);
+	xui_method_ptrcall(m_headpane,	add_child		)(m_linetool);
 
 	m_horzgrad	= new onity_gradpane(FLOWSTYLE_H);
 	m_vertgrad	= new onity_gradpane(FLOWSTYLE_V);
 	m_drawview	= new onity_renderview(xui_vector<s32>(100), xui_vector<s32>(2048));
+	xui_method_ptrcall(m_drawview,	ini_component	)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_drawview,	xm_updateself	) += new xui_method_member<xui_method_update,	onity_scene>(this, &onity_scene::on_drawviewupdateself);
 	xui_method_ptrcall(m_drawview,	xm_renderself	) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_drawviewrenderself);
 	xui_method_ptrcall(m_drawview,	xm_renderelse	) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_drawviewrenderelse);
 	xui_method_ptrcall(m_drawview,	xm_setrendersz	) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_drawviewsetrendersz);
 	xui_method_ptrcall(m_drawview,	xm_noncatch		) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_drawviewnoncatch);
-	xui_method_ptrcall(m_drawview,	xm_keybddown	) += new xui_method_member<xui_method_keybd,	onity_scene>(this, &onity_scene::on_drawviewkeybddown);
+	xui_method_ptrcall(m_drawview,	xm_mouseenter	) += new xui_method_member<xui_method_mouse,	onity_scene>(this, &onity_scene::on_drawviewmouseenter);
 	xui_method_ptrcall(m_drawview,	xm_mousedown	) += new xui_method_member<xui_method_mouse,	onity_scene>(this, &onity_scene::on_drawviewmousedown);
 	xui_method_ptrcall(m_drawview,	xm_mousemove	) += new xui_method_member<xui_method_mouse,	onity_scene>(this, &onity_scene::on_drawviewmousemove);
 	xui_method_ptrcall(m_drawview,	xm_mouserise	) += new xui_method_member<xui_method_mouse,	onity_scene>(this, &onity_scene::on_drawviewmouserise);
 	xui_method_ptrcall(m_drawview,	xm_mousewheel	) += new xui_method_member<xui_method_mouse,	onity_scene>(this, &onity_scene::on_drawviewmousewheel);
 	xui_method_ptrcall(m_drawview,	xm_mousedragover) += new xui_method_member<xui_method_dragdrop,	onity_scene>(this, &onity_scene::on_drawviewmousedragover);
 	xui_method_ptrcall(m_drawview,	xm_mousedragdrop) += new xui_method_member<xui_method_dragdrop,	onity_scene>(this, &onity_scene::on_drawviewmousedragdrop);
+	m_drawpane	= new xui_panel(xui_vector<s32>(100));
+	xui_method_ptrcall(m_drawpane,	set_drawcolor	)(false);
+	xui_method_ptrcall(m_drawpane,	set_hscrollauto	)(false);
+	xui_method_ptrcall(m_drawpane,	set_vscrollauto	)(false);
+	xui_method_ptrcall(m_drawpane,	add_child		)(m_drawview);
 
 	m_small		= new xui_button(xui_vector<s32>(16));
 	xui_method_ptrcall(m_small,		ini_component	)(ALIGNHORZ_L, ALIGNVERT_B, 0);
@@ -112,6 +195,7 @@ xui_create_explain(onity_scene)( void )
 	xui_method_ptrcall(m_cubepane,	add_child		)(m_clear);
 
 	m_fillpane  = new xui_panel(xui_vector<s32>(100));
+	xui_method_ptrcall(m_fillpane,	xm_keybddown	) += new xui_method_member<xui_method_keybd,	onity_scene>(this, &onity_scene::on_fillpanekeybddown);
 	xui_method_ptrcall(m_fillpane,	xm_perform		) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_fillpaneperform);
 	xui_method_ptrcall(m_fillpane,	xm_renderelse	) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_fillpanerenderelse);
 	xui_method_ptrcall(m_fillpane,	ini_component	)(0, 0, DOCKSTYLE_F);
@@ -123,8 +207,9 @@ xui_create_explain(onity_scene)( void )
 	xui_method_ptrcall(m_fillpane,	add_child		)(m_cubepane);
 	xui_method_ptrcall(m_fillpane,	add_child		)(m_horzgrad);
 	xui_method_ptrcall(m_fillpane,	add_child		)(m_vertgrad);
-	xui_method_ptrcall(m_fillpane,	add_child		)(m_drawview);
+	xui_method_ptrcall(m_fillpane,	add_child		)(m_drawpane);
 
+	m_pivotbox	= new onity_pivotbox(m_drawpane);
 	m_animctrl	= new xui_action_ctrl_impl<f64>(this);
 	xui_method_ptrcall(m_animctrl,	set_soft		)(true);
 	xui_method_ptrcall(m_animctrl,	xm_tick			) += new xui_method_member<xui_method_args,		onity_scene>(this, &onity_scene::on_animctrltick);
@@ -152,6 +237,9 @@ xui_delete_explain(onity_scene)( void )
 {
 	delete m_animctrl;
 	delete m_lockctrl;
+	delete m_alignbox;
+	delete m_blankbox;
+	delete m_pivotbox;
 }
 
 /*
@@ -205,6 +293,20 @@ xui_method_explain(onity_scene, set_nodevisible,			void					)( xui_treenode* nod
 		m_lockctrl->set_play(true);
 	}
 }
+xui_method_explain(onity_scene, set_toolupdate,				void					)( void )
+{
+	xui_proproot_vec vec = get_selectedprop();
+	xui_method_ptrcall(m_horzflip,	set_enable	)(vec.size() > 1);
+	xui_method_ptrcall(m_vertflip,	set_enable	)(vec.size() > 1);
+	xui_method_ptrcall(m_cwrotate,	set_enable	)(vec.size() > 1);
+	xui_method_ptrcall(m_ccrotate,	set_enable	)(vec.size() > 1);
+	xui_method_ptrcall(m_showrect,	set_enable	)(vec.size() > 1);
+	xui_method_ptrcall(m_showrect,	set_push	)(vec.size() > 1 && m_showrect->was_push());
+
+	m_alignbox->set_lineupdate();
+	m_blankbox->set_lineupdate();
+	m_pivotbox->set_rectupdate();
+}
 
 /*
 //override
@@ -214,6 +316,30 @@ xui_method_explain(onity_scene, on_updateself,				void					)( xui_method_update&
 	xui_dockpage::on_updateself(args);
 	m_animctrl->update(args.delta);
 	m_lockctrl->update(args.delta);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_scene, get_selectedprop,			xui_proproot_vec		)( void )
+{
+	xui_proproot_vec vec;
+
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	xui_treeview* treeview = hierarchy->get_treeview();
+	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+	for (u32 i = 0; i < nodevec.size(); ++i)
+	{
+		xui_treenode*   node = nodevec[i];
+		onity_treedata* data = (onity_treedata*)node->get_linkdata();
+		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
+		if (prop)
+		{
+			vec.push_back(prop);
+		}
+	}
+
+	return vec;
 }
 
 /*
@@ -242,17 +368,44 @@ xui_method_explain(onity_scene, on_buttonclick,				void					)( xui_component* se
 		m_horzgrad->del_lines();
 		m_vertgrad->del_lines();
 	}
+	else
+	if (sender == m_horzflip ||
+		sender == m_vertflip)
+	{
+		xui_proproot_vec propvec = get_selectedprop();
+		mir_proproot(propvec, m_pivotbox->ori_pivot(), (sender == m_horzflip ? 1 : -1));
+		m_pivotbox->set_rectupdate(false);
+	}
+	else
+	if (sender == m_cwrotate ||
+		sender == m_ccrotate)
+	{
+		xui_proproot_vec propvec = get_selectedprop();
+		rot_proproot(propvec, m_pivotbox->ori_pivot(), (sender == m_cwrotate) ? 1 : -1);
+		m_pivotbox->set_rectupdate(false);
+	}
+
+	m_drawview->req_focus();
+}
+xui_method_explain(onity_scene, on_toggleclick,				void					)( xui_component* sender, xui_method_args&		args )
+{
+	if (sender == m_showrect)
+	{
+		m_pivotbox->set_visible(m_showrect->was_push());
+	}
+
+	m_drawview->req_focus();
 }
 xui_method_explain(onity_scene, on_fillpaneperform,			void					)( xui_component* sender, xui_method_args&		args )
 {
 	xui_method_ptrcall(m_horzgrad, on_perform_x)(m_vertgrad->get_renderw());
 	xui_method_ptrcall(m_vertgrad, on_perform_y)(m_horzgrad->get_renderh());
-	xui_method_ptrcall(m_drawview, on_perform_x)(m_vertgrad->get_renderw());
-	xui_method_ptrcall(m_drawview, on_perform_y)(m_horzgrad->get_renderh());
+	xui_method_ptrcall(m_drawpane, on_perform_x)(m_vertgrad->get_renderw());
+	xui_method_ptrcall(m_drawpane, on_perform_y)(m_horzgrad->get_renderh());
 	xui_method_ptrcall(m_horzgrad, on_perform_w)(m_fillpane->get_renderw()-m_horzgrad->get_renderx());
 	xui_method_ptrcall(m_vertgrad, on_perform_h)(m_fillpane->get_renderh()-m_vertgrad->get_rendery());
-	xui_method_ptrcall(m_drawview, on_perform_w)(m_horzgrad->get_renderw());
-	xui_method_ptrcall(m_drawview, on_perform_h)(m_vertgrad->get_renderh());
+	xui_method_ptrcall(m_drawpane, on_perform_w)(m_horzgrad->get_renderw());
+	xui_method_ptrcall(m_drawpane, on_perform_h)(m_vertgrad->get_renderh());
 }
 xui_method_explain(onity_scene, on_fillpanerenderelse,		void					)( xui_component* sender, xui_method_args&		args )
 {
@@ -265,6 +418,52 @@ xui_method_explain(onity_scene, on_fillpanerenderelse,		void					)( xui_componen
 	p1 = xui_vector<s32>(m_vertgrad->get_renderw(), 0);
 	p2 = xui_vector<s32>(m_vertgrad->get_renderw(), m_fillpane->get_renderh());
 	xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::black);
+}
+xui_method_explain(onity_scene, on_fillpanekeybddown,		void					)( xui_component* sender, xui_method_keybd&		args )
+{
+	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+	xui_treeview* treeview = hierarchy->get_treeview();
+
+	if (args.kcode == KEY_ESC)
+	{
+		m_pivotbox->set_visible(false);
+		treeview->non_selectednode();
+	}
+	else
+		if (args.kcode == KEY_DELETE)
+		{
+			m_pivotbox->set_visible(false);
+			hierarchy->del_coursenode();
+		}
+		else
+			if (args.kcode == KEY_LARROW ||
+				args.kcode == KEY_RARROW ||
+				args.kcode == KEY_UARROW ||
+				args.kcode == KEY_DARROW)
+			{
+				xui_vector<s32> move(0);
+				switch (args.kcode)
+				{
+				case KEY_LARROW: move.x = -1; break;
+				case KEY_RARROW: move.x =  1; break;
+				case KEY_UARROW: move.y = -1; break;
+				case KEY_DARROW: move.y =  1; break;
+				}
+
+				std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+				for (u32 i = 0; i < nodevec.size(); ++i)
+				{
+					xui_treenode*	node = nodevec[i];
+					onity_treedata* data = (onity_treedata*)node->get_linkdata();
+					onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
+					if (prop)
+					{
+						prop->set_position(prop->ori_position()+move);
+					}
+				}
+
+				m_pivotbox->set_rectupdate();
+			}
 }
 xui_method_explain(onity_scene, on_drawviewupdateself,		void					)( xui_component* sender, xui_method_update&	args )
 {
@@ -494,52 +693,16 @@ xui_method_explain(onity_scene, on_drawviewnoncatch,		void					)( xui_component*
 		}
 	}
 }
-xui_method_explain(onity_scene, on_drawviewkeybddown,		void					)( xui_component* sender, xui_method_keybd&		args )
+xui_method_explain(onity_scene, on_drawviewmouseenter,		void					)( xui_component* sender, xui_method_mouse&		args )
 {
-	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	xui_treeview* treeview = hierarchy->get_treeview();
-
-	if (args.kcode == KEY_ESC)
-	{
-		treeview->non_selectednode();
-	}
-	else
-	if (args.kcode == KEY_DELETE)
-	{
-		hierarchy->del_coursenode();
-	}
-	else
-	if (args.kcode == KEY_LARROW ||
-		args.kcode == KEY_RARROW ||
-		args.kcode == KEY_UARROW ||
-		args.kcode == KEY_DARROW)
-	{
-		xui_vector<s32> move(0);
-		switch (args.kcode)
-		{
-		case KEY_LARROW: move.x = -1; break;
-		case KEY_RARROW: move.x =  1; break;
-		case KEY_UARROW: move.y = -1; break;
-		case KEY_DARROW: move.y =  1; break;
-		}
-
-		std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*	node = nodevec[i];
-			onity_treedata* data = (onity_treedata*)node->get_linkdata();
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-			if (prop)
-			{
-				prop->set_position(prop->ori_position()+move);
-			}
-		}
-	}
+	m_drawview->req_focus();
 }
 xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component* sender, xui_method_mouse&		args )
 {
 	if (gInitCompleted == false)
 		return;
+
+	m_showrect->set_push(false);
 
 	if (args.mouse == MB_L)
 	{
@@ -750,6 +913,7 @@ xui_method_explain(onity_scene, on_drawviewmousewheel,		void					)( xui_componen
 	if (args.handle == false)
 	{
 		args.handle  = true;
+		m_showrect->set_push(false);
 
 		f64 start = m_ratio;
 		f64 final = m_ratio;
@@ -873,6 +1037,9 @@ xui_method_explain(onity_scene, cal_snapinfo,				void					)( const xui_rect2d<s3
 	m_vertstep.clear();
 	m_horzmidd.clear();
 	m_vertmidd.clear();
+
+	if (m_snapctrl->was_push() == false)
+		return;
 
 	s32 snaplength = 0;
 	onity_treedata*		  rootdata = (onity_treedata*)root->get_linkdata();
@@ -1139,6 +1306,49 @@ xui_method_explain(onity_scene, cal_snapmove,				xui_vector<s32>			)( const std:
 	return xui_vector<s32>(
 		((move.x == 10) ? 0 : move.x),
 		((move.y == 10) ? 0 : move.y));
+}
+xui_method_explain(onity_scene, mir_proproot,				void					)( const xui_proproot_vec& propvec, const xui_vector<s32>& pivot, s32 style )
+{
+	for (u32 i = 0; i < propvec.size(); ++i)
+	{
+		onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
+		if (prop)
+		{
+			xui_vector<s32> pt = prop->ori_position();
+			xui_rect2d<s32> rt = prop->ori_bounding();
+
+			s32 w = rt.get_w() / 2;
+			s32 h = rt.get_h() / 2;
+			xui_vector<s32> center = rt.get_pt() + xui_vector<s32>(w, h);
+			xui_vector<s32> offset = pt - center;
+			if (style > 0)
+				pt.x = pivot.x + (pivot.x-center.x) + offset.x;
+			if (style < 0)
+				pt.y = pivot.y + (pivot.y-center.y) + offset.y;
+
+			prop->set_position(pt);
+		}
+	}
+}
+xui_method_explain(onity_scene, rot_proproot,				void					)( const xui_proproot_vec& propvec, const xui_vector<s32>& pivot, s32 style )
+{
+	for (u32 i = 0; i < propvec.size(); ++i)
+	{
+		onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
+		if (prop)
+		{
+			xui_vector<s32> pt = prop->ori_position();
+			xui_rect2d<s32> rt = prop->ori_bounding();
+
+			s32 w = rt.get_w() / 2;
+			s32 h = rt.get_h() / 2;
+			xui_vector<s32> center = rt.get_pt() + xui_vector<s32>(w, h);
+			xui_vector<s32> offset = pt - center;
+			pt.x = pivot.x - (center.y-pivot.y)*style + offset.x;
+			pt.y = pivot.y + (center.x-pivot.x)*style + offset.y;
+			prop->set_position(pt);
+		}
+	}
 }
 
 /*
