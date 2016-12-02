@@ -4,6 +4,7 @@
 #include "NP2DSFrame.h"
 #include "NP2DSActor.h"
 #include "NP2DSAssetFile.h"
+#include "NP2DSSceneFile.h"
 #include "NP2DSImageFileMgr.h"
 #include "NP2DSFrameFileMgr.h"
 #include "NP2DSActorFileMgr.h"
@@ -124,6 +125,58 @@ xui_method_explain(onity_propdata_statectrl, on_doubleclick,		void				)( xui_com
 	if (statectrl)
 	{
 		std::string full = statectrl->GetSourceFile();
+		std::string path = NPFileNameHelper::PathName(full);
+		std::string file = NPFileNameHelper::FileName(full);
+		path = path.substr(0, path.length()-1);
+		file = NPFileNameHelper::SafeName(file);
+
+		onity_project* project = onity_mainform::get_ptr()->get_project();
+		project->loc_filenode(xui_global::ascii_to_unicode(path), xui_global::ascii_to_unicode(file), 0);
+		onity_mainform::get_ptr()->set_pageshow(project);
+	}
+}
+
+/*
+//constructor
+*/
+xui_create_explain(onity_propdata_course)( 
+	xui_propkind*			kind, 
+	const std::wstring&		name, 
+	NP2DSSceneFile**		ptr )
+: xui_propdata_object_impl<NP2DSSceneFile*>(kind, name, xui_propctrl_object::create, "NP2DSSceneFile", onity_selector::get_ptr, get_icon, get_name, ptr)
+{
+	xm_doubleclick += new xui_method_member<xui_method_args, onity_propdata_course>(this, &onity_propdata_course::on_doubleclick);
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_propdata_course,	get_icon,				xui_bitmap*			)( xui_propdata* propdata )
+{
+	return onity_resource::icon_scene;
+}
+xui_method_explain(onity_propdata_course,	get_name,				std::wstring		)( xui_propdata* propdata )
+{
+	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
+	NP2DSSceneFile* course = (NP2DSSceneFile*)dataobject->get_value();
+	if (course)
+	{
+		std::string name = NPFileNameHelper::SafeName(course->GetName());
+		return xui_global::ascii_to_unicode(name);
+	}
+
+	return L"None";
+}
+
+/*
+//event
+*/
+xui_method_explain(onity_propdata_course,	on_doubleclick,			void				)( xui_component* sender, xui_method_args& args )
+{
+	NP2DSSceneFile* course = (NP2DSSceneFile*)get_value();
+	if (course)
+	{
+		std::string full = course->GetName();
 		std::string path = NPFileNameHelper::PathName(full);
 		std::string file = NPFileNameHelper::FileName(full);
 		path = path.substr(0, path.length()-1);

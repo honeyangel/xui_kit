@@ -249,6 +249,13 @@
     <ClInclude Include="onity_pivotbox.h">
       <Filter>scene</Filter>
     </ClInclude>
+    <ClInclude Include="onity_course.h" />
+    <ClInclude Include="onity_propcourseconfig.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_courseconfigdata.h">
+      <Filter>scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -498,6 +505,13 @@
       <Filter>scene</Filter>
     </ClCompile>
     <ClCompile Include="onity_pivotbox.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_course.cpp" />
+    <ClCompile Include="onity_propcourseconfig.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_courseconfigdata.cpp">
       <Filter>scene</Filter>
     </ClCompile>
   </ItemGroup>

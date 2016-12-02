@@ -96,6 +96,10 @@ public:
 	static xui_bitmap*	icon_bigrarrow;
 	static xui_bitmap*	icon_bigtarrow;
 	static xui_bitmap*	icon_bigbarrow;
+	static xui_bitmap*	icon_magent;
+	static xui_bitmap*	icon_build;
+	static xui_bitmap*	icon_save;
+	static xui_bitmap*	icon_window;
 };
 
 #endif//__onity_resource_h__

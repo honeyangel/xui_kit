@@ -275,7 +275,7 @@ xui_method_explain(xui_treenode, use_linkdata,		void								)( void )
 		if (columninfo.type == TREECOLUMN_BOOL)
 		{
 			xui_toggle* toggle = xui_dynamic_cast(xui_toggle, m_widgetvec[i]);
-			xui_method_ptrcall(toggle, set_push		)(m_linkdata->get_flag(i));
+			xui_method_ptrcall(toggle, ini_toggle	)(m_linkdata->get_flag(i));
 		}
 		else
 		{

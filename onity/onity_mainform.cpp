@@ -35,6 +35,7 @@
 #include "onity_animator.h"
 #include "onity_recent.h"
 #include "onity_config.h"
+#include "onity_course.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -44,6 +45,7 @@ xui_implement_rtti(onity_mainform, xui_window);
 */
 xui_create_explain(onity_mainform)( void )
 : xui_window(xui_vector<s32>(0), false)
+, m_steptime(0)
 {
 	xm_keybddown   += new xui_method_member<xui_method_keybd, onity_mainform>(this, &onity_mainform::on_globalkeybddown);
 	m_dockstyle		= DOCKSTYLE_F;
@@ -81,9 +83,18 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_anchor);
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_coordinate);
 
+	onity_course* course_wnd = new onity_course;
+	xui_method_ptrcall(course_wnd,		set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(course_wnd,		set_borderrt	)(xui_rect2d<s32>(10));
+	xui_method_ptrcall(course_wnd,		set_renderpt	)(xui_vector<s32>(200, 100));
+	xui_method_ptrcall(course_wnd,		xm_accept		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_courseaccept);
+
+	m_build			= xui_button::create(onity_resource::icon_build, L"Build", 80);
 	m_run			= xui_toggle::create(NULL, 32);
 	m_pause			= xui_toggle::create(NULL, 32);
 	m_step			= xui_button::create(NULL, 32);
+	xui_method_ptrcall(m_build,			set_data		)(course_wnd);
+	xui_method_ptrcall(m_build ,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickbuild);
 	xui_method_ptrcall(m_run,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
 	xui_method_ptrcall(m_pause,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
 	xui_method_ptrcall(m_step,			xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
@@ -91,14 +102,21 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_pause,			xm_renderself	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_paintdebug);
 	xui_method_ptrcall(m_step,			xm_renderself	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_paintdebug);
 
+
 	//run
 	//pause
 	//step
 	xui_linebox* line_debug		= xui_linebox::create();
-	xui_method_ptrcall(line_debug,		ini_component	)(ALIGNHORZ_C, ALIGNVERT_C, 0);
 	xui_method_ptrcall(line_debug,		add_linectrl	)(m_run);
 	xui_method_ptrcall(line_debug,		add_linectrl	)(m_pause);
 	xui_method_ptrcall(line_debug,		add_linectrl	)(m_step);
+
+	xui_toolbar* tool_debug		= xui_toolbar::create();
+	xui_method_ptrcall(tool_debug,		ini_component	)(ALIGNHORZ_C, ALIGNVERT_C, 0);
+	xui_method_ptrcall(tool_debug,		set_grap		)(8);
+	xui_method_ptrcall(tool_debug,		add_item		)(m_build);
+	xui_method_ptrcall(tool_debug,		add_separate	)();
+	xui_method_ptrcall(tool_debug,		add_item		)(line_debug);
 
 	xui_menu* menu	= xui_menu::create(100);
 	m_hierarchy		= menu->add_item(onity_resource::icon_hierarchy,	L"Hierarchy");
@@ -133,14 +151,18 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_load,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickload);
 	xui_method_ptrcall(m_reset,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickreset);
 
-	m_window		= xui_toggle::create(NULL, L"Window", 100);
-	xui_method_ptrcall(m_window,		ini_drawer		)(NULL, xui_vector<s32>(0));
+	m_saveall		= xui_button::create(onity_resource::icon_save,		L"SaveAll", 80);
+	m_setting		= xui_button::create(onity_resource::icon_setting,	L"Setting",	80);
+	m_window		= xui_toggle::create(onity_resource::icon_window,	L"Window",	100);
 	xui_method_ptrcall(m_window,		set_menu		)(menu);
+	xui_method_ptrcall(m_saveall,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clicksaveall);
 
 	//menu
-	xui_toolbar* tool_menu		= xui_toolbar::create();
-	xui_method_ptrcall(tool_menu,		ini_component	)(ALIGNHORZ_R, ALIGNVERT_C, 0);
-	xui_method_ptrcall(tool_menu,		add_item		)(m_window);
+	xui_linebox* line_menu		= xui_linebox::create();
+	xui_method_ptrcall(line_menu,		ini_component	)(ALIGNHORZ_R, ALIGNVERT_C, 0);
+	xui_method_ptrcall(line_menu,		add_linectrl	)(m_saveall);
+	xui_method_ptrcall(line_menu,		add_linectrl	)(m_setting);
+	xui_method_ptrcall(line_menu,		add_linectrl	)(m_window);
 
 	//main
 	m_toolpane		= new xui_panel(xui_vector<s32>(40));
@@ -150,8 +172,8 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_toolpane,		set_borderrt	)(xui_rect2d<s32>(8));
 	xui_method_ptrcall(m_toolpane,		add_child		)(line_transform);
 	xui_method_ptrcall(m_toolpane,		add_child		)(line_operator);
-	xui_method_ptrcall(m_toolpane,		add_child		)(line_debug);
-	xui_method_ptrcall(m_toolpane,		add_child		)(tool_menu);
+	xui_method_ptrcall(m_toolpane,		add_child		)(tool_debug);
+	xui_method_ptrcall(m_toolpane,		add_child		)(line_menu);
 	add_child(m_toolpane);
 	add_child(m_mainview);
 }
@@ -235,6 +257,10 @@ xui_method_explain(onity_mainform, get_timeline,		onity_timeline*		)( void )
 {
 	return (onity_timeline*)	xui_method_ptrcall(m_timeline,	get_data)();
 }
+xui_method_explain(onity_mainform, get_course,			onity_course*		)( void )
+{
+	return (onity_course*)		xui_method_ptrcall(m_build,		get_data)();
+}
 
 /*
 //method
@@ -245,7 +271,7 @@ xui_method_explain(onity_mainform, was_gamerun,			bool				)( void ) const
 }
 xui_method_explain(onity_mainform, was_gameplay,		bool				)( void ) const
 {
-	return m_run->was_push() && m_pause->was_push() == false;
+	return m_run->was_push() && (m_pause->was_push() == false || m_steptime > 0);
 }
 xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page )
 {
@@ -260,7 +286,7 @@ xui_method_explain(onity_mainform, set_pageshow,		void				)( xui_dockpage* page 
 /*
 //callback
 */
-xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args )
+xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args&   args )
 {
 	xui_window::on_load(args);
 	on_clickreset(NULL, args);
@@ -269,6 +295,15 @@ xui_method_explain(onity_mainform, on_load,				void				)( xui_method_args& args 
 	onity_recent* dialog = new onity_recent;
 	dialog->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_recentaccept);
 	xui_desktop::get_ins()->add_child(dialog);
+}
+xui_method_explain(onity_mainform, on_updateself,		void				)( xui_method_update& args )
+{
+	xui_window::on_updateself(args);
+	if (m_steptime > 0)
+	{
+		s32 deltams = (s32)(args.delta * 1000.0f);
+		m_steptime -= xui_min(m_steptime, deltams);
+	}
 }
 
 /*
@@ -322,8 +357,22 @@ xui_method_explain(onity_mainform, on_clickcoordinate,	void				)( xui_component*
 		break;
 	}
 }
+xui_method_explain(onity_mainform, on_clickbuild,		void				)( xui_component* sender, xui_method_args&  args )
+{
+	onity_hierarchy* hierarchy = get_hierarchy();
+	if (hierarchy->get_editprop())
+	{
+		onity_course* wnd = get_course();
+		wnd->set_visible(true);
+
+		if (wnd->get_parent() == NULL)
+			xui_desktop::get_ins()->add_child(wnd);
+	}
+}
 xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
+	m_steptime = 0;
+
 	if (sender == m_run)
 	{
 		onity_hierarchy* hierarchy = get_hierarchy();
@@ -340,7 +389,7 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 			BreezeGame::Game::Instance()->Resume();
 
 			onity_game* game = get_game();
-			if (m_mainview->get_showpage() != game)
+			if (m_mainview->get_showpage() != game && hierarchy->get_editprop())
 			{
 				BreezeGame::GameConfig::Instance()->SetGameVersion(BreezeGame::GV_DEBUG);
 				BreezeGame::ProfileManager::Instance()->SetLogin(true);
@@ -362,6 +411,12 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 			BreezeGame::Game::Instance()->Pause();
 			m3eFrameWorkUpdate(1.0f);
 		}
+	}
+	else
+	if (sender == m_step && m_run->was_push())
+	{
+		m_pause->set_push(true);
+		m_steptime = 200;
 	}
 }
 xui_method_explain(onity_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args&  args )
@@ -490,6 +545,10 @@ xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sen
 		}
 	}
 }
+xui_method_explain(onity_mainform, on_clicksaveall,		void				)( xui_component* sender, xui_method_args&  args )
+{
+
+}
 xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	xui_colour      color	= sender->get_vertexcolor();
@@ -582,6 +641,12 @@ xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* s
 	onity_config* dialog = xui_dynamic_cast(onity_config, sender);
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
+}
+xui_method_explain(onity_mainform, on_courseaccept,		void				)( xui_component* sender, xui_method_args&  args )
+{
+	set_pageshow(get_scene());
+	m_run->set_push(false);
+	m_run->set_push(true);
 }
 xui_method_explain(onity_mainform, on_globalkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
 {

@@ -23,6 +23,7 @@
 #include "xui_propview.h"
 #include "onity_resource.h"
 #include "onity_mainform.h"
+#include "onity_course.h"
 #include "onity_inspector.h"
 #include "onity_scene.h"
 #include "onity_filterdata.h"
@@ -266,6 +267,13 @@ xui_method_explain(onity_hierarchy, set_editprop,			void				)( onity_propcourse*
 		}
 
 		m_editprop  = editprop;
+
+		if (m_editprop)
+		{
+			onity_course* wnd = onity_mainform::get_ptr()->get_course();
+			wnd->set_firstcourse(m_editprop);
+		}
+
 		reset();
 	}
 }

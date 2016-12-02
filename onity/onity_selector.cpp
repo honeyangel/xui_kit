@@ -185,7 +185,7 @@ xui_method_explain(onity_selector, get_ptr,					xui_object_pickwnd*	)( void )
 		ptr = new onity_selector;
 		xui_method_ptrcall(ptr, set_sidestyle	)(SIDESTYLE_S);
 		xui_method_ptrcall(ptr, set_rendersz	)(xui_vector<s32>(800, 600));
-		xui_method_ptrcall(ptr, set_renderpt	)(xui_vector<s32>(200,  100));
+		xui_method_ptrcall(ptr, set_renderpt	)(xui_vector<s32>(200, 100));
 		xui_method_ptrcall(ptr, set_borderrt	)(xui_rect2d<s32>(8));
 		xui_method_ptrcall(ptr, ini_component	)(true, false);
 		xui_desktop::get_ins()->add_child(ptr);

@@ -66,6 +66,7 @@ xui_create_explain(onity_scene)( void )
 	xui_method_ptrcall(m_snapctrl,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_snapctrl,	set_textalign	)(TEXTALIGN_CC);
 	xui_method_ptrcall(m_snapctrl,	set_iconsize	)(xui_vector<s32>(0));
+	xui_method_ptrcall(m_snapctrl,	ini_drawer		)(onity_resource::icon_magent);
 	xui_method_ptrcall(m_snapctrl,	ini_drawer		)(L"Attract");
 	xui_method_ptrcall(m_snapctrl,	ini_toggle		)(true);
 

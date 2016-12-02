@@ -84,6 +84,10 @@ xui_bitmap* onity_resource::icon_biglarrow	= NULL;
 xui_bitmap*	onity_resource::icon_bigrarrow	= NULL;
 xui_bitmap* onity_resource::icon_bigtarrow	= NULL;
 xui_bitmap*	onity_resource::icon_bigbarrow	= NULL;
+xui_bitmap* onity_resource::icon_magent		= NULL;
+xui_bitmap* onity_resource::icon_build		= NULL;
+xui_bitmap* onity_resource::icon_save		= NULL;
+xui_bitmap* onity_resource::icon_window		= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -169,6 +173,10 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_bigrarrow	= xui_bitmap::create("icon/bigrarrow.png");
 	icon_bigtarrow	= xui_bitmap::create("icon/bigtarrow.png");
 	icon_bigbarrow	= xui_bitmap::create("icon/bigbarrow.png");
+	icon_magent		= xui_bitmap::create("icon/magent.png");
+	icon_build		= xui_bitmap::create("icon/build.png");
+	icon_save		= xui_bitmap::create("icon/save.png");
+	icon_window		= xui_bitmap::create("icon/window.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

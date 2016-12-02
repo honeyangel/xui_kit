@@ -157,18 +157,18 @@ xui_method_explain(onity_pivotbox, on_boundrenderself,	void			)( xui_component* 
 		xui_convas::get_ins()->draw_image(image, pt, color);
 	}
 
-	if (m_lsize->has_catch() ||
-		m_rsize->has_catch() ||
-		m_tsize->has_catch() ||
-		m_bsize->has_catch())
-	{
-		xui_rect2d<s32> rt = m_bound->get_renderrtabs();
-		rt.ax += m_pivot->get_renderw()/2;
-		rt.ay += m_pivot->get_renderh()/2;
-		rt.bx -= m_pivot->get_renderw()/2;
-		rt.by -= m_pivot->get_renderh()/2;
-		xui_convas::get_ins()->draw_rectangle(rt, xui_colour::red);
-	}
+	//if (m_lsize->has_catch() ||
+	//	m_rsize->has_catch() ||
+	//	m_tsize->has_catch() ||
+	//	m_bsize->has_catch())
+	//{
+	//	xui_rect2d<s32> rt = m_bound->get_renderrtabs();
+	//	rt.ax += m_pivot->get_renderw()/2;
+	//	rt.ay += m_pivot->get_renderh()/2;
+	//	rt.bx -= m_pivot->get_renderw()/2;
+	//	rt.by -= m_pivot->get_renderh()/2;
+	//	xui_convas::get_ins()->draw_rectangle(rt, xui_colour::red);
+	//}
 }
 xui_method_explain(onity_pivotbox, on_boundsetrenderrt,	void			)( xui_component* sender, xui_method_args&  args )
 {
@@ -368,7 +368,7 @@ xui_method_explain(onity_pivotbox, on_arrowmouserise,	void			)( xui_component* s
 			}
 		}
 
-		set_rectupdate(false);
+		set_rectupdate();
 	}
 }
 

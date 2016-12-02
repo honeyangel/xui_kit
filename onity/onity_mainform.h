@@ -25,6 +25,7 @@ class onity_animator;
 class onity_console;
 class onity_timeline;
 class onity_scene;
+class onity_course;
 class onity_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -53,6 +54,7 @@ public:
 	onity_scene*			get_scene			( void );
 	onity_console*			get_console			( void );
 	onity_timeline*			get_timeline		( void );
+	onity_course*			get_course			( void );
 
 	/*
 	//method
@@ -65,7 +67,8 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_load				( xui_method_args& args );
+	virtual void			on_load				( xui_method_args&   args );
+	virtual void			on_updateself		( xui_method_update& args );
 
 	/*
 	//event
@@ -74,14 +77,17 @@ protected:
 	void					on_clicktransform	( xui_component* sender, xui_method_args&  args );
 	void					on_clickanchor		( xui_component* sender, xui_method_args&  args );
 	void					on_clickcoordinate	( xui_component* sender, xui_method_args&  args );
+	void					on_clickbuild		( xui_component* sender, xui_method_args&  args );
 	void					on_clickdebug		( xui_component* sender, xui_method_args&  args );
 	void					on_clickwndmenu		( xui_component* sender, xui_method_args&  args );
 	void					on_clicksave		( xui_component* sender, xui_method_args&  args );
 	void					on_clickload		( xui_component* sender, xui_method_args&  args );
 	void					on_clickreset		( xui_component* sender, xui_method_args&  args );
+	void					on_clicksaveall		( xui_component* sender, xui_method_args&  args );
 	void					on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void					on_recentaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_configaccept		( xui_component* sender, xui_method_args&  args );
+	void					on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
 
 	/*
@@ -100,9 +106,12 @@ protected:
 	xui_toggle*				m_rotation;
 	xui_button*				m_anchor;
 	xui_button*				m_coordinate;
+	xui_button*				m_build;
 	xui_toggle*				m_run;
 	xui_toggle*				m_pause;
 	xui_button*				m_step;
+	xui_button*				m_saveall;
+	xui_button*				m_setting;
 	xui_toggle*				m_window;
 	xui_menuitem*			m_hierarchy;
 	xui_menuitem*			m_inspector;
@@ -115,6 +124,7 @@ protected:
 	xui_menuitem*			m_save;
 	xui_menuitem*			m_load;
 	xui_menuitem*			m_reset;
+	s32						m_steptime;
 };
 
 #endif//__onity_mainform_h__

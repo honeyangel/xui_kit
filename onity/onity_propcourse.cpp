@@ -1,5 +1,6 @@
 #include "NP2DSSceneFileMgr.h"
 #include "NP2DSSceneFile.h"
+#include "NPFileName.h"
 
 #include "xui_global.h"
 #include "onity_mainform.h"
@@ -30,8 +31,10 @@ xui_method_explain(onity_propcourse, get_scenefile, NP2DSSceneFile*	)( void )
 {
 	if (m_scenefile == NULL)
 	{
-		m_scenefile = new NP2DSSceneFile(-1, "", NP2DSSceneFileMgr::GetIns());
-		m_scenefile->LoadXml(xui_global::unicode_to_ascii(m_fullname));
+		std::string fullname = xui_global::unicode_to_ascii(m_fullname);
+		std::string pathname = NPFileNameHelper::PathName(fullname);
+		std::string filename = NPFileNameHelper::FileName(fullname);
+		m_scenefile = NP2DSSceneFileMgr::GetIns()->GetFile(pathname, filename);
 	}
 
 	return m_scenefile;
@@ -48,6 +51,14 @@ xui_method_explain(onity_propcourse, was_modify,	bool			)( void )
 		return m_scenefile->WasNeedSave();
 
 	return false;
+}
+xui_method_explain(onity_propcourse, get_dragtype,	std::string		)( void )
+{
+	return "NP2DSSceneFile";
+}
+xui_method_explain(onity_propcourse, get_dragdata,	void*			)( void )
+{
+	return get_scenefile();
 }
 xui_method_explain(onity_propcourse, save,			void			)( void )
 {
