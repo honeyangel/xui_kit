@@ -38,6 +38,7 @@ public:
 	//method
 	*/
 	void						ini_pathtree		( void );
+	xui_proproot_vec			get_pathfile		( void );
 	void						get_pathfile		( const std::wstring& suff, xui_proproot_vec& filevec );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, const std::wstring& name );

@@ -27,7 +27,7 @@
 */
 xui_create_explain(onity_prop2dsres)( xui_bitmap* icon, const std::wstring& full )
 : onity_propfile(icon, full)
-, m_resfile(-1)
+, m_resfile(NULL)
 {
 	m_reskind = new xui_propkind(this, L"AssetFile", "AssetFile", xui_kindctrl::create, NULL, true, false);
 	std::map<s32, std::wstring> textmap;
@@ -93,9 +93,8 @@ xui_method_explain(onity_prop2dsres, get_resfile,	NP2DSAssetFile*				)( void )
 }
 xui_method_explain(onity_prop2dsres, was_modify,	bool						)( void )
 {
-	NP2DSAssetFile* file = get_resfile();
-	if (file)
-		return file->WasNeedSave();
+	if (m_resfile)
+		return m_resfile->WasNeedSave();
 
 	return false;
 }
@@ -137,7 +136,7 @@ xui_method_explain(onity_prop2dsres, ntf_rename,	void						)( const std::wstring
 }
 xui_method_explain(onity_prop2dsres, load,			void						)( void )
 {
-	if (m_resfile != -1)
+	if (m_resfile != NULL)
 	{
 		std::wstring suffname = onity_filedata::get_suff(m_fullname);
 		u08 type;
@@ -155,7 +154,8 @@ xui_method_explain(onity_prop2dsres, load,			void						)( void )
 		case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
 		}
 
-		file_mgr->ResFile(m_resfile);
+		npu32 id  = m_resfile->GetKey();
+		m_resfile = file_mgr->ResFile(id);
 
 		for (u32 i = 0; i < m_subprop.size(); ++i)
 			delete m_subprop[i];

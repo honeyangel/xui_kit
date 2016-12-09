@@ -16,6 +16,7 @@
 #include "onity_propctrl_sceneparam.h"
 #include "onity_mainform.h"
 #include "onity_inspector.h"
+#include "onity_resource.h"
 #include "onity_propnode2dsref.h"
 
 /*
@@ -25,7 +26,7 @@ xui_create_explain(onity_propnode2dsref)( NP2DSTransRef* ref )
 : onity_propnoderender(ref)
 , m_2dsref(ref)
 {
-	m_transkind = new xui_propkind(this, L"Resource Transform", "Transform", xui_kindctrl::create, NULL, true);
+	m_transkind = new xui_propkind(this, L"Resource Transform", "Transform", xui_kindctrl::create, onity_resource::icon_transform, true);
 	m_transkind->add_propdata(new xui_propdata_vector(
 		m_transkind, 
 		L"Position", 

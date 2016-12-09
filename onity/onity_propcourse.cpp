@@ -71,8 +71,8 @@ xui_method_explain(onity_propcourse, load,			void			)( void )
 {
 	if (m_scenefile)
 	{
-		delete m_scenefile;
-		m_scenefile = NULL;
+		npu32 id = m_scenefile->GetKey();
+		m_scenefile = NPDynamicCast(NP2DSSceneFile, NP2DSSceneFileMgr::GetIns()->ResFile(id));
 	}
 
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();

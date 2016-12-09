@@ -40,7 +40,7 @@ xui_implement_rtti(onity_inspector, xui_dockpage);
 //constructor
 */
 xui_create_explain(onity_inspector)( void )
-: xui_dockpage(xui_vector<s32>(300), AREALIMIT_L|AREALIMIT_R, 200, DOCKSTYLE_R)
+: xui_dockpage(xui_vector<s32>(400), AREALIMIT_L|AREALIMIT_R, 400, DOCKSTYLE_R)
 , m_tipsnode(NULL)
 {
 	xm_keybddown += new xui_method_member<xui_method_keybd, onity_inspector>(this, &onity_inspector::on_inspectorkeybddown);

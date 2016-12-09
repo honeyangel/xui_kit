@@ -41,7 +41,7 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 
 	if (transform)
 	{
-		m_transkind = new xui_propkind(this, L"Transform", "TransformComponent", xui_kindctrl::create, NULL, true);
+		m_transkind = new xui_propkind(this, L"Transform", "TransformComponent", xui_kindctrl::create, onity_resource::icon_transform, true);
 		m_transkind->add_propdata(new xui_propdata_vector(
 			m_transkind, 
 			L"Position", 
@@ -70,7 +70,7 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 
 	if (visual)
 	{
-		m_graphkind = new xui_propkind(this, L"Visual", "VisualComponent", xui_kindctrl::create, NULL, true);
+		m_graphkind = new xui_propkind(this, L"Visual", "VisualComponent", xui_kindctrl::create, onity_resource::icon_visual, true);
 		m_graphkind->add_propdata(new onity_propdata_rendertree(
 			m_graphkind,
 			L"Graphics",
@@ -79,7 +79,7 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 
 	if (physics)
 	{
-		m_boundkind = new xui_propkind(this, L"Collision", "PhysicsComponent", xui_kindctrl::create, NULL, true);
+		m_boundkind = new xui_propkind(this, L"Collision", "PhysicsComponent", xui_kindctrl::create, onity_resource::icon_physics, true);
 		m_boundkind->add_propdata(new xui_propdata_bool(
 			m_boundkind,
 			L"Collidable",
@@ -99,7 +99,7 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 
 	if (box2d)
 	{
-		m_box2dkind = new xui_propkind(this, L"Box2d", "Box2dComponent", xui_kindctrl::create, NULL, true);
+		m_box2dkind = new xui_propkind(this, L"Box2d", "Box2dComponent", xui_kindctrl::create, onity_resource::icon_physics, true);
 		m_box2dkind->add_propdata(new onity_propdata_2dsasset(
 			m_box2dkind,
 			L"Shape",
@@ -142,12 +142,12 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 
 	if (ai && false)
 	{
-		m_logickind = new xui_propkind(this, L"AI", "AIComponent", xui_kindctrl::create, NULL, true);
+		m_logickind = new xui_propkind(this, L"AI", "AIComponent", xui_kindctrl::create, onity_resource::icon_ai, true);
 	}
 
 	if (ia && false)
 	{
-		m_inputkind = new xui_propkind(this, L"IA", "IAComponent", xui_kindctrl::create, NULL, true);
+		m_inputkind = new xui_propkind(this, L"IA", "IAComponent", xui_kindctrl::create, onity_resource::icon_input, true);
 	}
 
 	if (m_transkind)	add_propkind(m_transkind);
@@ -330,7 +330,8 @@ xui_method_explain(onity_propentity, cal_bounding,		void			)( NPNode* node, NPRe
 			NPIsSubKindOf(NP2DSActorRef, node))
 		{
 			NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, node);
-			(*result) = result->GetUnion(transref->GetFinalBounding());
+			if (transref->HasAsset())
+				(*result) = result->GetUnion(transref->GetFinalBounding());
 		}
 
 		if (NPIsExaKindOf(NPNode,		 node) == false &&

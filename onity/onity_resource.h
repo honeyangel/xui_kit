@@ -100,6 +100,14 @@ public:
 	static xui_bitmap*	icon_build;
 	static xui_bitmap*	icon_save;
 	static xui_bitmap*	icon_window;
+	static xui_bitmap*	icon_legend;
+	static xui_bitmap*	icon_design;
+	static xui_bitmap*	icon_transform;
+	static xui_bitmap*	icon_visual;
+	static xui_bitmap*	icon_ai;
+	static xui_bitmap*	icon_input;
+	static xui_bitmap*	icon_physics;
+	static xui_bitmap*	icon_filter;
 };
 
 #endif//__onity_resource_h__

@@ -62,7 +62,7 @@ protected:
 	//member
 	*/
 	xui_propkind*				m_reskind;
-	u32							m_resfile;
+	NP2DSAssetFile*				m_resfile;
 	std::vector<xui_proproot*>	m_subprop;
 };
 

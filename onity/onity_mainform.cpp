@@ -41,6 +41,11 @@
 xui_implement_rtti(onity_mainform, xui_window);
 
 /*
+//global
+*/
+bool OnityEditMode = false;
+
+/*
 //constructor
 */
 xui_create_explain(onity_mainform)( void )
@@ -384,6 +389,8 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 
 		if (m_run->was_push())
 		{
+			OnityEditMode = false;
+			m_run->set_data(NULL);
 			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_Splash);
 			BreezeGame::LocalSaveHelper::Instance()->SaveLocalInfo();
 			BreezeGame::Game::Instance()->Resume();
@@ -391,6 +398,8 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 			onity_game* game = get_game();
 			if (m_mainview->get_showpage() != game && hierarchy->get_editprop())
 			{
+				OnityEditMode = true;
+				m_run->set_data((void*)0x1);
 				BreezeGame::GameConfig::Instance()->SetGameVersion(BreezeGame::GV_DEBUG);
 				BreezeGame::ProfileManager::Instance()->SetLogin(true);
 				BreezeGame::AccountLocalSaveHelper::Instance()->Load();
@@ -410,6 +419,11 @@ xui_method_explain(onity_mainform, on_clickdebug,		void				)( xui_component* sen
 			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_None);
 			BreezeGame::Game::Instance()->Pause();
 			m3eFrameWorkUpdate(1.0f);
+
+			if (m_run->get_data())
+			{
+				set_pageshow(get_scene());
+			}
 		}
 	}
 	else
@@ -547,7 +561,15 @@ xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sen
 }
 xui_method_explain(onity_mainform, on_clicksaveall,		void				)( xui_component* sender, xui_method_args&  args )
 {
-
+	xui_proproot_vec filevec;
+	onity_project* project = get_project();
+	project->get_pathfile(L"", filevec);
+	for (u32 i = 0; i < filevec.size(); ++i)
+	{
+		onity_propfile* file = dynamic_cast<onity_propfile*>(filevec[i]);
+		if (file->was_modify())
+			file->save();
+	}
 }
 xui_method_explain(onity_mainform, on_paintdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {

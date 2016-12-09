@@ -6,6 +6,7 @@
 #include "xui_propctrl.h"
 #include "xui_kindctrl.h"
 #include "xui_propctrl_vector.h"
+#include "onity_resource.h"
 #include "onity_propscenelayer.h"
 
 /*
@@ -16,7 +17,7 @@ xui_create_explain(onity_propscenelayer)( NP2DSSceneLayer* scenelayer )
 , m_scenelayer(scenelayer)
 , m_snaplength(0)
 {
-	m_legendkind = new xui_propkind(this, L"Legendary Layer", "SceneLayer", xui_kindctrl::create, NULL, true, true, true);
+	m_legendkind = new xui_propkind(this, L"Legendary Layer", "SceneLayer", xui_kindctrl::create, onity_resource::icon_legend, true, true, true);
 	m_legendkind->add_propdata(new xui_propdata_vector(
 		m_legendkind,
 		L"CellSize",
@@ -42,9 +43,9 @@ xui_create_explain(onity_propscenelayer)( NP2DSSceneLayer* scenelayer )
 		this,
 		NT_UNSIGNEDINT));
 
-	m_designkind = new xui_propkind(this, L"Design", "SceneLayerDesign", xui_kindctrl::create, NULL, true, true, true);
+	m_designkind = new xui_propkind(this, L"Design", "SceneLayerDesign", xui_kindctrl::create, onity_resource::icon_design, true, true, true);
 	m_designkind->add_propdata(new xui_propdata_number_func(
-		m_legendkind,
+		m_designkind,
 		L"Snap",
 		xui_propctrl_number::create,
 		get_snaplength,

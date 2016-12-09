@@ -373,6 +373,7 @@ xui_method_explain(onity_scene, on_buttonclick,				void					)( xui_component* se
 	if (sender == m_horzflip ||
 		sender == m_vertflip)
 	{
+		m_pivotbox->set_visible(true);
 		xui_proproot_vec propvec = get_selectedprop();
 		mir_proproot(propvec, m_pivotbox->ori_pivot(), (sender == m_horzflip ? 1 : -1));
 		m_pivotbox->set_rectupdate(false);
@@ -381,6 +382,7 @@ xui_method_explain(onity_scene, on_buttonclick,				void					)( xui_component* se
 	if (sender == m_cwrotate ||
 		sender == m_ccrotate)
 	{
+		m_pivotbox->set_visible(true);
 		xui_proproot_vec propvec = get_selectedprop();
 		rot_proproot(propvec, m_pivotbox->ori_pivot(), (sender == m_cwrotate) ? 1 : -1);
 		m_pivotbox->set_rectupdate(false);
@@ -431,40 +433,40 @@ xui_method_explain(onity_scene, on_fillpanekeybddown,		void					)( xui_component
 		treeview->non_selectednode();
 	}
 	else
-		if (args.kcode == KEY_DELETE)
+	if (args.kcode == KEY_DELETE)
+	{
+		m_pivotbox->set_visible(false);
+		hierarchy->del_coursenode();
+	}
+	else
+	if (args.kcode == KEY_LARROW ||
+		args.kcode == KEY_RARROW ||
+		args.kcode == KEY_UARROW ||
+		args.kcode == KEY_DARROW)
+	{
+		xui_vector<s32> move(0);
+		switch (args.kcode)
 		{
-			m_pivotbox->set_visible(false);
-			hierarchy->del_coursenode();
+		case KEY_LARROW: move.x = -1; break;
+		case KEY_RARROW: move.x =  1; break;
+		case KEY_UARROW: move.y = -1; break;
+		case KEY_DARROW: move.y =  1; break;
 		}
-		else
-			if (args.kcode == KEY_LARROW ||
-				args.kcode == KEY_RARROW ||
-				args.kcode == KEY_UARROW ||
-				args.kcode == KEY_DARROW)
+
+		std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+		for (u32 i = 0; i < nodevec.size(); ++i)
+		{
+			xui_treenode*	node = nodevec[i];
+			onity_treedata* data = (onity_treedata*)node->get_linkdata();
+			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
+			if (prop)
 			{
-				xui_vector<s32> move(0);
-				switch (args.kcode)
-				{
-				case KEY_LARROW: move.x = -1; break;
-				case KEY_RARROW: move.x =  1; break;
-				case KEY_UARROW: move.y = -1; break;
-				case KEY_DARROW: move.y =  1; break;
-				}
-
-				std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-				for (u32 i = 0; i < nodevec.size(); ++i)
-				{
-					xui_treenode*	node = nodevec[i];
-					onity_treedata* data = (onity_treedata*)node->get_linkdata();
-					onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-					if (prop)
-					{
-						prop->set_position(prop->ori_position()+move);
-					}
-				}
-
-				m_pivotbox->set_rectupdate();
+				prop->set_position(prop->ori_position()+move);
 			}
+		}
+
+		m_pivotbox->set_rectupdate();
+	}
 }
 xui_method_explain(onity_scene, on_drawviewupdateself,		void					)( xui_component* sender, xui_method_update&	args )
 {

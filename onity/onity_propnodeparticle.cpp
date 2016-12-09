@@ -21,7 +21,7 @@ xui_create_explain(onity_propnodeparticle)( NPParticleSFX* particle )
 		set_asset, 
 		this));
 
-	m_transkind = new xui_propkind(this, L"Resource Transform", "NPTransform", xui_kindctrl::create, NULL, true);
+	m_transkind = new xui_propkind(this, L"Resource Transform", "NPTransform", xui_kindctrl::create, onity_resource::icon_transform, true);
 	m_transkind->add_propdata(new xui_propdata_vector(
 		m_transkind, 
 		L"Position", 

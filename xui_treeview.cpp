@@ -474,9 +474,6 @@ xui_method_explain(xui_treeview, del_upmostnodeall,		void								)( void )
 	}
 	m_ascrollitem.clear();
 	refresh();
-
-	xui_method_args args;
-	xm_selectedchange(this, args);
 }
 xui_method_explain(xui_treeview, set_nodevisible,		void								)( xui_treenode* node )
 {

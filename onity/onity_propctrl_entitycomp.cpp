@@ -344,7 +344,7 @@ xui_method_explain(onity_propctrl_compattr, on_linkpropdata,		void				)( bool se
 	BreezeGame::Json::Value*   node     = compkind->get_node();
 	std::vector<std::string>   vec      = node->getMemberNames();
 
-	if (selfupdate == false || m_middle->get_childcount() != vec.size())
+	if (selfupdate == false || m_middle->get_childcount() != vec.size()-2)
 	{
 		xui_method_ptrcall(m_middle, del_children	)();
 		for (u32 i = 0; i < vec.size(); ++i)

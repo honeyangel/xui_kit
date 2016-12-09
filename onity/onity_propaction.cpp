@@ -26,20 +26,19 @@ xui_method_explain(onity_propaction, new_subprop, xui_proproot*		)( u32 id )
 }
 xui_method_explain(onity_propaction, get_resfile, NP2DSAssetFile*	)( void )
 {
-	if (m_resfile == -1)
+	if (m_resfile == NULL)
 	{
 		std::string  fullname = xui_global::unicode_to_ascii(m_fullname);
 		std::string  pathname = NPFileNameHelper::PathName(fullname);
 		std::string  filename = NPFileNameHelper::FileName(fullname);
-		m_resfile = NP2DSActorFileMgr::GetIns()->GetFileID(pathname, filename, true);
+		npu32 id = NP2DSActorFileMgr::GetIns()->GetFileID(pathname, filename, true);
+		if (id != -1)
+		{
+			m_resfile = NP2DSActorFileMgr::GetIns()->GetFile(id);
+		}
 	}
 
-	if (m_resfile != -1)
-	{
-		return NP2DSActorFileMgr::GetIns()->GetFile(m_resfile);
-	}
-
-	return NULL;
+	return m_resfile;
 }
 xui_method_explain(onity_propaction, load,		void				)( void )
 {

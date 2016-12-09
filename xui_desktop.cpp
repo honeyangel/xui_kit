@@ -366,10 +366,10 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 	if (m_hoverctrl)
 	{
 		xui_component* root = m_hoverctrl;
-		root->on_mousewheel(args);
 
 		while (root && args.handle == false)
 		{
+			root->on_mousewheel(args);
 			root->xm_mousewheel(root, args);
 			if (xui_issub_kindof(xui_desktop, root))
 				break;

@@ -15,6 +15,7 @@
 #include "onity_propctrl_transref.h"
 #include "onity_propctrl_sceneparam.h"
 #include "onity_mainform.h"
+#include "onity_resource.h"
 #include "onity_inspector.h"
 #include "onity_propmapref.h"
 
@@ -24,7 +25,7 @@
 xui_create_explain(onity_propmapref)( NP2DSTransRef* ref )
 : onity_propnode2dsref(ref)
 {
-	m_paramkind = new xui_propkind(this, L"Design", "SceneDesign", xui_kindctrl::create, NULL, true);
+	m_paramkind = new xui_propkind(this, L"Design", "SceneDesign", xui_kindctrl::create, onity_resource::icon_design, true);
 	m_paramkind->add_propdata(new onity_propdata_2dsasset(
 		m_paramkind,
 		L"Asset",

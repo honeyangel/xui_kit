@@ -88,6 +88,14 @@ xui_bitmap* onity_resource::icon_magent		= NULL;
 xui_bitmap* onity_resource::icon_build		= NULL;
 xui_bitmap* onity_resource::icon_save		= NULL;
 xui_bitmap* onity_resource::icon_window		= NULL;
+xui_bitmap* onity_resource::icon_legend		= NULL;
+xui_bitmap* onity_resource::icon_design		= NULL;
+xui_bitmap* onity_resource::icon_transform	= NULL;
+xui_bitmap* onity_resource::icon_visual		= NULL;
+xui_bitmap* onity_resource::icon_physics	= NULL;
+xui_bitmap* onity_resource::icon_input		= NULL;
+xui_bitmap* onity_resource::icon_ai			= NULL;
+xui_bitmap* onity_resource::icon_filter		= NULL;
 
 xui_method_explain(onity_resource, init, void)( void )
 {
@@ -177,6 +185,14 @@ xui_method_explain(onity_resource, init, void)( void )
 	icon_build		= xui_bitmap::create("icon/build.png");
 	icon_save		= xui_bitmap::create("icon/save.png");
 	icon_window		= xui_bitmap::create("icon/window.png");
+	icon_legend		= xui_bitmap::create("icon/legend.png");
+	icon_design		= xui_bitmap::create("icon/design.png");
+	icon_transform	= xui_bitmap::create("icon/transform.png");
+	icon_visual		= xui_bitmap::create("icon/visual.png");
+	icon_physics	= xui_bitmap::create("icon/physics.png");
+	icon_input		= xui_bitmap::create("icon/input.png");
+	icon_ai			= xui_bitmap::create("icon/ai.png");
+	icon_filter		= xui_bitmap::create("icon/filter.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

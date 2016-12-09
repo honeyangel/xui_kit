@@ -133,19 +133,20 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 	if (gamerun == false || forcedel)
 	{
 		m_tree->del_upmostnodeall();
+		m_entitymap.clear();
 		if (gamerun == false && m_editprop)
 		{
 			NP2DSSceneFile* scenefile = m_editprop->get_scenefile();
 			for (npu16 i = 0; i <scenefile->GetSceneLayerCount(); ++i)
 			{
 				NP2DSSceneLayer* scenelayer = scenefile->GetSceneLayer(i);
-				xui_treenode* root = m_tree->add_upmostnode(i, new onity_filterdata(NULL, new onity_propscenelayer(scenelayer)));
+				xui_treenode* root = m_tree->add_upmostnode(i, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
 				std::list<NPRenderObject*> children = scenelayer->GetChildren();
 				for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)
 				{
 					NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, (*itor));
 					u32 index = root->get_leafnodecount();
-					root->add_leafnode(index, new onity_maprefdata(NULL, new onity_propmapref(transref)));
+					root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
 				}
 			}
 		}
@@ -161,7 +162,7 @@ xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*		)( Omiga::E
 	xui_treenode* filternode = get_filternode(filtername);
 	xui_treenode* entitynode = filternode->add_leafnode(
 		filternode->get_leafnodecount(), 
-		new onity_entitydata(NULL, new onity_propentity(ent)));
+		new onity_entitydata(onity_resource::icon_entity, new onity_propentity(ent)));
 
 	m_entitymap[ent] = entitynode;
 	return entitynode;
@@ -540,7 +541,7 @@ xui_method_explain(onity_hierarchy, on_treemousedoubleclick,void				)( xui_compo
 xui_method_explain(onity_hierarchy, add_filternode,			xui_treenode*		)( const std::string& name )
 {
 	u32 index = m_tree->get_upmostnodecount();
-	return m_tree->add_upmostnode(index, new onity_filterdata(NULL, new onity_propentitytemp(name)));
+	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propentitytemp(name)));
 }
 xui_method_explain(onity_hierarchy, get_filternode,			xui_treenode*		)( const std::string& name )
 {
@@ -572,7 +573,7 @@ xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( const st
 	NP2DSSceneLayer* scenelayer = m_editprop->get_scenefile()->AddSceneLayer(NP2DSSceneLayer::LT_SCENE, 1, 1, 8000, 640);
 	scenelayer->SetName(name);
 	u32 index = m_tree->get_upmostnodecount();
-	return m_tree->add_upmostnode(index, new onity_filterdata(NULL, new onity_propscenelayer(scenelayer)));
+	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
 }
 xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( NP2DSSceneLayer* src )
 {
@@ -582,14 +583,14 @@ xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( NP2DSSce
 	NP2DSSceneLayer* scenelayer = m_editprop->get_scenefile()->AddSceneLayer(NP2DSSceneLayer::LT_SCENE, 1, 1, 8000, 640);
 	scenelayer->Clone(src);
 	u32 index = m_tree->get_upmostnodecount();
-	xui_treenode* root = m_tree->add_upmostnode(index, new onity_filterdata(NULL, new onity_propscenelayer(scenelayer)));
+	xui_treenode* root = m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
 
 	std::list<NPRenderObject*> children = scenelayer->GetChildren();
 	for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)
 	{
 		NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, (*itor));
 		u32 index = root->get_leafnodecount();
-		root->add_leafnode(index, new onity_maprefdata(NULL, new onity_propmapref(transref)));
+		root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
 	}
 
 	return root;
@@ -625,7 +626,7 @@ xui_method_explain(onity_hierarchy, add_maprefnode,			xui_treenode*		)( xui_tree
 	}
 
 	u32 index = root->get_leafnodecount();
-	return root->add_leafnode(index, new onity_maprefdata(NULL, new onity_propmapref(transref)));
+	return root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
 }
 xui_method_explain(onity_hierarchy, del_coursenode,			void				)( const std::vector<xui_treenode*>& nodes )
 {
