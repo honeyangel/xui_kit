@@ -138,6 +138,7 @@ protected:
 	xui_menuitem*				m_off;
 
 	std::vector<xui_treenode*>	m_histroy;
+
 	s32							m_curridx;
 };
 

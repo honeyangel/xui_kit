@@ -50,6 +50,7 @@ protected:
 	xui_treenode*				m_node;
 	xui_bitmap*					m_icon;
 	std::wstring				m_text;
+	bool						m_flag;
 };
 
 #endif//__xui_treedata_h__

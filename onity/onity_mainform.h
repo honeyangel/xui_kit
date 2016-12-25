@@ -86,6 +86,7 @@ protected:
 	void					on_clicksaveall		( xui_component* sender, xui_method_args&  args );
 	void					on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void					on_recentaccept		( xui_component* sender, xui_method_args&  args );
+	void					on_restoreaccept	( xui_component* sender, xui_method_args&  args );
 	void					on_configaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );

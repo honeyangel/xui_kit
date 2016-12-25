@@ -36,6 +36,7 @@
 #include "onity_recent.h"
 #include "onity_config.h"
 #include "onity_course.h"
+#include "onity_restore.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -643,17 +644,30 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
 
-	onity_config* config = new onity_config;
-	config->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
-	xui_desktop::get_ins()->add_child(config);
-}
-xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
-{
 	NPRender::Init();
 	NP2DSLib::Init();
 	onity_project* project = get_project();
-	onity_game*    game    = get_game();
 	xui_method_ptrcall(project, ini_pathtree)();
+
+	onity_restore* restore = new onity_restore;
+	restore->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
+	xui_desktop::get_ins()->add_child(restore);
+}
+
+xui_method_explain(onity_mainform, on_restoreaccept, void)(xui_component* sender, xui_method_args&  args)
+{
+	onity_restore* dialog = xui_dynamic_cast(onity_restore, sender);
+	dialog->set_visible(false);
+	xui_desktop::get_ins()->del_child(dialog);
+
+	onity_config* config = new onity_config;
+	config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
+	xui_desktop::get_ins()->add_child(config);
+}
+
+xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
+{
+	onity_game*    game    = get_game();
 	xui_method_ptrcall(game,	ini_game	)();
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 	Omiga::EntityManager::Instance()->SetAddEvent(onity_hierarchy::on_entityadd);

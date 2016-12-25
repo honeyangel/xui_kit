@@ -256,6 +256,7 @@
     <ClInclude Include="onity_courseconfigdata.h">
       <Filter>scene</Filter>
     </ClInclude>
+    <ClInclude Include="onity_restore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -514,6 +515,7 @@
     <ClCompile Include="onity_courseconfigdata.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="onity_restore.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">

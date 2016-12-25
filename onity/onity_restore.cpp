@@ -100,3 +100,8 @@ xui_method_explain(onity_restore, restore,				void		)( void )
 {
 
 }
+
+xui_method_explain(onity_restore, add_unsavedfile, void)(std::wstring file)
+{
+	m_unsavedfiles.push_back(file);
+}

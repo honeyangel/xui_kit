@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -83,6 +83,7 @@
     <ClInclude Include="onity_proptransref.h" />
     <ClInclude Include="onity_recent.h" />
     <ClInclude Include="onity_renderdata.h" />
+    <ClInclude Include="onity_restore.h" />
     <ClInclude Include="onity_savectrl.h" />
     <ClInclude Include="onity_propcontroller.h" />
     <ClInclude Include="onity_propctrl_condition.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="onity_proptransref.cpp" />
     <ClCompile Include="onity_recent.cpp" />
     <ClCompile Include="onity_renderdata.cpp" />
+    <ClCompile Include="onity_restore.cpp" />
     <ClCompile Include="onity_savectrl.cpp" />
     <ClCompile Include="onity_propcontroller.cpp" />
     <ClCompile Include="onity_propctrl_condition.cpp" />
@@ -232,13 +234,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -264,7 +266,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_EDITOR;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../;../../BreezeGame/engine/inc;../../BreezeGame/engine/extern/glee;../../BreezeGame/engine/liblua/inc;../../BreezeGame/engine/libtolua/inc;../../BreezeGame/engine/m3e/inc;../../BreezeGame/engine/libxml/inc;../../BreezeGame/omiga/Entity/Component;../../BreezeGame/omiga/Entity;../../BreezeGame/omiga/Core;../../BreezeGame/omiga/Entity/Component/Transform;../../BreezeGame/omiga/Libs;../../BreezeGame/omiga;../../BreezeGame/game;../../BreezeGame/engine/extern/pthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
