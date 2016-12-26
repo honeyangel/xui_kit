@@ -1,5 +1,3 @@
-#include "NPFile.h"
-
 #include "xui_global.h"
 #include "xui_drawer.h"
 #include "xui_button.h"
@@ -7,6 +5,7 @@
 #include "xui_treenode.h"
 #include "xui_treedata.h"
 #include "onity_restore.h"
+#include "onity_mainform.h"
 
 xui_implement_rtti(onity_restore, xui_window);
 
@@ -101,7 +100,14 @@ xui_method_explain(onity_restore, restore,				void		)( void )
 
 }
 
-xui_method_explain(onity_restore, add_unsavedfile, void)(std::wstring file)
+xui_method_explain(onity_restore, load_unsavedfiles, void)(void)
 {
-	m_unsavedfiles.push_back(file);
+	onity_mainform* mainform = onity_mainform::get_ptr();
+	if (mainform)
+	{
+		for (int i = 0; i < mainform->get_unsavedfilesNum(); ++i)
+		{
+			m_restore->add_upmostnode(i, new xui_treedata(mainform->get_unsavedfileName(i)));
+		}
+	}
 }

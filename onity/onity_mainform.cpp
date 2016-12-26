@@ -720,3 +720,18 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 		}
 	}
 }
+
+xui_method_explain(onity_mainform, add_unsavedfile, void)(const std::wstring& file)
+{
+	m_unsavedfiles.push_back(file);
+}
+
+xui_method_explain(onity_mainform, get_unsavedfilesNum, int) (void)
+{
+	return m_unsavedfiles.size();
+}
+
+xui_method_explain(onity_mainform, get_unsavedfileName, const std::wstring&) (int index)
+{
+	return m_unsavedfiles.at(index);
+}

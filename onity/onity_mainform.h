@@ -55,7 +55,9 @@ public:
 	onity_console*			get_console			( void );
 	onity_timeline*			get_timeline		( void );
 	onity_course*			get_course			( void );
-
+	void					add_unsavedfile		( const std::wstring& );
+	int						get_unsavedfilesNum ( void );
+	const std::wstring&		get_unsavedfileName ( int );
 	/*
 	//method
 	*/
@@ -126,6 +128,8 @@ protected:
 	xui_menuitem*			m_load;
 	xui_menuitem*			m_reset;
 	s32						m_steptime;
+
+	std::vector<std::wstring> m_unsavedfiles;
 };
 
 #endif//__onity_mainform_h__

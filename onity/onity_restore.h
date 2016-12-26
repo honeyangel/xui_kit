@@ -34,7 +34,7 @@ protected:
 	//method
 	*/
 	void				restore					( void );
-	void				add_unsavedfile			( std::wstring file );
+	void				load_unsavedfiles		( void );
 	/*
 	//member
 	*/
@@ -42,8 +42,6 @@ protected:
 	xui_treeview*					m_restore;
 	xui_panel*						m_bottom;
 	xui_button*						m_accept;
-
-	std::vector<std::wstring>		m_unsavedfiles;
 };
 
 #endif//__onity_restore_h__

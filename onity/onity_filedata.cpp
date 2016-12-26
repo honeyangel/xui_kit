@@ -167,14 +167,70 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	if (suff == L".png" && full.find(L"MODULE") != -1 && full.find(L"BIG") == -1)
 		return NULL;
 
-	if		(suff == L".png")			return new onity_proptexture	(full);
-	else if (suff == L".npModule")		return new onity_propmodule		(full);
-	else if (suff == L".npSprite")		return new onity_propsprite		(full);
-	else if (suff == L".npAction")		return new onity_propaction		(full);
-	else if (suff == L".npCourse")		return new onity_propcourse		(full);
-	else if (suff == L".particle")		return new onity_propparticle	(full);
-	else if (suff == L".controller")	return new onity_propcontroller	(full);
-	else if (suff == L".json")			return new onity_propjsones		(full);
+	if (suff == L".png")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_proptexture(full);
+	}
+	else if (suff == L".npModule")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propmodule(full);
+	}
+	else if (suff == L".npSprite")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propsprite(full);
+	}
+	else if (suff == L".npAction")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propaction(full);
+	}
+	else if (suff == L".npCourse")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propcourse(full);
+	}
+	else if (suff == L".particle")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propparticle(full);
+	}
+	else if (suff == L".controller")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propcontroller(full);
+	}
+	else if (suff == L".json")
+	{
+		if (xui_global::has_file(full + L".tmp"))
+		{
+			onity_mainform::get_ptr()->add_unsavedfile(full + L".tmp");
+		}
+		return new onity_propjsones(full);
+	}
 	else
 	{
 		return NULL;

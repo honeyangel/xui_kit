@@ -25,7 +25,7 @@ xui_create_explain(onity_proppath)( const std::wstring& full )
 		if (prop)
 		{
 			m_fileprop.push_back(prop);
-		}
+		}		
 	}
 }
 
