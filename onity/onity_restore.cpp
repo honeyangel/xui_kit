@@ -44,7 +44,7 @@ xui_create_explain(onity_restore)( void )
 	xui_method_ptrcall(m_accept, set_drawcolor		)(true);
 	xui_method_ptrcall(m_accept, set_iconsize		)(xui_vector<s32>(0));
 	xui_method_ptrcall(m_accept, set_textalign		)(TEXTALIGN_CC);
-	xui_method_ptrcall(m_accept, ini_drawer			)(L"Open");
+	xui_method_ptrcall(m_accept, ini_drawer			)(L"Restore");
 
 	m_bottom	= new xui_panel(xui_vector<s32>(128, 32));
 	xui_method_ptrcall(m_bottom, ini_component		)(0, 0, DOCKSTYLE_B);
@@ -59,19 +59,16 @@ xui_create_explain(onity_restore)( void )
 /*
 //method
 */
-xui_method_explain(onity_restore, get_selectpath,		std::wstring)( void )
+xui_method_explain(onity_restore, load_unsavedfiles, void)(void)
 {
-	std::wstring path;
-
-	std::vector<xui_treenode*> vec = m_restore->get_selectednode();
-	if (vec.size() > 0)
+	onity_mainform* mainform = onity_mainform::get_ptr();
+	if (mainform)
 	{
-		xui_treenode* selectednode = vec.front();
-		xui_treedata* selecteddata = selectednode->get_linkdata();
-		path = selecteddata->get_text(0);
+		for (int i = 0; i < mainform->get_unsavedfilesNum(); ++i)
+		{
+			m_restore->add_upmostnode(i, new xui_treedata(mainform->get_unsavedfileName(i)));
+		}
 	}
-
-	return path;
 }
 
 /*
@@ -97,17 +94,19 @@ xui_method_explain(onity_restore, on_buttonclick,		void		)( xui_component* sende
 */
 xui_method_explain(onity_restore, restore,				void		)( void )
 {
-
-}
-
-xui_method_explain(onity_restore, load_unsavedfiles, void)(void)
-{
-	onity_mainform* mainform = onity_mainform::get_ptr();
-	if (mainform)
+	for (int i = 0; i < m_restore->get_upmostnodecount(); ++i)
 	{
-		for (int i = 0; i < mainform->get_unsavedfilesNum(); ++i)
+		xui_treedata* data = m_restore->get_upmostnode(i)->get_linkdata();
+		if (data)
 		{
-			m_restore->add_upmostnode(i, new xui_treedata(mainform->get_unsavedfileName(i)));
+			std::wstring full = data->get_text(0);
+			if (data->get_flag(0))
+			{
+				xui_global::cpy_file(xui_global::get_workpath() + full + L".tmp", xui_global::get_workpath() + full);
+			}
+			xui_global::del_file(xui_global::get_workpath() + full + L".tmp");
 		}
 	}
 }
+
+

@@ -16,7 +16,7 @@ public:
 	/*
 	//method
 	*/
-	std::wstring		get_selectpath			( void );
+	void				load_unsavedfiles		( void );
 
 protected:
 	/*
@@ -34,7 +34,7 @@ protected:
 	//method
 	*/
 	void				restore					( void );
-	void				load_unsavedfiles		( void );
+	
 	/*
 	//member
 	*/

@@ -651,6 +651,8 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 
 	onity_restore* restore = new onity_restore;
 	restore->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
+	//xui_method_ptrcall(restore, load_unsavedfiles);
+	restore->load_unsavedfiles();
 	xui_desktop::get_ins()->add_child(restore);
 }
 
