@@ -55,7 +55,6 @@ public:
 	onity_console*			get_console			( void );
 	onity_timeline*			get_timeline		( void );
 	onity_course*			get_course			( void );
-	void					clear_unsavedfiles	( void );
 	void					add_unsavedfile		( const std::wstring& );
 	int						get_unsavedfilesNum ( void );
 	const std::wstring&		get_unsavedfileName ( int );
@@ -93,6 +92,9 @@ protected:
 	void					on_configaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
+	void					on_clickclose		( xui_component* sender, xui_method_args&  args );
+	void					on_clickcancelclose	( xui_component* sender, xui_method_args&  args );
+
 
 	/*
 	//method

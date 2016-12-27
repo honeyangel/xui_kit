@@ -84,6 +84,7 @@
     <ClInclude Include="onity_recent.h" />
     <ClInclude Include="onity_renderdata.h" />
     <ClInclude Include="onity_restore.h" />
+    <ClInclude Include="onity_save.h" />
     <ClInclude Include="onity_savectrl.h" />
     <ClInclude Include="onity_propcontroller.h" />
     <ClInclude Include="onity_propctrl_condition.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="onity_recent.cpp" />
     <ClCompile Include="onity_renderdata.cpp" />
     <ClCompile Include="onity_restore.cpp" />
+    <ClCompile Include="onity_save.cpp" />
     <ClCompile Include="onity_savectrl.cpp" />
     <ClCompile Include="onity_propcontroller.cpp" />
     <ClCompile Include="onity_propctrl_condition.cpp" />

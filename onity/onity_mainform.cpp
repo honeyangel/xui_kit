@@ -646,6 +646,7 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 
 	NPRender::Init();
 	NP2DSLib::Init();
+	m_unsavedfiles.clear();
 	onity_project* project = get_project();
 	xui_method_ptrcall(project, ini_pathtree)();
 
@@ -704,6 +705,11 @@ xui_method_explain(onity_mainform, on_globalkeybddown,	void				)( xui_component*
 	}
 }
 
+xui_method_explain(onity_mainform, on_clickclose,		void				)(xui_component* sender, xui_method_args& args)
+{
+	PostQuitMessage(0);
+}
+
 /*
 //method
 */
@@ -731,11 +737,6 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 	}
 }
 
-xui_method_explain(onity_mainform, clear_unsavedfiles, void) (void)
-{
-	m_unsavedfiles.clear();
-}
-
 xui_method_explain(onity_mainform, add_unsavedfile, void)(const std::wstring& file)
 {
 	m_unsavedfiles.push_back(file);
@@ -750,3 +751,11 @@ xui_method_explain(onity_mainform, get_unsavedfileName, const std::wstring&) (in
 {
 	return m_unsavedfiles.at(index);
 }
+
+/*xui_method_explain(onity_mainform, )
+{
+	onity_restore* restore = new onity_restore;
+	restore->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
+	xui_method_ptrcall(restore, load_unsavedfiles)();
+	xui_desktop::get_ins()->add_child(restore);
+}*/
