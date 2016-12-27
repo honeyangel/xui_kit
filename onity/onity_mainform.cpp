@@ -649,11 +649,19 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	onity_project* project = get_project();
 	xui_method_ptrcall(project, ini_pathtree)();
 
-	onity_restore* restore = new onity_restore;
-	restore->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
-	//xui_method_ptrcall(restore, load_unsavedfiles);
-	restore->load_unsavedfiles();
-	xui_desktop::get_ins()->add_child(restore);
+	if (get_unsavedfilesNum() > 0)
+	{
+		onity_restore* restore = new onity_restore;
+		restore->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
+		xui_method_ptrcall(restore, load_unsavedfiles)();
+		xui_desktop::get_ins()->add_child(restore);
+	}
+	else
+	{
+		onity_config* config = new onity_config;
+		config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
+		xui_desktop::get_ins()->add_child(config);
+	}
 }
 
 xui_method_explain(onity_mainform, on_restoreaccept, void)(xui_component* sender, xui_method_args&  args)
@@ -721,6 +729,11 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 				rootview->del_dockpage(page);
 		}
 	}
+}
+
+xui_method_explain(onity_mainform, clear_unsavedfiles, void) (void)
+{
+	m_unsavedfiles.clear();
 }
 
 xui_method_explain(onity_mainform, add_unsavedfile, void)(const std::wstring& file)

@@ -123,6 +123,11 @@ xui_method_explain(onity_propjsones, load,			void				)( void )
 xui_method_explain(onity_propjsones, save,			void				)( void )
 {
 	m_modify = false;
+	xui_method_ptrcall(this, save_as)(m_fullname);
+}
+
+xui_method_explain(onity_propjsones, save_as, void)(const std::wstring& full)
+{
 	xui_global::set_fwatchclose();
 
 	BreezeGame::Json::Value  root;
@@ -143,7 +148,7 @@ xui_method_explain(onity_propjsones, save,			void				)( void )
 	BreezeGame::Json::StyledWriter writer;
 	std::string text = writer.write(root);
 
-	FILE* file = fopen(xui_global::unicode_to_ascii(m_fullname).c_str(), "w");
+	FILE* file = fopen(xui_global::unicode_to_ascii(full).c_str(), "w");
 	if (file)
 	{
 		fwrite(text.c_str(), 1, text.length(), file);
@@ -151,6 +156,10 @@ xui_method_explain(onity_propjsones, save,			void				)( void )
 	}
 
 	xui_global::set_fwatchstart(xui_global::get_workpath());
+}
+xui_method_explain(onity_propjsones, auto_save, void)(void)
+{
+	xui_method_ptrcall(this, save_as)(m_fullname + L".tmp");
 }
 xui_method_explain(onity_propjsones, loadfromfile,	void				)( bool notify )
 {

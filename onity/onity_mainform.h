@@ -55,6 +55,7 @@ public:
 	onity_console*			get_console			( void );
 	onity_timeline*			get_timeline		( void );
 	onity_course*			get_course			( void );
+	void					clear_unsavedfiles	( void );
 	void					add_unsavedfile		( const std::wstring& );
 	int						get_unsavedfilesNum ( void );
 	const std::wstring&		get_unsavedfileName ( int );

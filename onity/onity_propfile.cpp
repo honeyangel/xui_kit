@@ -63,6 +63,8 @@ xui_method_explain(onity_propfile, load,				void				)( void )
 {}
 xui_method_explain(onity_propfile, save,				void				)( void )
 {}
+xui_method_explain(onity_propfile, auto_save,			void				)( void )
+{}
 xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
 {
 	if (was_modify())

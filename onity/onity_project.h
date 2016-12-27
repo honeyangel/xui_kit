@@ -79,6 +79,7 @@ protected:
 	void						on_showfindclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_propertyclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_linetoolclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_autosave			( xui_component* sender, xui_method_args&	  args );
 
 	/*
 	//method
@@ -106,6 +107,7 @@ protected:
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 	xui_timer*					m_timer;
+	xui_timer*					m_timer_autosave;
 
 	xui_panel*					m_fill;
 	xui_control*				m_sizectrl;
