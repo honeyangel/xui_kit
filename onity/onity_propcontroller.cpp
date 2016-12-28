@@ -63,6 +63,10 @@ xui_method_explain(onity_propcontroller, save_as, void)( const std::wstring& ful
 xui_method_explain(onity_propcontroller, save,			void			)( void )
 {
 	xui_method_ptrcall(this, save_as)(m_fullname);
+	if (xui_global::has_file(m_fullname + L".tmp"))
+	{
+		xui_global::del_file(m_fullname + L".tmp");
+	}
 }
 
 xui_method_explain(onity_propcontroller, auto_save, void)(void)

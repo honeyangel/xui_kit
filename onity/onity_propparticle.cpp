@@ -160,6 +160,10 @@ xui_method_explain(onity_propparticle, save,				void			)( void )
 {
 	m_modify = false;
 	xui_method_ptrcall(this, save_as)(m_fullname);
+	if (xui_global::has_file(m_fullname + L".tmp"))
+	{
+		xui_global::del_file(m_fullname + L".tmp");
+	}
 }
 
 xui_method_explain(onity_propparticle, save_as, void)(const std::wstring& full)
