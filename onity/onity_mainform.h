@@ -64,6 +64,7 @@ public:
 	bool					was_gamerun			( void ) const;
 	bool					was_gameplay		( void ) const;
 	void					set_pageshow		( xui_dockpage* page );
+	void					show_save			( void );
 
 protected:
 	/*
@@ -89,6 +90,8 @@ protected:
 	void					on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void					on_recentaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_restoreaccept	( xui_component* sender, xui_method_args&  args );
+	void					on_saveaccept		( xui_component* sender, xui_method_args&  args );
+	void					on_savecancel		( xui_component* sender, xui_method_args&  args );
 	void					on_configaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );

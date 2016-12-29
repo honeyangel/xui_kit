@@ -310,6 +310,7 @@ xui_create_explain(onity_project)( void )
 xui_delete_explain(onity_project)( void )
 {
 	xui_timermgr::get_ins()->del_timer(m_timer);
+	xui_timermgr::get_ins()->del_timer(m_timer_autosave);
 }
 
 /*
@@ -1706,4 +1707,9 @@ xui_method_explain(onity_project, pst_propleaf,				void			)( void )
 			inspector->set_proproot(props);
 		}
 	}
+}
+
+xui_method_explain(onity_project, get_pathview, xui_treeview*)(void)
+{
+	return m_pathview;
 }

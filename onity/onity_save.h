@@ -2,6 +2,7 @@
 #define __onity_save_h__
 
 #include "xui_window.h"
+#include "onity_propfile.h"
 
 class onity_save : public xui_window
 {
@@ -23,6 +24,7 @@ protected:
 	//callback
 	*/
 	virtual void		on_accept				( xui_component* sender, xui_method_args& args );
+	virtual void		on_cancel				( xui_component* sender, xui_method_args& args );
 
 	/*
 	//event
@@ -33,7 +35,7 @@ protected:
 	/*
 	//method
 	*/
-	void				restore					( void );
+	void				save					( void );
 	
 	/*
 	//member
@@ -43,6 +45,7 @@ protected:
 	xui_panel*						m_bottom;
 	xui_button*						m_accept;
 	xui_button*						m_cancel;
+	std::vector<onity_propfile *>	m_unsavepropfiles;
 };
 
 #endif//__onity_save_h__

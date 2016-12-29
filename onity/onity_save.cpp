@@ -6,6 +6,13 @@
 #include "xui_treedata.h"
 #include "onity_save.h"
 #include "onity_mainform.h"
+#include "onity_project.h"
+#include "onity_pathdata.h"
+#include "onity_filedata.h"
+#include "onity_fileview.h"
+#include "onity_tileview.h"
+#include "onity_propfile.h"
+#include "onity_proppath.h"
 
 xui_implement_rtti(onity_save, xui_window);
 
@@ -73,7 +80,29 @@ xui_create_explain(onity_save)( void )
 */
 xui_method_explain(onity_save, load_unsavedfiles, void)(void)
 {
-	
+	m_unsavepropfiles.clear();
+	std::vector<xui_treenode*> pathvec = onity_mainform::get_ptr()->get_project()->get_pathview()->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		const xui_proproot_vec& filevec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (propfile->was_modify())
+			{
+				m_unsavepropfiles.push_back(propfile);
+			}
+		}
+	}
+
+	for (int i = 0; i < m_unsavepropfiles.size(); ++i)
+	{
+		m_save->add_upmostnode(i, new xui_treedata(m_unsavepropfiles.at(i)->get_fullname()));
+	}
 }
 
 /*
@@ -81,8 +110,13 @@ xui_method_explain(onity_save, load_unsavedfiles, void)(void)
 */
 xui_method_explain(onity_save, on_accept,				void		)( xui_component* sender, xui_method_args&  args )
 {
-	restore();
+	save();
 	xui_window::on_accept(sender, args);
+}
+
+xui_method_explain(onity_save, on_cancel,				void		)(xui_component* sender, xui_method_args&  args)
+{
+	xui_window::on_cancel(sender, args);
 }
 
 /*
@@ -105,16 +139,22 @@ xui_method_explain(onity_save, on_buttonclick,		void		)( xui_component* sender, 
 				xui_global::del_file(xui_global::get_workpath() + full + L".tmp");
 			}
 		}
+		xui_method_args other_args;
+		on_accept(this, other_args);
+	}
+	else
+	{
+		xui_method_args other_args;
+		on_cancel(this, other_args);
 	}
 	
-	xui_method_args other_args;
-	on_accept(this, other_args);
+	
 }
 
 /*
 //method
 */
-xui_method_explain(onity_save, restore,				void		)( void )
+xui_method_explain(onity_save, save,				void		)( void )
 {
 	for (int i = 0; i < m_save->get_upmostnodecount(); ++i)
 	{
@@ -124,9 +164,8 @@ xui_method_explain(onity_save, restore,				void		)( void )
 			std::wstring full = data->get_text(0);
 			if (data->get_flag(0))
 			{
-				xui_global::cpy_file(xui_global::get_workpath() + full + L".tmp", xui_global::get_workpath() + full);
+				m_unsavepropfiles.at(i)->save();
 			}
-			xui_global::del_file(xui_global::get_workpath() + full + L".tmp");
 		}
 	}
 }
