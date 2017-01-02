@@ -16,6 +16,7 @@ public:
 	xui_treedata( void );
 	xui_treedata( const std::wstring& text );
 	xui_treedata( const std::wstring& text, xui_bitmap* icon );
+	xui_treedata( const std::wstring& text, bool flag );
 
 	/*
 	//destructor

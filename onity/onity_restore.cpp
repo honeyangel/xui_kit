@@ -26,9 +26,9 @@ xui_create_explain(onity_restore)( void )
 	xui_method_ptrcall(m_drawer, set_text			)(L"Restore your unsaved file");
 
 	std::vector<xui_treecolumn> columninfo;
-	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL, 200, L"flag", NULL, 0, true, TOGGLE_NORMAL));
+	columninfo.push_back(xui_treecolumn(TREECOLUMN_BOOL, 25, L"flag", NULL, 0, true, TOGGLE_NORMAL));
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
-	m_restore	= new xui_treeview(xui_vector<s32>(200), columninfo, 20, PLUSRENDER_NORMAL, false, false);
+	m_restore	= new xui_treeview(xui_vector<s32>(225), columninfo, 20, PLUSRENDER_NORMAL, false, false);
 	xui_method_ptrcall(m_restore, ini_component		)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_restore, set_sidestyle		)(SIDESTYLE_S);
 	xui_method_ptrcall(m_restore, set_drawcolor		)(true);
@@ -66,7 +66,7 @@ xui_method_explain(onity_restore, load_unsavedfiles, void)(void)
 	{
 		for (int i = 0; i < mainform->get_unsavedfilesNum(); ++i)
 		{
-			m_restore->add_upmostnode(i, new xui_treedata(mainform->get_unsavedfileName(i)));
+			m_restore->add_upmostnode(i, new xui_treedata(mainform->get_unsavedfileName(i), true));
 		}
 	}
 }

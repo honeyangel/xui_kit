@@ -23,6 +23,13 @@ xui_create_explain(xui_treedata)( const std::wstring& text, xui_bitmap* icon )
 	m_text = text;
 	m_flag = false;
 }
+xui_create_explain(xui_treedata)( const std::wstring& text, bool flag )
+{
+	m_node = NULL;
+	m_icon = NULL;
+	m_text = text;
+	m_flag = flag;
+}
 
 /*
 //method

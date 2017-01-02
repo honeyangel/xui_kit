@@ -101,7 +101,7 @@ xui_method_explain(onity_save, load_unsavedfiles, void)(void)
 
 	for (int i = 0; i < m_unsavepropfiles.size(); ++i)
 	{
-		m_save->add_upmostnode(i, new xui_treedata(m_unsavepropfiles.at(i)->get_fullname()));
+		m_save->add_upmostnode(i, new xui_treedata(m_unsavepropfiles.at(i)->get_fullname(), true));
 	}
 }
 
