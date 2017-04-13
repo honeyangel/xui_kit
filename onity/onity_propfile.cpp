@@ -1,5 +1,6 @@
 #include "xui_desktop.h"
 #include "xui_dialog.h"
+#include "xui_global.h"
 #include "onity_treedata.h"
 #include "onity_timedata.h"
 #include "onity_propleaf.h"
@@ -62,6 +63,8 @@ xui_method_explain(onity_propfile, can_rename,			bool				)( void )
 xui_method_explain(onity_propfile, load,				void				)( void )
 {}
 xui_method_explain(onity_propfile, save,				void				)( void )
+{}
+xui_method_explain(onity_propfile, auto_save,			void				)( void )
 {}
 xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
 {
@@ -151,4 +154,10 @@ xui_method_explain(onity_propfile, on_modify_reload,	void				)( xui_component* s
 {
 	onity_propfile* propfile = (onity_propfile*)sender->get_window()->get_data();
 	propfile->load();
+
+	if (xui_global::has_file(propfile->get_fullname() + L".tmp"))
+	{
+		xui_global::del_file(propfile->get_fullname() + L".tmp");
+	}
+
 }

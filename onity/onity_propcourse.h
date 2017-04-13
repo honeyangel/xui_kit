@@ -30,6 +30,8 @@ public:
 	virtual std::string get_dragtype	( void );
 	virtual void*		get_dragdata	( void );
 	virtual void		save			( void );
+	virtual void		auto_save		( void );
+	virtual void		save_as			( const std::wstring& full );
 	virtual void		load			( void );
 	virtual void		on_detach		( const xui_proproot_vec& proproot ){}
 

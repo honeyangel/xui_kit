@@ -55,13 +55,16 @@ public:
 	onity_console*			get_console			( void );
 	onity_timeline*			get_timeline		( void );
 	onity_course*			get_course			( void );
-
+	void					add_unsavedfile		( const std::wstring& );
+	int						get_unsavedfilesNum ( void );
+	const std::wstring&		get_unsavedfileName ( int );
 	/*
 	//method
 	*/
 	bool					was_gamerun			( void ) const;
 	bool					was_gameplay		( void ) const;
 	void					set_pageshow		( xui_dockpage* page );
+	void					show_save			( void );
 
 protected:
 	/*
@@ -86,9 +89,15 @@ protected:
 	void					on_clicksaveall		( xui_component* sender, xui_method_args&  args );
 	void					on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void					on_recentaccept		( xui_component* sender, xui_method_args&  args );
+	void					on_restoreaccept	( xui_component* sender, xui_method_args&  args );
+	void					on_saveaccept		( xui_component* sender, xui_method_args&  args );
+	void					on_savecancel		( xui_component* sender, xui_method_args&  args );
 	void					on_configaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void					on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
+	void					on_clickclose		( xui_component* sender, xui_method_args&  args );
+	void					on_clickcancelclose	( xui_component* sender, xui_method_args&  args );
+
 
 	/*
 	//method
@@ -125,6 +134,8 @@ protected:
 	xui_menuitem*			m_load;
 	xui_menuitem*			m_reset;
 	s32						m_steptime;
+
+	std::vector<std::wstring> m_unsavedfiles;
 };
 
 #endif//__onity_mainform_h__

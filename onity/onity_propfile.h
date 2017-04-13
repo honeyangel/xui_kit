@@ -29,6 +29,7 @@ public:
 	virtual void 			ntf_modify		( void );
 	virtual void			load			( void );
 	virtual void			save			( void );
+	virtual void			auto_save		( void );
 
 	/*
 	//override

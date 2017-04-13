@@ -33,6 +33,8 @@ public:
 	virtual bool			was_modify			( void );
 	virtual void			load				( void );
 	virtual void			save				( void );
+	virtual void			auto_save			( void );
+	virtual void			save_as				( const std::wstring& full );
 
 protected:
 	/*

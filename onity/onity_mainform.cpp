@@ -36,6 +36,8 @@
 #include "onity_recent.h"
 #include "onity_config.h"
 #include "onity_course.h"
+#include "onity_restore.h"
+#include "onity_save.h"
 #include "onity_mainform.h"
 
 xui_implement_rtti(onity_mainform, xui_window);
@@ -643,17 +645,56 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
 
-	onity_config* config = new onity_config;
-	config->xm_accept   += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
-	xui_desktop::get_ins()->add_child(config);
-}
-xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
-{
 	NPRender::Init();
 	NP2DSLib::Init();
+	m_unsavedfiles.clear();
 	onity_project* project = get_project();
-	onity_game*    game    = get_game();
 	xui_method_ptrcall(project, ini_pathtree)();
+
+	if (get_unsavedfilesNum() > 0)
+	{
+		onity_restore* restore = new onity_restore;
+		restore->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
+		xui_method_ptrcall(restore, load_unsavedfiles)();
+		xui_desktop::get_ins()->add_child(restore);
+	}
+	else
+	{
+		onity_config* config = new onity_config;
+		config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
+		xui_desktop::get_ins()->add_child(config);
+	}
+}
+
+xui_method_explain(onity_mainform, on_restoreaccept, void)(xui_component* sender, xui_method_args&  args)
+{
+	onity_restore* dialog = xui_dynamic_cast(onity_restore, sender);
+	dialog->set_visible(false);
+	xui_desktop::get_ins()->del_child(dialog);
+
+	onity_config* config = new onity_config;
+	config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
+	xui_desktop::get_ins()->add_child(config);
+}
+
+xui_method_explain(onity_mainform, on_saveaccept, void)(xui_component* sender, xui_method_args&  args)
+{
+	onity_save* dialog = xui_dynamic_cast(onity_save, sender);
+	dialog->set_visible(false);
+	xui_desktop::get_ins()->del_child(dialog);
+	PostQuitMessage(0);
+}
+
+xui_method_explain(onity_mainform, on_savecancel, void)(xui_component* sender, xui_method_args&  args)
+{
+	onity_save* dialog = xui_dynamic_cast(onity_save, sender);
+	dialog->set_visible(false);
+	xui_desktop::get_ins()->del_child(dialog);
+}
+
+xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
+{
+	onity_game*    game    = get_game();
 	xui_method_ptrcall(game,	ini_game	)();
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 	Omiga::EntityManager::Instance()->SetAddEvent(onity_hierarchy::on_entityadd);
@@ -678,6 +719,11 @@ xui_method_explain(onity_mainform, on_globalkeybddown,	void				)( xui_component*
 		if (propfile && propfile->was_modify())
 			propfile->save();
 	}
+}
+
+xui_method_explain(onity_mainform, on_clickclose,		void				)(xui_component* sender, xui_method_args& args)
+{
+	PostQuitMessage(0);
 }
 
 /*
@@ -705,4 +751,28 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 				rootview->del_dockpage(page);
 		}
 	}
+}
+
+xui_method_explain(onity_mainform, add_unsavedfile, void)(const std::wstring& file)
+{
+	m_unsavedfiles.push_back(file);
+}
+
+xui_method_explain(onity_mainform, get_unsavedfilesNum, int) (void)
+{
+	return m_unsavedfiles.size();
+}
+
+xui_method_explain(onity_mainform, get_unsavedfileName, const std::wstring&) (int index)
+{
+	return m_unsavedfiles.at(index);
+}
+
+xui_method_explain(onity_mainform, show_save, void)( void )
+{
+	onity_save* save = new onity_save;
+	save->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_saveaccept);
+	save->xm_cancel += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_savecancel);
+	xui_method_ptrcall(save, load_unsavedfiles)();
+	xui_desktop::get_ins()->add_child(save);
 }
