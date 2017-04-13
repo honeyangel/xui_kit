@@ -779,9 +779,12 @@ xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component
 					xui_treenode*   temp = nodevec[i];
 					onity_treedata* data = (onity_treedata*)temp->get_linkdata();
 					onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-					prop->get_position(m_trans, m_ratio);
-					prop->get_bounding(m_trans, m_ratio);
-					prop->set_lockdata(true);
+					if (prop)
+					{
+						prop->get_position(m_trans, m_ratio);
+						prop->get_bounding(m_trans, m_ratio);
+						prop->set_lockdata(true);
+					}
 				}
 
 				u08 mode = DRAGMOVE_UNLIMIT;
@@ -1182,6 +1185,9 @@ xui_method_explain(onity_scene, cal_snapmove,				xui_vector<s32>			)( const std:
 		xui_treenode* root = NULL;
 		for (u32 i = 0; i < nodevec.size(); ++i)
 		{
+			if (nodevec[i]->get_rootnode() == NULL)
+				continue;
+
 			xui_treenode*   node = nodevec[i];
 			onity_treedata* data = (onity_treedata*)node->get_linkdata();
 			onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
@@ -1496,21 +1502,24 @@ xui_method_explain(onity_scene, draw_locknode,				void					)( const std::vector<
 		xui_treenode*   node = nodevec.front();
 		onity_treedata* data = (onity_treedata*)node->get_linkdata();
 		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-		xui_rect2d<s32> rect = prop->get_bounding(m_trans, m_ratio);
-		xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_lockctrl;
-		f32 sa = action->sample();
-		f32 s  = xui_max(sa, 1.0f);
-		f32 ox = -0.5f * rect.get_w() * s + 0.5f * rect.get_w();
-		f32 oy = -0.5f * rect.get_h() * s + 0.5f * rect.get_h();
-		f32 fw =  s    * rect.get_w();
-		f32 fh =  s    * rect.get_h();
-		xui_vector<s32> drawpt = m_drawview->get_screenpt();
-		xui_rect2d<s32> drawrt = rect + drawpt;
-		drawrt.oft_x((s32)ox);
-		drawrt.oft_y((s32)oy);
-		drawrt.set_w((s32)fw);
-		drawrt.set_h((s32)fh);
-		xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+		if (prop)
+		{
+			xui_rect2d<s32> rect = prop->get_bounding(m_trans, m_ratio);
+			xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_lockctrl;
+			f32 sa = action->sample();
+			f32 s  = xui_max(sa, 1.0f);
+			f32 ox = -0.5f * rect.get_w() * s + 0.5f * rect.get_w();
+			f32 oy = -0.5f * rect.get_h() * s + 0.5f * rect.get_h();
+			f32 fw =  s    * rect.get_w();
+			f32 fh =  s    * rect.get_h();
+			xui_vector<s32> drawpt = m_drawview->get_screenpt();
+			xui_rect2d<s32> drawrt = rect + drawpt;
+			drawrt.oft_x((s32)ox);
+			drawrt.oft_y((s32)oy);
+			drawrt.set_w((s32)fw);
+			drawrt.set_h((s32)fh);
+			xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+		}
 	}
 }
 xui_method_explain(onity_scene, draw_multisel,				void					)( void )
