@@ -71,13 +71,16 @@ xui_create_explain(onity_project)( void )
 	m_controller	= menu1->add_item(onity_resource::icon_animator, L"Animation Controller");
 	m_particle		= menu1->add_item(onity_resource::icon_particle, L"Particle");
 	m_course		= menu1->add_item(onity_resource::icon_scene,	 L"Scene");
-	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
-	xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
-	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_particleclick);
-	xui_method_ptrcall(m_course,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_courseclick);
+	xui_method_ptrcall(m_folder,			xm_click) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_folderclick);
+	xui_method_ptrcall(m_controller,		xm_click) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
+	xui_method_ptrcall(m_particle,			xm_click) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_particleclick);
+	xui_method_ptrcall(m_course,			xm_click) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_courseclick);
 
 	m_timer		= xui_timermgr::get_ins()->add_timer(this, 1.0f, NULL);
-	xui_method_ptrcall(m_timer,		xm_tick				) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_timertick);
+	xui_method_ptrcall(m_timer,				xm_tick) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_timertick);
+
+	m_timer_autosave = xui_timermgr::get_ins()->add_timer(this, 30.f, NULL);
+	xui_method_ptrcall(m_timer_autosave,	xm_tick) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_autosave);
 
 	m_create	= new xui_toggle(xui_vector<s32>(80, 20), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_create,	ini_component		)(ALIGNHORZ_L, ALIGNVERT_C, 0);
@@ -307,6 +310,7 @@ xui_create_explain(onity_project)( void )
 xui_delete_explain(onity_project)( void )
 {
 	xui_timermgr::get_ins()->del_timer(m_timer);
+	xui_timermgr::get_ins()->del_timer(m_timer_autosave);
 }
 
 /*
@@ -582,6 +586,28 @@ xui_method_explain(onity_project, on_timertick,				void			)( xui_component* send
 
 	xui_global::del_fwatch();
 }
+
+xui_method_explain(onity_project, on_autosave, void)(xui_component* sender, xui_method_args&	   args)
+{
+	std::vector<xui_treenode*> pathvec = m_pathview->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		const xui_proproot_vec& filevec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (propfile->was_modify())
+			{
+				propfile->auto_save();
+			}
+		}
+	}
+}
+
 xui_method_explain(onity_project, on_clearclick,			void			)( xui_component* sender, xui_method_args&     args )
 {
 	m_search->set_text(L"");
@@ -1681,4 +1707,9 @@ xui_method_explain(onity_project, pst_propleaf,				void			)( void )
 			inspector->set_proproot(props);
 		}
 	}
+}
+
+xui_method_explain(onity_project, get_pathview, xui_treeview*)(void)
+{
+	return m_pathview;
 }

@@ -16,6 +16,7 @@ public:
 	xui_treedata( void );
 	xui_treedata( const std::wstring& text );
 	xui_treedata( const std::wstring& text, xui_bitmap* icon );
+	xui_treedata( const std::wstring& text, bool flag );
 
 	/*
 	//destructor
@@ -50,6 +51,7 @@ protected:
 	xui_treenode*				m_node;
 	xui_bitmap*					m_icon;
 	std::wstring				m_text;
+	bool						m_flag;
 };
 
 #endif//__xui_treedata_h__

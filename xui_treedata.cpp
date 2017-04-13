@@ -7,18 +7,28 @@ xui_create_explain(xui_treedata)( void )
 {
 	m_node = NULL;
 	m_icon = NULL;
+	m_flag = false;
 }
 xui_create_explain(xui_treedata)( const std::wstring& text )
 {
 	m_node = NULL;
 	m_icon = NULL;
 	m_text = text;
+	m_flag = false;
 }
 xui_create_explain(xui_treedata)( const std::wstring& text, xui_bitmap* icon )
 {
 	m_node = NULL;
 	m_icon = icon;
 	m_text = text;
+	m_flag = false;
+}
+xui_create_explain(xui_treedata)( const std::wstring& text, bool flag )
+{
+	m_node = NULL;
+	m_icon = NULL;
+	m_text = text;
+	m_flag = flag;
 }
 
 /*
@@ -38,7 +48,7 @@ xui_method_explain(xui_treedata, set_node,		void			)( xui_treenode* node )
 */
 xui_method_explain(xui_treedata, get_flag,		bool			)( u32 index )
 {
-	return false;
+	return m_flag;
 }
 xui_method_explain(xui_treedata, get_icon,		xui_bitmap*		)( u32 index )
 {
@@ -62,5 +72,5 @@ xui_method_explain(xui_treedata, set_text,		void			)( u32 index, const std::wstr
 }
 xui_method_explain(xui_treedata, set_flag,		void			)( u32 index, bool flag )
 {
-
+	m_flag = flag;
 }

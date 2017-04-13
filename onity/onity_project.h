@@ -38,10 +38,10 @@ public:
 	//method
 	*/
 	void						ini_pathtree		( void );
-	xui_proproot_vec			get_pathfile		( void );
 	void						get_pathfile		( const std::wstring& suff, xui_proproot_vec& filevec );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, const std::wstring& name );
+	xui_treeview*				get_pathview		( void );
 
 	/*
 	//notify
@@ -79,6 +79,7 @@ protected:
 	void						on_showfindclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_propertyclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_linetoolclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_autosave			( xui_component* sender, xui_method_args&	  args );
 
 	/*
 	//method
@@ -106,6 +107,7 @@ protected:
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 	xui_timer*					m_timer;
+	xui_timer*					m_timer_autosave;
 
 	xui_panel*					m_fill;
 	xui_control*				m_sizectrl;
@@ -138,6 +140,7 @@ protected:
 	xui_menuitem*				m_off;
 
 	std::vector<xui_treenode*>	m_histroy;
+
 	s32							m_curridx;
 };
 
