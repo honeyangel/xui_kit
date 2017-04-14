@@ -9,9 +9,6 @@ public:
 	/*
 	//constructor
 	*/
-	/*
-	//constructor
-	*/
 	onity_proproot( void );
 
 	/*
@@ -22,14 +19,15 @@ public:
 	/*
 	//method
 	*/
-	xui_treedata*		get_linkdata	( void );
-	void				set_linkdata	( xui_treedata* linkdata );
+	xui_treedata*				get_linkdata	( xui_treeview* treeview );
+	void						add_linkdata	( xui_treedata* linkdata );
+	void						del_linkdata	( xui_treedata* linkdata );
 
 protected:
 	/*
 	//member
 	*/
-	xui_treedata*		m_linkdata;
+	std::vector<xui_treedata*>	m_linkdatavec;
 };
 
 #endif//__onity_proproot_h__

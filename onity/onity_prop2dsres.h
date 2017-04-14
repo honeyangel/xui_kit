@@ -34,9 +34,6 @@ public:
 	virtual bool				was_modify		( void );
 	virtual void				ntf_rename		( const std::wstring& last, const std::wstring& curr );
 	virtual void				load			( void );
-	virtual void				save			( void );
-	virtual void				save_as			( const std::wstring& full );
-	virtual void				auto_save		( void );
 
 	/*
 	//method
@@ -59,6 +56,11 @@ protected:
 	static void					set_freetype	( void* userptr, s32  value );
 	static bool					get_loadtype	( void* userptr );
 	static void					set_loadtype	( void* userptr, bool value );
+
+	/*
+	//override
+	*/
+	virtual void				save_as			( const std::wstring& fullname, bool modify );
 
 	/*
 	//member

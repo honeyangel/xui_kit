@@ -17,6 +17,7 @@ public:
 	*/
 	xui_bitmap*				get_fileicon	( void );
 	const std::wstring&		get_fullname	( void ) const;
+	void					del_tempfile	( void );
 
 	/*
 	//virtual
@@ -44,6 +45,11 @@ public:
 	static void				on_modify_reload( xui_component* sender, xui_method_args& args );
 
 protected:
+	/*
+	//implement
+	*/
+	virtual void			save_as			( const std::wstring& fullname, bool modify ){};
+
 	/*
 	//member
 	*/

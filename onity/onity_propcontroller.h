@@ -27,13 +27,15 @@ public:
 	//override
 	*/
 	virtual bool		was_modify		( void );
-	virtual void		save			( void );
-	virtual void		auto_save		( void );
-	virtual void		save_as			( const std::wstring& full );
 	virtual void		load			( void );
 	virtual void		on_detach		( const xui_proproot_vec& proproot ){}
 
 protected:
+	/*
+	//override
+	*/
+	virtual void		save_as			( const std::wstring& fullname, bool modify );
+
 	/*
 	//member
 	*/

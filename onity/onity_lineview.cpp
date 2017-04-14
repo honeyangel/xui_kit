@@ -159,14 +159,15 @@ xui_method_explain(onity_lineview, on_drawviewmousedoubleclick,	void				)( xui_c
 {
 	if (m_viewprop && m_selected != -1)
 	{
+		onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+		xui_timeview*   timeview = timeline->get_timeview();
+		xui_treeview*   timetree = timeview->get_timetree();
+
 		const xui_proproot_vec& vec = m_viewprop->get_layers();
 		onity_proplayer* prop = dynamic_cast<onity_proplayer*>(vec[m_selected]);
-		onity_timedata*  data = dynamic_cast<onity_timedata* >(prop->get_linkdata());
+		onity_timedata*  data = dynamic_cast<onity_timedata* >(prop->get_linkdata(timetree));
 		if (data)
 		{
-			onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-			xui_timeview*   timeview = timeline->get_timeview();
-			xui_treeview*   timetree = timeview->get_timetree();
 			xui_method_ptrcall(timetree, set_selectednode	)(data->get_node(), true);
 			xui_method_ptrcall(timeview, set_timelinevisible)(data->get_line());
 		}

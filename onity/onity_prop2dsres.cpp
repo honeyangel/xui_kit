@@ -166,29 +166,15 @@ xui_method_explain(onity_prop2dsres, load,			void						)( void )
 		project->ntf_load(this);
 	}
 }
-xui_method_explain(onity_prop2dsres, save,			void						)( void )
-{
-	xui_method_ptrcall(this, save_as)(m_fullname);
-	if (xui_global::has_file(m_fullname + L".tmp"))
-	{
-		xui_global::del_file(m_fullname + L".tmp");
-	}
-}
 
-xui_method_explain(onity_prop2dsres, save_as, void)(const std::wstring& full)
+xui_method_explain(onity_prop2dsres, save_as,		void						)( const std::wstring& fullname, bool modify )
 {
 	NP2DSAssetFile* file = get_resfile();
 	if (file)
 	{
-		xui_global::set_fwatchclose();
-		file->SaveXml(xui_global::unicode_to_ascii(full));
-		xui_global::set_fwatchstart(xui_global::get_workpath());
+		file->SaveXml(xui_global::unicode_to_ascii(fullname));
+		file->SetNeedSave(modify);
 	}
-}
-
-xui_method_explain(onity_prop2dsres, auto_save, void)(void)
-{
-	xui_method_ptrcall(this, save_as)(m_fullname + L".tmp");
 }
 
 /*

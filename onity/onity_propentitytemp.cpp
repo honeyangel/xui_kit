@@ -260,10 +260,9 @@ xui_method_explain(onity_propentitytemp, on_namechanged,	void					)( xui_compone
 	xui_textbox* textbox = xui_dynamic_cast(xui_textbox, sender);
 	rna_template(textbox->get_text());
 	textbox->ini_drawer(xui_global::ascii_to_unicode(m_tempname));
-	if (m_linkdata)
+	for (u32 i = 0; i < m_linkdatavec.size(); ++i)
 	{
-		xui_treenode* node = m_linkdata->get_node();
-		node->use_linkdata();
+		m_linkdatavec[i]->get_node()->use_linkdata();
 	}
 }
 xui_method_explain(onity_propentitytemp, on_propchanged,	void					)( xui_component* sender, xui_method_propdata& args )

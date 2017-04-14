@@ -60,24 +60,15 @@ xui_method_explain(onity_propcourse, get_dragdata,	void*			)( void )
 {
 	return get_scenefile();
 }
-xui_method_explain(onity_propcourse, save,			void			)( void )
-{
-	xui_method_ptrcall(this, save_as)(m_fullname);
-	if (xui_global::has_file(m_fullname + L".tmp"))
-	{
-		xui_global::del_file(m_fullname + L".tmp");
-	}
-}
-xui_method_explain(onity_propcourse, save_as, void)(const std::wstring& full)
+
+xui_method_explain(onity_propcourse, save_as,		void			)( const std::wstring& fullname, bool modify )
 {
 	NP2DSSceneFile* file = get_scenefile();
-	xui_global::set_fwatchclose();
-	file->SaveXml(xui_global::unicode_to_ascii(full));
-	xui_global::set_fwatchstart(xui_global::get_workpath());
-}
-xui_method_explain(onity_propcourse, auto_save, void)(void)
-{
-	xui_method_ptrcall(this, save_as)(m_fullname + L".tmp");
+	if (file)
+	{
+		file->SaveXml(xui_global::unicode_to_ascii(fullname));
+		file->SetNeedSave(modify);
+	}
 }
 xui_method_explain(onity_propcourse, load,			void			)( void )
 {

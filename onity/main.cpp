@@ -62,8 +62,7 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
 		break;
 	case WM_CLOSE:
 		{
-			//PostQuitMessage(0);
-			onity_mainform::get_ptr()->show_save();
+			onity_mainform::get_ptr()->set_saveshow();
 		}
 		break;
 	case WM_MOVE:

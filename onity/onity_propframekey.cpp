@@ -98,7 +98,7 @@ xui_method_explain(onity_propframekey, set_smooth,		void			)( void* userptr, boo
 	onity_propframekey* propframekey = (onity_propframekey*)userptr;
 	propframekey->get_framekey()->SetSmooth(value);
 	onity_proplayer* proplayer = propframekey->get_layer();
-	onity_timedata* timedata = dynamic_cast<onity_timedata*>(proplayer->get_linkdata());
+	onity_timedata* timedata = dynamic_cast<onity_timedata*>(proplayer->get_linkdata(NULL));
 	timedata->cal_keyframe();
 }
 xui_method_explain(onity_propframekey, get_spark,		void*			)( void* userptr )

@@ -33,15 +33,17 @@ public:
 	virtual bool			can_rename		( void );
 	virtual bool			was_modify		( void );
 	virtual void			load			( void );
-	virtual void			save			( void );
-	virtual void			auto_save		( void );
-	virtual void			save_as			( const std::wstring& full );
 
 protected:
 	/*
 	//method
 	*/
 	void					loadfromfile	( bool notify );
+
+	/*
+	//override
+	*/
+	virtual void			save_as			( const std::wstring& fullname, bool modify );
 
 	/*
 	//member

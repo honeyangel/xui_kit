@@ -4,13 +4,21 @@
 /*
 //constructor
 */
+xui_create_explain(onity_treedata)( xui_bitmap* icon, const std::wstring& text, bool flag, xui_proproot* prop )
+: xui_treedata(text, icon, flag)
+, m_prop(prop)
+{
+	onity_proproot* proproot = dynamic_cast<onity_proproot*>(m_prop);
+	if (proproot)
+		proproot->add_linkdata(this);
+}
 xui_create_explain(onity_treedata)( xui_bitmap* icon, xui_proproot* prop )
 : xui_treedata(L"", icon)
 , m_prop(prop)
 {
 	onity_proproot* proproot = dynamic_cast<onity_proproot*>(m_prop);
 	if (proproot)
-		proproot->set_linkdata(this);
+		proproot->add_linkdata(this);
 }
 
 /*
@@ -20,7 +28,7 @@ xui_delete_explain(onity_treedata)( void )
 {
 	onity_proproot* proproot = dynamic_cast<onity_proproot*>(m_prop);
 	if (proproot)   
-		proproot->set_linkdata(NULL);
+		proproot->del_linkdata(this);
 }
 
 /*

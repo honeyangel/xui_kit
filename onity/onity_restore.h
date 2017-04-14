@@ -22,12 +22,11 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void		on_accept				( xui_component* sender, xui_method_args& args );
+	virtual void		on_accept				( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//event
 	*/
-	void				on_recentdoubleclick	( xui_component* sender, xui_method_mouse& args );
 	void				on_buttonclick			( xui_component* sender, xui_method_args&  args );
 
 	/*
@@ -38,10 +37,13 @@ protected:
 	/*
 	//member
 	*/
-	xui_drawer*						m_drawer;
-	xui_treeview*					m_restore;
-	xui_panel*						m_bottom;
-	xui_button*						m_accept;
+	xui_drawer*			m_header;
+	xui_treeview*		m_restore;
+	xui_panel*			m_bottom;
+	xui_toggle*			m_selectall;
+	xui_drawer*			m_selecttxt;
+	xui_button*			m_accept;
+	xui_button*			m_cancel;
 };
 
 #endif//__onity_restore_h__

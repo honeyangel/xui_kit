@@ -17,35 +17,40 @@ public:
 	/*
 	//method
 	*/
-	void				load_unsavedfiles		( void );
+	void							load_unsavedfiles		( void );
 
 protected:
 	/*
 	//callback
 	*/
-	virtual void		on_accept				( xui_component* sender, xui_method_args& args );
-	virtual void		on_cancel				( xui_component* sender, xui_method_args& args );
+	virtual void					on_updateself			( xui_method_update& args );
+	virtual void					on_accept				( xui_component* sender, xui_method_args&  args );
+	virtual void					on_cancel				( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//event
 	*/
-	void				on_recentdoubleclick	( xui_component* sender, xui_method_mouse& args );
-	void				on_buttonclick			( xui_component* sender, xui_method_args&  args );
+	void							on_toggleclick			( xui_component* sender, xui_method_args&  args );
+	void							on_buttonclick			( xui_component* sender, xui_method_args&  args );
 
 	/*
 	//method
 	*/
-	void				save					( void );
+	void							save					( void );
+	void							quit					( void );
 	
 	/*
 	//member
 	*/
-	xui_drawer*						m_drawer;
+	xui_drawer*						m_header;
 	xui_treeview*					m_save;
 	xui_panel*						m_bottom;
-	xui_button*						m_accept;
+	xui_toggle*						m_selectall;
+	xui_drawer*						m_selecttxt;
+	xui_toolbar*					m_tool;
+	xui_button*						m_yes;
+	xui_button*						m_no;
 	xui_button*						m_cancel;
-	std::vector<onity_propfile *>	m_unsavepropfiles;
 };
 
 #endif//__onity_save_h__

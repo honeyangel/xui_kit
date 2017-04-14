@@ -11,7 +11,7 @@ xui_create_explain(onity_timedata)( xui_bitmap* icon, xui_proproot* prop )
 	m_icon = icon;
 
 	onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(m_prop);
-	if (propleaf)   propleaf->set_linkdata(this);
+	if (propleaf)   propleaf->add_linkdata(this);
 }
 
 /*
@@ -20,7 +20,7 @@ xui_create_explain(onity_timedata)( xui_bitmap* icon, xui_proproot* prop )
 xui_delete_explain(onity_timedata)( void )
 {
 	onity_propleaf* propleaf = dynamic_cast<onity_propleaf*>(m_prop);
-	if (propleaf)   propleaf->set_linkdata(NULL);
+	if (propleaf)   propleaf->del_linkdata(this);
 }
 
 /*

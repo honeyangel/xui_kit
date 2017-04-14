@@ -567,13 +567,32 @@ xui_method_explain(xui_treenode, on_nodeexpand,		void								)( xui_component* s
 xui_method_explain(xui_treenode, on_toggleclick,	void								)( xui_component* sender, xui_method_args&  args )
 {
 	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
+	u32 index = -1;
 	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
 		if (m_widgetvec[i] == toggle)
 		{
-			m_linkdata->set_flag(i, toggle->was_push());
-			use_linkdata();
+			index = i;
 			break;
+		}
+	}
+
+	if (index != -1)
+	{
+		if (m_selected)
+		{
+			xui_treeview* treeview = xui_dynamic_cast(xui_treeview, m_parent);
+			std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+			for (u32 i = 0; i < nodevec.size(); ++i)
+			{
+				nodevec[i]->get_linkdata()->set_flag(index, toggle->was_push());
+				nodevec[i]->use_linkdata();
+			}
+		}
+		else
+		{
+			m_linkdata->set_flag(index, toggle->was_push());
+			use_linkdata();
 		}
 	}
 }

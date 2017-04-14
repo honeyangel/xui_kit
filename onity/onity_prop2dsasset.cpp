@@ -105,9 +105,8 @@ xui_method_explain(onity_prop2dsasset, on_namechanged,	void		)( xui_component* s
 		asset->GetOwnedFile()->SetNeedSave(true);
 	}
 
-	if (m_linkdata)
+	for (u32 i = 0; i < m_linkdatavec.size(); ++i)
 	{
-		xui_treenode* node = m_linkdata->get_node();
-		node->use_linkdata();
+		m_linkdatavec[i]->get_node()->use_linkdata();
 	}
 }

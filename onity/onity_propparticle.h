@@ -32,9 +32,6 @@ public:
 	virtual void*			get_dragdata		( void );
 	virtual bool			was_modify			( void );
 	virtual void			load				( void );
-	virtual void			save				( void );
-	virtual void			auto_save			( void );
-	virtual void			save_as				( const std::wstring& full );
 
 protected:
 	/*
@@ -42,6 +39,11 @@ protected:
 	*/
 	void					on_propchanged		( xui_component* sender, xui_method_propdata&	args );
 	void					on_flagchanged		( xui_component* sender, xui_method_args&		args );
+
+	/*
+	//override
+	*/
+	virtual void			save_as				( const std::wstring& fullname, bool modify );
 
 	/*
 	//member

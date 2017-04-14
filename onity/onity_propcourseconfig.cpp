@@ -119,7 +119,9 @@ xui_method_explain(onity_propcourseconfig, on_propchanged,		void			)( xui_compon
 {
 	if (args.propdata->get_name() == L"Course")
 	{
-		if (m_linkdata)
-			m_linkdata->get_node()->use_linkdata();
+		for (u32 i = 0; i < m_linkdatavec.size(); ++i)
+		{
+			m_linkdatavec[i]->get_node()->use_linkdata();
+		}
 	}
 }

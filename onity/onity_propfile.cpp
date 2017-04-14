@@ -40,6 +40,13 @@ xui_method_explain(onity_propfile, get_fullname,		const std::wstring&	)( void ) 
 {
 	return m_fullname;
 }
+xui_method_explain(onity_propfile, del_tempfile,		void				)( void )
+{
+	if (xui_global::has_file(m_fullname+L".tmp"))
+	{
+		xui_global::del_file(m_fullname+L".tmp");
+	}
+}
 
 /*
 //virtual
@@ -63,9 +70,18 @@ xui_method_explain(onity_propfile, can_rename,			bool				)( void )
 xui_method_explain(onity_propfile, load,				void				)( void )
 {}
 xui_method_explain(onity_propfile, save,				void				)( void )
-{}
+{
+	xui_global::set_fwatchclose();
+	save_as(m_fullname, false);
+	xui_global::set_fwatchstart(xui_global::get_workpath());
+	del_tempfile();
+}
 xui_method_explain(onity_propfile, auto_save,			void				)( void )
-{}
+{
+	xui_global::set_fwatchclose();
+	save_as(m_fullname+L".tmp", true);
+	xui_global::set_fwatchstart(xui_global::get_workpath());
+}
 xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
 {
 	if (was_modify())
@@ -87,6 +103,7 @@ xui_method_explain(onity_propfile, ntf_modify,			void				)( void )
 }
 xui_method_explain(onity_propfile, ntf_rename,			void				)( const std::wstring& last, const std::wstring& curr )
 {
+	del_tempfile();
 	int npos = m_fullname.find(last);
 	m_fullname.replace(npos, last.length(), curr);
 
@@ -149,15 +166,11 @@ xui_method_explain(onity_propfile, on_notify_cancel,	void				)( xui_component* s
 {
 	onity_propfile* propfile = (onity_propfile*)sender->get_window()->get_data();
 	propfile->load();
+	propfile->del_tempfile();
 }
 xui_method_explain(onity_propfile, on_modify_reload,	void				)( xui_component* sender, xui_method_args& args )
 {
 	onity_propfile* propfile = (onity_propfile*)sender->get_window()->get_data();
 	propfile->load();
-
-	if (xui_global::has_file(propfile->get_fullname() + L".tmp"))
-	{
-		xui_global::del_file(propfile->get_fullname() + L".tmp");
-	}
-
+	propfile->del_tempfile();
 }

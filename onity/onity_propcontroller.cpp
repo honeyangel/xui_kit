@@ -51,29 +51,15 @@ xui_method_explain(onity_propcontroller, was_modify,	bool			)( void )
 
 	return false;
 }
-
-xui_method_explain(onity_propcontroller, save_as, void)( const std::wstring& full )
+xui_method_explain(onity_propcontroller, save_as,		void			)( const std::wstring& fullname, bool modify )
 {
 	NP2DSStateCtrl* file = get_statectrl();
-	xui_global::set_fwatchclose();
-	file->SaveXmlFile(xui_global::unicode_to_ascii(full));
-	xui_global::set_fwatchstart(xui_global::get_workpath());
-}
-
-xui_method_explain(onity_propcontroller, save,			void			)( void )
-{
-	xui_method_ptrcall(this, save_as)(m_fullname);
-	if (xui_global::has_file(m_fullname + L".tmp"))
+	if (file)
 	{
-		xui_global::del_file(m_fullname + L".tmp");
+		file->SaveXmlFile(xui_global::unicode_to_ascii(fullname));
+		file->SetNeedSave(modify);
 	}
 }
-
-xui_method_explain(onity_propcontroller, auto_save, void)(void)
-{
-	xui_method_ptrcall(this, save_as)(m_fullname + L".tmp");
-}
-
 xui_method_explain(onity_propcontroller, load,			void			)( void )
 {
 	if (m_statectrl)

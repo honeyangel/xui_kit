@@ -9,6 +9,7 @@ public:
 	/*
 	//constructor
 	*/
+	onity_treedata( xui_bitmap* icon, const std::wstring& text, bool flag, xui_proproot* prop );
 	onity_treedata( xui_bitmap* icon, xui_proproot* prop );
 
 	/*

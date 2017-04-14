@@ -729,7 +729,7 @@ xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component
 
 		if (pick)
 		{
-			xui_treenode* node = pick->get_linkdata()->get_node();
+			xui_treenode* node = pick->get_linkdata(treeview)->get_node();
 			if (args.alt  && onity_mainform::get_ptr()->was_gamerun() == false)
 			{
 				std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
@@ -870,6 +870,9 @@ xui_method_explain(onity_scene, on_drawviewmouserise,		void					)( xui_component
 
 	if (args.mouse == MB_L)
 	{
+		onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+		xui_treeview* treeview = hierarchy->get_treeview();
+
 		if (m_dragprop)
 		{
 			use_snapinfo();
@@ -893,14 +896,12 @@ xui_method_explain(onity_scene, on_drawviewmouserise,		void					)( xui_component
 				xui_rect2d<s32> temp = prop->get_bounding(m_trans, m_ratio);
 				if (temp.get_inter(rt).was_valid())
 				{
-					nextvec.push_back(prop->get_linkdata()->get_node());
+					nextvec.push_back(prop->get_linkdata(treeview)->get_node());
 				}
 			}
 
 			if (nextvec.size() > 0)
 			{
-				onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-				xui_treeview* treeview = hierarchy->get_treeview();
 				if (args.ctrl == false)
 					treeview->non_selectednode(false);
 
