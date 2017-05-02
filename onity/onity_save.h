@@ -14,11 +14,6 @@ public:
 	*/
 	onity_save( void );
 
-	/*
-	//method
-	*/
-	void							load_unsavedfiles		( void );
-
 protected:
 	/*
 	//callback
@@ -36,6 +31,7 @@ protected:
 	/*
 	//method
 	*/
+	void							load					( void );
 	void							save					( void );
 	void							quit					( void );
 	

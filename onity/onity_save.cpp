@@ -107,48 +107,14 @@ xui_create_explain(onity_save)( void )
 	add_child(m_header);
 	add_child(m_bottom);
 	add_child(m_save);
+
+	load();
 }
 
 /*
 //method
 */
-xui_method_explain(onity_save, load_unsavedfiles,	void)( void )
-{
-	std::vector<onity_propfile*> savevec;
-	std::vector<xui_treenode*>   pathvec = onity_mainform::get_ptr()->get_project()->get_pathview()->get_entirenode();
-	for (u32 i = 0; i < pathvec.size(); ++i)
-	{
-		xui_treenode*	pathnode = pathvec[i];
-		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
 
-		const xui_proproot_vec& filevec = proppath->get_fileprop();
-		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
-		{
-			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
-			if (propfile->was_modify())
-			{
-				savevec.push_back(propfile);
-			}
-		}
-	}
-
-	if (savevec.size() > 0)
-	{
-		for (u32 i = 0; i < savevec.size(); ++i)
-		{
-			m_save->add_upmostnode(i, new onity_treedata(
-				savevec[i]->get_fileicon(), 
-				savevec[i]->get_fullname(),
-				true,
-				savevec[i]));
-		}
-	}
-	else
-	{
-		quit();
-	}
-}
 
 /*
 //callback
@@ -217,6 +183,43 @@ xui_method_explain(onity_save, on_toggleclick,		void)( xui_component* sender, xu
 /*
 //method
 */
+xui_method_explain(onity_save, load,				void)( void )
+{
+	std::vector<onity_propfile*> savevec;
+	std::vector<xui_treenode*>   pathvec = onity_mainform::get_ptr()->get_project()->get_pathview()->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
+		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+
+		const xui_proproot_vec& filevec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
+		{
+			onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
+			if (propfile->was_modify())
+			{
+				savevec.push_back(propfile);
+			}
+		}
+	}
+
+	if (savevec.size() > 0)
+	{
+		for (u32 i = 0; i < savevec.size(); ++i)
+		{
+			m_save->add_upmostnode(i, new onity_treedata(
+				savevec[i]->get_fileicon(), 
+				savevec[i]->get_fullname(),
+				true,
+				savevec[i]));
+		}
+	}
+	else
+	{
+		quit();
+	}
+}
 xui_method_explain(onity_save, save,				void)( void )
 {
 	for (u32 i = 0; i < m_save->get_upmostnodecount(); ++i)

@@ -180,7 +180,7 @@ xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::ws
 	{}
 
 	if (propfile && xui_global::has_file(full+L".tmp"))
-		onity_mainform::get_ptr()->add_unsavedfile(full);
+		onity_mainform::get_ptr()->add_backupfile(propfile);
 
 	return propfile;
 }

@@ -36,7 +36,7 @@
 #include "onity_recent.h"
 #include "onity_config.h"
 #include "onity_course.h"
-#include "onity_restore.h"
+#include "onity_backup.h"
 #include "onity_save.h"
 #include "onity_mainform.h"
 
@@ -648,15 +648,14 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	NPRender::Init();
 	NP2DSLib::Init();
 	onity_project* project = get_project();
-	m_unsavedfiles.clear();
+	m_backupfiles.clear();
 	xui_method_ptrcall(project, ini_pathtree)();
 
-	if (m_unsavedfiles.size() > 0)
+	if (m_backupfiles.size() > 0)
 	{
-		onity_restore* restore = new onity_restore;
-		restore->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_restoreaccept);
-		xui_method_ptrcall(restore, load_unsavedfiles)();
-		xui_desktop::get_ins()->add_child(restore);
+		onity_backup* backup = new onity_backup;
+		backup->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_backupaccept);
+		xui_desktop::get_ins()->add_child(backup);
 	}
 	else
 	{
@@ -666,31 +665,17 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 	}
 }
 
-xui_method_explain(onity_mainform, on_restoreaccept, void)(xui_component* sender, xui_method_args&  args)
+xui_method_explain(onity_mainform, on_backupaccept, void)(xui_component* sender, xui_method_args&  args)
 {
-	onity_restore* dialog = xui_dynamic_cast(onity_restore, sender);
-	dialog->set_visible(false);
-	xui_desktop::get_ins()->del_child(dialog);
+	onity_backup* backup = xui_dynamic_cast(onity_backup, sender);
+	backup->set_visible(false);
+	xui_desktop::get_ins()->del_child(backup);
+	m_backupfiles.clear();
 
 	onity_config* config = new onity_config;
 	config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
 	xui_desktop::get_ins()->add_child(config);
 }
-
-//xui_method_explain(onity_mainform, on_saveaccept, void)(xui_component* sender, xui_method_args&  args)
-//{
-//	onity_save* dialog = xui_dynamic_cast(onity_save, sender);
-//	dialog->set_visible(false);
-//	xui_desktop::get_ins()->del_child(dialog);
-//	PostQuitMessage(0);
-//}
-//
-//xui_method_explain(onity_mainform, on_savecancel, void)(xui_component* sender, xui_method_args&  args)
-//{
-//	onity_save* dialog = xui_dynamic_cast(onity_save, sender);
-//	dialog->set_visible(false);
-//	xui_desktop::get_ins()->del_child(dialog);
-//}
 
 xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
@@ -749,26 +734,22 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 	}
 }
 
-xui_method_explain(onity_mainform, add_unsavedfile,		void				)(const std::wstring& full )
+xui_method_explain(onity_mainform, add_backupfile,		void				)( xui_proproot* prop )
 {
-	m_unsavedfiles.push_back(full);
+	m_backupfiles.push_back(prop);
 }
 
-xui_method_explain(onity_mainform, get_unsavedfilenum,	u32					)( void ) const
+xui_method_explain(onity_mainform, get_backupfilenum,	u32					)( void ) const
 {
-	return m_unsavedfiles.size();
+	return m_backupfiles.size();
 }
 
-xui_method_explain(onity_mainform, get_unsavedfile,		const std::wstring&	)( u32 index ) const
+xui_method_explain(onity_mainform, get_backupfile,		xui_proproot*		)( u32 index ) const
 {
-	return m_unsavedfiles[index];
+	return m_backupfiles[index];
 }
 
 xui_method_explain(onity_mainform, set_saveshow,		void				)( void )
 {
-	onity_save* save = new onity_save;
-	//save->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_saveaccept);
-	//save->xm_cancel += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_savecancel);
-	xui_method_ptrcall(save, load_unsavedfiles)();
-	xui_desktop::get_ins()->add_child(save);
+	xui_desktop::get_ins()->add_child(new onity_save);
 }

@@ -55,9 +55,9 @@ public:
 	onity_console*				get_console			( void );
 	onity_timeline*				get_timeline		( void );
 	onity_course*				get_course			( void );
-	void						add_unsavedfile		( const std::wstring& full );
-	u32							get_unsavedfilenum	( void ) const;
-	const std::wstring&			get_unsavedfile		( u32 index ) const;
+	void						add_backupfile		( xui_proproot* prop );
+	u32							get_backupfilenum	( void ) const;
+	xui_proproot*				get_backupfile		( u32 index ) const;
 
 	/*
 	//method
@@ -90,9 +90,7 @@ protected:
 	void						on_clicksaveall		( xui_component* sender, xui_method_args&  args );
 	void						on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void						on_recentaccept		( xui_component* sender, xui_method_args&  args );
-	void						on_restoreaccept	( xui_component* sender, xui_method_args&  args );
-	//void						on_saveaccept		( xui_component* sender, xui_method_args&  args );
-	//void						on_savecancel		( xui_component* sender, xui_method_args&  args );
+	void						on_backupaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_configaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
@@ -132,8 +130,7 @@ protected:
 	xui_menuitem*				m_load;
 	xui_menuitem*				m_reset;
 	s32							m_steptime;
-
-	std::vector<std::wstring>	m_unsavedfiles;
+	std::vector<xui_proproot*>	m_backupfiles;
 };
 
 #endif//__onity_mainform_h__
