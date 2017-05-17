@@ -28,6 +28,7 @@ xui_implement_rtti(onity_game, xui_dockpage);
 
 std::string	g_strQQ;
 std::string	g_strPWD;
+bool		g_AutoLogin = false;
 extern bool gInitCompleted;
 
 /*

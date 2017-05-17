@@ -5,6 +5,7 @@
 #include "xui_treenode.h"
 #include "xui_treedata.h"
 #include "onity_backup.h"
+#include "onity_filedata.h"
 #include "onity_propfile.h"
 #include "onity_treedata.h"
 #include "onity_mainform.h"

@@ -258,6 +258,12 @@
     </ClInclude>
     <ClInclude Include="onity_save.h" />
     <ClInclude Include="onity_backup.h" />
+    <ClInclude Include="onity_propentitystar.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_entitystardata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -518,6 +524,12 @@
     </ClCompile>
     <ClCompile Include="onity_save.cpp" />
     <ClCompile Include="onity_backup.cpp" />
+    <ClCompile Include="onity_propentitystar.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_entitystardata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">

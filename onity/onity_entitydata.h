@@ -19,7 +19,8 @@ public:
 	/*
 	//virtual
 	*/
-	virtual std::wstring get_text( u32 index );
+	virtual std::wstring		get_text		( u32 index );
+	virtual xui_family_render	get_textdraw	( u32 index );
 };
 
 #endif//__onity_entitydata_h__

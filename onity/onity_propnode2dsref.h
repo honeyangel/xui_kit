@@ -20,7 +20,7 @@ public:
 protected:
 	/*
 	//static
-	*/
+	*/ 
 	static xui_vector<f64>	get_position	( void* userptr );
 	static void				set_position	( void* userptr, const xui_vector<f64>& value );
 	static xui_vector<f64>	get_scale		( void* userptr );

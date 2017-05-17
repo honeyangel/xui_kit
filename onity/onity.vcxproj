@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -15,6 +15,7 @@
     <ClInclude Include="onity_blankbox.h" />
     <ClInclude Include="onity_course.h" />
     <ClInclude Include="onity_courseconfigdata.h" />
+    <ClInclude Include="onity_entitystardata.h" />
     <ClInclude Include="onity_gradpane.h" />
     <ClInclude Include="onity_maprefdata.h" />
     <ClInclude Include="onity_animator.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="onity_prop2dsasset.h" />
     <ClInclude Include="onity_propcourseconfig.h" />
     <ClInclude Include="onity_propedit.h" />
+    <ClInclude Include="onity_propentitystar.h" />
     <ClInclude Include="onity_propmapref.h" />
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
@@ -117,6 +119,7 @@
     <ClCompile Include="onity_blankbox.cpp" />
     <ClCompile Include="onity_course.cpp" />
     <ClCompile Include="onity_courseconfigdata.cpp" />
+    <ClCompile Include="onity_entitystardata.cpp" />
     <ClCompile Include="onity_gradpane.cpp" />
     <ClCompile Include="onity_maprefdata.cpp" />
     <ClCompile Include="onity_animator.cpp" />
@@ -135,6 +138,7 @@
     <ClCompile Include="onity_pivotbox.cpp" />
     <ClCompile Include="onity_propcourseconfig.cpp" />
     <ClCompile Include="onity_propedit.cpp" />
+    <ClCompile Include="onity_propentitystar.cpp" />
     <ClCompile Include="onity_propmapref.cpp" />
     <ClCompile Include="onity_propcourse.cpp" />
     <ClCompile Include="onity_propctrl_entitycomp.cpp" />
@@ -236,7 +240,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -289,7 +293,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_EDITOR;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../;../../BreezeGame/engine/inc;../../BreezeGame/engine/extern/glee;../../BreezeGame/engine/liblua/inc;../../BreezeGame/engine/libtolua/inc;../../BreezeGame/engine/m3e/inc;../../BreezeGame/engine/libxml/inc;../../BreezeGame/omiga/Entity/Component;../../BreezeGame/omiga/Entity;../../BreezeGame/omiga/Core;../../BreezeGame/omiga/Entity/Component/Transform;../../BreezeGame/omiga/Libs;../../BreezeGame/omiga;../../BreezeGame/game;../../BreezeGame/engine/extern/pthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

@@ -66,8 +66,8 @@ protected:
 	*/
 	xui_treenode*		add_scenelayer			( NP2DSSceneLayer* src );
 	xui_treenode*		add_scenelayer			( const std::string& name );
-	xui_treenode*		add_filternode			( const std::string& name );
-	xui_treenode*		get_filternode			( const std::string& name );
+	xui_treenode*		add_filternode			( const std::string& name, bool top );
+	xui_treenode*		get_filternode			( const std::string& name, bool top );
 	void				del_coursenode			( const std::vector<xui_treenode*>& nodes );
 	void				del_scenelayer			( xui_treenode* root );
 	void				del_maprefnode			( xui_treenode* node );

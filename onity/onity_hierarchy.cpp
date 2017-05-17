@@ -8,6 +8,8 @@
 #include "NP2DSSceneFile.h"
 #include "NP2DSSceneLayer.h"
 #include "Entity/Component/GUI/GUIComponent.h"
+#include "Entity/Entity.h"
+#include "Game/Scene/Star/StarAIComp.h"
 
 #include "xui_desktop.h"
 #include "xui_bitmap.h"
@@ -29,9 +31,11 @@
 #include "onity_filterdata.h"
 #include "onity_maprefdata.h"
 #include "onity_entitydata.h"
+#include "onity_entitystardata.h"
 #include "onity_propcourse.h"
 #include "onity_propmapref.h"
 #include "onity_propentity.h"
+#include "onity_propentitystar.h"
 #include "onity_propscenelayer.h"
 #include "onity_hierarchy.h"
 
@@ -140,7 +144,7 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 			for (npu16 i = 0; i <scenefile->GetSceneLayerCount(); ++i)
 			{
 				NP2DSSceneLayer* scenelayer = scenefile->GetSceneLayer(i);
-				xui_treenode* root = m_tree->add_upmostnode(i, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
+				xui_treenode* root = m_tree->add_upmostnode(i, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer), false));
 				std::list<NPRenderObject*> children = scenelayer->GetChildren();
 				for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)
 				{
@@ -158,11 +162,20 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 */
 xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*		)( Omiga::Entity* ent )
 {
-	std::string   filtername = ent->GetTemplateName();
-	xui_treenode* filternode = get_filternode(filtername);
-	xui_treenode* entitynode = filternode->add_leafnode(
-		filternode->get_leafnodecount(), 
-		new onity_entitydata(onity_resource::icon_entity, new onity_propentity(ent)));
+	std::string			filtername = ent->GetTemplateName();
+	xui_treenode*		filternode = get_filternode(filtername, ent->GetLinkRef() != NULL);
+	onity_propentity*	entityprop = new onity_propentity(ent);
+	xui_treenode*		entitynode = filternode->add_leafnode(filternode->get_leafnodecount(), new onity_entitydata(onity_resource::icon_entity, entityprop));
+
+	if (entityprop->get_entity()->GetTemplateName() == "Star")
+	{
+		BreezeGame::StarAIComp* starAI = entityprop->get_entity()->GetComponent<BreezeGame::StarAIComp>();
+		u32 count = starAI->GetStarVec().size();
+		for (u32 i = 0; i < count; ++i)
+		{
+			entitynode->add_leafnode(i, new onity_entitystardata(onity_resource::icon_entity, new onity_propentitystar(entityprop, i)));
+		}
+	}
 
 	m_entitymap[ent] = entitynode;
 	return entitynode;
@@ -538,12 +551,12 @@ xui_method_explain(onity_hierarchy, on_treemousedoubleclick,void				)( xui_compo
 /*
 //method
 */
-xui_method_explain(onity_hierarchy, add_filternode,			xui_treenode*		)( const std::string& name )
+xui_method_explain(onity_hierarchy, add_filternode,			xui_treenode*		)( const std::string& name, bool top )
 {
-	u32 index = m_tree->get_upmostnodecount();
-	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propentitytemp(name)));
+	u32 index = top ? 0 : m_tree->get_upmostnodecount();
+	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propentitytemp(name), top));
 }
-xui_method_explain(onity_hierarchy, get_filternode,			xui_treenode*		)( const std::string& name )
+xui_method_explain(onity_hierarchy, get_filternode,			xui_treenode*		)( const std::string& name, bool top )
 {
 	std::wstring  filtername = xui_global::ascii_to_unicode(name);
 	xui_treenode* filternode = NULL;
@@ -560,7 +573,7 @@ xui_method_explain(onity_hierarchy, get_filternode,			xui_treenode*		)( const st
 
 	if (filternode == NULL)
 	{
-		filternode = add_filternode(name);
+		filternode = add_filternode(name, top);
 	}
 
 	return filternode;
@@ -573,7 +586,7 @@ xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( const st
 	NP2DSSceneLayer* scenelayer = m_editprop->get_scenefile()->AddSceneLayer(NP2DSSceneLayer::LT_SCENE, 1, 1, 8000, 640);
 	scenelayer->SetName(name);
 	u32 index = m_tree->get_upmostnodecount();
-	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
+	return m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer), false));
 }
 xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( NP2DSSceneLayer* src )
 {
@@ -583,7 +596,7 @@ xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( NP2DSSce
 	NP2DSSceneLayer* scenelayer = m_editprop->get_scenefile()->AddSceneLayer(NP2DSSceneLayer::LT_SCENE, 1, 1, 8000, 640);
 	scenelayer->Clone(src);
 	u32 index = m_tree->get_upmostnodecount();
-	xui_treenode* root = m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer)));
+	xui_treenode* root = m_tree->add_upmostnode(index, new onity_filterdata(onity_resource::icon_filter, new onity_propscenelayer(scenelayer), false));
 
 	std::list<NPRenderObject*> children = scenelayer->GetChildren();
 	for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)

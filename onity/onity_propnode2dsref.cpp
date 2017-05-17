@@ -68,14 +68,13 @@ xui_method_explain(onity_propnode2dsref, get_2dsref,	NP2DSTransRef*	)( void )
 */
 xui_method_explain(onity_propnode2dsref, get_position,	xui_vector<f64>	)( void* userptr )
 {
-	onity_propnode2dsref* prop = (onity_propnode2dsref*)userptr;
-	NPVector3 trans = prop->get_2dsref()->GetWorldTrans();
-	return xui_vector<f64>((f64)trans.x, (f64)trans.y);
+	onity_propedit* prop = (onity_propedit*)userptr;
+	return prop->ori_position().to<f64>();
 }
 xui_method_explain(onity_propnode2dsref, set_position,	void			)( void* userptr, const xui_vector<f64>& value )
 {
-	onity_propnode2dsref* prop = (onity_propnode2dsref*)userptr;
-	prop->get_2dsref()->SetWorldTrans(NPVector3((npf32)value.x, (npf32)value.y, 0.0f));
+	onity_propedit* prop = (onity_propedit*)userptr;
+	prop->set_position(value.to<s32>());
 }
 xui_method_explain(onity_propnode2dsref, get_scale,		xui_vector<f64>	)( void* userptr )
 {

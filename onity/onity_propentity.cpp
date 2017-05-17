@@ -194,6 +194,11 @@ xui_method_explain(onity_propentity, set_position,		void			)( const xui_vector<s
 	if (transform)
 	{
 		transform->SetPosition(Omiga::Vec2Df((f32)pos.x, (f32)pos.y));
+		NP2DSTransRef* linkref = m_entity->GetLinkRef();
+		if (linkref)
+		{
+			linkref->SetWorldTrans(NPVector3((f32)pos.x - (f32)m_entity->GetLeftPos(), (f32)pos.y, 0.0f));
+		}
 	}
 }
 
@@ -202,18 +207,13 @@ xui_method_explain(onity_propentity, set_position,		void			)( const xui_vector<s
 */
 xui_method_explain(onity_propentity, get_position,		xui_vector<f64>	)( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	Omiga::Vec2Df					position	= transform->GetPosition();
-	return xui_vector<f64>((f64)position.x, (f64)position.y);
+	onity_propedit* prop = (onity_propedit*)userptr;
+	return prop->ori_position().to<f64>();
 }
 xui_method_explain(onity_propentity, set_position,		void			)( void* userptr, const xui_vector<f64>& value )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	transform->SetPosition(Omiga::Vec2Df((f32)value.x, (f32)value.y));
+	onity_propedit* prop = (onity_propedit*)userptr;
+	prop->set_position(value.to<s32>());
 }
 xui_method_explain(onity_propentity, get_scale,			xui_vector<f64>	)( void* userptr )
 {
