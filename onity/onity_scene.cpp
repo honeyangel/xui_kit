@@ -1201,6 +1201,9 @@ xui_method_explain(onity_scene, cal_snapmove,				xui_vector<s32>			)( const std:
 			}
 		}
 
+		if (root == NULL)
+			return move;
+
 		onity_snapinfo_map::iterator itor;
 		for (itor = m_horzsnap.begin(); itor != m_horzsnap.end(); ++itor)
 		{
