@@ -7,13 +7,13 @@
 #include "xui_kindctrl.h"
 #include "xui_textbox.h"
 #include "onity_propctrl_transref.h"
-#include "onity_propcourseconfig.h"
+#include "onity_proplevelconfig.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_propcourseconfig)( NP2DSSceneFile* course )
-: m_course(course)
+xui_create_explain(onity_proplevelconfig)( NP2DSSceneFile* file )
+: m_file(file)
 , m_change(false)
 , m_playerspeed(600)
 , m_speedlevel(1)
@@ -23,12 +23,12 @@ xui_create_explain(onity_propcourseconfig)( NP2DSSceneFile* course )
 , m_mudspeed(400)
 , m_flystar(2)
 {
-	m_basekind = new xui_propkind(this, L"CourseConfig", "CourseConfig", xui_kindctrl::create, NULL, true);
-	m_basekind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_propcourseconfig>(this, &onity_propcourseconfig::on_propchanged);
+	m_basekind = new xui_propkind(this, L"LevelConfig", "LevelConfig", xui_kindctrl::create, NULL, true);
+	m_basekind->xm_propchanged += new xui_method_member<xui_method_propdata, onity_proplevelconfig>(this, &onity_proplevelconfig::on_propchanged);
 	m_basekind->add_propdata(new onity_propdata_course(
 		m_basekind,
-		L"Course",
-		&m_course));
+		L"Level",
+		&m_file));
 	m_basekind->add_propdata(new xui_propdata_bool(
 		m_basekind,
 		L"Change",
@@ -85,17 +85,17 @@ xui_create_explain(onity_propcourseconfig)( NP2DSSceneFile* course )
 /*
 //method
 */
-xui_method_explain(onity_propcourseconfig, get_course,			NP2DSSceneFile*	)( void )
+xui_method_explain(onity_proplevelconfig, get_level,			NP2DSSceneFile*	)( void )
 {
-	return m_course;
+	return m_file;
 }
-xui_method_explain(onity_propcourseconfig, set_course,			void			)( NP2DSSceneFile* course )
+xui_method_explain(onity_proplevelconfig, set_level,			void			)( NP2DSSceneFile* file )
 {
-	m_course = course;
+	m_file = file;
 }
-xui_method_explain(onity_propcourseconfig, get_configstring,	std::string		)( void )
+xui_method_explain(onity_proplevelconfig, get_configstring,	std::string		)( void )
 {
-	std::string name = NPFileNameHelper::SafeName(m_course->GetName());
+	std::string name = NPFileNameHelper::SafeName(m_file->GetName());
 	std::stringstream text;
 	text << (m_change ? 1 : 0);		text << ";";
 	text << m_playerspeed;			text << ";";
@@ -115,7 +115,7 @@ xui_method_explain(onity_propcourseconfig, get_configstring,	std::string		)( voi
 /*
 //event
 */
-xui_method_explain(onity_propcourseconfig, on_propchanged,		void			)( xui_component* sender, xui_method_propdata& args )
+xui_method_explain(onity_proplevelconfig, on_propchanged,		void			)( xui_component* sender, xui_method_propdata& args )
 {
 	if (args.propdata->get_name() == L"Course")
 	{

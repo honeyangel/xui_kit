@@ -1,21 +1,21 @@
-#ifndef __onity_propentitystar_h__
-#define __onity_propentitystar_h__
+#ifndef __onity_propcoursenode_h__
+#define __onity_propcoursenode_h__
 
+#include "NP2DSTransRef.h"
 #include "onity_propeditnode.h"
 
-class onity_propentitynode;
-class onity_propentitystar : public onity_propeditnode
+class onity_propcoursenode : public onity_propeditnode
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_propentitystar( onity_propentitynode* node, u32 index );
+	onity_propcoursenode( NP2DSTransRef* ref );
 
 	/*
 	//method
 	*/
-	bool					was_visible		( void );
+	void					set_newref		( NP2DSAsset* asset );
 	virtual NP2DSTransRef*	get_2dsref		( void );
 	virtual xui_vector<f64>	get_scale		( void );
 	virtual void			set_scale		( const xui_vector<f64>& value );
@@ -27,14 +27,14 @@ protected:
 	/*
 	//static
 	*/
-	static bool				was_visible		( void* userptr );
+	static void*			get_asset		( void* userptr );
+	static void				set_asset		( void* userptr, void* value );
 
 	/*
 	//member
 	*/
-	onity_propentitynode*	m_groupnode;
-	u32						m_starindex;
+	NP2DSTransRef*			m_2dsref;
 	xui_propkind*			m_assetkind;
 };
 
-#endif//__onity_propentitystar_h__
+#endif//__onity_propcoursenode_h__

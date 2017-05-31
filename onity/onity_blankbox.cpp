@@ -1,14 +1,14 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
 #include "onity_resource.h"
-#include "onity_propedit.h"
+#include "onity_bounding.h"
 #include "onity_blankbox.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_blankbox)( const xui_vector<s32>& button_size, get_func propfunc )
-: m_propfunc(propfunc)
+xui_create_explain(onity_blankbox)( const xui_vector<s32>& button_size, get_func func )
+: m_func(func)
 {
 	m_horzinc	= new xui_button(button_size);
 	xui_method_ptrcall(m_horzinc,	ini_drawer		)(onity_resource::icon_horzinc);
@@ -89,15 +89,15 @@ xui_method_explain(onity_blankbox, get_vertline,		xui_linebox*)( void )
 }
 xui_method_explain(onity_blankbox, set_lineupdate,		void		)( void )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	xui_method_ptrcall(m_horzinc,	set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_horzdec,	set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_horzcancel,set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_horzequal,	set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_vertinc,	set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_vertdec,	set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_vertcancel,set_enable)(propvec.size() > 2);
-	xui_method_ptrcall(m_vertequal,	set_enable)(propvec.size() > 2);
+	std::vector<onity_bounding*> vec = (*m_func)();
+	xui_method_ptrcall(m_horzinc,	set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_horzdec,	set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_horzcancel,set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_horzequal,	set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_vertinc,	set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_vertdec,	set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_vertcancel,set_enable)(vec.size() > 2);
+	xui_method_ptrcall(m_vertequal,	set_enable)(vec.size() > 2);
 }
 
 /*
@@ -105,18 +105,16 @@ xui_method_explain(onity_blankbox, set_lineupdate,		void		)( void )
 */
 xui_method_explain(onity_blankbox, on_horzbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	if (propvec.size() > 2)
+	std::vector<onity_bounding*> vec = (*m_func)();
+	if (vec.size() > 2)
 	{
 		std::vector<s32>	steparray;
 		s32					stepequal	= 0;
 
-		for (u32 i = 1; i < propvec.size(); ++i)
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prevprop	= dynamic_cast<onity_propedit*>(propvec[i-1]);
-			onity_propedit* nextprop	= dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> prevrect	= prevprop->ori_bounding();
-			xui_rect2d<s32> nextrect	= nextprop->ori_bounding();
+			xui_rect2d<s32> prevrect	= vec[i-1]->ori_bounding();
+			xui_rect2d<s32> nextrect	= vec[i  ]->ori_bounding();
 
 			if (sender == m_horzinc ||
 				sender == m_horzdec ||
@@ -131,16 +129,14 @@ xui_method_explain(onity_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 		}
 
 		if		(sender == m_horzcancel)	stepequal = 0;
-		else if (sender == m_horzequal)		stepequal = stepequal / (propvec.size()-1);
+		else if (sender == m_horzequal)		stepequal = stepequal / (vec.size()-1);
 		else
 		{}
 
-		for (u32 i = 1; i < propvec.size(); ++i)
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prevprop	= dynamic_cast<onity_propedit*>(propvec[i-1]);
-			onity_propedit* nextprop	= dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> prevrect	= prevprop->ori_bounding();
-			xui_rect2d<s32> nextrect	= nextprop->ori_bounding();
+			xui_rect2d<s32> prevrect	= vec[i-1]->ori_bounding();
+			xui_rect2d<s32> nextrect	= vec[i  ]->ori_bounding();
 
 			s32 delta  =  0;
 			if (sender == m_horzinc ||
@@ -149,24 +145,22 @@ xui_method_explain(onity_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 			else
 				delta  =  prevrect.bx - nextrect.ax + stepequal;
 
-			nextprop->set_position(nextprop->ori_position()+xui_vector<s32>(delta, 0));
+			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(delta, 0));
 		}
 	}
 }
 xui_method_explain(onity_blankbox, on_vertbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	if (propvec.size() > 2)
+	std::vector<onity_bounding*> vec = (*m_func)();
+	if (vec.size() > 2)
 	{
 		std::vector<s32>	steparray;
 		s32					stepequal	= 0;
 
-		for (u32 i = 1; i < propvec.size(); ++i)
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prevprop	= dynamic_cast<onity_propedit*>(propvec[i-1]);
-			onity_propedit* nextprop	= dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> prevrect	= prevprop->ori_bounding();
-			xui_rect2d<s32> nextrect	= nextprop->ori_bounding();
+			xui_rect2d<s32> prevrect	= vec[i-1]->ori_bounding();
+			xui_rect2d<s32> nextrect	= vec[i  ]->ori_bounding();
 
 			if (sender == m_vertinc ||
 				sender == m_vertdec ||
@@ -181,16 +175,14 @@ xui_method_explain(onity_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 		}
 
 		if		(sender == m_vertcancel)	stepequal = 0;
-		else if (sender == m_vertequal)		stepequal = stepequal / (propvec.size()-1);
+		else if (sender == m_vertequal)		stepequal = stepequal / (vec.size()-1);
 		else
 		{}
 
-		for (u32 i = 1; i < propvec.size(); ++i)
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prevprop	= dynamic_cast<onity_propedit*>(propvec[i-1]);
-			onity_propedit* nextprop	= dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> prevrect	= prevprop->ori_bounding();
-			xui_rect2d<s32> nextrect	= nextprop->ori_bounding();
+			xui_rect2d<s32> prevrect	= vec[i-1]->ori_bounding();
+			xui_rect2d<s32> nextrect	= vec[i  ]->ori_bounding();
 
 			s32 delta  =  0;
 			if (sender == m_vertinc ||
@@ -199,7 +191,7 @@ xui_method_explain(onity_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 			else
 				delta  =  prevrect.by - nextrect.ay + stepequal;
 
-			nextprop->set_position(nextprop->ori_position()+xui_vector<s32>(0, delta));
+			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
 		}
 	}
 }

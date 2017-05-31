@@ -11,7 +11,7 @@
 #include "xui_propctrl_stdvec.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propctrl_sceneparam.h"
-#include "onity_propentity.h"
+#include "onity_propentitynode.h"
 #include "onity_mainform.h"
 #include "onity_resource.h"
 #include "onity_inspector.h"
@@ -20,29 +20,23 @@
 /*
 //constructor
 */
-xui_create_explain(onity_propentitystar)( onity_propentity* node, u32 index )
-: onity_propedit()
-, m_starnode(node)
-, m_subindex(index)
+xui_create_explain(onity_propentitystar)( onity_propentitynode* node, u32 index )
+: onity_propeditnode()
+, m_groupnode(node)
+, m_starindex(index)
 {
-	m_starkind = new xui_propkind(this, L"Star", "Star", xui_kindctrl::create, onity_resource::icon_transform, true);
-	m_starkind->add_propdata(new xui_propdata_vector(
-		m_starkind, 
-		L"Position", 
-		xui_propctrl_vector::create, 
-		get_position, 
-		set_position, 
-		this, 
-		NT_INT));
-	m_starkind->add_propdata(new xui_propdata_bool(
-		m_starkind,
+	m_assetkind = new xui_propkind(this, L"Star", "StarDesign", xui_kindctrl::create, onity_resource::icon_design, true);
+	m_assetkind->add_propdata(new xui_propdata_bool(
+		m_assetkind,
 		L"Visible",
 		xui_propctrl_bool::create,
 		was_visible,
 		NULL,
 		this));
 
-	add_propkind(m_starkind);
+	add_propkind(m_transkind);
+	add_propkind(m_paramkind);
+	add_propkind(m_assetkind);
 }
 
 /*
@@ -50,35 +44,90 @@ xui_create_explain(onity_propentitystar)( onity_propentity* node, u32 index )
 */
 xui_method_explain(onity_propentitystar, was_visible,	bool			)( void )
 {
-	Omiga::Entity* entity = m_starnode->get_entity();
+	Omiga::Entity* entity = m_groupnode->get_entity();
 	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
 	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
 	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
-	if (m_subindex < starDataVec.size())
+	if (m_starindex < starDataVec.size())
 	{
 		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
-		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_subindex].m_starType);
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
 		Omiga::Transform transform;
 		bool visible;
-		frameref->GetRenderNode(starDataVec[m_subindex].m_id, transform, visible);
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
 		return visible;
 	}
 
 	return false;
 }
-xui_method_explain(onity_propentitystar, ori_bounding,	xui_rect2d<s32>	)( void )
+xui_method_explain(onity_propentitystar, get_2dsref,	NP2DSTransRef*	)( void )
 {
-	Omiga::Entity* entity = m_starnode->get_entity();
+	Omiga::Entity* entity = m_groupnode->get_entity();
 	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
 	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
 	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
-	if (m_subindex < starDataVec.size())
+	if (m_starindex < starDataVec.size())
+	{
+		return starDataVec[m_starindex].m_LinkRef;
+	}
+
+	return NULL;
+}
+xui_method_explain(onity_propentitystar, get_scale,		xui_vector<f64>	)( void )
+{
+	Omiga::Entity* entity = m_groupnode->get_entity();
+	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
+	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
+	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
+	if (m_starindex < starDataVec.size())
 	{
 		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
-		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_subindex].m_starType);
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
 		Omiga::Transform transform;
 		bool visible;
-		frameref->GetRenderNode(starDataVec[m_subindex].m_id, transform, visible);
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
+		Omiga::Vec2Df scale = starTransform->GetScale();
+		return xui_vector<f64>((f64)scale.x, (f64)scale.y);
+	}
+
+	return xui_vector<f64>(1.0);
+}
+xui_method_explain(onity_propentitystar, set_scale,		void			)( const xui_vector<f64>& value )
+{
+	Omiga::Entity* entity = m_groupnode->get_entity();
+	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
+	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
+	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
+	if (m_starindex < starDataVec.size())
+	{
+		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
+		Omiga::Transform transform;
+		bool visible;
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
+		transform.Scale = Vec2Df((f32)value.x, (f32)value.y);
+		frameref->UpdateRenderNode(starDataVec[m_starindex].m_id, transform, visible);
+
+		NP2DSTransRef* linkref = starDataVec[m_starindex].m_LinkRef;
+		if (linkref)
+		{
+			linkref->SetWorldScale(NPVector3((npf32)value.x, (npf32)value.y, 1.0f));
+		}
+	}
+}
+xui_method_explain(onity_propentitystar, ori_bounding,	xui_rect2d<s32>	)( void )
+{
+	Omiga::Entity* entity = m_groupnode->get_entity();
+	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
+	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
+	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
+	if (m_starindex < starDataVec.size())
+	{
+		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
+		Omiga::Transform transform;
+		bool visible;
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
 		NPRect bounding = frameref->GetLocalBounding();
 		Omiga::Vec2Df pos = BreezeGame::WGVisualManager::Instance()->GetCameraCoord(starTransform->GetPosition() + transform.Position);
 		bounding.OftXY(pos.x, pos.y);
@@ -89,17 +138,17 @@ xui_method_explain(onity_propentitystar, ori_bounding,	xui_rect2d<s32>	)( void )
 }
 xui_method_explain(onity_propentitystar, ori_position,	xui_vector<s32>	)( void )
 {
-	Omiga::Entity* entity = m_starnode->get_entity();
+	Omiga::Entity* entity = m_groupnode->get_entity();
 	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
 	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
 	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
-	if (m_subindex < starDataVec.size())
+	if (m_starindex < starDataVec.size())
 	{
 		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
-		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_subindex].m_starType);
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
 		Omiga::Transform transform;
 		bool visible;
-		frameref->GetRenderNode(starDataVec[m_subindex].m_id, transform, visible);
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
 		Omiga::Vec2Df pos = starTransform->GetPosition() + transform.Position;
 		return xui_vector<s32>(pos.x, pos.y);
 	}
@@ -108,21 +157,21 @@ xui_method_explain(onity_propentitystar, ori_position,	xui_vector<s32>	)( void )
 }
 xui_method_explain(onity_propentitystar, set_position,	void			)( const xui_vector<s32>& pos )
 {
-	Omiga::Entity* entity = m_starnode->get_entity();
+	Omiga::Entity* entity = m_groupnode->get_entity();
 	Omiga::TransformComponent* starTransform = entity->GetComponent<Omiga::TransformComponent>();
 	BreezeGame::StarAIComp* starAI = entity->GetComponent<BreezeGame::StarAIComp>();
 	std::vector<BreezeGame::StarData>& starDataVec = starAI->GetStarVec();
-	if (m_subindex < starDataVec.size())
+	if (m_starindex < starDataVec.size())
 	{
 		BreezeGame::StarVisualComp* starVisual = entity->GetComponent<BreezeGame::StarVisualComp>();
-		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_subindex].m_starType);
+		BreezeGame::MultiFrameRef* frameref = starVisual->GetFrameRef(starDataVec[m_starindex].m_starType);
 		Omiga::Transform transform;
 		bool visible;
-		frameref->GetRenderNode(starDataVec[m_subindex].m_id, transform, visible);
+		frameref->GetRenderNode(starDataVec[m_starindex].m_id, transform, visible);
 		transform.Position = Vec2Df(pos.x, pos.y) - starTransform->GetPosition();
-		frameref->UpdateRenderNode(starDataVec[m_subindex].m_id, transform, visible);
+		frameref->UpdateRenderNode(starDataVec[m_starindex].m_id, transform, visible);
 
-		NP2DSTransRef* linkref = starDataVec[m_subindex].m_LinkRef;
+		NP2DSTransRef* linkref = starDataVec[m_starindex].m_LinkRef;
 		if (linkref)
 		{
 			linkref->SetWorldTrans(NPVector3(pos.x - entity->GetLeftPos(), pos.y, 0.0f));
@@ -133,16 +182,6 @@ xui_method_explain(onity_propentitystar, set_position,	void			)( const xui_vecto
 /*
 //static
 */
-xui_method_explain(onity_propentitystar, get_position,	xui_vector<f64>	)( void* userptr )
-{
-	onity_propedit* prop = (onity_propedit*)userptr;
-	return prop->ori_position().to<f64>();
-}
-xui_method_explain(onity_propentitystar, set_position,	void			)( void* userptr, const xui_vector<f64>& value )
-{
-	onity_propedit* prop = (onity_propedit*)userptr;
-	prop->set_position(value.to<s32>());
-}
 xui_method_explain(onity_propentitystar, was_visible,	bool			)( void* userptr )
 {
 	onity_propentitystar* prop = (onity_propentitystar*)userptr;

@@ -4,7 +4,7 @@
 #include "xui_panel.h"
 #include "xui_propdata.h"
 #include "onity_resource.h"
-#include "onity_propedit.h"
+#include "onity_bounding.h"
 #include "onity_scene.h"
 #include "onity_mainform.h"
 #include "onity_pivotbox.h"
@@ -101,17 +101,13 @@ xui_method_explain(onity_pivotbox, set_rectupdate,		void			)( bool update_pivot 
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> rt;
-		xui_proproot_vec propvec = onity_scene::get_selectedprop();
-		for (u32 i = 0; i < propvec.size(); ++i)
+		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			if (prop)
-			{
-				if (rt.was_valid() == false)
-					rt = prop->get_bounding(trans, ratio);
-				else
-					rt = rt.get_union(prop->get_bounding(trans, ratio));
-			}
+			if (rt.was_valid() == false)
+				rt = vec[i]->get_bounding(trans, ratio);
+			else
+				rt = rt.get_union(vec[i]->get_bounding(trans, ratio));
 		}
 
 		rt.ax -= m_pivot->get_renderw()/2;
@@ -248,17 +244,13 @@ xui_method_explain(onity_pivotbox, on_arrowmousemove,	void			)( xui_component* s
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> oribox;
-		xui_proproot_vec propvec = onity_scene::get_selectedprop();
-		for (u32 i = 0; i < propvec.size(); ++i)
+		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			if (prop)
-			{
-				if (oribox.was_valid() == false)
-					oribox = prop->get_bounding(trans, ratio);
-				else
-					oribox = oribox.get_union(prop->get_bounding(trans, ratio));
-			}
+			if (oribox.was_valid() == false)
+				oribox = vec[i]->get_bounding(trans, ratio);
+			else
+				oribox = oribox.get_union(vec[i]->get_bounding(trans, ratio));
 		}
 
 		xui_vector<s32> pt = m_pivot->get_renderpt();
@@ -327,17 +319,13 @@ xui_method_explain(onity_pivotbox, on_arrowmouserise,	void			)( xui_component* s
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> oribox;
-		xui_proproot_vec propvec = onity_scene::get_selectedprop();
-		for (u32 i = 0; i < propvec.size(); ++i)
+		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			if (prop)
-			{
-				if (oribox.was_valid() == false)
-					oribox = prop->get_bounding(trans, ratio);
-				else
-					oribox = oribox.get_union(prop->get_bounding(trans, ratio));
-			}
+			if (oribox.was_valid() == false)
+				oribox = vec[i]->get_bounding(trans, ratio);
+			else
+				oribox = oribox.get_union(vec[i]->get_bounding(trans, ratio));
 		}
 
 		xui_vector<s32> pt = m_pivot->get_renderpt();
@@ -348,24 +336,17 @@ xui_method_explain(onity_pivotbox, on_arrowmouserise,	void			)( xui_component* s
 
 		xui_vector<s32> pivot = ori_pivot();
 		xui_vector<f64> scale = (rt.get_sz()-sz).to<f64>() / oribox.get_sz().to<f64>();
-		for (u32 i = 0; i < propvec.size(); ++i)
+		for (u32 i = 0; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			if (prop)
-			{
-				//xui_rect2d<s32> orirt = prop->ori_bounding();
-				xui_vector<s32> oript = prop->ori_position();
-				//xui_vector<s32> orimd = orirt.get_pt() + orirt.get_sz()/2;
-				//xui_vector<s32> oriof = oript - orimd;
-				xui_vector<s32> final =  oript;
-				xui_vector<f64> delta = (oript-pivot).to<f64>() * scale;
-				if (sender == m_lsize || sender == m_rsize)
-					final.x = pivot.x + (s32)xui_pixel_align(delta.x);
-				if (sender == m_tsize || sender == m_bsize)
-					final.y = pivot.y + (s32)xui_pixel_align(delta.y);
+			xui_vector<s32> oript = vec[i]->ori_position();
+			xui_vector<s32> final =  oript;
+			xui_vector<f64> delta = (oript-pivot).to<f64>() * scale;
+			if (sender == m_lsize || sender == m_rsize)
+				final.x = pivot.x + (s32)xui_pixel_align(delta.x);
+			if (sender == m_tsize || sender == m_bsize)
+				final.y = pivot.y + (s32)xui_pixel_align(delta.y);
 
-				prop->set_position(final);
-			}
+			vec[i]->set_position(final);
 		}
 
 		set_rectupdate();

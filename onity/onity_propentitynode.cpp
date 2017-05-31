@@ -17,15 +17,14 @@
 #include "onity_resource.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propctrl_rendertree.h"
-#include "onity_propentity.h"
+#include "onity_propentitynode.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_propentity)( Omiga::Entity* entity )
-: onity_propedit()
+xui_create_explain(onity_propentitynode)( Omiga::Entity* entity )
+: onity_propeditnode()
 , m_entity(entity)
-, m_transkind(NULL)
 , m_graphkind(NULL)
 , m_boundkind(NULL)
 , m_box2dkind(NULL)
@@ -38,35 +37,6 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 	BreezeGame::JPBox2dPhysComp*	box2d		= m_entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	BreezeGame::GameObjAIComponent* ai			= m_entity->GetComponent<BreezeGame::GameObjAIComponent>();
 	Omiga::IAComponent*				ia			= m_entity->GetComponent<Omiga::IAComponent>();
-
-	if (transform)
-	{
-		m_transkind = new xui_propkind(this, L"Transform", "TransformComponent", xui_kindctrl::create, onity_resource::icon_transform, true);
-		m_transkind->add_propdata(new xui_propdata_vector(
-			m_transkind, 
-			L"Position", 
-			xui_propctrl_vector::create, 
-			get_position, 
-			set_position, 
-			this, 
-			NT_INT));
-		m_transkind->add_propdata(new xui_propdata_vector(
-			m_transkind,
-			L"Scale",
-			xui_propctrl_vector::create,
-			get_scale,
-			set_scale,
-			this,
-			NT_FLOAT));
-		m_transkind->add_propdata(new xui_propdata_number_func(
-			m_transkind,
-			L"Rotation",
-			xui_propctrl_number::create,
-			get_rotation,
-			set_rotation,
-			this,
-			NT_INT));
-	}
 
 	if (visual)
 	{
@@ -150,22 +120,67 @@ xui_create_explain(onity_propentity)( Omiga::Entity* entity )
 		m_inputkind = new xui_propkind(this, L"IA", "IAComponent", xui_kindctrl::create, onity_resource::icon_input, true);
 	}
 
-	if (m_transkind)	add_propkind(m_transkind);
+	if (transform)
+	{
+		add_propkind(m_transkind);
+	}
+	else
+	{
+		delete m_transkind;
+	}
+
 	if (m_graphkind)	add_propkind(m_graphkind);
 	if (m_boundkind)	add_propkind(m_boundkind);
 	if (m_box2dkind)	add_propkind(m_box2dkind);
 	if (m_logickind)	add_propkind(m_logickind);
 	if (m_inputkind)	add_propkind(m_inputkind);
+
+	if (m_entity->GetLinkRef())
+	{
+		add_propkind(m_paramkind);
+	}
+	else
+	{
+		delete m_paramkind;
+	}
 }
 
 /*
 //method
 */
-xui_method_explain(onity_propentity, get_entity,		Omiga::Entity*	)( void )
+xui_method_explain(onity_propentitynode, get_entity,		Omiga::Entity*	)( void )
 {
 	return m_entity;
 }
-xui_method_explain(onity_propentity, ori_bounding,		xui_rect2d<s32>	)( void )
+xui_method_explain(onity_propentitynode, get_2dsref,		NP2DSTransRef*	)( void )
+{
+	return m_entity->GetLinkRef();
+}
+xui_method_explain(onity_propentitynode, get_scale,			xui_vector<f64>	)( void )
+{
+	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+	if (transform)
+	{
+		Omiga::Vec2Df scale = transform->GetScale();
+		return xui_vector<f64>((f64)scale.x, (f64)scale.y);
+	}
+
+	return xui_vector<f64>(1.0);
+}
+xui_method_explain(onity_propentitynode, set_scale,			void			)( const xui_vector<f64>& value )
+{
+	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+	if (transform)
+	{
+		transform->SetScale(Omiga::Vec2Df((f32)value.x, (f32)value.y));
+		NP2DSTransRef* linkref = m_entity->GetLinkRef();
+		if (linkref)
+		{
+			linkref->SetWorldScale(NPVector3((f32)value.x, (f32)value.y, 1.0f));
+		}
+	}
+}
+xui_method_explain(onity_propentitynode, ori_bounding,		xui_rect2d<s32>	)( void )
 {
 	NPRect rt = NPRect::Empty;
 
@@ -177,7 +192,7 @@ xui_method_explain(onity_propentity, ori_bounding,		xui_rect2d<s32>	)( void )
 
 	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
 }
-xui_method_explain(onity_propentity, ori_position,		xui_vector<s32>	)( void )
+xui_method_explain(onity_propentitynode, ori_position,		xui_vector<s32>	)( void )
 {
 	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
 	if (transform)
@@ -188,7 +203,7 @@ xui_method_explain(onity_propentity, ori_position,		xui_vector<s32>	)( void )
 
 	return xui_vector<s32>(0);
 }
-xui_method_explain(onity_propentity, set_position,		void			)( const xui_vector<s32>& pos )
+xui_method_explain(onity_propentitynode, set_position,		void			)( const xui_vector<s32>& pos )
 {
 	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
 	if (transform)
@@ -205,113 +220,74 @@ xui_method_explain(onity_propentity, set_position,		void			)( const xui_vector<s
 /*
 //static
 */
-xui_method_explain(onity_propentity, get_position,		xui_vector<f64>	)( void* userptr )
+xui_method_explain(onity_propentitynode, was_collidable,	bool			)( void* userptr )
 {
-	onity_propedit* prop = (onity_propedit*)userptr;
-	return prop->ori_position().to<f64>();
-}
-xui_method_explain(onity_propentity, set_position,		void			)( void* userptr, const xui_vector<f64>& value )
-{
-	onity_propedit* prop = (onity_propedit*)userptr;
-	prop->set_position(value.to<s32>());
-}
-xui_method_explain(onity_propentity, get_scale,			xui_vector<f64>	)( void* userptr )
-{
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	Omiga::Vec2Df					scale		= transform->GetScale();
-	return xui_vector<f64>((f64)scale.x, (f64)scale.y);
-}
-xui_method_explain(onity_propentity, set_scale,			void			)( void* userptr, const xui_vector<f64>& value )
-{
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	transform->SetScale(Omiga::Vec2Df((f32)value.x, (f32)value.y));
-}
-xui_method_explain(onity_propentity, get_rotation,		f64				)( void* userptr )
-{
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	return (f64)transform->GetRotation();
-}
-xui_method_explain(onity_propentity, set_rotation,		void			)( void* userptr, f64   value )
-{
-	onity_propentity*				prop		= (onity_propentity*)userptr;
-	Omiga::Entity*					entity		= prop->get_entity();
-	Omiga::TransformComponent*		transform	= entity->GetComponent<Omiga::TransformComponent>();
-	transform->SetRotation((f32)value);
-}
-xui_method_explain(onity_propentity, was_collidable,	bool			)( void* userptr )
-{
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::PhysicsComponent*	physics		= entity->GetComponent<BreezeGame::PhysicsComponent>();
 	return physics->IsCollidable();
 }
-xui_method_explain(onity_propentity, get_collision,		xui_rect2d<f64> )( void* userptr )
+xui_method_explain(onity_propentitynode, get_collision,		xui_rect2d<f64> )( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::PhysicsComponent*	physics		= entity->GetComponent<BreezeGame::PhysicsComponent>();
 	Omiga::ORect<Float32>			box			= physics->GetBodyCollision();
 	return xui_rect2d<f64>((f64)box.Left(), (f64)box.Top(), (f64)box.Right(), (f64)box.Bottom());
 }
-xui_method_explain(onity_propentity, get_phyactor,		void*			)( void* userptr )
+xui_method_explain(onity_propentitynode, get_phyactor,		void*			)( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	return box2d->GetPhysActor();
 }
-xui_method_explain(onity_propentity, set_phyactor,		void			)( void* userptr, void* value )
+xui_method_explain(onity_propentitynode, set_phyactor,		void			)( void* userptr, void* value )
 {}
-xui_method_explain(onity_propentity, get_velocity,		xui_vector<f64>	)( void* userptr )
+xui_method_explain(onity_propentitynode, get_velocity,		xui_vector<f64>	)( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	b2Vec2							velocity	= body->GetLinearVelocity();
 	return xui_vector<f64>((f64)velocity.x, (f64)velocity.y);
 }
-xui_method_explain(onity_propentity, set_velocity,		void			)( void* userptr, const xui_vector<f64>& value )
+xui_method_explain(onity_propentitynode, set_velocity,		void			)( void* userptr, const xui_vector<f64>& value )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	body->SetLinearVelocity(b2Vec2((f32)value.x, (f32)value.y));
 }
-xui_method_explain(onity_propentity, get_damping,		f64				)( void* userptr )
+xui_method_explain(onity_propentitynode, get_damping,		f64				)( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	return (f64)body->GetLinearDamping();
 }
-xui_method_explain(onity_propentity, set_damping,		void			)( void* userptr, f64   value )
+xui_method_explain(onity_propentitynode, set_damping,		void			)( void* userptr, f64   value )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	body->SetLinearDamping((f32)value);
 }
-xui_method_explain(onity_propentity, get_gravity,		f64				)( void* userptr )
+xui_method_explain(onity_propentitynode, get_gravity,		f64				)( void* userptr )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	return (f64)body->GetGravityScale();
 }
-xui_method_explain(onity_propentity, set_gravity,		void			)( void* userptr, f64   value )
+xui_method_explain(onity_propentitynode, set_gravity,		void			)( void* userptr, f64   value )
 {
-	onity_propentity*				prop		= (onity_propentity*)userptr;
+	onity_propentitynode*			prop		= (onity_propentitynode*)userptr;
 	Omiga::Entity*					entity		= prop->get_entity();
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
@@ -321,7 +297,7 @@ xui_method_explain(onity_propentity, set_gravity,		void			)( void* userptr, f64 
 /*
 //method
 */
-xui_method_explain(onity_propentity, cal_bounding,		void			)( NPNode* node, NPRect* result )
+xui_method_explain(onity_propentitynode, cal_bounding,		void			)( NPNode* node, NPRect* result )
 {
 	if (node && node->WasVisible())
 	{

@@ -2,6 +2,7 @@
 #define __onity_project_h__
 
 #include "xui_dockpage.h"
+#include "xui_proproot.h"
 
 enum
 {

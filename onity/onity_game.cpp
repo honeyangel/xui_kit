@@ -18,7 +18,7 @@
 #include "xui_treeview.h"
 #include "xui_treenode.h"
 #include "onity_resource.h"
-#include "onity_propedit.h"
+#include "onity_propeditnode.h"
 #include "onity_treedata.h"
 #include "onity_mainform.h"
 #include "onity_hierarchy.h"
@@ -210,10 +210,10 @@ xui_method_explain(onity_game, on_viewrenderelse,	void)( xui_component* sender, 
 		if (nodevec[i]->get_rootnode() == NULL)
 			continue;
 
-		xui_treenode*   node = nodevec[i];
-		onity_treedata* data = (onity_treedata*)node->get_linkdata();
-		onity_propedit* prop = dynamic_cast<onity_propedit*>(data->get_prop());
-		xui_rect2d<s32> rt   = prop->ori_bounding();
+		xui_treenode*		node = nodevec[i];
+		onity_treedata*		data = (onity_treedata*)node->get_linkdata();
+		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
+		xui_rect2d<s32>		rt   = prop->ori_bounding();
 		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.7f));
 	}
 

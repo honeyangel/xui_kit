@@ -4,7 +4,7 @@
 //constructor
 */
 xui_create_explain(onity_propnoderender)( NPNode* node )
-: onity_propedit()
+: onity_proproot()
 , m_node(node)
 {}
 

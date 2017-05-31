@@ -25,16 +25,15 @@
 #include "xui_propview.h"
 #include "onity_resource.h"
 #include "onity_mainform.h"
-#include "onity_course.h"
+#include "onity_level.h"
 #include "onity_inspector.h"
 #include "onity_scene.h"
 #include "onity_filterdata.h"
-#include "onity_maprefdata.h"
+#include "onity_coursedata.h"
 #include "onity_entitydata.h"
-#include "onity_entitystardata.h"
 #include "onity_propcourse.h"
-#include "onity_propmapref.h"
-#include "onity_propentity.h"
+#include "onity_propcoursenode.h"
+#include "onity_propentitynode.h"
 #include "onity_propentitystar.h"
 #include "onity_propscenelayer.h"
 #include "onity_hierarchy.h"
@@ -150,7 +149,7 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 				{
 					NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, (*itor));
 					u32 index = root->get_leafnodecount();
-					root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
+					root->add_leafnode(index, new onity_coursedata(onity_resource::icon_entity, new onity_propcoursenode(transref)));
 				}
 			}
 		}
@@ -162,10 +161,10 @@ xui_method_explain(onity_hierarchy, reset,					void				)( bool forcedel )
 */
 xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*		)( Omiga::Entity* ent )
 {
-	std::string			filtername = ent->GetTemplateName();
-	xui_treenode*		filternode = get_filternode(filtername, ent->GetLinkRef() != NULL);
-	onity_propentity*	entityprop = new onity_propentity(ent);
-	xui_treenode*		entitynode = filternode->add_leafnode(filternode->get_leafnodecount(), new onity_entitydata(onity_resource::icon_entity, entityprop));
+	std::string				filtername = ent->GetTemplateName();
+	xui_treenode*			filternode = get_filternode(filtername, ent->GetLinkRef() != NULL);
+	onity_propentitynode*	entityprop = new onity_propentitynode(ent);
+	xui_treenode*			entitynode = filternode->add_leafnode(filternode->get_leafnodecount(), new onity_entitydata(onity_resource::icon_entity, entityprop));
 
 	if (entityprop->get_entity()->GetTemplateName() == "Star")
 	{
@@ -173,7 +172,7 @@ xui_method_explain(onity_hierarchy, add_entitynode,			xui_treenode*		)( Omiga::E
 		u32 count = starAI->GetStarVec().size();
 		for (u32 i = 0; i < count; ++i)
 		{
-			entitynode->add_leafnode(i, new onity_entitystardata(onity_resource::icon_entity, new onity_propentitystar(entityprop, i)));
+			entitynode->add_leafnode(i, new onity_entitydata(onity_resource::icon_entity, new onity_propentitystar(entityprop, i)));
 		}
 	}
 
@@ -202,7 +201,7 @@ xui_method_explain(onity_hierarchy, del_entitynode,			void				)( Omiga::Entity* 
 			m_tree->del_upmostnode(filternode);
 	}
 }
-xui_method_explain(onity_hierarchy, add_maprefnode,			void				)( const xui_vector<s32>& pos, NP2DSAsset* asset )
+xui_method_explain(onity_hierarchy, add_coursenode,			void				)( const xui_vector<s32>& pos, NP2DSAsset* asset )
 {
 	xui_treenode* root = NULL;
 	std::vector<xui_treenode*> nodevec = m_tree->get_selectednode();
@@ -217,9 +216,9 @@ xui_method_explain(onity_hierarchy, add_maprefnode,			void				)( const xui_vecto
 		root = m_tree->get_upmostnode(0);
 	}
 
-	xui_treenode*	  node = add_maprefnode(root, asset, NULL);
-	onity_treedata*	  data = (onity_treedata*)node->get_linkdata();
-	onity_propmapref* prop = dynamic_cast<onity_propmapref*>(data->get_prop());
+	xui_treenode*		  node = add_coursenode(root, asset, NULL);
+	onity_treedata*		  data = (onity_treedata*)node->get_linkdata();
+	onity_propcoursenode* prop = dynamic_cast<onity_propcoursenode*>(data->get_prop());
 	prop->set_position(pos);
 
 	m_tree->non_selectednode(false);
@@ -284,8 +283,8 @@ xui_method_explain(onity_hierarchy, set_editprop,			void				)( onity_propcourse*
 
 		if (m_editprop)
 		{
-			onity_course* wnd = onity_mainform::get_ptr()->get_course();
-			wnd->set_firstcourse(m_editprop);
+			onity_level* wnd = onity_mainform::get_ptr()->get_level();
+			wnd->set_firstlevel(m_editprop);
 		}
 
 		reset();
@@ -371,7 +370,7 @@ xui_method_explain(onity_hierarchy, on_menuclick,			void				)( xui_component* se
 			if (root->get_rootnode())
 				root = root->get_rootnode();
 
-			add_maprefnode(root, NULL, NULL);
+			add_coursenode(root, NULL, NULL);
 		}
 	}
 }
@@ -413,9 +412,9 @@ xui_method_explain(onity_hierarchy, on_treemenuclick,		void				)( xui_component*
 	{
 		onity_treedata*			data	= (onity_treedata*)nodes[i]->get_linkdata();
 		onity_propscenelayer*	propsl	= dynamic_cast<onity_propscenelayer*>(data->get_prop());
-		onity_propmapref*		propmr	= dynamic_cast<onity_propmapref*	>(data->get_prop());
+		onity_propcoursenode*	propcn	= dynamic_cast<onity_propcoursenode*>(data->get_prop());
 		if (propsl) vec.push_back(propsl->get_scenelayer());
-		if (propmr) vec.push_back(propmr->get_2dsref());
+		if (propcn) vec.push_back(propcn->get_2dsref());
 	}
 
 	if (sender == m_delete)
@@ -530,7 +529,7 @@ xui_method_explain(onity_hierarchy, on_treemousedragdrop,	void				)( xui_compone
 			if (root->get_rootnode())
 				root = root->get_rootnode();
 
-			add_maprefnode(root, (NP2DSAsset*)args.data, NULL);
+			add_coursenode(root, (NP2DSAsset*)args.data, NULL);
 		}
 	}
 }
@@ -542,8 +541,10 @@ xui_method_explain(onity_hierarchy, on_treemousedoubleclick,void				)( xui_compo
 		xui_treenode* node = m_tree->choose_node(pt);
 		if (node->get_rootnode())
 		{
-			onity_scene* scene = onity_mainform::get_ptr()->get_scene();
-			scene->set_nodevisible(node);
+			onity_scene*	 	   scene = onity_mainform::get_ptr()->get_scene();
+			onity_treedata*	 	   data  = (onity_treedata*)node->get_linkdata();
+			onity_propeditnode*	   prop  = dynamic_cast<onity_propeditnode*>(data->get_prop());
+			scene->set_nodevisible(prop);
 		}
 	}
 }
@@ -603,12 +604,12 @@ xui_method_explain(onity_hierarchy, add_scenelayer,			xui_treenode*		)( NP2DSSce
 	{
 		NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, (*itor));
 		u32 index = root->get_leafnodecount();
-		root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
+		root->add_leafnode(index, new onity_coursedata(onity_resource::icon_entity, new onity_propcoursenode(transref)));
 	}
 
 	return root;
 }
-xui_method_explain(onity_hierarchy, add_maprefnode,			xui_treenode*		)( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src )
+xui_method_explain(onity_hierarchy, add_coursenode,			xui_treenode*		)( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src )
 {
 	if (m_editprop == NULL || onity_mainform::get_ptr()->was_gamerun() || root == NULL)
 		return NULL;
@@ -639,7 +640,7 @@ xui_method_explain(onity_hierarchy, add_maprefnode,			xui_treenode*		)( xui_tree
 	}
 
 	u32 index = root->get_leafnodecount();
-	return root->add_leafnode(index, new onity_maprefdata(onity_resource::icon_entity, new onity_propmapref(transref)));
+	return root->add_leafnode(index, new onity_coursedata(onity_resource::icon_entity, new onity_propcoursenode(transref)));
 }
 xui_method_explain(onity_hierarchy, del_coursenode,			void				)( const std::vector<xui_treenode*>& nodes )
 {
@@ -647,7 +648,7 @@ xui_method_explain(onity_hierarchy, del_coursenode,			void				)( const std::vect
 	{
 		xui_treenode* node = nodes[i];
 		if (node->get_rootnode())
-			del_maprefnode(node);
+			del_coursenode(node);
 		else
 			del_scenelayer(node);
 	}
@@ -659,13 +660,13 @@ xui_method_explain(onity_hierarchy, del_scenelayer,			void				)( xui_treenode* r
 	m_editprop->get_scenefile()->DelSceneLayer(rootprop->get_scenelayer());
 	m_tree->del_upmostnode(root);
 }
-xui_method_explain(onity_hierarchy, del_maprefnode,			void				)( xui_treenode* node )
+xui_method_explain(onity_hierarchy, del_coursenode,			void				)( xui_treenode* node )
 {
 	xui_treenode*		   root     = node->get_rootnode();
 	onity_filterdata*	   rootdata = (onity_filterdata*)root->get_linkdata();
 	onity_propscenelayer*  rootprop = dynamic_cast<onity_propscenelayer*>(rootdata->get_prop());
-	onity_maprefdata*	   nodedata = (onity_maprefdata*)node->get_linkdata();
-	onity_propmapref*      nodeprop = dynamic_cast<onity_propmapref*>(nodedata->get_prop());
+	onity_coursedata*	   nodedata = (onity_coursedata*)node->get_linkdata();
+	onity_propcoursenode*  nodeprop = dynamic_cast<onity_propcoursenode*>(nodedata->get_prop());
 	rootprop->get_scenelayer()->DelSceneRef(nodeprop->get_2dsref());
 	root->del_leafnode(node);
 }
@@ -689,7 +690,7 @@ xui_method_explain(onity_hierarchy, pst_coursenode,			void				)( void )
 		if (scenelayer)
 			add_scenelayer(scenelayer);
 		else
-			add_maprefnode(root, NULL, m_menuvec[i]);
+			add_coursenode(root, NULL, m_menuvec[i]);
 	}
 
 	m_menuvec.clear();

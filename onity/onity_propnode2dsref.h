@@ -27,8 +27,8 @@ protected:
 	static void				set_scale		( void* userptr, const xui_vector<f64>& value );
 	static f64				get_rotation	( void* userptr );
 	static void				set_rotation	( void* userptr, f64   value );
-	static void*			get_asset		( void* userptr );
-	static void				set_asset		( void* userptr, void* value );
+	//static void*			get_asset		( void* userptr );
+	//static void				set_asset		( void* userptr, void* value );
 
 	/*
 	//member

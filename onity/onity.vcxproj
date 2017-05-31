@@ -12,12 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="onity_alignbox.h" />
+    <ClInclude Include="onity_asset.h" />
     <ClInclude Include="onity_blankbox.h" />
-    <ClInclude Include="onity_course.h" />
-    <ClInclude Include="onity_courseconfigdata.h" />
-    <ClInclude Include="onity_entitystardata.h" />
+    <ClInclude Include="onity_level.h" />
+    <ClInclude Include="onity_levelconfigdata.h" />
     <ClInclude Include="onity_gradpane.h" />
-    <ClInclude Include="onity_maprefdata.h" />
+    <ClInclude Include="onity_layout.h" />
+    <ClInclude Include="onity_coursedata.h" />
     <ClInclude Include="onity_animator.h" />
     <ClInclude Include="onity_2dsassetdata.h" />
     <ClInclude Include="onity_condition.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="onity_lineview.h" />
     <ClInclude Include="onity_config.h" />
     <ClInclude Include="onity_mainform.h" />
+    <ClInclude Include="onity_module.h" />
     <ClInclude Include="onity_param.h" />
     <ClInclude Include="onity_paramview.h" />
     <ClInclude Include="onity_pathctrl.h" />
@@ -41,10 +43,10 @@
     <ClInclude Include="onity_preview.h" />
     <ClInclude Include="onity_project.h" />
     <ClInclude Include="onity_prop2dsasset.h" />
-    <ClInclude Include="onity_propcourseconfig.h" />
-    <ClInclude Include="onity_propedit.h" />
+    <ClInclude Include="onity_proplevelconfig.h" />
+    <ClInclude Include="onity_bounding.h" />
     <ClInclude Include="onity_propentitystar.h" />
-    <ClInclude Include="onity_propmapref.h" />
+    <ClInclude Include="onity_propcoursenode.h" />
     <ClInclude Include="onity_prop2dsres.h" />
     <ClInclude Include="onity_propaction.h" />
     <ClInclude Include="onity_propnodeaction.h" />
@@ -55,7 +57,7 @@
     <ClInclude Include="onity_propctrl_rendertree.h" />
     <ClInclude Include="onity_propctrl_sceneparam.h" />
     <ClInclude Include="onity_propdata_texture.h" />
-    <ClInclude Include="onity_propentity.h" />
+    <ClInclude Include="onity_propentitynode.h" />
     <ClInclude Include="onity_propentitytemp.h" />
     <ClInclude Include="onity_propframekey.h" />
     <ClInclude Include="onity_propjsones.h" />
@@ -69,6 +71,7 @@
     </ClInclude>
     <ClInclude Include="onity_propnode2dsref.h" />
     <ClInclude Include="onity_proproot.h" />
+    <ClInclude Include="onity_propeditnode.h" />
     <ClInclude Include="onity_propscenelayer.h" />
     <ClInclude Include="onity_propjsonestemp.h" />
     <ClInclude Include="onity_propkind_particlesrc.h" />
@@ -102,6 +105,7 @@
     <ClInclude Include="onity_savekind.h" />
     <ClInclude Include="onity_scene.h" />
     <ClInclude Include="onity_selector.h" />
+    <ClInclude Include="onity_snaptool.h" />
     <ClInclude Include="onity_state.h" />
     <ClInclude Include="onity_stateview.h" />
     <ClInclude Include="onity_jsonestempdata.h" />
@@ -116,12 +120,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="onity_alignbox.cpp" />
+    <ClCompile Include="onity_asset.cpp" />
     <ClCompile Include="onity_blankbox.cpp" />
-    <ClCompile Include="onity_course.cpp" />
-    <ClCompile Include="onity_courseconfigdata.cpp" />
-    <ClCompile Include="onity_entitystardata.cpp" />
+    <ClCompile Include="onity_level.cpp" />
+    <ClCompile Include="onity_levelconfigdata.cpp" />
     <ClCompile Include="onity_gradpane.cpp" />
-    <ClCompile Include="onity_maprefdata.cpp" />
+    <ClCompile Include="onity_layout.cpp" />
+    <ClCompile Include="onity_coursedata.cpp" />
     <ClCompile Include="onity_animator.cpp" />
     <ClCompile Include="onity_2dsassetdata.cpp" />
     <ClCompile Include="onity_condition.cpp" />
@@ -135,17 +140,19 @@
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
+    <ClCompile Include="onity_module.cpp" />
     <ClCompile Include="onity_pivotbox.cpp" />
-    <ClCompile Include="onity_propcourseconfig.cpp" />
-    <ClCompile Include="onity_propedit.cpp" />
+    <ClCompile Include="onity_proplevelconfig.cpp" />
+    <ClCompile Include="onity_bounding.cpp" />
+    <ClCompile Include="onity_propeditnode.cpp" />
     <ClCompile Include="onity_propentitystar.cpp" />
-    <ClCompile Include="onity_propmapref.cpp" />
+    <ClCompile Include="onity_propcoursenode.cpp" />
     <ClCompile Include="onity_propcourse.cpp" />
     <ClCompile Include="onity_propctrl_entitycomp.cpp" />
     <ClCompile Include="onity_propctrl_particlemod.cpp" />
     <ClCompile Include="onity_propctrl_rendertree.cpp" />
     <ClCompile Include="onity_propctrl_sceneparam.cpp" />
-    <ClCompile Include="onity_propentity.cpp" />
+    <ClCompile Include="onity_propentitynode.cpp" />
     <ClCompile Include="onity_propentitytemp.cpp" />
     <ClCompile Include="onity_propjsones.cpp" />
     <ClCompile Include="onity_propkind_entitycomp.cpp" />
@@ -207,6 +214,7 @@
     <ClCompile Include="onity_savekind.cpp" />
     <ClCompile Include="onity_scene.cpp" />
     <ClCompile Include="onity_selector.cpp" />
+    <ClCompile Include="onity_snaptool.cpp" />
     <ClCompile Include="onity_state.cpp" />
     <ClCompile Include="onity_stateview.cpp" />
     <ClCompile Include="onity_jsonestempdata.cpp" />

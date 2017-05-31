@@ -3,18 +3,19 @@
 
 #include "xui_propdata.h"
 
+class onity_bounding;
 class onity_alignbox
 {
 public:
 	/*
 	//typedef
 	*/
-	typedef xui_proproot_vec (*get_func)( void );
+	typedef std::vector<onity_bounding*> (*get_func)( void );
 
 	/*
 	//constructor
 	*/
-	onity_alignbox( const xui_vector<s32>& button_size, get_func propfunc );
+	onity_alignbox( const xui_vector<s32>& button_size, get_func func );
 
 	/*
 	//method
@@ -41,7 +42,7 @@ protected:
 	xui_button*		m_bottom;
 	xui_linebox*	m_horzline;
 	xui_linebox*	m_vertline;
-	get_func		m_propfunc;
+	get_func		m_func;
 };
 
 #endif//__onity_alignbox_h__

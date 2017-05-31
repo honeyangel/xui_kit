@@ -2,20 +2,20 @@
 
 #include "xui_global.h"
 #include "xui_treenode.h"
-#include "onity_propmapref.h"
-#include "onity_maprefdata.h"
+#include "onity_propcoursenode.h"
+#include "onity_coursedata.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_maprefdata)( xui_bitmap* icon, xui_proproot* prop )
+xui_create_explain(onity_coursedata)( xui_bitmap* icon, xui_proproot* prop )
 : onity_treedata(icon, prop)
 {}
 
 /*
 //destructor
 */
-xui_delete_explain(onity_maprefdata)( void )
+xui_delete_explain(onity_coursedata)( void )
 {
 	if (m_prop)
 	{
@@ -27,9 +27,9 @@ xui_delete_explain(onity_maprefdata)( void )
 /*
 //virtual
 */
-xui_method_explain(onity_maprefdata, get_text, std::wstring)( u32 index )
+xui_method_explain(onity_coursedata, get_text, std::wstring)( u32 index )
 {
-	onity_propmapref*  prop = dynamic_cast<onity_propmapref*>(m_prop);
+	onity_propcoursenode* prop = dynamic_cast<onity_propcoursenode*>(m_prop);
 	std::wstringstream text;
 
 	text << L"[Param]";

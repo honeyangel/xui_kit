@@ -1,22 +1,22 @@
-#ifndef __onity_propcourseconfig_h__
-#define __onity_propcourseconfig_h__
+#ifndef __onity_proplevelconfig_h__
+#define __onity_proplevelconfig_h__
 
 #include "onity_proproot.h"
 
 class NP2DSSceneFile;
-class onity_propcourseconfig : public onity_proproot
+class onity_proplevelconfig : public onity_proproot
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_propcourseconfig( NP2DSSceneFile* course );
+	onity_proplevelconfig( NP2DSSceneFile* file );
 
 	/*
 	//method
 	*/
-	NP2DSSceneFile*		get_course			( void );
-	void				set_course			( NP2DSSceneFile* course );
+	NP2DSSceneFile*		get_level			( void );
+	void				set_level			( NP2DSSceneFile* file );
 	std::string			get_configstring	( void );
 
 protected:
@@ -28,9 +28,9 @@ protected:
 	/*
 	//member
 	*/
+	NP2DSSceneFile*		m_file;
 	bool				m_change;
 	u32					m_playerspeed;
-	NP2DSSceneFile*		m_course;
 	u32					m_speedlevel;
 	u32					m_minspeedlevel;
 	u32					m_maxspeedlevel;
@@ -40,4 +40,4 @@ protected:
 	xui_propkind*		m_basekind;
 };
 
-#endif//__onity_propcourseconfig_h__
+#endif//__onity_proplevelconfig_h__
