@@ -1,6 +1,7 @@
 #include "NP2DSImage.h"
 #include "NP2DSFrame.h"
 #include "NP2DSActor.h"
+#include "NP2DSTransRef.h"
 #include "NP2DSImageRef.h"
 #include "NP2DSFrameRef.h"
 #include "NP2DSActorRef.h"
@@ -14,6 +15,7 @@
 #include "xui_propctrl_stdvec.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propctrl_sceneparam.h"
+#include "onity_boundbox_coursenode.h"
 #include "onity_mainform.h"
 #include "onity_resource.h"
 #include "onity_inspector.h"
@@ -38,6 +40,8 @@ xui_create_explain(onity_propcoursenode)( NP2DSTransRef* ref )
 	add_propkind(m_transkind);
 	add_propkind(m_assetkind);
 	add_propkind(m_paramkind);
+
+	m_boundctrl = new onity_boundbox_coursenode(this);
 }
 
 /*
@@ -75,20 +79,6 @@ xui_method_explain(onity_propcoursenode, get_scale,		xui_vector<f64>	)( void )
 xui_method_explain(onity_propcoursenode, set_scale,		void			)( const xui_vector<f64>& value )
 {
 	m_2dsref->SetWorldScale(NPVector3((npf32)value.x, (npf32)value.y, 1.0f));
-}
-xui_method_explain(onity_propcoursenode, ori_bounding,	xui_rect2d<s32>	)( void )
-{
-	NPRect rt = m_2dsref->GetWorldBounding();
-	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
-}
-xui_method_explain(onity_propcoursenode, ori_position,	xui_vector<s32>	)( void )
-{
-	NPVector3 pos = m_2dsref->GetWorldTrans();
-	return xui_vector<s32>((s32)pos.x, (s32)pos.y);
-}
-xui_method_explain(onity_propcoursenode, set_position,	void			)( const xui_vector<s32>& pos )
-{
-	m_2dsref->SetWorldTrans(NPVector3((f32)pos.x, (f32)pos.y, 0.0f));
 }
 
 /*

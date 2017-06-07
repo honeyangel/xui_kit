@@ -3,10 +3,11 @@
 #include "xui_button.h"
 #include "xui_convas.h"
 #include "xui_global.h"
+#include "xui_toggle.h"
 #include "xui_desktop.h"
 #include "xui_treenode.h"
 #include "onity_treedata.h"
-#include "onity_bounding.h"
+#include "onity_boundbox.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
 #include "onity_gradpane.h"
@@ -25,8 +26,14 @@ xui_create_explain(onity_asset)( void )
 , m_ratio(1.0)
 , m_multisel(false)
 , m_dragview(false)
-, m_dragprop(false)
+, m_operator(0)
 {
+	m_showbbox	= new xui_toggle(xui_vector<s32>(20, 20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_showbbox,	ini_drawer		)(onity_resource::icon_visible);
+	xui_method_ptrcall(m_showbbox,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_showbbox,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_showbbox,	set_corner		)(3);
+
 	m_linetool	= new xui_toolbar(xui_vector<s32>(0, 20));
 	xui_method_ptrcall(m_linetool,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
 	m_headpane  = new xui_panel(xui_vector<s32>(28));
@@ -129,6 +136,9 @@ xui_delete_explain(onity_asset)( void )
 {
 	delete m_animctrl;
 	delete m_lockctrl;
+
+	if (m_showbbox->get_parent() == NULL)
+		delete m_showbbox;
 }
 
 /*
@@ -155,11 +165,9 @@ xui_method_explain(onity_asset, set_ratio,					void					)( f64 ratio )
 	m_vertgrad->set_ratio(ratio);
 	m_animctrl->clear();
 }
-xui_method_explain(onity_asset, set_nodevisible,			void					)( onity_bounding* prop )
+xui_method_explain(onity_asset, set_nodevisible,			void					)( onity_boundbox* bbox )
 {
-	//onity_treedata* data  = (onity_treedata*)node->get_linkdata();
-	//onity_editrect* edit  = (onity_editrect*)data->get_prop();
-	xui_rect2d<s32> rt    = prop->ori_bounding();
+	xui_rect2d<s32> rt    = bbox->ori_bounding();
 	xui_vector<s32> start = -m_trans;
 	xui_vector<s32> range = (m_drawview->get_rendersz().to<f64>() / m_ratio).to<s32>();
 	if (start.x > rt.ax)
@@ -178,9 +186,32 @@ xui_method_explain(onity_asset, set_nodevisible,			void					)( onity_bounding* p
 }
 xui_method_explain(onity_asset, set_toolupdate,				void					)( void )
 {}
-xui_method_explain(onity_asset, hit_propvisible,			onity_proproot*			)( const xui_vector<s32>& pt )
+xui_method_explain(onity_asset, hit_propvisible,			onity_boundbox*			)( const xui_vector<s32>& pt )
 {
 	return NULL;
+}
+xui_method_explain(onity_asset, get_operatorboundbox,		onity_boundbox*			)( const xui_vector<s32>& pt, u08& result )
+{
+	onity_boundbox_vec	vec	= get_selectedboundbox();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		result = vec[i]->hit_operator(m_trans, m_ratio, pt);
+		if (result > 0)
+			return vec[i];
+	}
+
+	onity_boundbox* pick = hit_propvisible(pt);
+	if (pick)
+	{
+		result = BO_MOVE;
+		return pick;
+	}
+
+	return NULL;
+}
+xui_method_explain(onity_asset, get_selectedboundbox,		onity_boundbox_vec		)( void )
+{
+	return onity_boundbox_vec();
 }
 
 /*
@@ -257,7 +288,7 @@ xui_method_explain(onity_asset, on_fillpanekeybddown,		void					)( xui_component
 xui_method_explain(onity_asset, on_drawviewnoncatch,		void					)( xui_component* sender, xui_method_args&		args )
 {
 	m_dragview = false;
-	m_dragprop = false;
+	m_operator = 0;
 	m_multisel = false;
 	m_drawview->set_cursor(CURSOR_DEFAULT);
 	xui_global::set_cursor(CURSOR_DEFAULT);
@@ -270,7 +301,42 @@ xui_method_explain(onity_asset, on_drawviewupdateself,		void					)( xui_componen
 xui_method_explain(onity_asset, on_drawviewrenderself,		void					)( xui_component* sender, xui_method_args&		args )
 {}
 xui_method_explain(onity_asset, on_drawviewrenderelse,		void					)( xui_component* sender, xui_method_args&		args )
-{}
+{
+	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(m_drawview->get_renderrtabs()));
+
+	xui_vector<s32> pt = m_drawview->get_screenpt();
+	xui_vector<s32> p1;
+	xui_vector<s32> p2;
+	p1 = xui_vector<s32>(xui_round(m_trans.x*m_ratio),	0);
+	p2 = xui_vector<s32>(xui_round(m_trans.x*m_ratio),	m_drawview->get_renderh());
+	xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
+	p1 = xui_vector<s32>(0,							xui_round(m_trans.y*m_ratio));
+	p2 = xui_vector<s32>(m_drawview->get_renderw(), xui_round(m_trans.y*m_ratio));
+	xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
+
+	std::vector<s32> linevec;
+	linevec = m_horzgrad->get_lines();
+	for (u32 i = 0; i < linevec.size(); ++i)
+	{
+		s32 line = linevec[i];
+		p1 = xui_vector<s32>(xui_round(m_trans.x*m_ratio + line*m_ratio), 0);
+		p2 = xui_vector<s32>(xui_round(m_trans.x*m_ratio + line*m_ratio), m_drawview->get_renderh());
+		xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
+	}
+	linevec = m_vertgrad->get_lines();
+	for (u32 i = 0; i < linevec.size(); ++i)
+	{
+		s32 line = linevec[i];
+		p1 = xui_vector<s32>(0,							xui_round(m_trans.y*m_ratio + line*m_ratio));
+		p2 = xui_vector<s32>(m_drawview->get_renderw(),	xui_round(m_trans.y*m_ratio + line*m_ratio));
+		xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
+	}
+
+	draw_locknode();
+	draw_multisel();
+	xui_convas::get_ins()->set_cliprect(cliprect);
+}
 xui_method_explain(onity_asset, on_drawviewmouseenter,		void					)( xui_component* sender, xui_method_mouse&		args )
 {
 	m_drawview->req_focus();
@@ -282,14 +348,29 @@ xui_method_explain(onity_asset, on_drawviewmousedown,		void					)( xui_component
 
 	if (args.mouse == MB_L)
 	{
-		onity_proproot* pick = hit_propvisible(m_drawview->get_renderpt(args.point));
+		u08				op	 = 0;
+		xui_vector<s32>	pt   = m_drawview->get_renderpt(args.point);
+		onity_boundbox*	pick = get_operatorboundbox(pt, op);
+		u32 cursor = onity_boundbox::get_opcursor(op);
+		m_drawview->set_cursor(cursor);
+		xui_global::set_cursor(cursor);
+
 		if (pick)
 		{
 			on_mousepickimpl(
 				pick, 
 				args.alt,
 				args.ctrl,
-				args.shift);
+				args.shift,
+				op);
+
+			if (pick->was_selected())
+			{
+				m_operator = op;
+				onity_boundbox_vec  vec = get_selectedboundbox();
+				for (u32 i = 0; i < vec.size(); ++i)
+					vec[i]->syn_bounding(m_trans, m_ratio);
+			}
 		}
 		else
 		{
@@ -307,32 +388,42 @@ xui_method_explain(onity_asset, on_drawviewmousedown,		void					)( xui_component
 }
 xui_method_explain(onity_asset, on_drawviewmousemove,		void					)( xui_component* sender, xui_method_mouse&		args )
 {
-	xui_vector<s32> delta(0);
 	xui_vector<s32> drag = xui_desktop::get_ins()->get_mousemove();
 
 	if (m_dragview)
 	{
-		delta.x = xui_round(drag.x/m_ratio);
-		delta.y = xui_round(drag.y/m_ratio);
-		set_trans(m_trans+delta);
+		xui_vector<s32> trans;
+		trans.x = xui_round(drag.x/m_ratio);
+		trans.y = xui_round(drag.y/m_ratio);
+		set_trans(m_trans+trans);
 	}
 	else
-	if (m_dragprop)
+	if (m_operator > 0)
 	{
-		u08 mode = DRAGMOVE_UNLIMIT;
-		if		(args.shift && args.ctrl)	mode = DRAGMOVE_Y;
-		else if (args.shift)				mode = DRAGMOVE_X;
-		else
-		{}
+		if (m_operator == BO_MOVE)
+		{
+			u08 mode = DRAGMOVE_UNLIMIT;
+			if		(args.shift && args.ctrl)	mode = DRAGMOVE_Y;
+			else if (args.shift)				mode = DRAGMOVE_X;
+			else
+			{}
 
-		if (mode == DRAGMOVE_UNLIMIT || 
-			mode == DRAGMOVE_X)
-			delta.x = drag.x;
-		if (mode == DRAGMOVE_UNLIMIT || 
-			mode == DRAGMOVE_Y)
-			delta.y = drag.y;
+			if (mode == DRAGMOVE_X)
+				drag.y = 0;
+			if (mode == DRAGMOVE_Y)
+				drag.x = 0;
+		}
 
-		on_mousedragimpl(delta);
+		on_mousedragimpl(drag);
+	}
+	else
+	{
+		u08				op	 = 0;
+		xui_vector<s32>	pt   = m_drawview->get_renderpt(args.point);
+		onity_boundbox*	pick = get_operatorboundbox(pt, op);
+		u32 cursor = onity_boundbox::get_opcursor(op);
+		m_drawview->set_cursor(cursor);
+		xui_global::set_cursor(cursor);
 	}
 }
 xui_method_explain(onity_asset, on_drawviewmouserise,		void					)( xui_component* sender, xui_method_mouse&		args )
@@ -411,35 +502,54 @@ xui_method_explain(onity_asset, get_decratio,				f64						)( void )
 //virtual
 */
 xui_method_explain(onity_asset, on_keybdmoveimpl,			void					)( const xui_vector<s32>& delta )
-{}
-xui_method_explain(onity_asset, on_mousepickimpl,			void					)( onity_proproot* pick, bool alt, bool ctrl, bool shift )
+{
+	onity_boundbox_vec  vec = get_selectedboundbox();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		vec[i]->set_position(vec[i]->ori_position()+delta);
+	}
+}
+xui_method_explain(onity_asset, on_mousepickimpl,			void					)( onity_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op )
 {}
 xui_method_explain(onity_asset, on_mousedragimpl,			void					)( const xui_vector<s32>& delta )
-{}
+{
+	onity_boundbox_vec  vec = get_selectedboundbox();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		vec[i]->opt_bounding(m_trans, m_ratio, delta, m_operator);
+	}
+}
 xui_method_explain(onity_asset, on_mulselectimpl,			void					)( const xui_rect2d<s32>& rt, bool ctrl )
 {}
 
 /*
 //drawsnap
 */
-xui_method_explain(onity_asset, draw_locknode,				void					)( const xui_rect2d<s32>& rt )
+xui_method_explain(onity_asset, draw_locknode,				void					)( void )
 {
 	if (m_lockctrl->was_play())
 	{
-		xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_lockctrl;
-		f32 sa = action->sample();
-		f32 s  = xui_max(sa, 1.0f);
-		f32 ox = -0.5f * rt.get_w() * s + 0.5f * rt.get_w();
-		f32 oy = -0.5f * rt.get_h() * s + 0.5f * rt.get_h();
-		f32 fw =  s    * rt.get_w();
-		f32 fh =  s    * rt.get_h();
-		xui_vector<s32> drawpt = m_drawview->get_screenpt();
-		xui_rect2d<s32> drawrt = rt + drawpt;
-		drawrt.oft_x((s32)ox);
-		drawrt.oft_y((s32)oy);
-		drawrt.set_w((s32)fw);
-		drawrt.set_h((s32)fh);
-		xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+		onity_boundbox_vec vec = get_selectedboundbox();
+		if (vec.size() > 0)
+		{
+			onity_boundbox*	head = vec.front();
+			xui_rect2d<s32>	rect = head->get_bounding(m_trans, m_ratio);
+
+			xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_lockctrl;
+			f32 sa = action->sample();
+			f32 s  = xui_max(sa, 1.0f);
+			f32 ox = -0.5f * rect.get_w() * s + 0.5f * rect.get_w();
+			f32 oy = -0.5f * rect.get_h() * s + 0.5f * rect.get_h();
+			f32 fw =  s    * rect.get_w();
+			f32 fh =  s    * rect.get_h();
+			xui_vector<s32> drawpt = m_drawview->get_screenpt();
+			xui_rect2d<s32> drawrt = rect + drawpt;
+			drawrt.oft_x((s32)ox);
+			drawrt.oft_y((s32)oy);
+			drawrt.set_w((s32)fw);
+			drawrt.set_h((s32)fh);
+			xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
+		}
 	}
 }
 xui_method_explain(onity_asset, draw_multisel,				void					)( void )

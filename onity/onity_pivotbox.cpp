@@ -4,7 +4,7 @@
 #include "xui_panel.h"
 #include "xui_propdata.h"
 #include "onity_resource.h"
-#include "onity_bounding.h"
+#include "onity_boundbox.h"
 #include "onity_scene.h"
 #include "onity_mainform.h"
 #include "onity_pivotbox.h"
@@ -96,12 +96,12 @@ xui_method_explain(onity_pivotbox, set_rectupdate,		void			)( bool update_pivot 
 {
 	if (m_bound->was_visible())
 	{
-		onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+		onity_scene*	scene = onity_mainform::get_ptr()->get_scene();
 		xui_vector<s32> trans = scene->get_trans();
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> rt;
-		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		onity_boundbox_vec  vec = onity_scene::get_selectedvec();
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			if (rt.was_valid() == false)
@@ -152,19 +152,6 @@ xui_method_explain(onity_pivotbox, on_boundrenderself,	void			)( xui_component* 
 		pt.y = rt.ay + rt.get_h()/2 - m_pivot->get_renderh()/2;
 		xui_convas::get_ins()->draw_image(image, pt, color);
 	}
-
-	//if (m_lsize->has_catch() ||
-	//	m_rsize->has_catch() ||
-	//	m_tsize->has_catch() ||
-	//	m_bsize->has_catch())
-	//{
-	//	xui_rect2d<s32> rt = m_bound->get_renderrtabs();
-	//	rt.ax += m_pivot->get_renderw()/2;
-	//	rt.ay += m_pivot->get_renderh()/2;
-	//	rt.bx -= m_pivot->get_renderw()/2;
-	//	rt.by -= m_pivot->get_renderh()/2;
-	//	xui_convas::get_ins()->draw_rectangle(rt, xui_colour::red);
-	//}
 }
 xui_method_explain(onity_pivotbox, on_boundsetrenderrt,	void			)( xui_component* sender, xui_method_args&  args )
 {
@@ -239,12 +226,12 @@ xui_method_explain(onity_pivotbox, on_arrowmousemove,	void			)( xui_component* s
 {
 	if (sender->has_catch())
 	{
-		onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+		onity_scene*	scene = onity_mainform::get_ptr()->get_scene();
 		xui_vector<s32> trans = scene->get_trans();
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> oribox;
-		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		onity_boundbox_vec  vec = onity_scene::get_selectedvec();
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			if (oribox.was_valid() == false)
@@ -314,12 +301,12 @@ xui_method_explain(onity_pivotbox, on_arrowmouserise,	void			)( xui_component* s
 {
 	if (sender->has_catch())
 	{
-		onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+		onity_scene*	scene = onity_mainform::get_ptr()->get_scene();
 		xui_vector<s32> trans = scene->get_trans();
 		f64             ratio = scene->get_ratio();
 
 		xui_rect2d<s32> oribox;
-		onity_bounding_vec  vec = onity_scene::get_selectedbounding();
+		onity_boundbox_vec  vec = onity_scene::get_selectedvec();
 		for (u32 i = 0; i < vec.size(); ++i)
 		{
 			if (oribox.was_valid() == false)

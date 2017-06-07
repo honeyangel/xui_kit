@@ -547,6 +547,8 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 		case CURSOR_DEFAULT:	::SetCursor(::LoadCursor(NULL, IDC_ARROW	));	break;
 		case CURSOR_NS:			::SetCursor(::LoadCursor(NULL, IDC_SIZENS	));	break;
 		case CURSOR_WE:			::SetCursor(::LoadCursor(NULL, IDC_SIZEWE	));	break;
+		case CURSOR_NWSE:		::SetCursor(::LoadCursor(NULL, IDC_SIZENWSE	));	break;
+		case CURSOR_NESW:		::SetCursor(::LoadCursor(NULL, IDC_SIZENESW	)); break;
 		case CURSOR_TEXT:		::SetCursor(::LoadCursor(NULL, IDC_IBEAM	));	break;
 		case CURSOR_HAND:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;
 		case CURSOR_DRAG:		::SetCursor(::LoadCursor(NULL, IDC_HAND		));	break;

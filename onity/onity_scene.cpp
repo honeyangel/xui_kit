@@ -1,5 +1,6 @@
 #include "NPRender.h"
 #include "NPConfig.h"
+#include "NP2DSTransRef.h"
 #include "NP2DSSceneFile.h"
 #include "NP2DSSceneLayer.h"
 #include "NP2DSRenderUtil.h"
@@ -29,6 +30,7 @@
 #include "onity_filterdata.h"
 #include "onity_resource.h"
 #include "onity_renderview.h"
+#include "onity_boundbox.h"
 #include "onity_snaptool.h"
 #include "onity_gradpane.h"
 #include "onity_alignbox.h"
@@ -53,6 +55,7 @@ xui_create_explain(onity_scene)( void )
 	xui_method_ptrcall(m_showrect,	ini_drawer		)(onity_resource::icon_pivot);
 	xui_method_ptrcall(m_showrect,	set_drawcolor	)(true);
 	xui_method_ptrcall(m_showrect,	set_enable		)(false);
+	xui_method_ptrcall(m_showrect,	set_corner		)(3);
 	xui_method_ptrcall(m_showrect,	set_iconalign	)(IMAGE_C);
 	xui_method_ptrcall(m_showrect,	xm_toggleclick	) += new xui_method_member<xui_method_args,	onity_scene>(this, &onity_scene::on_toggleclick);
 	m_horzflip	= new xui_button(xui_vector<s32>(20));
@@ -92,8 +95,8 @@ xui_create_explain(onity_scene)( void )
 	xui_method_ptrcall(linebox2,	refresh			)();
 
 	m_snaptool	= new onity_snaptool(m_drawview);
-	m_alignbox	= new onity_alignbox(xui_vector<s32>(20), get_selectedbounding);
-	m_blankbox	= new onity_blankbox(xui_vector<s32>(20), get_selectedbounding);
+	m_alignbox	= new onity_alignbox(xui_vector<s32>(20), get_selectedvec);
+	m_blankbox	= new onity_blankbox(xui_vector<s32>(20), get_selectedvec);
 	m_pivotbox	= new onity_pivotbox(m_drawpane);
 	xui_method_ptrcall(m_linetool,	add_item		)(m_snaptool->get_snapctrl());
 	xui_method_ptrcall(m_linetool,	add_separate	)();
@@ -138,16 +141,16 @@ xui_method_explain(onity_scene, set_ratio,					void					)( f64 ratio )
 	onity_asset::set_ratio(ratio);
 	xui_method_ptrcall(m_snaptool, set_ratio)(ratio);
 }
-xui_method_explain(onity_scene, set_nodevisible,			void					)( onity_bounding* prop )
+xui_method_explain(onity_scene, set_nodevisible,			void					)( onity_boundbox* bbox )
 {
 	if (onity_mainform::get_ptr()->was_gamerun())
 		return;
 
-	onity_asset::set_nodevisible(prop);
+	onity_asset::set_nodevisible(bbox);
 }
 xui_method_explain(onity_scene, set_toolupdate,				void					)( void )
 {
-	onity_bounding_vec vec = get_selectedbounding();
+	onity_boundbox_vec vec = get_selectedboundbox();
 	xui_method_ptrcall(m_horzflip,	set_enable	)(vec.size() > 1);
 	xui_method_ptrcall(m_vertflip,	set_enable	)(vec.size() > 1);
 	xui_method_ptrcall(m_cwrotate,	set_enable	)(vec.size() > 1);
@@ -158,31 +161,23 @@ xui_method_explain(onity_scene, set_toolupdate,				void					)( void )
 	m_blankbox->set_lineupdate();
 	m_pivotbox->set_rectupdate();
 }
-xui_method_explain(onity_scene, hit_propvisible,			onity_proproot*			)( const xui_vector<s32>& pt )
+xui_method_explain(onity_scene, hit_propvisible,			onity_boundbox*			)( const xui_vector<s32>& pt )
 {
-	onity_proproot*  pick		= NULL;
-	xui_proproot_vec propvec	= get_propcand();
-
-	for (u32 i = 0; i < propvec.size(); ++i)
+	xui_proproot_vec vec = get_propcand();
+	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		onity_propeditnode*  prop = dynamic_cast<onity_propeditnode*>(propvec[i]);
-		xui_rect2d<s32> rt = prop->get_bounding(m_trans, m_ratio);
+		onity_propeditnode*	prop = dynamic_cast<onity_propeditnode*>(vec[i]);
+		onity_boundbox*		bbox = prop->get_boundbox();
+		xui_rect2d<s32>		rt	 = bbox->get_bounding(m_trans, m_ratio);
 		if (rt.was_inside(pt))
-		{
-			pick = prop;
-			break;
-		}
+			return bbox;
 	}
 
-	return pick;
+	return NULL;
 }
-
-/*
-//static
-*/
-xui_method_explain(onity_scene, get_selectedbounding,		onity_bounding_vec		)( void )
+xui_method_explain(onity_scene, get_selectedboundbox,		onity_boundbox_vec		)( void )
 {
-	onity_bounding_vec vec;
+	onity_boundbox_vec vec;
 
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
 	xui_treeview* treeview = hierarchy->get_treeview();
@@ -194,11 +189,21 @@ xui_method_explain(onity_scene, get_selectedbounding,		onity_bounding_vec		)( vo
 		{
 			onity_treedata*		data = (onity_treedata*)node->get_linkdata();
 			onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			vec.push_back(prop);
+			onity_boundbox*		bbox = prop->get_boundbox();
+			vec.push_back(bbox);
 		}
 	}
 
 	return vec;
+}
+
+/*
+//static
+*/
+xui_method_explain(onity_scene, get_selectedvec,			onity_boundbox_vec		)( void )
+{
+	onity_scene* scene = onity_mainform::get_ptr()->get_scene();
+	return scene->get_selectedboundbox();
 }
 
 /*
@@ -212,7 +217,7 @@ xui_method_explain(onity_scene, on_buttonclick,				void					)( xui_component* se
 		sender == m_vertflip)
 	{
 		m_pivotbox->set_visible(true);
-		onity_bounding_vec vec = get_selectedbounding();
+		onity_boundbox_vec vec = get_selectedboundbox();
 		mir_propnode(vec, m_pivotbox->ori_pivot(), (sender == m_horzflip ? 1 : -1));
 		m_pivotbox->set_rectupdate(false);
 	}
@@ -221,7 +226,7 @@ xui_method_explain(onity_scene, on_buttonclick,				void					)( xui_component* se
 		sender == m_ccrotate)
 	{
 		m_pivotbox->set_visible(true);
-		onity_bounding_vec vec = get_selectedbounding();
+		onity_boundbox_vec vec = get_selectedboundbox();
 		rot_propnode(vec, m_pivotbox->ori_pivot(), (sender == m_cwrotate) ? 1 : -1);
 		m_pivotbox->set_rectupdate(false);
 	}
@@ -245,24 +250,24 @@ xui_method_explain(onity_scene, on_fillpanekeybddown,		void					)( xui_component
 		hierarchy->del_coursenode();
 	}
 }
-xui_method_explain(onity_scene, on_drawviewnoncatch,		void					)( xui_component* sender, xui_method_args&		args )
-{
-	onity_asset::on_drawviewnoncatch(sender, args);
-
-	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	xui_treeview* treeview = hierarchy->get_treeview();
-	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-	for (u32 i= 0; i < nodevec.size(); ++i)
-	{
-		xui_treenode*		node = nodevec[i];
-		onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-		if (prop)
-		{
-			prop->set_lockdata(false);
-		}
-	}
-}
+//xui_method_explain(onity_scene, on_drawviewnoncatch,		void					)( xui_component* sender, xui_method_args&		args )
+//{
+//	onity_asset::on_drawviewnoncatch(sender, args);
+//
+//	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+//	xui_treeview* treeview = hierarchy->get_treeview();
+//	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+//	for (u32 i= 0; i < nodevec.size(); ++i)
+//	{
+//		xui_treenode*		node = nodevec[i];
+//		onity_treedata*		data = (onity_treedata*)node->get_linkdata();
+//		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
+//		if (prop)
+//		{
+//			prop->set_lockdata(false);
+//		}
+//	}
+//}
 xui_method_explain(onity_scene, on_drawviewupdateself,		void					)( xui_component* sender, xui_method_update&	args )
 {
 	onity_asset::on_drawviewupdateself(sender, args);
@@ -336,19 +341,20 @@ xui_method_explain(onity_scene, on_drawviewrenderself,		void					)( xui_componen
 }
 xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_component* sender, xui_method_args&		args )
 {
+	onity_asset::on_drawviewrenderelse(sender, args);
+
 	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(m_drawview->get_renderrtabs()));
 
 	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
 	xui_treeview* treeview = hierarchy->get_treeview();
-	std::vector<xui_treenode*>    nodevec = treeview->get_selectednode();
-	std::vector<NP2DSSceneLayer*> currvec;
 
 	xui_vector<s32> pt = m_drawview->get_screenpt();
 	if (onity_mainform::get_ptr()->was_gamerun() == false)
 	{
-		onity_propcourse* editprop = hierarchy->get_editprop();
-		if (editprop)
+		std::vector<xui_treenode*>    nodevec = treeview->get_selectednode();
+		std::vector<NP2DSSceneLayer*> currvec;
+		if (hierarchy->get_editprop())
 		{
 			for (u32 i = 0; i < nodevec.size(); ++i)
 			{
@@ -367,94 +373,62 @@ xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_componen
 			}
 		}
 
-		xui_vector<s32> p1;
-		xui_vector<s32> p2;
-		p1 = xui_vector<s32>(xui_round(m_trans.x*m_ratio),	0);
-		p2 = xui_vector<s32>(xui_round(m_trans.x*m_ratio),	m_drawview->get_renderh());
-		xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
-		p1 = xui_vector<s32>(0,							xui_round(m_trans.y*m_ratio));
-		p2 = xui_vector<s32>(m_drawview->get_renderw(), xui_round(m_trans.y*m_ratio));
-		xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
-
-		std::vector<s32> linevec;
-		linevec = m_horzgrad->get_lines();
-		for (u32 i = 0; i < linevec.size(); ++i)
-		{
-			s32 line = linevec[i];
-			p1 = xui_vector<s32>(xui_round(m_trans.x*m_ratio + line*m_ratio), 0);
-			p2 = xui_vector<s32>(xui_round(m_trans.x*m_ratio + line*m_ratio), m_drawview->get_renderh());
-			xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
-		}
-		linevec = m_vertgrad->get_lines();
-		for (u32 i = 0; i < linevec.size(); ++i)
-		{
-			s32 line = linevec[i];
-			p1 = xui_vector<s32>(0,							xui_round(m_trans.y*m_ratio + line*m_ratio));
-			p2 = xui_vector<s32>(m_drawview->get_renderw(),	xui_round(m_trans.y*m_ratio + line*m_ratio));
-			xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
-		}
-
 		for (u32 i = 0; i < currvec.size(); ++i)
 		{
 			NP2DSSceneLayer* layer = currvec[i];
 
-			xui_rect2d<s32> rt;
-			rt.ax  = xui_round(layer->GetWorldTrans().x*m_ratio + m_trans.x*m_ratio);
-			rt.ay  = xui_round(layer->GetWorldTrans().y*m_ratio + m_trans.y*m_ratio);
-			rt.set_w(xui_round(layer->GetCellW()*layer->GetCellC()*m_ratio));
-			rt.set_h(xui_round(layer->GetCellH()*layer->GetCellR()*m_ratio));
-			xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour::gray);
+			xui_rect2d<s32> rect;
+			rect.ax  = xui_round(layer->GetWorldTrans().x*m_ratio + m_trans.x*m_ratio);
+			rect.ay  = xui_round(layer->GetWorldTrans().y*m_ratio + m_trans.y*m_ratio);
+			rect.set_w(xui_round(layer->GetCellW()*layer->GetCellC()*m_ratio));
+			rect.set_h(xui_round(layer->GetCellH()*layer->GetCellR()*m_ratio));
+			xui_convas::get_ins()->draw_rectangle(rect+pt, xui_colour::gray);
 		}
 	}
 
-	for (u32 i = 0; i < nodevec.size(); ++i)
-	{
-		if (nodevec[i]->get_rootnode() == NULL)
-			continue;
+	onity_boundbox_vec  selectedvec = get_selectedboundbox();
+	for (u32 i = 0; i < selectedvec.size(); ++i)
+		selectedvec[i]->draw(m_trans, m_ratio, pt);
 
-		xui_treenode*		 node = nodevec[i];
-		onity_treedata*		 data = (onity_treedata*)node->get_linkdata();
-		onity_propeditnode*  prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-		xui_rect2d<s32> rt = prop->get_bounding(m_trans, m_ratio);
-		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.7f));
-	}
+	//for (u32 i = 0; i < nodevec.size(); ++i)
+	//{
+	//	if (nodevec[i]->get_rootnode() == NULL)
+	//		continue;
 
-	if (m_dragprop)
+	//	xui_treenode*		 node = nodevec[i];
+	//	onity_treedata*		 data = (onity_treedata*)node->get_linkdata();
+	//	onity_propeditnode*  prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
+	//	xui_rect2d<s32>		 rect = prop->get_bounding(m_trans, m_ratio);
+	//	xui_convas::get_ins()->draw_rectangle(rect+pt, xui_colour(1.0f, 0.7f));
+	//}
+
+	if (m_operator == BO_MOVE)
 	{
-		onity_bounding_vec	selectedvec = get_selectedbounding();
-		onity_bounding*		self = m_snaptool->cal_selfprop(selectedvec);
-		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(self);
-		if (prop)
+		onity_boundbox*	selfbbox = m_snaptool->cal_selfbbox(selectedvec);
+		if (selfbbox)
 		{
-			onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-			xui_treenode* root = prop->get_linkdata(hierarchy->get_treeview())->get_node()->get_rootnode();
+			onity_propeditnode*		selfprop	= dynamic_cast<onity_propeditnode*>(selfbbox->get_linkprop());
+			xui_treedata*			treedata	= selfprop->get_linkdata(treeview);
+			xui_treenode*			treenode	= treedata->get_node();
+			xui_treenode*			rootnode	= treenode->get_rootnode();
 
-			onity_bounding_vec vec;
-			for (u32 i = 0; i < root->get_leafnodecount(); ++i)
+			onity_boundbox_vec vec;
+			for (u32 i = 0; i < rootnode->get_leafnodecount(); ++i)
 			{
-				if (root->get_leafnode(i)->was_selected())
+				xui_treenode*		leafnode	= rootnode->get_leafnode(i);
+				if (leafnode->was_selected())
 					continue;
 
-				xui_treenode*		node = root->get_leafnode(i);
-				onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-				onity_propeditnode* temp = dynamic_cast<onity_propeditnode*>(data->get_prop());
-				vec.push_back(temp);
+				onity_treedata*		leafdata = (onity_treedata*)leafnode->get_linkdata();
+				onity_propeditnode* leafprop = dynamic_cast<onity_propeditnode*>(leafdata->get_prop());
+				onity_boundbox*		leafbbox = leafprop->get_boundbox();
+				vec.push_back(leafbbox);
 			}
 
 			m_snaptool->set_snapdraw(vec, selectedvec);
 		}
 	}
-	
-	if (nodevec.size() > 0)
-	{
-		xui_treenode*		head = nodevec.front();
-		onity_treedata*		data = (onity_treedata*)head->get_linkdata();
-		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-		xui_rect2d<s32>		rect = prop->get_bounding(m_trans, m_ratio);
-		draw_locknode(rect);
-	}
 
-	draw_multisel();
 	xui_convas::get_ins()->set_cliprect(cliprect);
 }
 xui_method_explain(onity_scene, on_drawviewmousedown,		void					)( xui_component* sender, xui_method_mouse&		args )
@@ -467,26 +441,29 @@ xui_method_explain(onity_scene, on_drawviewmouserise,		void					)( xui_component
 	onity_asset::on_drawviewmouserise(sender, args);
 	if (args.mouse == MB_L)
 	{
-		if (m_dragprop && m_multisel == false)
+		if (m_operator == BO_MOVE)
 		{
-			onity_bounding_vec	selectedvec = get_selectedbounding();
-			onity_bounding*		self = m_snaptool->cal_selfprop(selectedvec);
-			onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(self);
-			if (prop)
-			{
-				onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-				xui_treenode* root = prop->get_linkdata(hierarchy->get_treeview())->get_node()->get_rootnode();
+			onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
+			xui_treeview* treeview = hierarchy->get_treeview();
 
-				onity_bounding_vec vec;
-				for (u32 i = 0; i < root->get_leafnodecount(); ++i)
+			onity_boundbox_vec selectedvec = get_selectedboundbox();
+			onity_boundbox*	selfbbox = m_snaptool->cal_selfbbox(selectedvec);
+			if (selfbbox)
+			{
+				onity_boundbox_vec		vec;
+				onity_propeditnode*		selfprop	= dynamic_cast<onity_propeditnode*>(selfbbox->get_linkprop());
+				xui_treenode*			selfnode	= selfprop->get_linkdata(treeview)->get_node();
+				xui_treenode*			rootnode	= selfnode->get_rootnode();
+				for (u32 i = 0; i < rootnode->get_leafnodecount(); ++i)
 				{
-					if (root->get_leafnode(i)->was_selected())
+					xui_treenode*		leafnode	= rootnode->get_leafnode(i);
+					if (leafnode->was_selected())
 						continue;
 
-					xui_treenode*		node = root->get_leafnode(i);
-					onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-					onity_propeditnode* temp = dynamic_cast<onity_propeditnode*>(data->get_prop());
-					vec.push_back(temp);
+					onity_treedata*		leafdata	= (onity_treedata*)leafnode->get_linkdata();
+					onity_propeditnode* leafprop	= dynamic_cast<onity_propeditnode*>(leafdata->get_prop());
+					onity_boundbox*		leafbbox	= leafprop->get_boundbox();
+					vec.push_back(leafbbox);
 				}
 
 				m_snaptool->use_snapinfo(vec, selectedvec);
@@ -540,31 +517,15 @@ xui_method_explain(onity_scene, on_toggleclick,				void					)( xui_component* se
 */
 xui_method_explain(onity_scene, on_keybdmoveimpl,			void					)( const xui_vector<s32>& delta )
 {
-	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	xui_treeview* treeview = hierarchy->get_treeview();
-	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-
-	if (nodevec.size())
-	{
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*		node = nodevec[i];
-			onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-			onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			if (prop)
-			{
-				prop->set_position(prop->ori_position()+delta);
-			}
-		}
-
-		m_pivotbox->set_rectupdate();
-	}
+	onity_asset::on_keybdmoveimpl(delta);
+	m_pivotbox->set_rectupdate();
 }
-xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_proproot* pick, bool alt, bool ctrl, bool shift )
+xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op )
 {
-	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	xui_treeview* treeview = hierarchy->get_treeview();
-	xui_treenode* node = pick->get_linkdata(treeview)->get_node();
+	onity_hierarchy*	hierarchy	= onity_mainform::get_ptr()->get_hierarchy();
+	xui_treeview*		treeview	= hierarchy->get_treeview();
+	onity_proproot*		prop		= dynamic_cast<onity_proproot*>(pick->get_linkprop());
+	xui_treenode*		node		= prop->get_linkdata(treeview)->get_node();
 	if (alt && onity_mainform::get_ptr()->was_gamerun() == false)
 	{
 		std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
@@ -581,7 +542,7 @@ xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_proproot* 
 			if (node == currnode)
 			{
 				node =  nextnode;
-				pick =  nextprop;
+				prop =  nextprop;
 			}
 
 			nextvec.push_back(nextnode);
@@ -601,26 +562,26 @@ xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_proproot* 
 		xui_method_ptrcall(treeview,	set_selectednode)(node, true);
 	}
 
-	if (m_drawview->has_catch() && node->was_selected())
+	if (node->was_selected() && op == BO_MOVE)
 	{
-		m_dragprop = true;
-		xui_method_ptrcall(m_drawview,	set_cursor		)(CURSOR_HAND);
-		xui_static_inscall(xui_global,	set_cursor		)(CURSOR_HAND);
+		//m_dragprop = true;
+		//xui_method_ptrcall(m_drawview,	set_cursor		)(CURSOR_HAND);
+		//xui_static_inscall(xui_global,	set_cursor		)(CURSOR_HAND);
 
 		//lock update bounding
-		std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*		temp = nodevec[i];
-			onity_treedata*		data = (onity_treedata*)temp->get_linkdata();
-			onity_propeditnode* edit = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			if (edit)
-			{
-				edit->get_position(m_trans, m_ratio);
-				edit->get_bounding(m_trans, m_ratio);
-				edit->set_lockdata(true);
-			}
-		}
+		//std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
+		//for (u32 i = 0; i < nodevec.size(); ++i)
+		//{
+		//	xui_treenode*		temp = nodevec[i];
+		//	onity_treedata*		data = (onity_treedata*)temp->get_linkdata();
+		//	onity_propeditnode* edit = dynamic_cast<onity_propeditnode*>(data->get_prop());
+		//	if (edit)
+		//	{
+		//		edit->get_position(m_trans, m_ratio);
+		//		edit->get_bounding(m_trans, m_ratio);
+		//		edit->set_lockdata(true);
+		//	}
+		//}
 
 		u08 mode = DRAGMOVE_UNLIMIT;
 		if		(shift && ctrl)	mode = DRAGMOVE_Y;
@@ -628,53 +589,31 @@ xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_proproot* 
 		else
 		{}
 
-		xui_treenode*			root = node->get_rootnode();
-		onity_treedata*			data = (onity_treedata*)root->get_linkdata();
-		onity_propscenelayer*	prop = dynamic_cast<onity_propscenelayer*>(data->get_prop());
-		onity_propeditnode*		self = dynamic_cast<onity_propeditnode*>(pick);
+		xui_treenode*			rootnode = node->get_rootnode();
+		onity_treedata*			rootdata = (onity_treedata*)rootnode->get_linkdata();
+		onity_propscenelayer*	rootprop = dynamic_cast<onity_propscenelayer*>(rootdata->get_prop());
+		onity_propeditnode*		selfprop = dynamic_cast<onity_propeditnode*>(prop);
+		onity_boundbox*			selfbbox = selfprop->get_boundbox();
 
-		std::vector<onity_bounding*> vec;
-		for (u32 i = 0; i < root->get_leafnodecount(); ++i)
+		std::vector<onity_boundbox*> vec;
+		for (u32 i = 0; i < rootnode->get_leafnodecount(); ++i)
 		{
-			if (root->get_leafnode(i)->was_selected())
+			if (rootnode->get_leafnode(i)->was_selected())
 				continue;
 
-			xui_treenode*		temp = root->get_leafnode(i);
-			onity_treedata*		data = (onity_treedata*)temp->get_linkdata();
-			onity_propeditnode* edit = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			vec.push_back(edit);
+			xui_treenode*		leafnode = rootnode->get_leafnode(i);
+			onity_treedata*		leafdata = (onity_treedata*)leafnode->get_linkdata();
+			onity_propeditnode* leafprop = dynamic_cast<onity_propeditnode*>(leafdata->get_prop());
+			onity_boundbox*		leafbbox = leafprop->get_boundbox();
+			vec.push_back(leafbbox);
 		}
 
-		s32 snaplength = (prop == NULL) ? 5 : prop->get_snaplength();
+		s32 snaplength = (rootprop == NULL) ? 5 : rootprop->get_snaplength();
 		m_snaptool->cal_snapinfo(
 			vec,
-			self->ori_bounding(), 
+			selfbbox->ori_bounding(), 
 			mode, 
 			snaplength);
-	}
-}
-xui_method_explain(onity_scene, on_mousedragimpl,			void					)( const xui_vector<s32>& delta )
-{
-	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-	xui_treeview* treeview = hierarchy->get_treeview();
-	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-	if (nodevec.size() > 0)
-	{
-		for (u32 i = 0; i < nodevec.size(); ++i)
-		{
-			xui_treenode*		node = nodevec[i];
-			onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-			onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			if (prop)
-			{
-				prop->mov_position(delta);
-
-				xui_vector<s32> pos = prop->get_position(m_trans, m_ratio);
-				pos.x = xui_round(pos.x/m_ratio - m_trans.x);
-				pos.y = xui_round(pos.y/m_ratio - m_trans.y);
-				prop->set_position(pos);
-			}
-		}
 	}
 }
 xui_method_explain(onity_scene, on_mulselectimpl,			void					)( const xui_rect2d<s32>& rt, bool ctrl )
@@ -687,7 +626,8 @@ xui_method_explain(onity_scene, on_mulselectimpl,			void					)( const xui_rect2d
 	for (u32 i = 0; i < propvec.size(); ++i)
 	{
 		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(propvec[i]);
-		xui_rect2d<s32>		temp = prop->get_bounding(m_trans, m_ratio);
+		onity_boundbox*		bbox = prop->get_boundbox();
+		xui_rect2d<s32>		temp = bbox->get_bounding(m_trans, m_ratio);
 		if (temp.get_inter(rt).was_valid())
 		{
 			nextvec.push_back(prop->get_linkdata(treeview)->get_node());
@@ -749,13 +689,13 @@ xui_method_explain(onity_scene, get_propcand,				xui_proproot_vec		)( void )
 
 	return vec;
 }
-xui_method_explain(onity_scene, mir_propnode,				void					)( const onity_bounding_vec& vec, const xui_vector<s32>& pivot, s32 style )
+xui_method_explain(onity_scene, mir_propnode,				void					)( const onity_boundbox_vec& vec, const xui_vector<s32>& pivot, s32 style )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		onity_bounding* prop = vec[i];
-		xui_vector<s32> pt   = prop->ori_position();
-		xui_rect2d<s32> rt	 = prop->ori_bounding();
+		onity_boundbox* bbox = vec[i];
+		xui_vector<s32> pt	 = bbox->ori_position();
+		xui_rect2d<s32> rt	 = bbox->ori_bounding();
 
 		s32 w = rt.get_w() / 2;
 		s32 h = rt.get_h() / 2;
@@ -766,16 +706,16 @@ xui_method_explain(onity_scene, mir_propnode,				void					)( const onity_boundin
 		if (style < 0)
 			pt.y = pivot.y + (pivot.y-center.y) + offset.y;
 
-		prop->set_position(pt);
+		bbox->set_position(pt);
 	}
 }
-xui_method_explain(onity_scene, rot_propnode,				void					)( const onity_bounding_vec& vec, const xui_vector<s32>& pivot, s32 style )
+xui_method_explain(onity_scene, rot_propnode,				void					)( const onity_boundbox_vec& vec, const xui_vector<s32>& pivot, s32 style )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
-		onity_bounding* prop = vec[i];
-		xui_vector<s32> pt   = prop->ori_position();
-		xui_rect2d<s32> rt   = prop->ori_bounding();
+		onity_boundbox* bbox = vec[i];
+		xui_vector<s32> pt	 = bbox->ori_position();
+		xui_rect2d<s32> rt	 = bbox->ori_bounding();
 
 		s32 w = rt.get_w() / 2;
 		s32 h = rt.get_h() / 2;
@@ -783,7 +723,7 @@ xui_method_explain(onity_scene, rot_propnode,				void					)( const onity_boundin
 		xui_vector<s32> offset = pt - center;
 		pt.x = pivot.x - (center.y-pivot.y)*style + offset.x;
 		pt.y = pivot.y + (center.x-pivot.x)*style + offset.y;
-		prop->set_position(pt);
+		bbox->set_position(pt);
 	}
 }
 

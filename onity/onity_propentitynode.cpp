@@ -1,9 +1,10 @@
+#include "NP2DSTransRef.h"
 #include "NP2DSImageRef.h"
 #include "NP2DSFrameRef.h"
 #include "NP2DSActorRef.h"
 #include "Entity.h"
-#include "Component/Transform/TransformComponent.h"
-#include "Component/InterAction/IAComponent.h"
+#include "Entity/Component/Transform/TransformComponent.h"
+#include "Entity/Component/InterAction/IAComponent.h"
 #include "Entity/Component/Visual/WGVisualComponent.h"
 #include "Entity/Component/Visual/WGVisualManager.h"
 #include "Entity/Component/Physics/PhysicsComponent.h"
@@ -17,6 +18,7 @@
 #include "onity_resource.h"
 #include "onity_propctrl_transref.h"
 #include "onity_propctrl_rendertree.h"
+#include "onity_boundbox_entitynode.h"
 #include "onity_propentitynode.h"
 
 /*
@@ -142,7 +144,10 @@ xui_create_explain(onity_propentitynode)( Omiga::Entity* entity )
 	else
 	{
 		delete m_paramkind;
+		m_paramkind = NULL;
 	}
+
+	m_boundctrl = new onity_boundbox_entitynode(this);
 }
 
 /*
@@ -180,42 +185,42 @@ xui_method_explain(onity_propentitynode, set_scale,			void			)( const xui_vector
 		}
 	}
 }
-xui_method_explain(onity_propentitynode, ori_bounding,		xui_rect2d<s32>	)( void )
-{
-	NPRect rt = NPRect::Empty;
-
-	BreezeGame::WGVisualComponent* component = m_entity->GetComponent<BreezeGame::WGVisualComponent>();
-	if (component)
-	{
-		cal_bounding(component->GetNode(), &rt);
-	}
-
-	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
-}
-xui_method_explain(onity_propentitynode, ori_position,		xui_vector<s32>	)( void )
-{
-	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
-	if (transform)
-	{
-		Omiga::Vec2Df pos = transform->GetPosition();
-		return xui_vector<s32>((s32)pos.x, (s32)pos.y);
-	}
-
-	return xui_vector<s32>(0);
-}
-xui_method_explain(onity_propentitynode, set_position,		void			)( const xui_vector<s32>& pos )
-{
-	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
-	if (transform)
-	{
-		transform->SetPosition(Omiga::Vec2Df((f32)pos.x, (f32)pos.y));
-		NP2DSTransRef* linkref = m_entity->GetLinkRef();
-		if (linkref)
-		{
-			linkref->SetWorldTrans(NPVector3((f32)pos.x - (f32)m_entity->GetLeftPos(), (f32)pos.y, 0.0f));
-		}
-	}
-}
+//xui_method_explain(onity_propentitynode, ori_bounding,		xui_rect2d<s32>	)( void )
+//{
+//	NPRect rt = NPRect::Empty;
+//
+//	BreezeGame::WGVisualComponent* component = m_entity->GetComponent<BreezeGame::WGVisualComponent>();
+//	if (component)
+//	{
+//		cal_bounding(component->GetNode(), &rt);
+//	}
+//
+//	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
+//}
+//xui_method_explain(onity_propentitynode, ori_position,		xui_vector<s32>	)( void )
+//{
+//	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+//	if (transform)
+//	{
+//		Omiga::Vec2Df pos = transform->GetPosition();
+//		return xui_vector<s32>((s32)pos.x, (s32)pos.y);
+//	}
+//
+//	return xui_vector<s32>(0);
+//}
+//xui_method_explain(onity_propentitynode, set_position,		void			)( const xui_vector<s32>& pos )
+//{
+//	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
+//	if (transform)
+//	{
+//		transform->SetPosition(Omiga::Vec2Df((f32)pos.x, (f32)pos.y));
+//		NP2DSTransRef* linkref = m_entity->GetLinkRef();
+//		if (linkref)
+//		{
+//			linkref->SetWorldTrans(NPVector3((f32)pos.x - (f32)m_entity->GetLeftPos(), (f32)pos.y, 0.0f));
+//		}
+//	}
+//}
 
 /*
 //static
@@ -292,36 +297,4 @@ xui_method_explain(onity_propentitynode, set_gravity,		void			)( void* userptr, 
 	BreezeGame::JPBox2dPhysComp*	box2d		= entity->GetComponent<BreezeGame::JPBox2dPhysComp>();
 	b2Body*							body		= box2d->GetBody();
 	body->SetGravityScale((f32)value);
-}
-
-/*
-//method
-*/
-xui_method_explain(onity_propentitynode, cal_bounding,		void			)( NPNode* node, NPRect* result )
-{
-	if (node && node->WasVisible())
-	{
-		if (NPIsExaKindOf(NP2DSImageRef, node) ||
-			NPIsExaKindOf(NP2DSFrameRef, node) ||
-			NPIsSubKindOf(NP2DSActorRef, node))
-		{
-			NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, node);
-			if (transref->HasAsset())
-				(*result) = result->GetUnion(transref->GetFinalBounding());
-		}
-
-		if (NPIsExaKindOf(NPNode,		 node) == false &&
-			NPIsExaKindOf(NP2DSTransRef, node) == false &&
-			NPIsExaKindOf(NP2DSActorRef, node) == false &&
-			NPIsExaKindOf(NP2DSFrameRef, node) == false &&
-			NPIsExaKindOf(NP2DSImageRef, node) == false)
-			return;
-
-		std::list<NPRenderObject*> children = node->GetChildren();
-		for (std::list<NPRenderObject*>::iterator itor = children.begin(); itor != children.end(); ++itor)
-		{
-			NPNode* child = NPDynamicCast(NPNode, (*itor));
-			cal_bounding(child, result);
-		}
-	}
 }

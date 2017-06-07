@@ -8,7 +8,14 @@ inline s32 xui_round( f64 value )
 	return (s32)(value + (value > 0.0 ? 0.5 : -0.5));
 }
 
-class onity_bounding;
+enum 
+{
+	DRAGMOVE_UNLIMIT,
+	DRAGMOVE_X,
+	DRAGMOVE_Y,
+};
+
+class onity_boundbox;
 class onity_snaptool
 {
 public:
@@ -23,10 +30,10 @@ public:
 	void					set_trans					( const xui_vector<s32>& trans );
 	void					set_ratio					( f64 ratio );
 	xui_toggle*				get_snapctrl				( void );
-	onity_bounding*			cal_selfprop				( const std::vector<onity_bounding*>& selectedvec );
-	void					cal_snapinfo				( const std::vector<onity_bounding*>& boundingvec, const xui_rect2d<s32>& self, u08 mode, s32 snaplength );
-	void					use_snapinfo				( const std::vector<onity_bounding*>& boundingvec, const std::vector<onity_bounding*>& selectedvec );
-	void					set_snapdraw				( const std::vector<onity_bounding*>& boundingvec, const std::vector<onity_bounding*>& selectedvec );
+	onity_boundbox*			cal_selfbbox				( const std::vector<onity_boundbox*>& selectedvec );
+	void					cal_snapinfo				( const std::vector<onity_boundbox*>& boundboxvec, const xui_rect2d<s32>& self, u08 mode, s32 snaplength );
+	void					use_snapinfo				( const std::vector<onity_boundbox*>& boundboxvec, const std::vector<onity_boundbox*>& selectedvec );
+	void					set_snapdraw				( const std::vector<onity_boundbox*>& boundboxvec, const std::vector<onity_boundbox*>& selectedvec );
 
 protected:
 	/*
@@ -35,21 +42,21 @@ protected:
 	class snap_info
 	{
 	public:
-		snap_info( onity_bounding* _curr, onity_bounding* _next = NULL )
+		snap_info( onity_boundbox* _curr, onity_boundbox* _next = NULL )
 		{
 			curr = _curr;
 			next = _next;
 		}
 
-		onity_bounding*		curr;
-		onity_bounding*		next;
+		onity_boundbox*		curr;
+		onity_boundbox*		next;
 	};
 
 	/*
 	//calculate
 	*/
-	xui_rect2d<s32>			cal_selfrect				( const std::vector<onity_bounding*>& selectedvec );
-	xui_vector<s32>			cal_snapmove				( const std::vector<onity_bounding*>& boundingvec, const xui_rect2d<s32>& self, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert );
+	xui_rect2d<s32>			cal_selfrect				( const std::vector<onity_boundbox*>& selectedvec );
+	xui_vector<s32>			cal_snapmove				( const std::vector<onity_boundbox*>& boundboxvec, const xui_rect2d<s32>& self, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert );
 	bool					cal_linestep				( s32& last, s32 temp );
 
 	/*

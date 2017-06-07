@@ -3,14 +3,14 @@
 
 #include "xui_propdata.h"
 
-class onity_bounding;
+class onity_boundbox;
 class onity_alignbox
 {
 public:
 	/*
 	//typedef
 	*/
-	typedef std::vector<onity_bounding*> (*get_func)( void );
+	typedef std::vector<onity_boundbox*> (*get_func)( void );
 
 	/*
 	//constructor

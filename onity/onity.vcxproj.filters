@@ -247,7 +247,6 @@
     <ClInclude Include="onity_snaptool.h">
       <Filter>scene</Filter>
     </ClInclude>
-    <ClInclude Include="onity_bounding.h" />
     <ClInclude Include="onity_propcoursenode.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
@@ -268,6 +267,21 @@
     </ClInclude>
     <ClInclude Include="onity_level.h" />
     <ClInclude Include="onity_module.h" />
+    <ClInclude Include="onity_boundbox.h">
+      <Filter>asset</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_coursenode.h">
+      <Filter>asset</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_entitynode.h">
+      <Filter>asset</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_entitystar.h">
+      <Filter>asset</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_image.h">
+      <Filter>asset</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="onity_mainform.cpp" />
@@ -517,7 +531,6 @@
     <ClCompile Include="onity_snaptool.cpp">
       <Filter>scene</Filter>
     </ClCompile>
-    <ClCompile Include="onity_bounding.cpp" />
     <ClCompile Include="onity_propcoursenode.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
@@ -538,6 +551,21 @@
     </ClCompile>
     <ClCompile Include="onity_level.cpp" />
     <ClCompile Include="onity_module.cpp" />
+    <ClCompile Include="onity_boundbox.cpp">
+      <Filter>asset</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_coursenode.cpp">
+      <Filter>asset</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_entitystar.cpp">
+      <Filter>asset</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_entitynode.cpp">
+      <Filter>asset</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_image.cpp">
+      <Filter>asset</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="animator">

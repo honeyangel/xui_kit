@@ -21,9 +21,6 @@ public:
 	virtual NP2DSTransRef*	get_2dsref		( void );
 	virtual xui_vector<f64>	get_scale		( void );
 	virtual void			set_scale		( const xui_vector<f64>& value );
-	virtual xui_rect2d<s32>	ori_bounding	( void );
-	virtual xui_vector<s32> ori_position	( void );
-	virtual void			set_position	( const xui_vector<s32>& pos );
 
 protected:
 	/*
@@ -39,11 +36,6 @@ protected:
 	static void				set_gravity		( void* userptr, f64   value );
 	static xui_vector<f64>	get_velocity	( void* userptr );
 	static void				set_velocity	( void* userptr, const xui_vector<f64>& value );
-
-	/*
-	//method
-	*/
-	void					cal_bounding	( NPNode* node, NPRect* result );
 
 	/*
 	//member

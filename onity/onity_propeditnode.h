@@ -1,18 +1,27 @@
 #ifndef __onity_propeditnode_h__
 #define __onity_propeditnode_h__
 
-#include "onity_bounding.h"
 #include "onity_proproot.h"
-#include "NP2DSTransRef.h"
 
 typedef std::vector<NP2DSTransRef::SParam> ParamVec;
-class onity_propeditnode : public onity_proproot, public onity_bounding
+class onity_boundbox;
+class onity_propeditnode : public onity_proproot
 {
 public:
 	/*
 	//constructor
 	*/
 	onity_propeditnode( void );
+
+	/*
+	//destructor
+	*/
+	virtual ~onity_propeditnode( void );
+
+	/*
+	//method
+	*/
+	onity_boundbox*			get_boundbox	( void );
 
 	/*
 	//virtual
@@ -25,8 +34,8 @@ protected:
 	/*
 	//static
 	*/
-	static xui_vector<f64>	get_pos			( void* userptr );
-	static void				set_pos			( void* userptr, const xui_vector<f64>& value );
+	static xui_vector<f64>	get_position	( void* userptr );
+	static void				set_position	( void* userptr, const xui_vector<f64>& value );
 	static xui_vector<f64>	get_scale		( void* userptr );
 	static void				set_scale		( void* userptr, const xui_vector<f64>& value );
 	static ParamVec&		get_params		( void* userptr );
@@ -37,6 +46,7 @@ protected:
 	/*
 	//member
 	*/
+	onity_boundbox*			m_boundctrl;
 	xui_propkind*			m_transkind;
 	xui_propkind*			m_paramkind;
 };

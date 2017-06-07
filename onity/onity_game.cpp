@@ -1,5 +1,6 @@
 #include "NPRender.h"
 #include "NPConfig.h"
+#include "NP2DSTransRef.h"
 #include "NP2DSRenderUtil.h"
 #include "NP2DSRenderStep.h"
 #include "NPGUIDesktop.h"
@@ -19,6 +20,7 @@
 #include "xui_treenode.h"
 #include "onity_resource.h"
 #include "onity_propeditnode.h"
+#include "onity_boundbox.h"
 #include "onity_treedata.h"
 #include "onity_mainform.h"
 #include "onity_hierarchy.h"
@@ -213,7 +215,8 @@ xui_method_explain(onity_game, on_viewrenderelse,	void)( xui_component* sender, 
 		xui_treenode*		node = nodevec[i];
 		onity_treedata*		data = (onity_treedata*)node->get_linkdata();
 		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-		xui_rect2d<s32>		rt   = prop->ori_bounding();
+		onity_boundbox*		bbox = prop->get_boundbox();
+		xui_rect2d<s32>		rt   = bbox->ori_bounding();
 		xui_convas::get_ins()->draw_rectangle(rt+pt, xui_colour(1.0f, 0.7f));
 	}
 

@@ -5,7 +5,7 @@
 #include "xui_treenode.h"
 #include "onity_resource.h"
 #include "onity_treedata.h"
-#include "onity_bounding.h"
+#include "onity_boundbox.h"
 #include "onity_snaptool.h"
 
 xui_create_explain(onity_snaptool)( xui_control* drawview )
@@ -28,31 +28,31 @@ xui_create_explain(onity_snaptool)( xui_control* drawview )
 /*
 //method
 */
-xui_method_explain(onity_snaptool, set_trans,					void					)( const xui_vector<s32>& trans )
+xui_method_explain(onity_snaptool, set_trans,		void					)( const xui_vector<s32>& trans )
 {
 	m_trans = trans;
 }
-xui_method_explain(onity_snaptool, set_ratio,					void					)( f64 ratio )
+xui_method_explain(onity_snaptool, set_ratio,		void					)( f64 ratio )
 {
 	m_ratio = ratio;
 }
-xui_method_explain(onity_snaptool, cal_selfprop,				onity_bounding*			)( const std::vector<onity_bounding*>& selectedvec )
+xui_method_explain(onity_snaptool, cal_selfbbox,	onity_boundbox*			)( const std::vector<onity_boundbox*>& selectedvec )
 {
 	if (selectedvec.size() > 0)
 	{
-		xui_vector<s32> curr = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
-
+		xui_vector<s32> pt = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
 		for (u32 i = 0; i < selectedvec.size(); ++i)
 		{
-			xui_rect2d<s32> rect = selectedvec[i]->get_bounding(m_trans, m_ratio);
-			if (rect.was_inside(curr))
-				return selectedvec[i];
+			onity_boundbox* bbox = selectedvec[i];
+			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio);
+			if (rect.was_inside(pt))
+				return bbox;
 		}
 	}
 
 	return NULL;
 }
-xui_method_explain(onity_snaptool, cal_snapinfo,				void					)( const std::vector<onity_bounding*>& boundingvec, const xui_rect2d<s32>& self, u08 mode, s32 snaplength )
+xui_method_explain(onity_snaptool, cal_snapinfo,	void					)( const std::vector<onity_boundbox*>& boundboxvec, const xui_rect2d<s32>& self, u08 mode, s32 snaplength )
 {
 	m_horzsnap.clear();
 	m_vertsnap.clear();
@@ -64,9 +64,9 @@ xui_method_explain(onity_snaptool, cal_snapinfo,				void					)( const std::vecto
 	if (m_snapctrl->was_push() == false)
 		return;
 
-	for (u32 i = 0; i < boundingvec.size(); ++i)
+	for (u32 i = 0; i < boundboxvec.size(); ++i)
 	{
-		xui_rect2d<s32> currrect = boundingvec[i]->ori_bounding();
+		xui_rect2d<s32> currrect = boundboxvec[i]->ori_bounding();
 		if (snaplength > 0)
 		{
 			if (currrect.bx < self.ax-snaplength ||
@@ -79,28 +79,28 @@ xui_method_explain(onity_snaptool, cal_snapinfo,				void					)( const std::vecto
 			s32 l = currrect.ax;
 			s32 r = currrect.bx;
 			s32 c = currrect.ax+currrect.get_w()/2;
-			m_horzsnap[l].push_back(snap_info(boundingvec[i]));
-			m_horzsnap[r].push_back(snap_info(boundingvec[i]));
-			m_horzmidd[c].push_back(snap_info(boundingvec[i]));
+			m_horzsnap[l].push_back(snap_info(boundboxvec[i]));
+			m_horzsnap[r].push_back(snap_info(boundboxvec[i]));
+			m_horzmidd[c].push_back(snap_info(boundboxvec[i]));
 		}
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_Y)
 		{
 			s32 t = currrect.ay;
 			s32 b = currrect.by;
 			s32 c = currrect.ay+currrect.get_h()/2;
-			m_vertsnap[t].push_back(snap_info(boundingvec[i]));
-			m_vertsnap[b].push_back(snap_info(boundingvec[i]));
-			m_vertmidd[c].push_back(snap_info(boundingvec[i]));
+			m_vertsnap[t].push_back(snap_info(boundboxvec[i]));
+			m_vertsnap[b].push_back(snap_info(boundboxvec[i]));
+			m_vertmidd[c].push_back(snap_info(boundboxvec[i]));
 		}
 	}
 
-	if (boundingvec.size() < 2)
+	if (boundboxvec.size() < 2)
 		return;
 
-	for (u32 i = 0; i < boundingvec.size()-1; ++i)
+	for (u32 i = 0; i < boundboxvec.size()-1; ++i)
 	{
-		xui_rect2d<s32> currrect = boundingvec[i  ]->ori_bounding();
-		xui_rect2d<s32> nextrect = boundingvec[i+1]->ori_bounding();
+		xui_rect2d<s32> currrect = boundboxvec[i  ]->ori_bounding();
+		xui_rect2d<s32> nextrect = boundboxvec[i+1]->ori_bounding();
 
 		if (snaplength > 0)
 		{
@@ -118,7 +118,7 @@ xui_method_explain(onity_snaptool, cal_snapinfo,				void					)( const std::vecto
 			{}
 
 			if (horzstep > 0)
-				m_horzstep[horzstep].push_back(snap_info(boundingvec[i], boundingvec[i+1]));
+				m_horzstep[horzstep].push_back(snap_info(boundboxvec[i], boundboxvec[i+1]));
 		}
 		if (mode == DRAGMOVE_UNLIMIT || mode == DRAGMOVE_Y)
 		{
@@ -129,34 +129,34 @@ xui_method_explain(onity_snaptool, cal_snapinfo,				void					)( const std::vecto
 			{}
 
 			if (vertstep > 0)
-				m_vertstep[vertstep].push_back(snap_info(boundingvec[i], boundingvec[i+1]));
+				m_vertstep[vertstep].push_back(snap_info(boundboxvec[i], boundboxvec[i+1]));
 		}
 	}
 }
-xui_method_explain(onity_snaptool, use_snapinfo,				void					)( const std::vector<onity_bounding*>& boundingvec, const std::vector<onity_bounding*>& selectedvec )
+xui_method_explain(onity_snaptool, use_snapinfo,	void					)( const std::vector<onity_boundbox*>& boundboxvec, const std::vector<onity_boundbox*>& selectedvec )
 {
 	xui_vector<s32> snap;
 	xui_vector<s32> step;
 	xui_rect2d<s32> self = cal_selfrect(selectedvec);
-	xui_vector<s32> move = cal_snapmove(boundingvec, self, snap, step, NULL, NULL);
+	xui_vector<s32> move = cal_snapmove(boundboxvec, self, snap, step, NULL, NULL);
 	for (u32 i = 0; i < selectedvec.size(); ++i)
 	{
-		onity_bounding* bounding = selectedvec[i];
-		bounding->set_position(bounding->ori_position()+move);
+		onity_boundbox* bbox = selectedvec[i];
+		bbox->set_position(bbox->ori_position()+move);
 	}
 }
-xui_method_explain(onity_snaptool, get_snapctrl,				xui_toggle*				)( void )
+xui_method_explain(onity_snaptool, get_snapctrl,	xui_toggle*				)( void )
 {
 	return m_snapctrl;
 }
-xui_method_explain(onity_snaptool, set_snapdraw,				void					)( const std::vector<onity_bounding*>& boundingvec, const std::vector<onity_bounding*>& selectedvec )
+xui_method_explain(onity_snaptool, set_snapdraw,	void					)( const std::vector<onity_boundbox*>& boundboxvec, const std::vector<onity_boundbox*>& selectedvec )
 {
 	xui_vector<s32> snap;
 	xui_vector<s32> step;
 	xui_rect2d<s32> horz;
 	xui_rect2d<s32> vert;
 	xui_rect2d<s32> self = cal_selfrect(selectedvec);
-	cal_snapmove(boundingvec, self, snap, step, &horz, &vert);
+	cal_snapmove(boundboxvec, self, snap, step, &horz, &vert);
 
 	onity_snapinfo_map::iterator itor;
 	if (step.x == 0)
@@ -191,10 +191,10 @@ xui_method_explain(onity_snaptool, set_snapdraw,				void					)( const std::vecto
 			draw_vertstep(self, (*itor).first, (*itor).second, vert);
 	}
 }
-xui_method_explain(onity_snaptool, cal_snapmove,				xui_vector<s32>			)( const std::vector<onity_bounding*>& boundingvec, const xui_rect2d<s32>& self, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert )
+xui_method_explain(onity_snaptool, cal_snapmove,	xui_vector<s32>			)( const std::vector<onity_boundbox*>& boundboxvec, const xui_rect2d<s32>& self, xui_vector<s32>& snap, xui_vector<s32>& step, xui_rect2d<s32>* horz, xui_rect2d<s32>* vert )
 {
 	xui_vector<s32> move(0);
-	if (boundingvec.size() > 0)
+	if (boundboxvec.size() > 0)
 	{
 		onity_snapinfo_map::iterator itor;
 		for (itor = m_horzsnap.begin(); itor != m_horzsnap.end(); ++itor)
@@ -228,9 +228,9 @@ xui_method_explain(onity_snaptool, cal_snapmove,				xui_vector<s32>			)( const s
 				snap.y   = line;
 		}
 
-		for (u32 i = 0; i < boundingvec.size(); ++i)
+		for (u32 i = 0; i < boundboxvec.size(); ++i)
 		{
-			xui_rect2d<s32> rect = boundingvec[i]->ori_bounding();
+			xui_rect2d<s32> rect = boundboxvec[i]->ori_bounding();
 			xui_rect2d<s32> temp = rect.get_inter(self);
 
 			s32 horzstep = 0;
@@ -298,7 +298,7 @@ xui_method_explain(onity_snaptool, cal_snapmove,				xui_vector<s32>			)( const s
 		((move.x == 10) ? 0 : move.x),
 		((move.y == 10) ? 0 : move.y));
 }
-xui_method_explain(onity_snaptool, cal_linestep,				bool					)( s32& last, s32 temp )
+xui_method_explain(onity_snaptool, cal_linestep,	bool					)( s32& last, s32 temp )
 {
 	if (last == 0 || abs(last) > abs(temp))
 	{
@@ -308,17 +308,17 @@ xui_method_explain(onity_snaptool, cal_linestep,				bool					)( s32& last, s32 t
 
 	return false;
 }
-xui_method_explain(onity_snaptool, cal_selfrect,				xui_rect2d<s32>			)( const std::vector<onity_bounding*>& selectedvec )
+xui_method_explain(onity_snaptool, cal_selfrect,	xui_rect2d<s32>			)( const std::vector<onity_boundbox*>& selectedvec )
 {
 	if (selectedvec.size() > 0)
 	{
-		xui_vector<s32> curr = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
-
+		xui_vector<s32> pt = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
 		for (u32 i = 0; i < selectedvec.size(); ++i)
 		{
-			xui_rect2d<s32> rect = selectedvec[i]->get_bounding(m_trans, m_ratio);
-			if (rect.was_inside(curr))
-				return selectedvec[i]->ori_bounding();
+			onity_boundbox* bbox = selectedvec[i];
+			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio);
+			if (rect.was_inside(pt))
+				return bbox->ori_bounding();
 		}
 	}
 
@@ -328,7 +328,7 @@ xui_method_explain(onity_snaptool, cal_selfrect,				xui_rect2d<s32>			)( const s
 /*
 //draw snap
 */
-xui_method_explain(onity_snaptool, draw_horzsnap,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
+xui_method_explain(onity_snaptool, draw_horzsnap,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
 {
 	s32 ymin = self.ay;
 	s32 ymax = self.by;
@@ -344,7 +344,7 @@ xui_method_explain(onity_snaptool, draw_horzsnap,				void					)( const xui_rect2
 	xui_vector<s32> p2(xui_round(snap*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
 	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
-xui_method_explain(onity_snaptool, draw_vertsnap,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
+xui_method_explain(onity_snaptool, draw_vertsnap,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
 {
 	s32 xmin = self.ax;
 	s32 xmax = self.bx;
@@ -360,7 +360,7 @@ xui_method_explain(onity_snaptool, draw_vertsnap,				void					)( const xui_rect2
 	xui_vector<s32> p2(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(snap*m_ratio + m_trans.y*m_ratio));
 	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
-xui_method_explain(onity_snaptool, draw_horzstep,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
+xui_method_explain(onity_snaptool, draw_horzstep,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
 {
 	std::vector< xui_rect2d<s32> > currrectvec;
 	std::vector< xui_rect2d<s32> > nextrectvec;
@@ -405,7 +405,7 @@ xui_method_explain(onity_snaptool, draw_horzstep,				void					)( const xui_rect2
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }
-xui_method_explain(onity_snaptool, draw_vertstep,				void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
+xui_method_explain(onity_snaptool, draw_vertstep,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
 {
 	std::vector< xui_rect2d<s32> > currrectvec;
 	std::vector< xui_rect2d<s32> > nextrectvec;

@@ -43,6 +43,7 @@ public:
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, const std::wstring& name );
 	xui_treeview*				get_pathview		( void );
+	onity_fileview*				get_fileview		( void );
 
 	/*
 	//notify

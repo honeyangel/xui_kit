@@ -14,6 +14,9 @@
     <ClInclude Include="onity_alignbox.h" />
     <ClInclude Include="onity_asset.h" />
     <ClInclude Include="onity_blankbox.h" />
+    <ClInclude Include="onity_boundbox_entitynode.h" />
+    <ClInclude Include="onity_boundbox_entitystar.h" />
+    <ClInclude Include="onity_boundbox_image.h" />
     <ClInclude Include="onity_level.h" />
     <ClInclude Include="onity_levelconfigdata.h" />
     <ClInclude Include="onity_gradpane.h" />
@@ -43,8 +46,9 @@
     <ClInclude Include="onity_preview.h" />
     <ClInclude Include="onity_project.h" />
     <ClInclude Include="onity_prop2dsasset.h" />
+    <ClInclude Include="onity_boundbox_coursenode.h" />
     <ClInclude Include="onity_proplevelconfig.h" />
-    <ClInclude Include="onity_bounding.h" />
+    <ClInclude Include="onity_boundbox.h" />
     <ClInclude Include="onity_propentitystar.h" />
     <ClInclude Include="onity_propcoursenode.h" />
     <ClInclude Include="onity_prop2dsres.h" />
@@ -122,6 +126,9 @@
     <ClCompile Include="onity_alignbox.cpp" />
     <ClCompile Include="onity_asset.cpp" />
     <ClCompile Include="onity_blankbox.cpp" />
+    <ClCompile Include="onity_boundbox_entitynode.cpp" />
+    <ClCompile Include="onity_boundbox_entitystar.cpp" />
+    <ClCompile Include="onity_boundbox_image.cpp" />
     <ClCompile Include="onity_level.cpp" />
     <ClCompile Include="onity_levelconfigdata.cpp" />
     <ClCompile Include="onity_gradpane.cpp" />
@@ -142,8 +149,9 @@
     <ClCompile Include="onity_config.cpp" />
     <ClCompile Include="onity_module.cpp" />
     <ClCompile Include="onity_pivotbox.cpp" />
+    <ClCompile Include="onity_boundbox_coursenode.cpp" />
     <ClCompile Include="onity_proplevelconfig.cpp" />
-    <ClCompile Include="onity_bounding.cpp" />
+    <ClCompile Include="onity_boundbox.cpp" />
     <ClCompile Include="onity_propeditnode.cpp" />
     <ClCompile Include="onity_propentitystar.cpp" />
     <ClCompile Include="onity_propcoursenode.cpp" />

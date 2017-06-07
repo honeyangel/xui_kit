@@ -36,12 +36,14 @@
 #include "onity_tileview.h"
 #include "onity_propfile.h"
 #include "onity_prop2dsres.h"
+#include "onity_propmodule.h"
 #include "onity_prop2dsasset.h"
 #include "onity_2dsassetdata.h"
 #include "onity_propcontroller.h"
 #include "onity_propparticle.h"
 #include "onity_proppath.h"
 #include "onity_propactor.h"
+#include "onity_propimage.h"
 #include "onity_propjsones.h"
 #include "onity_propcourse.h"
 #include "onity_propjsonestemp.h"
@@ -52,6 +54,7 @@
 #include "onity_animator.h"
 #include "onity_timeline.h"
 #include "onity_hierarchy.h"
+#include "onity_module.h"
 #include "onity_project.h"
 
 xui_implement_rtti(onity_project, xui_dockpage);
@@ -442,6 +445,10 @@ xui_method_explain(onity_project, get_pathview,				xui_treeview*	)( void )
 {
 	return m_pathview;
 }
+xui_method_explain(onity_project, get_fileview,				onity_fileview*	)( void )
+{
+	return m_fileview;
+}
 
 /*
 //notify
@@ -822,16 +829,32 @@ xui_method_explain(onity_project, on_fileviewdoubleclk,		void			)( xui_component
 							if (m_sizeroll->get_value() == 0)
 								m_sizeroll->set_value(10);
 						}
+
+						if (suff == L".npModule")
+						{
+							onity_module* page = onity_mainform::get_ptr()->get_module();
+							onity_mainform::get_ptr()->set_pageshow(page);
+							page->set_editprop((onity_propmodule*)prop);
+						}
 					}
 				}
 				else
 				{
-					onity_propactor* prop = dynamic_cast<onity_propactor*>(data->get_prop());
-					if (prop)
+					onity_propimage* propimage = dynamic_cast<onity_propimage*>(data->get_prop());
+					onity_propactor* propactor = dynamic_cast<onity_propactor*>(data->get_prop());
+					if (propimage)
 					{
-						onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-						onity_mainform::get_ptr()->set_pageshow(timeline);
-						timeline->set_editprop(prop);
+						onity_module*	page	 = onity_mainform::get_ptr()->get_module();
+						onity_mainform::get_ptr()->set_pageshow(page);
+						page->set_editprop((onity_propmodule*)propimage->get_propfile());
+						page->set_nodevisible(propimage->get_boundbox());
+					}
+					else
+					if (propactor)
+					{
+						onity_timeline* page = onity_mainform::get_ptr()->get_timeline();
+						onity_mainform::get_ptr()->set_pageshow(page);
+						page->set_editprop(propactor);
 					}
 				}
 			}

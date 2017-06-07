@@ -1,7 +1,7 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
 #include "onity_resource.h"
-#include "onity_bounding.h"
+#include "onity_boundbox.h"
 #include "onity_blankbox.h"
 
 /*
@@ -89,7 +89,7 @@ xui_method_explain(onity_blankbox, get_vertline,		xui_linebox*)( void )
 }
 xui_method_explain(onity_blankbox, set_lineupdate,		void		)( void )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	xui_method_ptrcall(m_horzinc,	set_enable)(vec.size() > 2);
 	xui_method_ptrcall(m_horzdec,	set_enable)(vec.size() > 2);
 	xui_method_ptrcall(m_horzcancel,set_enable)(vec.size() > 2);
@@ -105,7 +105,7 @@ xui_method_explain(onity_blankbox, set_lineupdate,		void		)( void )
 */
 xui_method_explain(onity_blankbox, on_horzbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	if (vec.size() > 2)
 	{
 		std::vector<s32>	steparray;
@@ -151,7 +151,7 @@ xui_method_explain(onity_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 }
 xui_method_explain(onity_blankbox, on_vertbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	if (vec.size() > 2)
 	{
 		std::vector<s32>	steparray;

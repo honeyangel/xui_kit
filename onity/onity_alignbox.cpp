@@ -1,7 +1,7 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
 #include "onity_resource.h"
-#include "onity_bounding.h"
+#include "onity_boundbox.h"
 #include "onity_alignbox.h"
 
 /*
@@ -75,7 +75,7 @@ xui_method_explain(onity_alignbox, get_vertline,		xui_linebox*)( void )
 }
 xui_method_explain(onity_alignbox, set_lineupdate,		void		)( void )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	xui_method_ptrcall(m_left,		set_enable)(vec.size() > 1);
 	xui_method_ptrcall(m_hcenter,	set_enable)(vec.size() > 1);
 	xui_method_ptrcall(m_right,		set_enable)(vec.size() > 1);
@@ -89,7 +89,7 @@ xui_method_explain(onity_alignbox, set_lineupdate,		void		)( void )
 */
 xui_method_explain(onity_alignbox, on_horzbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	if (vec.size() > 1)
 	{
 		xui_rect2d<s32> headrect = vec.front()->ori_bounding();
@@ -109,7 +109,7 @@ xui_method_explain(onity_alignbox, on_horzbuttonclick,	void		)( xui_component* s
 }
 xui_method_explain(onity_alignbox, on_vertbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	std::vector<onity_bounding*> vec = (*m_func)();
+	std::vector<onity_boundbox*> vec = (*m_func)();
 	if (vec.size() > 1)
 	{
 		xui_rect2d<s32> headrect = vec.front()->ori_bounding();

@@ -4,6 +4,7 @@
 #include "onity_prop2dsasset.h"
 
 class NP2DSImage;
+class onity_boundbox;
 class onity_propimage : public onity_prop2dsasset
 {
 public:
@@ -13,9 +14,18 @@ public:
 	onity_propimage( onity_propfile* propfile, u32 id );
 
 	/*
+	//destructor
+	*/
+	virtual ~onity_propimage( void );
+
+	/*
 	//method
 	*/
+	onity_boundbox*			get_boundbox	( void );
 	NP2DSImage*				get_image		( void );
+	//virtual xui_vector<s32>	ori_position	( void );
+	//virtual	xui_rect2d<s32>	ori_bounding	( void ); 
+	//virtual void			set_position	( const xui_vector<s32>& pos );
 
 protected:
 	/*
@@ -34,6 +44,7 @@ protected:
 	//member
 	*/
 	xui_propkind*			m_imagekind;
+	onity_boundbox*			m_boundctrl;
 };
 
 #endif//__onity_propimage_h__

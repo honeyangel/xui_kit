@@ -2,6 +2,7 @@
 #include "NP2DSFrame.h"
 #include "NP2DSActor.h"
 #include "NP2DSAssetFile.h"
+#include "NP2DSTransRef.h"
 #include "NP2DSImageRef.h"
 #include "NP2DSFrameRef.h"
 #include "NP2DSActorRef.h"
@@ -28,6 +29,7 @@
 #include "onity_level.h"
 #include "onity_inspector.h"
 #include "onity_scene.h"
+#include "onity_boundbox.h"
 #include "onity_filterdata.h"
 #include "onity_coursedata.h"
 #include "onity_entitydata.h"
@@ -219,7 +221,7 @@ xui_method_explain(onity_hierarchy, add_coursenode,			void				)( const xui_vecto
 	xui_treenode*		  node = add_coursenode(root, asset, NULL);
 	onity_treedata*		  data = (onity_treedata*)node->get_linkdata();
 	onity_propcoursenode* prop = dynamic_cast<onity_propcoursenode*>(data->get_prop());
-	prop->set_position(pos);
+	prop->get_boundbox()->set_position(pos);
 
 	m_tree->non_selectednode(false);
 	m_tree->set_selectednode(node, true);
@@ -541,10 +543,11 @@ xui_method_explain(onity_hierarchy, on_treemousedoubleclick,void				)( xui_compo
 		xui_treenode* node = m_tree->choose_node(pt);
 		if (node->get_rootnode())
 		{
-			onity_scene*	 	   scene = onity_mainform::get_ptr()->get_scene();
-			onity_treedata*	 	   data  = (onity_treedata*)node->get_linkdata();
-			onity_propeditnode*	   prop  = dynamic_cast<onity_propeditnode*>(data->get_prop());
-			scene->set_nodevisible(prop);
+			onity_scene*	 	scene = onity_mainform::get_ptr()->get_scene();
+			onity_treedata*	 	data  = (onity_treedata*)node->get_linkdata();
+			onity_propeditnode*	prop  = dynamic_cast<onity_propeditnode*>(data->get_prop());
+			onity_boundbox*		bbox  = prop->get_boundbox();
+			scene->set_nodevisible(bbox);
 		}
 	}
 }

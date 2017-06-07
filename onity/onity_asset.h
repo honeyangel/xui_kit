@@ -5,8 +5,10 @@
 
 class onity_proproot;
 class onity_gradpane;
-class onity_bounding;
+class onity_boundbox;
 class onity_renderview;
+typedef std::vector<onity_boundbox*> onity_boundbox_vec;
+
 class onity_asset : public xui_dockpage
 {
 	xui_declare_rtti
@@ -29,9 +31,11 @@ public:
 	f64							get_ratio					( void ) const;
 	virtual void				set_trans					( const xui_vector<s32>& trans );
 	virtual void				set_ratio					( f64 ratio );
-	virtual void				set_nodevisible				( onity_bounding* prop );
+	virtual void				set_nodevisible				( onity_boundbox* bbox );
 	virtual void				set_toolupdate				( void );
-	virtual onity_proproot*		hit_propvisible				( const xui_vector<s32>& pt );
+	virtual onity_boundbox*		hit_propvisible				( const xui_vector<s32>& pt );
+	virtual onity_boundbox*		get_operatorboundbox		( const xui_vector<s32>& pt, u08& result );
+	virtual onity_boundbox_vec	get_selectedboundbox		( void );
 
 protected:
 	/*
@@ -62,14 +66,14 @@ protected:
 	//virtual
 	*/
 	virtual void				on_keybdmoveimpl			( const xui_vector<s32>& delta );
-	virtual void				on_mousepickimpl			( onity_proproot* pick, bool alt, bool ctrl, bool shift );
+	virtual void				on_mousepickimpl			( onity_boundbox* bbox, bool alt, bool ctrl, bool shift, u08 op );
 	virtual void				on_mousedragimpl			( const xui_vector<s32>& delta );
 	virtual void				on_mulselectimpl			( const xui_rect2d<s32>& rt, bool ctrl );
 
 	/*
 	//draw
 	*/
-	void						draw_locknode				( const xui_rect2d<s32>& rt );				
+	void						draw_locknode				( void );				
 	void						draw_multisel				( void );
 
 	/*
@@ -86,6 +90,7 @@ protected:
 	xui_toolbar*				m_linetool;
 	xui_panel*					m_fillpane;
 	xui_panel*					m_drawpane;
+	xui_toggle*					m_showbbox;
 	onity_renderview*			m_drawview;
 	onity_gradpane*				m_horzgrad;
 	onity_gradpane*				m_vertgrad;
@@ -93,7 +98,7 @@ protected:
 	xui_action_ctrl*			m_lockctrl;
 	bool						m_multisel;
 	bool						m_dragview;
-	bool						m_dragprop;
+	u08							m_operator;
 };
 
 #endif//__onity_asset_h__
