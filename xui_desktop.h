@@ -47,12 +47,6 @@ public:
 	void						set_mousecurr	( const xui_vector<s32>& pt );
 
 	/*
-	//paste
-	*/
-	//const std::wstring&			get_pastetext	( void ) const;
-	//void						set_pastetext	( const std::wstring& text );
-
-	/*
 	//modal
 	*/
 	void						add_modalwnd	( xui_window* window );
@@ -64,7 +58,7 @@ public:
 	void						move_recycle	( xui_component* component );
 	void						send_message	( const xui_message& message );
 	void						post_message	( const xui_message& message );
-	xui_window*					show_message	( const std::wstring& text, s32 num_button );
+	xui_dialog*					show_message	( const std::wstring& text, s32 num_button );
 
 	/*
 	//virtual

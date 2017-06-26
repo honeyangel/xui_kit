@@ -303,9 +303,9 @@ xui_method_explain(xui_desktop, post_message,	void					)( const xui_message& mes
 {
 	m_messagevec.push_back(message);
 }
-xui_method_explain(xui_desktop, show_message,	xui_window*				)( const std::wstring& text, s32 num_button )
+xui_method_explain(xui_desktop, show_message,	xui_dialog*				)( const std::wstring& text, s32 num_button )
 {
-	xui_window* dialog = new xui_dialog(text, num_button);
+	xui_dialog* dialog = new xui_dialog(text, num_button);
 	add_child(dialog);
 	return dialog;
 }

@@ -94,6 +94,7 @@ class   xui_container;
 class   xui_panel;
 class   xui_drawer;
 class	xui_window;
+class	xui_dialog;
 class   xui_button;
 class   xui_toggle;
 class   xui_textbox;
