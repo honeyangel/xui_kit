@@ -27,6 +27,26 @@ xui_method_explain(xui_global, get_upper,		std::wstring					)( const std::wstrin
 
 	return result;
 }
+xui_method_explain(xui_global, get_split,		std::vector<std::wstring>		)( const std::wstring& src, wchar_t key )
+{
+	std::vector<std::wstring> result;
+
+	std::wstring temp(src);
+	while(true)
+	{
+		s32 pos = temp.find(key);
+		if (pos == -1)
+			break;
+
+		result.push_back(temp.substr(0, pos));
+		temp.erase(0, pos+1);
+	}
+
+	if (!temp.empty())
+		result.push_back(temp);
+
+	return result;
+}
 xui_method_explain(xui_global, unicode_to_utf8, std::string						)( const std::wstring& src )
 {
 	std::string result;
