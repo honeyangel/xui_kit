@@ -25,7 +25,9 @@ class onity_animator;
 class onity_console;
 class onity_timeline;
 class onity_scene;
-class onity_course;
+class onity_module;
+class onity_action;
+class onity_level;
 class onity_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -52,9 +54,11 @@ public:
 	onity_animator*				get_animator		( void );
 	onity_game*					get_game			( void );
 	onity_scene*				get_scene			( void );
+	onity_module*				get_module			( void );
+	onity_action*				get_action			( void );
 	onity_console*				get_console			( void );
 	onity_timeline*				get_timeline		( void );
-	onity_course*				get_course			( void );
+	onity_level*				get_level			( void );
 	void						add_backupfile		( xui_proproot* prop );
 	u32							get_backupfilenum	( void ) const;
 	xui_proproot*				get_backupfile		( u32 index ) const;
@@ -126,6 +130,8 @@ protected:
 	xui_menuitem*				m_game;
 	xui_menuitem*				m_scene;
 	xui_menuitem*				m_animator;
+	xui_menuitem*				m_module;
+	xui_menuitem*				m_action;
 	xui_menuitem*				m_save;
 	xui_menuitem*				m_load;
 	xui_menuitem*				m_reset;

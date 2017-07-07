@@ -79,6 +79,8 @@ public:
 	s32									get_selectedallfirst		( void ) const;
 	bool								was_selectedall				( const std::vector<xui_timeline*>& lines, s32 frame ) const;
 	bool								has_selectedline			( const std::vector<xui_timeline*>& lines, s32 frame ) const;
+	void								set_selectedline			( const std::vector<xui_timeline*>& lines, s32 start, s32 final, bool selected );
+	void								set_selectedline			( xui_timeline* line, s32 start, s32 final, bool selected );
 	void								set_selectedline			( s32 start, s32 final, bool selected );
 	void								non_selectedline			( bool fireMethod = true );
 	std::vector<xui_timeline*>			get_selectedline			( void );
@@ -155,6 +157,8 @@ protected:
 	void								on_fpnumbermousemove		( xui_component* sender, xui_method_mouse&			args );
 	void								on_tldeleterenderself		( xui_component* sender, xui_method_args&			args );
 	void								on_tldeleteclick			( xui_component* sender, xui_method_args&			args );
+	void								on_sizectrlmousemove		( xui_component* sender, xui_method_mouse&			args );
+	void								on_sizectrlrenderself		( xui_component* sender, xui_method_args&			args );
 
 	/*
 	//member
@@ -168,6 +172,7 @@ protected:
 	xui_slider*							m_ksslider;
 	xui_drawer*							m_fpstring;
 	xui_drawer*							m_fpnumber;
+	xui_control*						m_sizectrl;
 	u08									m_dragmode;
 	s32									m_dragtime;
 	s32									m_droptime;

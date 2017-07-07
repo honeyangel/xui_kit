@@ -32,10 +32,12 @@
 #include "onity_timeline.h"
 #include "onity_game.h"
 #include "onity_scene.h"
+#include "onity_module.h"
+#include "onity_action.h"
 #include "onity_animator.h"
+#include "onity_level.h"
 #include "onity_recent.h"
 #include "onity_config.h"
-#include "onity_course.h"
 #include "onity_backup.h"
 #include "onity_save.h"
 #include "onity_mainform.h"
@@ -90,17 +92,17 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_anchor);
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_coordinate);
 
-	onity_course* course_wnd = new onity_course;
-	xui_method_ptrcall(course_wnd,		set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(course_wnd,		set_borderrt	)(xui_rect2d<s32>(10));
-	xui_method_ptrcall(course_wnd,		set_renderpt	)(xui_vector<s32>(200, 100));
-	xui_method_ptrcall(course_wnd,		xm_accept		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_courseaccept);
+	onity_level* level_wnd = new onity_level;
+	xui_method_ptrcall(level_wnd,		set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(level_wnd,		set_borderrt	)(xui_rect2d<s32>(10));
+	xui_method_ptrcall(level_wnd,		set_renderpt	)(xui_vector<s32>(200, 100));
+	xui_method_ptrcall(level_wnd,		xm_accept		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_courseaccept);
 
 	m_build			= xui_button::create(onity_resource::icon_build, L"Build", 80);
 	m_run			= xui_toggle::create(NULL, 32);
 	m_pause			= xui_toggle::create(NULL, 32);
 	m_step			= xui_button::create(NULL, 32);
-	xui_method_ptrcall(m_build,			set_data		)(course_wnd);
+	xui_method_ptrcall(m_build,			set_data		)(level_wnd);
 	xui_method_ptrcall(m_build ,		xm_buttonclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickbuild);
 	xui_method_ptrcall(m_run,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
 	xui_method_ptrcall(m_pause,			xm_toggleclick	) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickdebug);
@@ -134,6 +136,8 @@ xui_create_explain(onity_mainform)( void )
 	m_game			= menu->add_item(onity_resource::icon_game,			L"Game");
 	m_scene			= menu->add_item(onity_resource::icon_scene,		L"Scene");
 	m_animator		= menu->add_item(onity_resource::icon_animator,		L"Animator");
+	m_module		= menu->add_item(onity_resource::icon_scene,		L"Module");
+	m_action		= menu->add_item(onity_resource::icon_scene,		L"Action");
 	xui_method_ptrcall(m_hierarchy,		set_data		)(new onity_hierarchy);
 	xui_method_ptrcall(m_inspector,		set_data		)(new onity_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new onity_project);
@@ -142,6 +146,8 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_game,			set_data		)(new onity_game);
 	xui_method_ptrcall(m_animator,		set_data		)(new onity_animator);
 	xui_method_ptrcall(m_scene,			set_data		)(new onity_scene);
+	xui_method_ptrcall(m_module,		set_data		)(new onity_module);
+	xui_method_ptrcall(m_action,		set_data		)(new onity_action);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
@@ -150,6 +156,8 @@ xui_create_explain(onity_mainform)( void )
 	xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_animator,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_scene,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_module,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_action,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
@@ -204,6 +212,8 @@ xui_method_explain(onity_mainform, get_pagename,		std::string			)( xui_dockpage*
 	else if (page == mainform->get_project	())	return "project";
 	else if (page == mainform->get_game		())	return "game";
 	else if (page == mainform->get_scene	()) return "scene";
+	else if (page == mainform->get_module	())	return "module";
+	else if (page == mainform->get_action	()) return "action";
 	else if (page == mainform->get_animator	())	return "animator";
 	else if (page == mainform->get_console	())	return "console";
 	else if (page == mainform->get_timeline	())	return "timeline";
@@ -220,6 +230,8 @@ xui_method_explain(onity_mainform, get_pagectrl,		xui_dockpage*		)( const std::s
 	else if (name == "project")		return mainform->get_project();
 	else if (name == "game")		return mainform->get_game();
 	else if (name == "scene")		return mainform->get_scene();
+	else if (name == "module")		return mainform->get_module();
+	else if (name == "action")		return mainform->get_action();
 	else if (name == "animator")	return mainform->get_animator();
 	else if (name == "console")		return mainform->get_console();
 	else if (name == "timeline")	return mainform->get_timeline();
@@ -252,6 +264,14 @@ xui_method_explain(onity_mainform, get_scene,			onity_scene*		)( void )
 {
 	return (onity_scene*)		xui_method_ptrcall(m_scene,		get_data)();
 }
+xui_method_explain(onity_mainform, get_module,			onity_module*		)( void )
+{
+	return (onity_module*)		xui_method_ptrcall(m_module,	get_data)();
+}
+xui_method_explain(onity_mainform, get_action,			onity_action*		)( void )
+{
+	return (onity_action*)		xui_method_ptrcall(m_action,	get_data)();
+}
 xui_method_explain(onity_mainform, get_animator,		onity_animator*		)( void )
 {
 	return (onity_animator*)	xui_method_ptrcall(m_animator,	get_data)();
@@ -264,9 +284,9 @@ xui_method_explain(onity_mainform, get_timeline,		onity_timeline*		)( void )
 {
 	return (onity_timeline*)	xui_method_ptrcall(m_timeline,	get_data)();
 }
-xui_method_explain(onity_mainform, get_course,			onity_course*		)( void )
+xui_method_explain(onity_mainform, get_level,			onity_level*		)( void )
 {
-	return (onity_course*)		xui_method_ptrcall(m_build,		get_data)();
+	return (onity_level*)		xui_method_ptrcall(m_build,		get_data)();
 }
 
 /*
@@ -369,7 +389,7 @@ xui_method_explain(onity_mainform, on_clickbuild,		void				)( xui_component* sen
 	onity_hierarchy* hierarchy = get_hierarchy();
 	if (hierarchy->get_editprop())
 	{
-		onity_course* wnd = get_course();
+		onity_level* wnd = get_level();
 		wnd->set_visible(true);
 
 		if (wnd->get_parent() == NULL)
@@ -550,6 +570,8 @@ xui_method_explain(onity_mainform, on_clickreset,		void				)( xui_component* sen
 	menulist.push_back(m_scene);
 	menulist.push_back(m_game);
 	menulist.push_back(m_animator);
+	menulist.push_back(m_module);
+	menulist.push_back(m_action);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -664,8 +686,7 @@ xui_method_explain(onity_mainform, on_recentaccept,		void				)( xui_component* s
 		xui_desktop::get_ins()->add_child(config);
 	}
 }
-
-xui_method_explain(onity_mainform, on_backupaccept, void)(xui_component* sender, xui_method_args&  args)
+xui_method_explain(onity_mainform, on_backupaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	onity_backup* backup = xui_dynamic_cast(onity_backup, sender);
 	backup->set_visible(false);
@@ -721,6 +742,8 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 	menulist.push_back(m_game);
 	menulist.push_back(m_scene);
 	menulist.push_back(m_animator);
+	menulist.push_back(m_module);
+	menulist.push_back(m_action);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -733,22 +756,18 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 		}
 	}
 }
-
 xui_method_explain(onity_mainform, add_backupfile,		void				)( xui_proproot* prop )
 {
 	m_backupfiles.push_back(prop);
 }
-
 xui_method_explain(onity_mainform, get_backupfilenum,	u32					)( void ) const
 {
 	return m_backupfiles.size();
 }
-
 xui_method_explain(onity_mainform, get_backupfile,		xui_proproot*		)( u32 index ) const
 {
 	return m_backupfiles[index];
 }
-
 xui_method_explain(onity_mainform, set_saveshow,		void				)( void )
 {
 	xui_desktop::get_ins()->add_child(new onity_save);

@@ -10,11 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onity", "onity\onity.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xui_kit", "xui_kit.vcxproj", "{E5ECC7C0-780E-481E-9AD2-96694045FF51}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xui_demo", "xui_demo\xui_demo.vcxproj", "{26367678-7E27-4DF1-BAA5-0B103D100CB7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E5ECC7C0-780E-481E-9AD2-96694045FF51} = {E5ECC7C0-780E-481E-9AD2-96694045FF51}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NPEngine_VC10", "..\BreezeGame\engine\build\Win32\NPEngine_VC10.vcxproj", "{97847F09-EFA8-4CB2-A9E5-2EB17B16B59A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Omiga", "..\BreezeGame\omiga\Project\win32\Omiga.vcxproj", "{7E3D0A80-0FD4-4DC2-BAAC-836ADCF0F60E}"
@@ -70,24 +65,6 @@ Global
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Release_Editor|Win32.Build.0 = Release|Win32
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Release|Win32.ActiveCfg = Release|Win32
 		{E5ECC7C0-780E-481E-9AD2-96694045FF51}.Release|Win32.Build.0 = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Bin|Win32.ActiveCfg = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Bin|Win32.Build.0 = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Convert|Win32.ActiveCfg = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Convert|Win32.Build.0 = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Editor|Win32.ActiveCfg = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug_Editor|Win32.Build.0 = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Debug|Win32.Build.0 = Debug|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Profile|Win32.ActiveCfg = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Profile|Win32.Build.0 = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Bin|Win32.ActiveCfg = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Bin|Win32.Build.0 = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Convert|Win32.ActiveCfg = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Convert|Win32.Build.0 = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Editor|Win32.ActiveCfg = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release_Editor|Win32.Build.0 = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release|Win32.ActiveCfg = Release|Win32
-		{26367678-7E27-4DF1-BAA5-0B103D100CB7}.Release|Win32.Build.0 = Release|Win32
 		{97847F09-EFA8-4CB2-A9E5-2EB17B16B59A}.Debug_Bin|Win32.ActiveCfg = Debug_Bin|Win32
 		{97847F09-EFA8-4CB2-A9E5-2EB17B16B59A}.Debug_Bin|Win32.Build.0 = Debug_Bin|Win32
 		{97847F09-EFA8-4CB2-A9E5-2EB17B16B59A}.Debug_Convert|Win32.ActiveCfg = Debug_Convert|Win32

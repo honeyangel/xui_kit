@@ -245,10 +245,10 @@ xui_method_explain(xui_textbox, on_keybddown,		void					)( xui_method_keybd& arg
 
 	switch(args.kcode)
 	{
-	case KEY_SHIFT:	m_caretdragindex = m_caretcurrindex; break;
+	//case KEY_SHIFT:	m_caretdragindex = m_caretcurrindex; break;
 	case KEY_LARROW:do_larrow	(args.shift);	break;
 	case KEY_RARROW:do_rarrow	(args.shift);	break;
-	case KEY_HOME:	do_home		(args.shift);	break;
+	case KEY_UARROW:do_home		(args.shift);	break;
 	case KEY_END:	do_end		(args.shift);	break;
 	case KEY_BACK:	do_back		();				break;
 	case KEY_ENTER:	do_enter	();				break;
@@ -592,8 +592,9 @@ xui_method_explain(xui_textbox, do_paste,			void					)( void )
 */
 xui_method_explain(xui_textbox, del_selecttext,		void					)( void )
 {
-	if (get_selectcount())
+	if (get_selectcount() > 0)
 	{
+		m_caretcurrindex = get_selectstart();
 		m_text.erase(get_selectstart(), get_selectcount());
 
 		xui_method_args args;
@@ -602,6 +603,8 @@ xui_method_explain(xui_textbox, del_selecttext,		void					)( void )
 }
 xui_method_explain(xui_textbox, non_selecttext,		void					)( void )
 {
+	m_caretdragindex = m_caretcurrindex;
+
 	if (get_selectcount())
 		set_selecttext(0, 0);
 }

@@ -200,9 +200,6 @@
     <ClInclude Include="onity_propctrl_sceneparam.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propentity.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="onity_propctrl_rendertree.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
@@ -221,12 +218,6 @@
     <ClInclude Include="onity_propnodeparticle.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_propmapref.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_maprefdata.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="onity_propnodesprite.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
@@ -237,9 +228,6 @@
       <Filter>hierarchy</Filter>
     </ClInclude>
     <ClInclude Include="onity_gradpane.h" />
-    <ClInclude Include="onity_propedit.h">
-      <Filter>hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="onity_alignbox.h">
       <Filter>scene</Filter>
     </ClInclude>
@@ -249,20 +237,57 @@
     <ClInclude Include="onity_pivotbox.h">
       <Filter>scene</Filter>
     </ClInclude>
-    <ClInclude Include="onity_course.h" />
-    <ClInclude Include="onity_propcourseconfig.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="onity_courseconfigdata.h">
-      <Filter>scene</Filter>
-    </ClInclude>
     <ClInclude Include="onity_save.h" />
     <ClInclude Include="onity_backup.h" />
     <ClInclude Include="onity_propentitystar.h">
       <Filter>hierarchy</Filter>
     </ClInclude>
-    <ClInclude Include="onity_entitystardata.h">
+    <ClInclude Include="onity_asset.h" />
+    <ClInclude Include="onity_layout.h" />
+    <ClInclude Include="onity_snaptool.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propcoursenode.h">
       <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_coursedata.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propentitynode.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_propeditnode.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_proplevelconfig.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_levelconfigdata.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_level.h" />
+    <ClInclude Include="onity_module.h" />
+    <ClInclude Include="onity_boundbox.h">
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_coursenode.h">
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_entitynode.h">
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_entitystar.h">
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_boundbox_image.h">
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_action.h" />
+    <ClInclude Include="onity_proplike.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_likedata.h">
+      <Filter>project</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -466,9 +491,6 @@
     <ClCompile Include="onity_propctrl_sceneparam.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
-    <ClCompile Include="onity_propentity.cpp">
-      <Filter>hierarchy</Filter>
-    </ClCompile>
     <ClCompile Include="onity_propctrl_rendertree.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
@@ -476,12 +498,6 @@
       <Filter>hierarchy</Filter>
     </ClCompile>
     <ClCompile Include="onity_propnode2dsref.cpp">
-      <Filter>hierarchy</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_propmapref.cpp">
-      <Filter>hierarchy</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_maprefdata.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
     <ClCompile Include="onity_propnodemodule.cpp">
@@ -503,9 +519,6 @@
       <Filter>hierarchy</Filter>
     </ClCompile>
     <ClCompile Include="onity_gradpane.cpp" />
-    <ClCompile Include="onity_propedit.cpp">
-      <Filter>hierarchy</Filter>
-    </ClCompile>
     <ClCompile Include="onity_alignbox.cpp">
       <Filter>scene</Filter>
     </ClCompile>
@@ -515,20 +528,57 @@
     <ClCompile Include="onity_pivotbox.cpp">
       <Filter>scene</Filter>
     </ClCompile>
-    <ClCompile Include="onity_course.cpp" />
-    <ClCompile Include="onity_propcourseconfig.cpp">
-      <Filter>scene</Filter>
-    </ClCompile>
-    <ClCompile Include="onity_courseconfigdata.cpp">
-      <Filter>scene</Filter>
-    </ClCompile>
     <ClCompile Include="onity_save.cpp" />
     <ClCompile Include="onity_backup.cpp" />
     <ClCompile Include="onity_propentitystar.cpp">
       <Filter>hierarchy</Filter>
     </ClCompile>
-    <ClCompile Include="onity_entitystardata.cpp">
+    <ClCompile Include="onity_asset.cpp" />
+    <ClCompile Include="onity_layout.cpp" />
+    <ClCompile Include="onity_snaptool.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propcoursenode.cpp">
       <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_coursedata.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propentitynode.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_propeditnode.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_proplevelconfig.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_levelconfigdata.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_level.cpp" />
+    <ClCompile Include="onity_module.cpp" />
+    <ClCompile Include="onity_boundbox.cpp">
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_coursenode.cpp">
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_entitystar.cpp">
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_entitynode.cpp">
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_boundbox_image.cpp">
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_action.cpp" />
+    <ClCompile Include="onity_proplike.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_likedata.cpp">
+      <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -549,6 +599,12 @@
     </Filter>
     <Filter Include="scene">
       <UniqueIdentifier>{430d2b23-8f28-41d9-acfe-018b3189c611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="layout">
+      <UniqueIdentifier>{e2d5b872-790c-4a91-a3c1-f3c63addd174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="boundbox">
+      <UniqueIdentifier>{e777800b-ed9a-4523-841a-096f9c3de2f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

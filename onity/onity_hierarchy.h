@@ -35,8 +35,8 @@ public:
 	xui_treenode*		add_entitynode			( Omiga::Entity* ent );
 	xui_treenode*		get_entitynode			( Omiga::Entity* ent );
 	void				del_entitynode			( Omiga::Entity* ent );
-	void				add_maprefnode			( const xui_vector<s32>& pos, NP2DSAsset* asset );
-	xui_treenode*		add_maprefnode			( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src );
+	void				add_coursenode			( const xui_vector<s32>& pos, NP2DSAsset* asset );
+	xui_treenode*		add_coursenode			( xui_treenode* root, NP2DSAsset* asset, NP2DSTransRef* src );
 	void				del_coursenode			( void );
 	onity_propcourse*	get_editprop			( void );
 	void				set_editprop			( onity_propcourse* editprop );
@@ -70,7 +70,7 @@ protected:
 	xui_treenode*		get_filternode			( const std::string& name, bool top );
 	void				del_coursenode			( const std::vector<xui_treenode*>& nodes );
 	void				del_scenelayer			( xui_treenode* root );
-	void				del_maprefnode			( xui_treenode* node );
+	void				del_coursenode			( xui_treenode* node );
 	void				pst_coursenode			( void );
 
 	/*

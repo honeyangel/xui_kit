@@ -1,20 +1,20 @@
-#ifndef __onity_courseconfigdata_h__
-#define __onity_courseconfigdata_h__
+#ifndef __onity_levelconfigdata_h__
+#define __onity_levelconfigdata_h__
 
 #include "onity_treedata.h"
 
-class onity_courseconfigdata : public onity_treedata
+class onity_levelconfigdata : public onity_treedata
 {
 public:
 	/*
 	//constructor
 	*/
-	onity_courseconfigdata( xui_bitmap* icon, xui_proproot* prop );
+	onity_levelconfigdata( xui_bitmap* icon, xui_proproot* prop );
 
 	/*
 	//destructor
 	*/
-	virtual ~onity_courseconfigdata( void );
+	virtual ~onity_levelconfigdata( void );
 
 	/*
 	//virtual
@@ -30,4 +30,4 @@ protected:
 	bool					m_selected;
 };
 
-#endif//__onity_courseconfigdata_h__
+#endif//__onity_levelconfigdata_h__

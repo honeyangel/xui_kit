@@ -1,10 +1,10 @@
 #ifndef __onity_propnoderender_h__
 #define __onity_propnoderender_h__
 
-#include "onity_propedit.h"
+#include "onity_proproot.h"
 
 class NPNode;
-class onity_propnoderender : public onity_propedit
+class onity_propnoderender : public onity_proproot
 {
 public:
 	/*

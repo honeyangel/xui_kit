@@ -5,6 +5,7 @@
 #include "xui_propkind.h"
 #include "xui_propctrl_rect2d.h"
 #include "onity_resource.h"
+#include "onity_boundbox_image.h"
 #include "onity_propimage.h"
 
 /*
@@ -50,11 +51,25 @@ xui_create_explain(onity_propimage)( onity_propfile* propfile, u32 id )
 		NT_UNSIGNEDINT));
 
 	add_propkind(m_imagekind);
+
+	m_boundctrl = new onity_boundbox_image(this);
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(onity_propimage)( void )
+{
+	delete m_boundctrl;
 }
 
 /*
 //method
 */
+xui_method_explain(onity_propimage, get_boundbox,	onity_boundbox*	)( void )
+{
+	return m_boundctrl;
+}
 xui_method_explain(onity_propimage, get_image,		NP2DSImage*		)( void )
 {
 	return NPDynamicCast(NP2DSImage, get_asset());

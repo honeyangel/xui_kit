@@ -83,6 +83,9 @@ xui_method_explain(xui_dialog, set_text,	void		)( u32 index, const std::wstring&
 	case 1:
 		m_cancel->set_text(text);
 		break;
+	case 2:
+		m_detail->set_text(text);
+		break;
 	}
 }
 

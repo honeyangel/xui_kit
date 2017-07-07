@@ -24,78 +24,86 @@ xui_create_explain(xui_timetool)( xui_timeview* timeview )
 
 	//plus
 	m_plus = new xui_button(xui_vector<s32>(24));
-	m_plus->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
-	m_plus->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
-	xui_method_ptrcall(m_plus,   set_parent		)(this);
-	xui_method_ptrcall(m_plus,	 set_corner		)(3);
-	xui_method_ptrcall(m_plus,	 set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_plus,		xm_buttonclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	xui_method_ptrcall(m_plus,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_plus,		set_parent		)(this);
+	xui_method_ptrcall(m_plus,		set_corner		)(3);
+	xui_method_ptrcall(m_plus,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_plus,		set_sidestyle	)(SIDESTYLE_S);
 	m_widgetvec.push_back(m_plus);
 
 	//prev
 	m_head = new xui_button(xui_vector<s32>(24));
-	m_head->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
-	m_head->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_head,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_head,		xm_buttonclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	xui_method_ptrcall(m_head,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
 	m_prev = new xui_button(xui_vector<s32>(24));
-	m_prev->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
-	m_prev->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_prev,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_prev,		xm_buttonclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	xui_method_ptrcall(m_prev,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
 
 	xui_linebox* prevline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H);
-	xui_method_ptrcall(prevline, set_parent		)(this);
-	xui_method_ptrcall(prevline, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(prevline, set_corner		)(3);
-	xui_method_ptrcall(prevline, add_linectrl	)(m_head);
-	xui_method_ptrcall(prevline, add_linectrl	)(m_prev);
+	xui_method_ptrcall(prevline,	set_parent		)(this);
+	xui_method_ptrcall(prevline,	set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(prevline,	set_corner		)(3);
+	xui_method_ptrcall(prevline,	add_linectrl	)(m_head);
+	xui_method_ptrcall(prevline,	add_linectrl	)(m_prev);
 	m_widgetvec.push_back(prevline);
 
 
 	//play
 	m_back = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
-	m_back->xm_toggleclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
-	m_back->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
+	xui_method_ptrcall(m_back,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_back,		xm_toggleclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
+	xui_method_ptrcall(m_back,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
 	m_play = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
-	m_play->xm_toggleclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
-	m_play->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
+	xui_method_ptrcall(m_play,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_play,		xm_toggleclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
+	xui_method_ptrcall(m_play,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
 
 	xui_linebox* playline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H);
-	xui_method_ptrcall(playline, set_parent		)(this);
-	xui_method_ptrcall(playline, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(playline, set_corner		)(3);
-	xui_method_ptrcall(playline, add_linectrl	)(m_back);
-	xui_method_ptrcall(playline, add_linectrl	)(m_play);
+	xui_method_ptrcall(playline,	set_parent		)(this);
+	xui_method_ptrcall(playline,	set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(playline,	set_corner		)(3);
+	xui_method_ptrcall(playline,	add_linectrl	)(m_back);
+	xui_method_ptrcall(playline,	add_linectrl	)(m_play);
 	m_widgetvec.push_back(playline);
 
 
 	//next
 	m_next = new xui_button(xui_vector<s32>(24));
-	m_next->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
-	m_next->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_next,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_next,		xm_buttonclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	xui_method_ptrcall(m_next,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
 	m_tail = new xui_button(xui_vector<s32>(24));
-	m_tail->xm_buttonclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
-	m_tail->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
+	xui_method_ptrcall(m_tail,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_tail,		xm_buttonclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonclick);
+	xui_method_ptrcall(m_tail,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_buttonrenderself);
 
 	xui_linebox* nextline = new xui_linebox(xui_vector<s32>(48, 24), FLOWSTYLE_H);
-	xui_method_ptrcall(nextline, set_parent		)(this);
-	xui_method_ptrcall(nextline, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(nextline, set_corner		)(3);
-	xui_method_ptrcall(nextline, add_linectrl	)(m_next);
-	xui_method_ptrcall(nextline, add_linectrl	)(m_tail);
+	xui_method_ptrcall(nextline,	set_parent		)(this);
+	xui_method_ptrcall(nextline,	set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(nextline,	set_corner		)(3);
+	xui_method_ptrcall(nextline,	add_linectrl	)(m_next);
+	xui_method_ptrcall(nextline,	add_linectrl	)(m_tail);
 	m_widgetvec.push_back(nextline);
 
 
 	//loop
 	m_loop = new xui_toggle(xui_vector<s32>(24), TOGGLE_BUTTON);
-	m_loop->xm_toggleclick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
-	m_loop->xm_renderself	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
-	xui_method_ptrcall(m_loop,   set_parent		)(this);
-	xui_method_ptrcall(m_loop,	 set_corner		)(3);
-	xui_method_ptrcall(m_loop,	 set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_loop,		set_parent		)(this);
+	xui_method_ptrcall(m_loop,		set_corner		)(3);
+	xui_method_ptrcall(m_loop,		set_drawcolor	)(true);
+	xui_method_ptrcall(m_loop,		set_sidestyle	)(SIDESTYLE_S);
+	xui_method_ptrcall(m_loop,		xm_toggleclick	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_toggleclick);
+	xui_method_ptrcall(m_loop,		xm_renderself	) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_togglerenderself);
 	m_widgetvec.push_back(m_loop);
 
 
 	//timer
 	m_playtimer = xui_timermgr::get_ins()->add_timer(this, 1.0f/30.0f, NULL);
-	m_playtimer->set_enable(false);
-	m_playtimer->xm_tick	+= new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_timertick);
+	xui_method_ptrcall(m_playtimer,	set_enable		)(false);
+	xui_method_ptrcall(m_playtimer,	xm_tick			) += new xui_method_member<xui_method_args, xui_timetool>(this, &xui_timetool::on_timertick);
 
 	refresh();
 }
@@ -153,7 +161,7 @@ xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender
 	{
 		for (xui_keyframe_map::iterator itor = allframe.begin(); itor != allframe.end(); ++itor)
 		{
-			if ((*itor).first < timeview->get_curframe())
+			if ((*itor).first > timeview->get_curframe())
 			{
 				timeview->set_curframe((*itor).first);
 				break;
@@ -195,9 +203,9 @@ xui_method_explain(xui_timetool, on_toggleclick,		void		)( xui_component* sender
 }
 xui_method_explain(xui_timetool, on_buttonrenderself,	void		)( xui_component* sender, xui_method_args&	 args )
 {
-	xui_colour color = sender->get_vertexcolor() * xui_colour(1.0f, 0.8f);
-	if (sender->has_catch() || sender->was_hover())
-		color *= xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+	xui_colour color = sender->get_vertexcolor() * xui_colour::white;
+	//if (sender->has_catch() || sender->was_hover())
+	//	color *= xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
 	xui_rect2d<s32> rt = sender->get_renderrtabs() + (sender->has_catch() ? xui_vector<s32>(0, 1) : xui_vector<s32>(0));
 	if (sender == m_plus)
@@ -306,9 +314,9 @@ xui_method_explain(xui_timetool, on_togglerenderself,	void		)( xui_component* se
 {
 	xui_toggle* toggle = xui_dynamic_cast(xui_toggle, sender);
 
-	xui_colour color = sender->get_vertexcolor() * xui_colour(1.0f, 0.8f);
-	if (toggle->was_push() || toggle->has_catch() || toggle->was_hover())
-		color *= xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
+	xui_colour color = sender->get_vertexcolor() * xui_colour::white;
+	//if (toggle->was_push() || toggle->has_catch() || toggle->was_hover())
+	//	color *= xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f);
 
 	xui_rect2d<s32> rt = sender->get_renderrtabs();
 	rt.oft_x(4);

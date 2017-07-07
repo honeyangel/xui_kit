@@ -1,14 +1,14 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
 #include "onity_resource.h"
-#include "onity_propedit.h"
+#include "onity_boundbox.h"
 #include "onity_alignbox.h"
 
 /*
 //constructor
 */
-xui_create_explain(onity_alignbox)( const xui_vector<s32>& button_size, get_func propfunc )
-: m_propfunc(propfunc)
+xui_create_explain(onity_alignbox)( const xui_vector<s32>& button_size, get_func func )
+: m_func(func)
 {
 	m_left		= new xui_button(button_size);
 	xui_method_ptrcall(m_left,		ini_drawer		)(onity_resource::icon_horzleft);
@@ -75,13 +75,13 @@ xui_method_explain(onity_alignbox, get_vertline,		xui_linebox*)( void )
 }
 xui_method_explain(onity_alignbox, set_lineupdate,		void		)( void )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	xui_method_ptrcall(m_left,		set_enable)(propvec.size() > 1);
-	xui_method_ptrcall(m_hcenter,	set_enable)(propvec.size() > 1);
-	xui_method_ptrcall(m_right,		set_enable)(propvec.size() > 1);
-	xui_method_ptrcall(m_top,		set_enable)(propvec.size() > 1);
-	xui_method_ptrcall(m_vcenter,	set_enable)(propvec.size() > 1);
-	xui_method_ptrcall(m_bottom,	set_enable)(propvec.size() > 1);
+	std::vector<onity_boundbox*> vec = (*m_func)();
+	xui_method_ptrcall(m_left,		set_enable)(vec.size() > 1);
+	xui_method_ptrcall(m_hcenter,	set_enable)(vec.size() > 1);
+	xui_method_ptrcall(m_right,		set_enable)(vec.size() > 1);
+	xui_method_ptrcall(m_top,		set_enable)(vec.size() > 1);
+	xui_method_ptrcall(m_vcenter,	set_enable)(vec.size() > 1);
+	xui_method_ptrcall(m_bottom,	set_enable)(vec.size() > 1);
 }
 
 /*
@@ -89,15 +89,13 @@ xui_method_explain(onity_alignbox, set_lineupdate,		void		)( void )
 */
 xui_method_explain(onity_alignbox, on_horzbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	if (propvec.size() > 1)
+	std::vector<onity_boundbox*> vec = (*m_func)();
+	if (vec.size() > 1)
 	{
-		onity_propedit* headprop = dynamic_cast<onity_propedit*>(propvec.front());
-		xui_rect2d<s32> headrect = headprop->ori_bounding();
-		for (u32 i = 1; i < propvec.size(); ++i)
+		xui_rect2d<s32> headrect = vec.front()->ori_bounding();
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> rect = prop->ori_bounding();
+			xui_rect2d<s32> rect = vec[i]->ori_bounding();
 			s32 delta = 0;
 			if		(sender == m_left)		delta = headrect.ax - rect.ax; 
 			else if (sender == m_hcenter)	delta = headrect.ax - rect.ax + headrect.get_w()/2 - rect.get_w()/2;
@@ -105,21 +103,19 @@ xui_method_explain(onity_alignbox, on_horzbuttonclick,	void		)( xui_component* s
 			else
 			{}
 
-			prop->set_position(prop->ori_position()+xui_vector<s32>(delta, 0));
+			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(delta, 0));
 		}
 	}
 }
 xui_method_explain(onity_alignbox, on_vertbuttonclick,	void		)( xui_component* sender, xui_method_args& args )
 {
-	xui_proproot_vec propvec = (*m_propfunc)();
-	if (propvec.size() > 1)
+	std::vector<onity_boundbox*> vec = (*m_func)();
+	if (vec.size() > 1)
 	{
-		onity_propedit* headprop = dynamic_cast<onity_propedit*>(propvec.front());
-		xui_rect2d<s32> headrect = headprop->ori_bounding();
-		for (u32 i = 1; i < propvec.size(); ++i)
+		xui_rect2d<s32> headrect = vec.front()->ori_bounding();
+		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			onity_propedit* prop = dynamic_cast<onity_propedit*>(propvec[i]);
-			xui_rect2d<s32> rect = prop->ori_bounding();
+			xui_rect2d<s32> rect = vec[i]->ori_bounding();
 			s32 delta = 0;
 			if		(sender == m_top)		delta = headrect.ay - rect.ay; 
 			else if (sender == m_vcenter)	delta = headrect.ay - rect.ay + headrect.get_h()/2 - rect.get_h()/2;
@@ -127,7 +123,7 @@ xui_method_explain(onity_alignbox, on_vertbuttonclick,	void		)( xui_component* s
 			else
 			{}
 
-			prop->set_position(prop->ori_position()+xui_vector<s32>(0, delta));
+			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
 		}
 	}
 }

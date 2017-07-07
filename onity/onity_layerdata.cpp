@@ -20,6 +20,7 @@
 xui_create_explain(onity_layerdata)( xui_proproot* prop )
 : onity_timedata(onity_resource::icon_layer, prop)
 {
+	m_flag = true;
 	cal_keyframe();
 }
 
@@ -74,15 +75,16 @@ xui_method_explain(onity_layerdata, get_flag,		bool			)( u32 index )
 		break;
 	case LAYER_FLAG_SHOW:
 		{
-			onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
-			onity_propactor* propactor = proplayer->get_actor();
-			NP2DSActor* actor = NPDynamicCast(NP2DSActor, propactor->get_asset());
-			u16 index = actor->GetLayerIndex(proplayer->get_layer());
+			//onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+			//onity_propactor* propactor = proplayer->get_actor();
+			//NP2DSActor* actor = NPDynamicCast(NP2DSActor, propactor->get_asset());
+			//u16 index = actor->GetLayerIndex(proplayer->get_layer());
 
-			onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-			onity_preview*  drawview = timeline->get_drawview();
-			NP2DSActorRef*  drawnode = NPDynamicCast(NP2DSActorRef, drawview->get_drawnode());
-			return drawnode->WasLayerShow(index);
+			//onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+			//onity_preview*  drawview = timeline->get_drawview();
+			//NP2DSActorRef*  drawnode = NPDynamicCast(NP2DSActorRef, drawview->get_drawnode());
+			//return drawnode->WasLayerShow(index);
+			return m_flag;
 		}
 		break;
 	}
@@ -117,15 +119,16 @@ xui_method_explain(onity_layerdata, set_flag,		void			)( u32 index, bool flag )
 		break;
 	case LAYER_FLAG_SHOW:
 		{
-			onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
-			onity_propactor* propactor = proplayer->get_actor();
-			NP2DSActor* actor = NPDynamicCast(NP2DSActor, propactor->get_asset());
-			u16 index = actor->GetLayerIndex(proplayer->get_layer());
+			//onity_proplayer* proplayer = dynamic_cast<onity_proplayer*>(m_prop);
+			//onity_propactor* propactor = proplayer->get_actor();
+			//NP2DSActor* actor = NPDynamicCast(NP2DSActor, propactor->get_asset());
+			//u16 index = actor->GetLayerIndex(proplayer->get_layer());
 
-			onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-			onity_preview*  drawview = timeline->get_drawview();
-			NP2DSActorRef*  drawnode = NPDynamicCast(NP2DSActorRef, drawview->get_drawnode());
-			drawnode->SetLayerShow(index, flag);
+			//onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
+			//onity_preview*  drawview = timeline->get_drawview();
+			//NP2DSActorRef*  drawnode = NPDynamicCast(NP2DSActorRef, drawview->get_drawnode());
+			//drawnode->SetLayerShow(index, flag);
+			m_flag = flag;
 		}
 		break;
 	}
