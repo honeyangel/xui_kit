@@ -1,5 +1,3 @@
-#include "NPFileName.h"
-
 #include "xui_global.h"
 #include "xui_treenode.h"
 #include "xui_proproot.h"
@@ -8,14 +6,6 @@
 #include "onity_mainform.h"
 #include "onity_resource.h"
 #include "onity_propfile.h"
-#include "onity_proptexture.h"
-#include "onity_propparticle.h"
-#include "onity_propmodule.h"
-#include "onity_propsprite.h"
-#include "onity_propaction.h"
-#include "onity_propcontroller.h"
-#include "onity_propjsones.h"
-#include "onity_propcourse.h"
 #include "onity_filedata.h"
 
 /*
@@ -149,38 +139,4 @@ xui_method_explain(onity_filedata, get_safe,		std::wstring		)( const std::wstrin
 		temp.erase(npos);
 
 	return temp;
-}
-xui_method_explain(onity_filedata, new_fileprop,	xui_proproot*		)( const std::wstring& full )
-{
-	std::wstring suff = get_suff(full);
-
-	u08 type = META_NONE;
-	if		(suff == L".npModule") type = META_MODULE;
-	else if (suff == L".npSprite") type = META_SPRITE;
-	else if (suff == L".npAction") type = META_ACTION;
-	else
-	{}
-
-	if (type != META_NONE)
-		onity_prop2dsres::load_meta(type, xui_global::unicode_to_ascii(full));
-
-	if (suff == L".png" && full.find(L"MODULE") != -1 && full.find(L"BIG") == -1)
-		return NULL;
-
-	onity_propfile* propfile = NULL;
-	if		(suff == L".png")			propfile = new onity_proptexture	(full);
-	else if (suff == L".npModule")		propfile = new onity_propmodule		(full);
-	else if (suff == L".npSprite")		propfile = new onity_propsprite		(full);
-	else if (suff == L".npAction")		propfile = new onity_propaction		(full);
-	else if (suff == L".npCourse")		propfile = new onity_propcourse		(full);
-	else if (suff == L".particle")		propfile = new onity_propparticle	(full);
-	else if (suff == L".controller")	propfile = new onity_propcontroller	(full);
-	else if (suff == L".json")			propfile = new onity_propjsones		(full);
-	else
-	{}
-
-	if (propfile && xui_global::has_file(full+L".tmp"))
-		onity_mainform::get_ptr()->add_backupfile(propfile);
-
-	return propfile;
 }

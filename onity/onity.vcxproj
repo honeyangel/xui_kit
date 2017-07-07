@@ -120,9 +120,15 @@
     <ClInclude Include="onity_renderview.h" />
     <ClInclude Include="onity_treedata.h" />
     <ClInclude Include="onity_pivotbox.h" />
+    <ClInclude Include="onity_action.h" />
+    <ClInclude Include="onity_proplike.h" />
+    <ClInclude Include="onity_likedata.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="onity_action.cpp" />
     <ClCompile Include="onity_alignbox.cpp" />
     <ClCompile Include="onity_asset.cpp" />
     <ClCompile Include="onity_blankbox.cpp" />
@@ -147,6 +153,7 @@
     <ClCompile Include="onity_hierarchy.cpp" />
     <ClCompile Include="onity_inspector.cpp" />
     <ClCompile Include="onity_config.cpp" />
+    <ClCompile Include="onity_likedata.cpp" />
     <ClCompile Include="onity_module.cpp" />
     <ClCompile Include="onity_pivotbox.cpp" />
     <ClCompile Include="onity_boundbox_coursenode.cpp" />
@@ -232,6 +239,7 @@
     <ClCompile Include="onity_timeline.cpp" />
     <ClCompile Include="onity_renderview.cpp" />
     <ClCompile Include="onity_treedata.cpp" />
+    <ClCompile Include="onity_proplike.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BreezeGame\engine\build\Win32\NPEngine_VC10.vcxproj">

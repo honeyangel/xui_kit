@@ -311,5 +311,9 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		}
 	}
 
+	xui_static_inscall(xui_convas,		done)();
+	xui_static_inscall(xui_timermgr,	done)();
+	xui_static_inscall(xui_desktop,		done)();
+
 	return 0;
 }

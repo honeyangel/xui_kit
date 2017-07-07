@@ -141,8 +141,8 @@ xui_method_explain(onity_tileview, get_tileinfo,				void						)( s32& s, s32& c,
 {
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 	s = m_tilesize + m_tilesize/5*2;
-	c =  rt.get_w() / s;
-	g = (rt.get_w()-c*s) / (c-1);
+	c = rt.get_w() / s;
+	g = (c > 1) ? (rt.get_w()-c*s) / (c-1) : 0;
 	w = s + g;
 	h = m_tilesize + name_size + vert_grap;
 }

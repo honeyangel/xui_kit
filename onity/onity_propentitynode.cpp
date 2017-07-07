@@ -185,42 +185,6 @@ xui_method_explain(onity_propentitynode, set_scale,			void			)( const xui_vector
 		}
 	}
 }
-//xui_method_explain(onity_propentitynode, ori_bounding,		xui_rect2d<s32>	)( void )
-//{
-//	NPRect rt = NPRect::Empty;
-//
-//	BreezeGame::WGVisualComponent* component = m_entity->GetComponent<BreezeGame::WGVisualComponent>();
-//	if (component)
-//	{
-//		cal_bounding(component->GetNode(), &rt);
-//	}
-//
-//	return xui_rect2d<s32>(rt.LT, rt.TP, rt.RT, rt.BM);
-//}
-//xui_method_explain(onity_propentitynode, ori_position,		xui_vector<s32>	)( void )
-//{
-//	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
-//	if (transform)
-//	{
-//		Omiga::Vec2Df pos = transform->GetPosition();
-//		return xui_vector<s32>((s32)pos.x, (s32)pos.y);
-//	}
-//
-//	return xui_vector<s32>(0);
-//}
-//xui_method_explain(onity_propentitynode, set_position,		void			)( const xui_vector<s32>& pos )
-//{
-//	Omiga::TransformComponent* transform = m_entity->GetComponent<Omiga::TransformComponent>();
-//	if (transform)
-//	{
-//		transform->SetPosition(Omiga::Vec2Df((f32)pos.x, (f32)pos.y));
-//		NP2DSTransRef* linkref = m_entity->GetLinkRef();
-//		if (linkref)
-//		{
-//			linkref->SetWorldTrans(NPVector3((f32)pos.x - (f32)m_entity->GetLeftPos(), (f32)pos.y, 0.0f));
-//		}
-//	}
-//}
 
 /*
 //static

@@ -39,7 +39,6 @@ public:
 	static std::wstring		get_file		( const std::wstring& full );
 	static std::wstring		get_suff		( const std::wstring& full );
 	static std::wstring		get_safe		( const std::wstring& full );
-	static xui_proproot*	new_fileprop	( const std::wstring& full );
 };
 
 #endif//__onity_filedata_h__

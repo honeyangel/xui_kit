@@ -154,6 +154,8 @@ xui_method_explain(xui_timeline, on_mousedown,			void						)( xui_method_mouse& 
 	if (args.mouse == MB_L)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
+		xui_treeview* timetree = timeview->get_timetree();
+		timetree->set_selectednode(m_linkdata->get_node(), true);
 
 		m_downrela    = args.point - get_screenpt();
 		m_downrela.x -= m_border.ax;

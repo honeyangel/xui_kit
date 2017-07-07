@@ -3,6 +3,7 @@
 
 #include "onity_asset.h"
 
+class xui_dialog;
 class onity_treedata;
 class onity_boundbox;
 class onity_propmodule;
@@ -35,7 +36,6 @@ protected:
 	*/
 	virtual void				on_buttonclick				( xui_component* sender, xui_method_args&	args );
 	virtual void				on_fillpanekeybddown		( xui_component* sender, xui_method_keybd&	args );
-	//virtual void				on_drawviewnoncatch			( xui_component* sender, xui_method_args&	args );
 	virtual void				on_drawviewrenderself		( xui_component* sender, xui_method_args&	args );
 	virtual void				on_drawviewrenderelse		( xui_component* sender, xui_method_args&	args );
 	virtual void				on_drawviewmouserise		( xui_component* sender, xui_method_mouse&	args );
@@ -44,9 +44,7 @@ protected:
 	/*
 	//override
 	*/
-	//virtual void				on_keybdmoveimpl			( const xui_vector<s32>& delta );
 	virtual void				on_mousepickimpl			( onity_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op );
-	//virtual void				on_mousedragimpl			( const xui_vector<s32>& delta );
 	virtual void				on_mulselectimpl			( const xui_rect2d<s32>& rt, bool ctrl );
 
 	/*
@@ -61,6 +59,7 @@ protected:
 	onity_propmodule*			m_editprop;
 	xui_button*					m_automode;
 	xui_timer*					m_addtimer;
+	xui_dialog*					m_modalwnd;
 };
 
 #endif//__onity_module_h__

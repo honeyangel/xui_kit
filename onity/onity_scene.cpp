@@ -250,24 +250,6 @@ xui_method_explain(onity_scene, on_fillpanekeybddown,		void					)( xui_component
 		hierarchy->del_coursenode();
 	}
 }
-//xui_method_explain(onity_scene, on_drawviewnoncatch,		void					)( xui_component* sender, xui_method_args&		args )
-//{
-//	onity_asset::on_drawviewnoncatch(sender, args);
-//
-//	onity_hierarchy* hierarchy = onity_mainform::get_ptr()->get_hierarchy();
-//	xui_treeview* treeview = hierarchy->get_treeview();
-//	std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-//	for (u32 i= 0; i < nodevec.size(); ++i)
-//	{
-//		xui_treenode*		node = nodevec[i];
-//		onity_treedata*		data = (onity_treedata*)node->get_linkdata();
-//		onity_propeditnode* prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-//		if (prop)
-//		{
-//			prop->set_lockdata(false);
-//		}
-//	}
-//}
 xui_method_explain(onity_scene, on_drawviewupdateself,		void					)( xui_component* sender, xui_method_update&	args )
 {
 	onity_asset::on_drawviewupdateself(sender, args);
@@ -389,18 +371,6 @@ xui_method_explain(onity_scene, on_drawviewrenderelse,		void					)( xui_componen
 	onity_boundbox_vec  selectedvec = get_selectedboundbox();
 	for (u32 i = 0; i < selectedvec.size(); ++i)
 		selectedvec[i]->draw(m_trans, m_ratio, pt);
-
-	//for (u32 i = 0; i < nodevec.size(); ++i)
-	//{
-	//	if (nodevec[i]->get_rootnode() == NULL)
-	//		continue;
-
-	//	xui_treenode*		 node = nodevec[i];
-	//	onity_treedata*		 data = (onity_treedata*)node->get_linkdata();
-	//	onity_propeditnode*  prop = dynamic_cast<onity_propeditnode*>(data->get_prop());
-	//	xui_rect2d<s32>		 rect = prop->get_bounding(m_trans, m_ratio);
-	//	xui_convas::get_ins()->draw_rectangle(rect+pt, xui_colour(1.0f, 0.7f));
-	//}
 
 	if (m_operator == BO_MOVE)
 	{
@@ -564,25 +534,6 @@ xui_method_explain(onity_scene, on_mousepickimpl,			void					)( onity_boundbox* 
 
 	if (node->was_selected() && op == BO_MOVE)
 	{
-		//m_dragprop = true;
-		//xui_method_ptrcall(m_drawview,	set_cursor		)(CURSOR_HAND);
-		//xui_static_inscall(xui_global,	set_cursor		)(CURSOR_HAND);
-
-		//lock update bounding
-		//std::vector<xui_treenode*> nodevec = treeview->get_selectednode();
-		//for (u32 i = 0; i < nodevec.size(); ++i)
-		//{
-		//	xui_treenode*		temp = nodevec[i];
-		//	onity_treedata*		data = (onity_treedata*)temp->get_linkdata();
-		//	onity_propeditnode* edit = dynamic_cast<onity_propeditnode*>(data->get_prop());
-		//	if (edit)
-		//	{
-		//		edit->get_position(m_trans, m_ratio);
-		//		edit->get_bounding(m_trans, m_ratio);
-		//		edit->set_lockdata(true);
-		//	}
-		//}
-
 		u08 mode = DRAGMOVE_UNLIMIT;
 		if		(shift && ctrl)	mode = DRAGMOVE_Y;
 		else if (shift)			mode = DRAGMOVE_X;

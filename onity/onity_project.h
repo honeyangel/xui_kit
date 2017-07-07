@@ -20,6 +20,7 @@ enum
 class onity_fileview;
 class onity_propfile;
 class onity_proppath;
+class onity_proplike;
 class onity_project : public xui_dockpage
 {
 	xui_declare_rtti
@@ -40,6 +41,7 @@ public:
 	*/
 	void						ini_pathtree		( void );
 	void						get_pathfile		( const std::wstring& suff, xui_proproot_vec& filevec );
+	onity_propfile*				get_pathfile		( const std::wstring& path, const std::wstring& file );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, const std::wstring& name );
 	xui_treeview*				get_pathview		( void );
@@ -89,6 +91,7 @@ protected:
 	void						refresh_fileview	( void );
 	void						refresh_pathpane	( void );
 	void						refresh_linetool	( void );
+	void						refresh_pathmenu	( void );
 	void						refresh_tileview	( void );
 	std::wstring				convert_filesuff	( void );
 	void						set_freetype		( u08 type, const std::string& pathname, u32 style );
@@ -100,6 +103,8 @@ protected:
 	/*
 	//member
 	*/
+	onity_proppath*				m_root;
+	onity_proplike*				m_like;
 	xui_panel*					m_head;
 	xui_toggle*					m_create;
 	xui_menuitem*				m_folder;
@@ -129,6 +134,7 @@ protected:
 	xui_button*					m_copy;
 	xui_button*					m_move;
 	xui_button*					m_paste;
+	xui_toggle*					m_favorite;
 	xui_proproot_vec			m_menuprop;
 
 	xui_menuitem*				m_showfind;

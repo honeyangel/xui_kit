@@ -45,7 +45,6 @@ protected:
 	*/
 	virtual void				on_buttonclick				( xui_component* sender, xui_method_args&		args );
 	virtual void				on_fillpanekeybddown		( xui_component* sender, xui_method_keybd&		args );
-	//virtual void				on_drawviewnoncatch			( xui_component* sender, xui_method_args&		args );
 	virtual void				on_drawviewupdateself		( xui_component* sender, xui_method_update&		args );
 	virtual void				on_drawviewrenderself		( xui_component* sender, xui_method_args&		args );
 	virtual void				on_drawviewrenderelse		( xui_component* sender, xui_method_args&		args );
@@ -61,7 +60,6 @@ protected:
 	*/
 	virtual void				on_keybdmoveimpl			( const xui_vector<s32>& delta );
 	virtual void				on_mousepickimpl			( onity_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op );
-	//virtual void				on_mousedragimpl			( const xui_vector<s32>& delta );
 	virtual void				on_mulselectimpl			( const xui_rect2d<s32>& rt, bool ctrl );
 
 	/*

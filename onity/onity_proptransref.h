@@ -12,6 +12,7 @@ enum
 };
 
 class NP2DSTransRef;
+class onity_boundbox;
 class onity_proptransref : public onity_propleaf
 {
 public:
@@ -24,6 +25,7 @@ public:
 	//method
 	*/
 	NP2DSTransRef*				get_transref		( void );
+	onity_boundbox*				get_boundbox		( void );
 
 protected:
 	/*
@@ -84,6 +86,7 @@ protected:
 	xui_propkind*				m_localkind;
 	xui_propkind*				m_worldkind;
 	xui_propkind*				m_graphkind;
+	onity_boundbox*				m_boundbox;
 	NP2DSTransRef*				m_transref;
 };
 

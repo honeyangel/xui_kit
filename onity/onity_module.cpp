@@ -1,10 +1,12 @@
 #include "NPRender.h"
-#include "NPTexture.h"
+#include "NPPixelBuffer.h"
+#include "NPSourceTexture.h"
 #include "NP2DSImageFile.h"
 #include "NP2DSImage.h"
 #include "NP2DSRenderUtil.h"
 #include "NP2DSRenderStep.h"
 
+#include "xui_desktop.h"
 #include "xui_convas.h"
 #include "xui_button.h"
 #include "xui_treenode.h"
@@ -14,11 +16,13 @@
 #include "xui_timermgr.h"
 #include "xui_toolbar.h"
 #include "xui_global.h"
+#include "xui_dialog.h"
 #include "onity_treedata.h"
 #include "onity_resource.h"
 #include "onity_project.h"
 #include "onity_propmodule.h"
 #include "onity_propimage.h"
+#include "onity_2dsassetdata.h"
 #include "onity_mainform.h"
 #include "onity_fileview.h"
 #include "onity_boundbox.h"
@@ -35,6 +39,7 @@ xui_implement_rtti(onity_module, onity_asset);
 */
 xui_create_explain(onity_module)( void )
 : onity_asset()
+, m_modalwnd(NULL)
 {
 	ini_namectrl(onity_resource::icon_scene, L"Module");
 
@@ -52,6 +57,7 @@ xui_create_explain(onity_module)( void )
 	xui_method_ptrcall(m_linetool,	add_item		)(m_automode);
 
 	m_addtimer	= xui_timermgr::get_ins()->add_timer(this, 0.1f, NULL);
+	xui_method_ptrcall(m_addtimer,	set_enable		)(false);
 	xui_method_ptrcall(m_addtimer,	xm_tick			) += new xui_method_member<xui_method_args,	onity_module>(this, &onity_module::on_timertick);
 
 	add_pagectrl(m_headpane);
@@ -148,7 +154,13 @@ xui_method_explain(onity_module, on_buttonclick,		void				)( xui_component* send
 	onity_asset::on_buttonclick(sender, args);
 	if (sender == m_automode)
 	{
-
+		if (get_filenode())
+		{
+			m_modalwnd = xui_desktop::get_ins()->show_message(L"Please Waiting", 0);
+			xui_method_ptrcall(m_addtimer,	set_enable	)(true);
+			xui_method_ptrcall(m_addtimer,	set_data	)(NULL);
+			xui_method_ptrcall(m_showbbox,	set_push	)(true);
+		}
 	}
 }
 xui_method_explain(onity_module, on_fillpanekeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
@@ -181,20 +193,6 @@ xui_method_explain(onity_module, on_fillpanekeybddown,	void				)( xui_component*
 		}
 	}
 }
-//xui_method_explain(onity_module, on_drawviewnoncatch,	void				)( xui_component* sender, xui_method_args&	args )
-//{
-//	onity_asset::on_drawviewnoncatch(sender, args);
-//
-//	xui_proproot_vec vec = get_selectedprop();
-//	for (u32 i= 0; i < vec.size(); ++i)
-//	{
-//		onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
-//		if (prop)
-//		{
-//			prop->set_lockdata(false);
-//		}
-//	}
-//}
 xui_method_explain(onity_module, on_drawviewrenderself, void				)( xui_component* sender, xui_method_args&	args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.3f));
@@ -246,14 +244,6 @@ xui_method_explain(onity_module, on_drawviewrenderelse, void				)( xui_component
 				s32 x2 = pt.x + xui_round(m_trans.x*m_ratio + texture->GetWidth ()*m_ratio);
 				s32 y2 = pt.y + xui_round(m_trans.y*m_ratio + texture->GetHeight()*m_ratio);
 				xui_convas::get_ins()->draw_rectangle(xui_rect2d<s32>(x1, y1, x2, y2), xui_colour::gray);
-				//xui_vector<s32> p1;
-				//xui_vector<s32> p2;
-				//p1 = xui_vector<s32>(x2, y1);
-				//p2 = xui_vector<s32>(x2, y2);
-				//xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
-				//p1 = xui_vector<s32>(x2, y2);
-				//p2 = xui_vector<s32>(x1, y2);
-				//xui_convas::get_ins()->draw_line(pt+p1, pt+p2, xui_colour::gray);
 			}
 		}
 
@@ -267,34 +257,6 @@ xui_method_explain(onity_module, on_drawviewrenderelse, void				)( xui_component
 				bbox->draw(m_trans, m_ratio, pt, m_showbbox->was_push());
 			}
 		}
-
-#if 0
-		xui_treeview* treeview = get_treeview();
-		if (treeview)
-		{
-			xui_proproot_vec vec = m_editprop->get_subprop();
-			for (u32 i = 0; i < vec.size(); ++i)
-			{
-				onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
-				xui_treedata*    data = prop->get_linkdata(treeview);
-				xui_treenode*	 node = data->get_node();
-				if (node->was_selected() == false && m_showaabb->was_push() == false)
-					continue;
-
-				xui_rect2d<s32>  rect = prop->get_bounding(m_trans, m_ratio);
-				xui_convas::get_ins()->draw_rectangle(rect+pt, xui_colour(1.0f, 0.7f));
-			}
-
-			xui_proproot_vec selectedvec = get_selectedprop();
-			for (u32 i = 0; i < selectedvec.size(); ++i)
-			{
-				onity_propimage* prop = dynamic_cast<onity_propimage*>(selectedvec[i]);
-				xui_rect2d<s32>  rect = prop->get_bounding(m_trans, m_ratio);
-				xui_convas::get_ins()->fill_rectangle(rect+pt, xui_colour(0.3f, 1.0f, 0.0f, 0.0f));
-				xui_convas::get_ins()->draw_rectangle(rect+pt, xui_colour(1.0f, 0.7f));
-			}
-		}
-#endif
 	}
 
 	xui_convas::get_ins()->set_cliprect(cliprect);
@@ -322,21 +284,154 @@ xui_method_explain(onity_module, on_drawviewmouserise,	void				)( xui_component*
 }
 xui_method_explain(onity_module, on_timertick,			void				)( xui_component* sender, xui_method_args&	args )
 {
+	std::vector<NP2DSImage*> checklist;
+	xui_proproot_vec vec = m_editprop->get_subprop();
+	for (u32 i = 0; i < vec.size(); ++i)
+	{
+		onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
+		NP2DSImage* image = prop->get_image();
+		if (image->GetSrcY()+image->GetSrcH() < (s32)m_addtimer->get_data())
+			continue;
 
+		checklist.push_back(image);
+	}
+
+	s32  hitLastLT;
+	s32  hitLastTP;
+	s32  hitLastRT;
+	s32  hitLastBM;
+	s32  hitCurrLT;
+	s32  hitCurrTP;
+	s32  hitCurrRT;
+	s32  hitCurrBM;
+
+	bool hit  = false;
+	bool hitX = false;
+	bool hitY = false;
+	NP2DSImageFile*  file    = NPDynamicCast(NP2DSImageFile,  m_editprop->get_resfile());
+	NPSourceTexture* texture = NPDynamicCast(NPSourceTexture, file->GetSCTex());
+	if (texture)
+	{
+		NPPixelBuffer* buffer = texture->GetSourceData();
+		if (buffer)
+		{
+			for (s32 y = (s32)m_addtimer->get_data(); y < (s32)texture->GetHeight(); ++y)
+			{
+				hitX = false;
+				hitY = false;
+
+				for (s32 x = 0; x < (s32)texture->GetWidth(); ++x)
+				{
+					npu08* data  = (*buffer)(x, y);
+					npu08  alpha = data[3];
+
+					bool hasImage = false;
+					for (u32 i = 0; i < checklist.size(); ++i)
+					{
+						NP2DSImage* image = checklist[i];
+						if (x >= image->GetSrcX() && x < image->GetSrcX() + image->GetSrcW() &&
+							y >= image->GetSrcY() && y < image->GetSrcY() + image->GetSrcH())
+						{
+							hasImage = true;
+							break;
+						}
+					}
+
+					if (!hasImage && alpha > 0)
+					{
+						if (hit)
+						{
+							if(!hitX)
+							{
+								hitX = true;
+								hitCurrLT = x;
+								hitCurrRT = x; 
+							}
+						}
+						else
+						{
+							hit  = true;
+							hitX = true;
+							hitY = true;
+							hitLastLT = x;
+							hitLastTP = y;
+							hitLastRT = x;
+							hitLastBM = y;
+							hitCurrLT = x;
+							hitCurrTP = y;
+							hitCurrRT = x;
+							hitCurrBM = y;
+						}
+					}
+					else
+					{
+						if (hitX)
+						{
+							hitX = false;
+							hitCurrLT = 0;
+							hitCurrTP = 0;
+							hitCurrRT = 0;
+							hitCurrBM = 0;
+						}
+					}
+
+					if (hitX)
+					{
+						hitCurrRT = x+1;
+
+						//没有交集
+						if (hitCurrRT < hitLastLT ||
+							hitCurrLT > hitLastRT)
+						{
+
+						}
+						else
+						{
+							hitY = true;
+							hitLastLT = (hitCurrLT < hitLastLT) ? hitCurrLT : hitLastLT;
+							hitLastRT = (hitCurrRT > hitLastRT) ? hitCurrRT : hitLastRT;
+						}
+					}
+				}
+
+				if (hitY)
+					hitLastBM = y+1;
+
+				if (hit && !hitY)
+					break;
+			}
+		}
+	}
+
+	if (hit)
+	{
+		onity_propimage* newprop = dynamic_cast<onity_propimage*>(m_editprop->add_subprop());
+		NP2DSImage* newimage = newprop->get_image();
+		newimage->SetSrcX(hitLastLT);
+		newimage->SetSrcY(hitLastTP);
+		newimage->SetSrcW(hitLastRT - hitLastLT);
+		newimage->SetSrcH(hitLastBM - hitLastTP);
+		xui_treenode* filenode = get_filenode();
+		if (filenode)
+		{
+			u32 index = filenode->get_leafnodecount();
+			filenode->add_leafnode(index, new onity_2dsassetdata(newprop->get_resicon(), newprop));
+		}
+
+		xui_method_ptrcall(m_addtimer,	set_data	)((void*)hitLastTP);
+	}
+	else
+	{
+		xui_method_ptrcall(m_addtimer,	set_enable	)(false);
+		xui_desktop::get_ins()->show_message(L"Finish.", 1);
+		xui_desktop::get_ins()->del_child(m_modalwnd);
+		m_modalwnd = NULL;
+	}
 }
 
 /*
 //override
 */
-//xui_method_explain(onity_module, on_keybdmoveimpl,		void				)( const xui_vector<s32>& delta )
-//{
-//	xui_proproot_vec vec = get_selectedprop();
-//	for (u32 i = 0; i < vec.size(); ++i)
-//	{
-//		onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
-//		prop->set_position(prop->ori_position()+delta);
-//	}
-//}
 xui_method_explain(onity_module, on_mousepickimpl,		void				)( onity_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op )
 {
 	xui_treeview* treeview = get_treeview();
@@ -356,45 +451,8 @@ xui_method_explain(onity_module, on_mousepickimpl,		void				)( onity_boundbox* p
 			treeview->non_selectednode(false);
 			treeview->set_selectednode(node, true);
 		}
-
-		//if (m_drawview->has_catch() && node->was_selected())
-		//{
-			//m_dragprop = true;
-			//xui_method_ptrcall(m_drawview,	set_cursor		)(CURSOR_HAND);
-			//xui_static_inscall(xui_global,	set_cursor		)(CURSOR_HAND);
-
-			//lock update bounding
-			//xui_proproot_vec vec = get_selectedprop();
-			//for (u32 i = 0; i < vec.size(); ++i)
-			//{
-			//	onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
-			//	if (prop)
-			//	{
-			//		prop->get_position(m_trans, m_ratio);
-			//		prop->get_bounding(m_trans, m_ratio);
-			//		prop->set_lockdata(true);
-			//	}
-			//}
-		//}
 	}
 }
-//xui_method_explain(onity_module, on_mousedragimpl,		void				)( const xui_vector<s32>& delta )
-//{
-//	xui_proproot_vec vec = get_selectedprop();
-//	for (u32 i = 0; i < vec.size(); ++i)
-//	{
-//		onity_propimage* prop = dynamic_cast<onity_propimage*>(vec[i]);
-//		if (prop)
-//		{
-//			prop->mov_position(delta);
-//
-//			xui_vector<s32> pos = prop->get_position(m_trans, m_ratio);
-//			pos.x = xui_round(pos.x/m_ratio - m_trans.x);
-//			pos.y = xui_round(pos.y/m_ratio - m_trans.y);
-//			prop->set_position(pos);
-//		}
-//	}
-//}
 xui_method_explain(onity_module, on_mulselectimpl,		void				)( const xui_rect2d<s32>& rt, bool ctrl )
 {
 	xui_treeview* treeview = get_treeview();

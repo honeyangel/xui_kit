@@ -161,7 +161,7 @@ xui_method_explain(xui_timetool, on_buttonclick,		void		)( xui_component* sender
 	{
 		for (xui_keyframe_map::iterator itor = allframe.begin(); itor != allframe.end(); ++itor)
 		{
-			if ((*itor).first < timeview->get_curframe())
+			if ((*itor).first > timeview->get_curframe())
 			{
 				timeview->set_curframe((*itor).first);
 				break;

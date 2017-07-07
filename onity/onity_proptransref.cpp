@@ -33,6 +33,10 @@ xui_method_explain(onity_proptransref, get_transref,		NP2DSTransRef*	)( void )
 {
 	return m_transref;
 }
+xui_method_explain(onity_proptransref, get_boundbox,		onity_boundbox*	)( void )
+{
+	return m_boundbox;
+}
 
 xui_method_explain(onity_proptransref, add_localkind,		void			)( void )
 {

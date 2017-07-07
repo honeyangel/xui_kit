@@ -268,19 +268,26 @@
     <ClInclude Include="onity_level.h" />
     <ClInclude Include="onity_module.h" />
     <ClInclude Include="onity_boundbox.h">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClInclude>
     <ClInclude Include="onity_boundbox_coursenode.h">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClInclude>
     <ClInclude Include="onity_boundbox_entitynode.h">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClInclude>
     <ClInclude Include="onity_boundbox_entitystar.h">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClInclude>
     <ClInclude Include="onity_boundbox_image.h">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_action.h" />
+    <ClInclude Include="onity_proplike.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="onity_likedata.h">
+      <Filter>project</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -552,19 +559,26 @@
     <ClCompile Include="onity_level.cpp" />
     <ClCompile Include="onity_module.cpp" />
     <ClCompile Include="onity_boundbox.cpp">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClCompile>
     <ClCompile Include="onity_boundbox_coursenode.cpp">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClCompile>
     <ClCompile Include="onity_boundbox_entitystar.cpp">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClCompile>
     <ClCompile Include="onity_boundbox_entitynode.cpp">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
     </ClCompile>
     <ClCompile Include="onity_boundbox_image.cpp">
-      <Filter>asset</Filter>
+      <Filter>boundbox</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_action.cpp" />
+    <ClCompile Include="onity_proplike.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="onity_likedata.cpp">
+      <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -586,11 +600,11 @@
     <Filter Include="scene">
       <UniqueIdentifier>{430d2b23-8f28-41d9-acfe-018b3189c611}</UniqueIdentifier>
     </Filter>
-    <Filter Include="asset">
-      <UniqueIdentifier>{e777800b-ed9a-4523-841a-096f9c3de2f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="layout">
       <UniqueIdentifier>{e2d5b872-790c-4a91-a3c1-f3c63addd174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="boundbox">
+      <UniqueIdentifier>{e777800b-ed9a-4523-841a-096f9c3de2f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

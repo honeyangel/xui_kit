@@ -102,6 +102,7 @@ class	xui_numbbox;
 class   xui_linebox;
 class   xui_gridbox;
 class   xui_toolbar;
+class	xui_separate;
 class	xui_slider;
 class	xui_scroll;
 class	xui_scrollarrow;
