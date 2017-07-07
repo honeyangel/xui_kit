@@ -22,7 +22,8 @@ xui_method_explain(xui_render_window, init, void)( HWND hwnd )
 	g_pfd.cGreenBits	=  8;
 	g_pfd.cBlueBits		=  8;
 	g_pfd.cAlphaBits	=  8;
-	g_pfd.cDepthBits	= 16;
+	g_pfd.cDepthBits	= 24;
+	g_pfd.cStencilBits  =  8;
 
 	g_format  = ChoosePixelFormat(hdc, &g_pfd);
 	SetPixelFormat(hdc, g_format, &g_pfd);
