@@ -19,7 +19,7 @@ public:
 	/*
 	//static
 	*/
-	static void					editor_print			( const std::string& log );
+	static void					game_print				( const std::string& log );
 
 	/*
 	//constructor

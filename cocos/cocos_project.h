@@ -2,20 +2,26 @@
 #define __cocos_project_h__
 
 #include "xui_dockpage.h"
-#include "xui_propview.h"
+#include "xui_proproot.h"
 
 enum
 {
+	FILTER_NONE = -1,
 	FILTER_ALL,
-	FILTER_TEXTURE,
 	FILTER_ATLAS,
+	FILTER_TEXTURE,
 	FILTER_PARTICLE,
-	FILTER_CSB,
+	FILTER_MATERIAL,
+	FILTER_VERTSHADER,
+	FILTER_FRAGSHADER,
+	FILTER_TTF,
+	FILTER_FNT,
 };
 
 class cocos_fileview;
 class cocos_propfile;
 class cocos_proppath;
+class cocos_proplike;
 class cocos_project : public xui_dockpage
 {
 	xui_declare_rtti
@@ -35,10 +41,12 @@ public:
 	//method
 	*/
 	void						ini_pathtree		( void );
-	void						get_pathfile		( const std::wstring& suff, xui_proproot_vec& filevec );
+	void						get_pathfile		( s32 type, xui_proproot_vec& filevec );
+	cocos_propfile*				get_pathfile		( const std::wstring& path, const std::wstring& file );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, u32 id );
 	void						loc_filenode		( const std::wstring& path, const std::wstring& file, const std::wstring& name );
 	xui_treeview*				get_pathview		( void );
+	cocos_fileview*				get_fileview		( void );
 
 	/*
 	//notify
@@ -61,9 +69,8 @@ protected:
 	void						on_sizectrlmousemove( xui_component* sender, xui_method_mouse&	  args );
 	void						on_pathviewselection( xui_component* sender, xui_method_args&	  args );
 	void						on_folderclick		( xui_component* sender, xui_method_args&	  args );
-	//void						on_controllerclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_particleclick	( xui_component* sender, xui_method_args&	  args );
-	//void						on_courseclick		( xui_component* sender, xui_method_args&	  args );
+	void						on_materialclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
@@ -71,8 +78,7 @@ protected:
 	void						on_fileviewnodeclick( xui_component* sender, xui_method_mouse&	  args );
 	void						on_fileviewdoubleclk( xui_component* sender, xui_method_mouse&	  args );
 	void						on_fileviewassetdrag( xui_component* sender, xui_method_dragdrop& args );
-	//void						on_freetypeclick	( xui_component* sender, xui_method_args&	  args );
-	//void						on_loadtypeclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_pathloadclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_showfindclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_propertyclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_linetoolclick	( xui_component* sender, xui_method_args&	  args );
@@ -84,10 +90,8 @@ protected:
 	void						refresh_fileview	( void );
 	void						refresh_pathpane	( void );
 	void						refresh_linetool	( void );
+	void						refresh_pathmenu	( void );
 	void						refresh_tileview	( void );
-	std::wstring				convert_filesuff	( void );
-	//void						set_freetype		( u08 type, const std::string& pathname, u32 style );
-	//void						set_loadtype		( u08 type, const std::string& pathname, bool flag );
 	void						add_propleaf		( void );
 	void						del_propleaf		( const xui_proproot_vec& propvec );
 	void						pst_propleaf		( void );
@@ -95,12 +99,13 @@ protected:
 	/*
 	//member
 	*/
+	cocos_proppath*				m_root;
+	cocos_proplike*				m_like;
 	xui_panel*					m_head;
 	xui_toggle*					m_create;
 	xui_menuitem*				m_folder;
-	//xui_menuitem*				m_controller;
 	xui_menuitem*				m_particle;
-	//xui_menuitem*				m_course;
+	xui_menuitem*				m_material;
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 	xui_timer*					m_timer;
@@ -124,17 +129,11 @@ protected:
 	xui_button*					m_copy;
 	xui_button*					m_move;
 	xui_button*					m_paste;
+	xui_toggle*					m_favorite;
 	xui_proproot_vec			m_menuprop;
-
+	xui_menuitem*				m_pathload;
 	xui_menuitem*				m_showfind;
-	//xui_menuitem*				m_loadtype;
-	//xui_menuitem*				m_freetype;
 	xui_menuitem*				m_property;
-	//xui_menuitem*				m_auto;
-	//xui_menuitem*				m_never;
-	//xui_menuitem*				m_immediate;
-	//xui_menuitem*				m_on;
-	//xui_menuitem*				m_off;
 
 	std::vector<xui_treenode*>	m_histroy;
 	s32							m_curridx;

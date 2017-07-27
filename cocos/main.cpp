@@ -170,7 +170,7 @@ void CreateMiniDump(PEXCEPTION_POINTERS pep, LPCSTR strFileName)
 
 LONG __stdcall MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 {
-	CreateMiniDump(pExceptionInfo, "onity_crash.dmp");
+	CreateMiniDump(pExceptionInfo, "cocos_editor/cocos_editor.crash");
 
 	return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -228,7 +228,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 		return 0;
 
 	FILE* file = NULL;
-	file = fopen("cocos editor.dock", "r");
+	file = fopen("cocos_editor.dock", "r");
 	if (file)
 	{
 		std::string line = xui_global::get_fileline(file);
@@ -242,7 +242,7 @@ int CALLBACK WinMain(__in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance,
 	UpdateWindow (gHWND);
 
 	std::string font = "Arial.TTF";
-	file = fopen("cocos editor.font", "r");
+	file = fopen("cocos_editor.font", "r");
 	if (file)
 	{
 		font = xui_global::get_fileline(file);

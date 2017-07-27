@@ -1,19 +1,9 @@
-//#include "NPRender.h"
-//#include "NPSourceTexture.h"
-//#include "NP2DSImage.h"
-//#include "NP2DSFrame.h"
-//#include "NP2DSActor.h"
-//#include "NP2DSLayer.h"
-//#include "NP2DSFrameKey.h"
-//#include "NP2DSAssetFile.h"
-//#include "NP2DSTransRef.h"
-//#include "NP2DSImageRef.h"
-//#include "NP2DSFrameRef.h"
-//#include "NP2DSActorRef.h"
-//#include "NP2DSTextureCache.h"
-//#include "NPParticleSFX.h"
-//#include "NP2DSRenderStep.h"
 #include "2d/CCNode.h"
+#include "2d/CCSprite.h"
+#include "2d/CCSpriteFrame.h"
+#include "2d/CCParticleSystemQuad.h"
+#include "renderer/CCTexture2D.h"
+#include "base/CCDirector.h"
 
 #include "xui_desktop.h"
 #include "xui_convas.h"
@@ -56,7 +46,7 @@ xui_create_explain(cocos_inspector)( void )
 	xui_method_ptrcall(m_drawview,	set_borderrt	)(xui_rect2d<s32>(0, 6, 0, 6));
 	xui_method_ptrcall(m_drawview,	set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_drawview,	ini_component	)(0, 0, DOCKSTYLE_B);
-	xui_method_ptrcall(m_drawview,	ini_component	)(true, true);
+	xui_method_ptrcall(m_drawview,	ini_component	)(true, false);
 	m_sizectrl	= new xui_control(xui_vector<s32>(4));
 	xui_method_ptrcall(m_sizectrl,	xm_mousemove	) += new xui_method_member<xui_method_mouse, cocos_inspector>(this, &cocos_inspector::on_sizectrlmousemove);
 	xui_method_ptrcall(m_sizectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
@@ -75,7 +65,12 @@ xui_create_explain(cocos_inspector)( void )
 */
 xui_delete_explain(cocos_inspector)( void )
 {
-	delete m_tipsnode;
+	if (m_tipsnode)
+	{
+		m_tipsview->get_2droot()->removeChild(m_tipsnode);
+		delete m_tipsnode;
+	}
+
 	xui_desktop::get_ins()->move_recycle(m_tipsview);
 }
 
@@ -108,46 +103,27 @@ xui_method_explain(cocos_inspector, set_proproot,			void			)( const xui_proproot
 /*
 //tips
 */
-xui_method_explain(cocos_inspector, show_tips,				void			)( cocos2d::Node* value, const xui_vector<s32>& pt )
+xui_method_explain(cocos_inspector, show_tips,				void			)( cocos2d::Ref* value, const xui_vector<s32>& pt )
 {
 	if (m_tipsnode)
 	{
+		m_tipsview->get_2droot()->removeChild(m_tipsnode);
 		delete m_tipsnode;
 		m_tipsnode = NULL;
 	}
 
-	//if (NPIsExaKindOf(NPParticleSFX, value))
-	//{
-	//	NPParticleSFX* particle = ((NPParticleSFX*)value)->CreateInstance();
-	//	particle->SetFlag(PARTICLESFX_LOOPPLAY, true);
-	//	particle->Active();
-	//	m_tipsnode = particle;
-	//}
-	//else
-	//if (NPIsSubKindOf(NP2DSAsset, value))
-	//{
-	//	NP2DSImage* image = NPDynamicCast(NP2DSImage, value);
-	//	NP2DSFrame* frame = NPDynamicCast(NP2DSFrame, value);
-	//	NP2DSActor* actor = NPDynamicCast(NP2DSActor, value);
-	//	if (image)
-	//	{
-	//		NP2DSImageRef* imageref = new NP2DSImageRef;
-	//		imageref->SetImage(image->GetOwnedFile()->GetKey(), image->GetKey());
-	//		m_tipsnode = imageref;
-	//	}
-	//	if (frame)
-	//	{
-	//		NP2DSFrameRef* frameref = new NP2DSFrameRef;
-	//		frameref->SetFrame(frame->GetOwnedFile()->GetKey(), frame->GetKey());
-	//		m_tipsnode = frameref;
-	//	}
-	//	if (actor)
-	//	{
-	//		NP2DSActorRef* actorref = new NP2DSActorRef;
-	//		actorref->SetActor(actor->GetOwnedFile()->GetKey(), actor->GetKey());
-	//		m_tipsnode = actorref;
-	//	}
-	//}
+	if (value)
+	{
+		cocos2d::Texture2D*			texture		= dynamic_cast<cocos2d::Texture2D*		>(value);
+		cocos2d::SpriteFrame*		frame		= dynamic_cast<cocos2d::SpriteFrame*	>(value);
+		cocos2d::ParticleSystem*	particle	= dynamic_cast<cocos2d::ParticleSystem*	>(value);
+		if		(texture)	m_tipsnode = cocos2d::Sprite::createWithTexture(texture);
+		else if (frame)		m_tipsnode = cocos2d::Sprite::createWithSpriteFrame(frame);
+		else if (particle)	m_tipsnode = cocos2d::ParticleSystemQuad::create(particle->getResourceFile());
+
+		if (m_tipsnode)
+			m_tipsview->get_2droot()->addChild(m_tipsnode);
+	}
 
 	set_localtransform();
 
@@ -161,7 +137,7 @@ xui_method_explain(cocos_inspector, show_tips,				void			)( cocos2d::Node* value
 	{
 		finalpt.x -= m_tipsview->get_renderw();
 	}
-	m_tipsview->set_data(value);
+
 	m_tipsview->set_renderpt(finalpt);
 	xui_desktop::get_ins()->set_floatctrl(window, m_tipsview);
 }
@@ -224,50 +200,7 @@ xui_method_explain(cocos_inspector, on_sizectrlmousemove,	void			)( xui_componen
 xui_method_explain(cocos_inspector, on_tipsviewrenderself,	void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.25f));
-	//extern bool gInitCompleted;
-	//if (gInitCompleted == false)
-	//	return;
-
-	//xui_vector<s32> size = m_tipsview->get_rendersz();
-	//if (m_tipsnode)
-	//	m_tipsnode->Render();
-	//else
-	//{
-	//	NPObjectRef* value = (NPObjectRef*)m_tipsview->get_data();
-	//	if (NPIsSubKindOf(NPTexture, value))
-	//	{
-	//		NPTexture* texture = NPDynamicCast(NPTexture, value);
-	//		if (texture)
-	//		{
-	//			npu32 w = texture->GetWidth ();
-	//			npu32 h = texture->GetHeight();
-	//			npf32 s = (npf32)(size.w) / xui_max(w, h);
-	//			npf32 x = 0.0f;
-	//			npf32 y = 0.0f;
-	//			NPTransform t;
-	//			t.SetIdentity();
-	//			t.SetS(NPVector3(s, s, 1.0f));
-	//			t.SetT(NPVector3(x, y, 0.0f));
-	//			NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
-	//			NP2DSRenderUtil::GetIns()->DrawImage(
-	//				&image, 
-	//				t.GetMatrix(),
-	//				NPColor::White, 
-	//				0,
-	//				0,
-	//				0,
-	//				0,
-	//				texture->GetKey());
-	//		}
-	//	}
-	//}
-
-	//NPRender::GetIns()->SetResolutionW(size.w);
-	//NPRender::GetIns()->SetResolutionH(size.h);
-	//NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
-	//NP2DSRenderStep::GetIns()->SetEntryLocalT(NPVector3::Zero);
-	//NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
-	//NP2DSRenderStep::GetIns()->RenderImmediate();
+	cocos2d::Director::getInstance()->drawScene();
 }
 
 /*
@@ -278,76 +211,28 @@ xui_method_explain(cocos_inspector, set_localtransform,		void			)( void )
 	xui_vector<s32> size = m_tipsview->get_rendersz();
 	if (m_tipsnode)
 	{
-		//NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, m_tipsnode);
-		//NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_tipsnode);
-		//NPParticleSFX* particle = NPDynamicCast(NPParticleSFX, m_tipsnode);
-		//if (particle)
-		//{
-		//	NPVector3 trans = NPVector3(size.w/2.0f, size.h/2.0f, 0.0f);
-		//	trans.x = xui_pixel_align(trans.x);
-		//	trans.y = xui_pixel_align(trans.y);
+		cocos2d::Sprite* sprite = dynamic_cast<cocos2d::Sprite*>(m_tipsnode);
+		if (sprite)
+		{
+			s32 w = sprite->getTextureRect().size.width;
+			s32 h = sprite->getTextureRect().size.height;
+			f32 sw = (f32)size.w / w;
+			f32 sh = (f32)size.h / h;
+			f32 s = xui_min(sw, sh);
+			if (s > 1.0f)
+				s = 1.0f;
 
-		//	particle->SetLocalS(NPVector3(0.5f, 0.5f, 1.0f));
-		//	particle->SetLocalT(trans);
-		//}
-		//else 
-		//if (actorref && actorref->GetActor())
-		//{
-		//	NP2DSActor* actor = actorref->GetActor();
+			cocos2d::Vec2 anchor = sprite->getAnchorPointInPoints();
+			cocos2d::Vec2 offset = sprite->getOffsetPosition();
 
-		//	NPRect bound = NPRect::Empty;
-		//	for (s32 i = (s32)actor->GetLayerCount()-1; i >= 0; --i)
-		//	{
-		//		NP2DSLayer* layer = actor->GetLayer((npu16)i);
-		//		if (layer->GetFrameKeyCount() == 0)
-		//			continue;
-
-		//		std::list<NP2DSFrameKey*>& frameKeyList = layer->GetFrameKeyList();
-		//		NP2DSFrameKey* frameKey  = frameKeyList.front();
-		//		bound = bound.GetUnion(frameKey->GetTransRef()->GetWorldBounding());
-		//	}
-
-		//	f32 sw = (f32)size.w / (f32)bound.GetW();
-		//	f32 sh = (f32)size.h / (f32)bound.GetH();
-		//	f32 s  = xui_min(sw, sh);
-		//	if (s > 1.0f)
-		//		s = 1.0f;
-
-		//	NPVector3 scale = NPVector3(s, s, 1.0f);
-		//	NPVector3 trans = NPVector3(
-		//		(-bound.LT*s + (((f32)size.w - bound.GetW()*s)) / 2.0f), 
-		//		(-bound.TP*s + (((f32)size.h - bound.GetH()*s)) / 2.0f),
-		//		0.0f);
-
-		//	trans.x = xui_pixel_align(trans.x);
-		//	trans.y = xui_pixel_align(trans.y);
-
-		//	actorref->SetLocalFlips(0);
-		//	actorref->SetLocalAngle(0.0f);
-		//	actorref->SetLocalScale(scale);
-		//	actorref->SetLocalTrans(trans);
-		//}
-		//else
-		//{
-		//	NPRect bound = transref->GetOrignBounding();
-
-		//	f32 sw = (f32)size.w / (f32)bound.GetW();
-		//	f32 sh = (f32)size.h / (f32)bound.GetH();
-		//	f32 s  = xui_min(sw, sh);
-		//	if (s > 1.0f)
-		//		s = 1.0f;
-
-		//	NPVector3 scale = NPVector3(s, s, 1.0f);
-		//	NPVector3 trans = NPVector3(
-		//		(-bound.LT*s + (((f32)size.w - bound.GetW()*s)) / 2.0f), 
-		//		(-bound.TP*s + (((f32)size.h - bound.GetH()*s)) / 2.0f),
-		//		0.0f);
-
-		//	trans.x = xui_pixel_align(trans.x);
-		//	trans.y = xui_pixel_align(trans.y);
-
-		//	transref->SetLocalScale(scale);
-		//	transref->SetLocalTrans(trans);
-		//}
+			f32 x =  anchor.x*s - offset.x*s + (((f32)size.w - w*s) / 2.0f);
+			f32 y = -anchor.y*s + offset.y*s + (((f32)size.h - h*s) / 2.0f);
+			sprite->setScale(s, s);
+			sprite->setPosition(x, size.h - y - h*s);
+		}
+		else
+		{
+			m_tipsnode->setPosition(size.w / 2, size.h / 2);
+		}
 	}
 }

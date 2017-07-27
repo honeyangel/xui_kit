@@ -19,13 +19,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -95,6 +95,7 @@
     <ClInclude Include="libftf\inc\freetype\config\ftoption.h" />
     <ClInclude Include="libftf\inc\freetype\config\ftstdlib.h" />
     <ClInclude Include="libftf\inc\ft2build.h" />
+    <ClInclude Include="libogl\inc\GLee.h" />
     <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_dockpage.h" />
     <ClInclude Include="xui_dockview.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="libftf\src\type1\type1.c" />
     <ClCompile Include="libftf\src\type42\type42.c" />
     <ClCompile Include="libftf\src\winfonts\winfnt.c" />
+    <ClCompile Include="libogl\src\GLee.c" />
     <ClCompile Include="libpng\src\png.c" />
     <ClCompile Include="libpng\src\pngerror.c" />
     <ClCompile Include="libpng\src\pnggccrd.c" />

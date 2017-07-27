@@ -10,12 +10,7 @@ public:
 	/*
 	//constructor
 	*/
-	cocos_pathdata( const std::wstring& full, xui_proproot* prop, xui_treenode* link );
-
-	/*
-	//destructor
-	*/
-	virtual ~cocos_pathdata( void );
+	cocos_pathdata( xui_bitmap* icon, const std::wstring& full, xui_proproot* prop );
 
 	/*
 	//override
@@ -27,17 +22,6 @@ public:
 	//override
 	*/
 	virtual void			ntf_rename		( const std::wstring& last, const std::wstring& curr );
-
-	/*
-	//static
-	*/
-	static void				new_leafnode	( xui_treenode* root );
-
-protected:
-	/*
-	//member
-	*/
-	xui_treenode*			m_link;
 };
 
 #endif//__cocos_pathdata_h__

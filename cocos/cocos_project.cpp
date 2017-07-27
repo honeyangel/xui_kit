@@ -1,14 +1,3 @@
-//#include "NPFileName.h"
-//#include "NPStringUtil.h"
-//#include "NP2DSStateCtrl.h"
-//#include "NP2DSSceneFile.h"
-//#include "NP2DSImageFile.h"
-//#include "NP2DSFrameFile.h"
-//#include "NP2DSActorFile.h"
-//#include "NP2DSImageFileMgr.h"
-//#include "NP2DSFrameFileMgr.h"
-//#include "NP2DSActorFileMgr.h"
-
 #include "xui_timer.h"
 #include "xui_timermgr.h"
 #include "xui_bitmap.h"
@@ -31,28 +20,27 @@
 #include "cocos_mainform.h"
 #include "cocos_inspector.h"
 #include "cocos_pathdata.h"
+#include "cocos_likedata.h"
 #include "cocos_filedata.h"
 #include "cocos_fileview.h"
 #include "cocos_tileview.h"
 #include "cocos_propfile.h"
-//#include "onity_prop2dsres.h"
-//#include "onity_prop2dsasset.h"
-//#include "onity_2dsassetdata.h"
-//#include "onity_propcontroller.h"
-//#include "onity_propparticle.h"
-#include "cocos_proppath.h"
-#include "cocos_propfile.h"
 #include "cocos_propleaf.h"
-//#include "onity_propactor.h"
-//#include "onity_propjsones.h"
-//#include "onity_propcourse.h"
-//#include "onity_propjsonestemp.h"
-//#include "onity_jsonestempdata.h"
+#include "cocos_proppath.h"
+#include "cocos_proplike.h"
+#include "cocos_propatlas.h"
+#include "cocos_propframe.h"
+#include "cocos_propparticle.h"
+#include "cocos_proptexture.h"
+#include "cocos_propmaterial.h"
+#include "cocos_propvertshader.h"
+#include "cocos_propfragshader.h"
+#include "cocos_propttf.h"
+#include "cocos_propfnt.h"
+#include "cocos_framedata.h"
 #include "cocos_resource.h"
 #include "cocos_renderview.h"
-//#include "onity_animator.h"
-//#include "cocos_timeline.h"
-//#include "cocos_hierarchy.h"
+#include "cocos_mainform.h"
 #include "cocos_project.h"
 
 xui_implement_rtti(cocos_project, xui_dockpage);
@@ -62,6 +50,8 @@ xui_implement_rtti(cocos_project, xui_dockpage);
 */
 xui_create_explain(cocos_project)( void )
 : xui_dockpage(xui_vector<s32>(300), AREALIMIT_T|AREALIMIT_B, 200, DOCKSTYLE_B)
+, m_root(NULL)
+, m_like(NULL)
 , m_curridx(0)
 {
 	ini_namectrl(cocos_resource::icon_project, L"Project");
@@ -69,13 +59,11 @@ xui_create_explain(cocos_project)( void )
 	xui_menu* menu1	= xui_menu::create(80);
 	m_folder		= menu1->add_item(cocos_resource::icon_folder,	 L"Folder");
 	menu1->add_separate();
-	//m_controller	= menu1->add_item(onity_resource::icon_animator, L"Animation Controller");
 	m_particle		= menu1->add_item(cocos_resource::icon_particle, L"Particle");
-	//m_course		= menu1->add_item(onity_resource::icon_scene,	 L"Scene");
+	m_material		= menu1->add_item(cocos_resource::icon_animator, L"Material");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_folderclick);
-	//xui_method_ptrcall(m_controller,xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_controllerclick);
 	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_particleclick);
-	//xui_method_ptrcall(m_course,	xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_courseclick);
+	xui_method_ptrcall(m_material,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_materialclick);
 	m_timer			= xui_timermgr::get_ins()->add_timer(this, 1.0f, NULL);
 	xui_method_ptrcall(m_timer,		xm_tick				) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_timertick);
 	m_timer_save	= xui_timermgr::get_ins()->add_timer(this, 30.f, NULL);
@@ -161,6 +149,15 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_paste,		set_iconalign		)(IMAGE_C);
 	xui_method_ptrcall(m_paste,		xm_buttonclick		) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_linetoolclick);
 
+	m_favorite		= new xui_toggle(xui_vector<s32>(20), TOGGLE_BUTTON);
+	xui_method_ptrcall(m_favorite,	ini_drawer			)(cocos_resource::icon_favorite);
+	xui_method_ptrcall(m_favorite,	ini_toggle			)(false);
+	xui_method_ptrcall(m_favorite,	set_drawcolor		)(true);
+	xui_method_ptrcall(m_favorite,	set_enable			)(false);
+	xui_method_ptrcall(m_favorite,	set_corner			)(3);
+	xui_method_ptrcall(m_favorite,	set_iconalign		)(IMAGE_C);
+	xui_method_ptrcall(m_favorite,	xm_toggleclick		) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_linetoolclick);
+
 	xui_linebox* linebox1 = new xui_linebox(xui_vector<s32>(20));
 	xui_method_ptrcall(linebox1,	set_corner			)(3);
 	xui_method_ptrcall(linebox1,	add_linectrl		)(m_backpath);
@@ -184,6 +181,8 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_linetool,	add_item			)(linebox2);
 	xui_method_ptrcall(m_linetool,	add_separate		)();
 	xui_method_ptrcall(m_linetool,	add_item			)(linebox3);
+	xui_method_ptrcall(m_linetool,	add_separate		)();
+	xui_method_ptrcall(m_linetool,	add_item			)(m_favorite);
 
 	m_filter	= new xui_dropbox(xui_vector<s32>(80, 20));
 	xui_method_ptrcall(m_filter,	xm_selection		) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_filterselection);
@@ -195,14 +194,14 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_filter,	set_readonly		)(true);
 	xui_method_ptrcall(m_filter,	set_maxdrop			)(10);
 	xui_method_ptrcall(m_filter,	add_item			)(L"All");
-	xui_method_ptrcall(m_filter,	add_item			)(L"Texture");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Atlas");
-	//xui_method_ptrcall(m_filter,	add_item			)(L"Sprite");
-	//xui_method_ptrcall(m_filter,	add_item			)(L"Action");
-	//xui_method_ptrcall(m_filter,	add_item			)(L"Course");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Texture");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Particle");
-	//xui_method_ptrcall(m_filter,	add_item			)(L"Controller");
-	//xui_method_ptrcall(m_filter,	add_item			)(L"Json");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Material");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Vert Shader");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Frag Shader");
+	xui_method_ptrcall(m_filter,	add_item			)(L"TTF");
+	xui_method_ptrcall(m_filter,	add_item			)(L"FNT");
 	xui_method_ptrcall(m_filter,	ini_dropbox			)(0);
 
 	m_head		= new xui_panel(xui_vector<s32>(28));
@@ -218,27 +217,13 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_head,		add_child			)(m_linetool);
 
 	xui_menu* menu2	= xui_menu::create(80);
+	m_pathload		= menu2->add_item(NULL, L"Refresh");
 	m_showfind		= menu2->add_item(NULL, L"Show in Finder");
-	//m_loadtype		= menu2->add_item(NULL, L"Modify All LoadType");
-	//m_freetype		= menu2->add_item(NULL, L"Modify All FreeType");
-	//menu2->add_separate();
+	menu2->add_separate();
 	m_property		= menu2->add_item(NULL, L"Property");
-	//xui_menu* menu3 = xui_menu::create(80);
-	//m_auto			= menu3->add_item(NULL, L"Auto");
-	//m_never			= menu3->add_item(NULL, L"Never");
-	//m_immediate		= menu3->add_item(NULL, L"Immediate");
-	//xui_menu* menu4 = xui_menu::create(80);
-	//m_on			= menu4->add_item(NULL, L"On");
-	//m_off			= menu4->add_item(NULL, L"Off");
-	//xui_method_ptrcall(m_loadtype,	set_submenu			)(menu3);
-	//xui_method_ptrcall(m_freetype,	set_submenu			)(menu4);
+	xui_method_ptrcall(m_pathload,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_pathloadclick);
 	xui_method_ptrcall(m_showfind,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_showfindclick);
 	xui_method_ptrcall(m_property,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_propertyclick);
-	//xui_method_ptrcall(m_auto,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
-	//xui_method_ptrcall(m_never,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
-	//xui_method_ptrcall(m_immediate, xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_freetypeclick);
-	//xui_method_ptrcall(m_on,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_loadtypeclick);
-	//xui_method_ptrcall(m_off,		xm_click			) += new xui_method_member<xui_method_args,		onity_project>(this, &onity_project::on_loadtypeclick);
 
 	std::vector<xui_treecolumn> columninfo;
 	columninfo.push_back(xui_treecolumn(TREECOLUMN_MAIN, 200, L"name", NULL, 0, true));
@@ -308,6 +293,8 @@ xui_create_explain(cocos_project)( void )
 */
 xui_delete_explain(cocos_project)( void )
 {
+	delete m_root;
+	delete m_like;
 	xui_timermgr::get_ins()->del_timer(m_timer);
 	xui_timermgr::get_ins()->del_timer(m_timer_save);
 }
@@ -317,29 +304,69 @@ xui_delete_explain(cocos_project)( void )
 */
 xui_method_explain(cocos_project, ini_pathtree,				void			)( void )
 {
-	std::vector<std::wstring> pathvec = xui_global::get_path(L"");
-	for (u32 i = 0; i < pathvec.size(); ++i)
-	{
-		std::wstring  full = pathvec[i];
-		xui_treenode* node = m_pathview->add_upmostnode(i, new cocos_pathdata(full, NULL, NULL));
-		cocos_pathdata::new_leafnode(node);
-	}
+	m_root = new cocos_proppath(cocos_resource::icon_folder, L"");
+	xui_treenode* node = m_pathview->add_upmostnode(0, new cocos_pathdata(cocos_resource::icon_folder, L"", m_root));
+	m_root->ini_treeprop(node);
+	m_like = new cocos_proplike;
+	m_pathview->add_upmostnode(0, new cocos_likedata(m_like));
 }
-xui_method_explain(cocos_project, get_pathfile,				void			)( const std::wstring& suff, xui_proproot_vec& filevec )
+xui_method_explain(cocos_project, get_pathfile,				void			)( s32 type, xui_proproot_vec& filevec )
 {
 	std::vector<xui_treenode*> nodevec = m_pathview->get_entirenode();
 	for (u32 i = 0; i < nodevec.size(); ++i)
 	{
 		cocos_pathdata* pathdata = (cocos_pathdata*)nodevec[i]->get_linkdata();
 		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+		if (proppath == m_like)
+			continue;
+
 		const xui_proproot_vec& vec = proppath->get_fileprop();
 		for (xui_proproot_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
 		{
 			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(*itor);
-			if (suff.length() == 0 || cocos_filedata::get_suff(propfile->get_fullname()) == suff)
-				filevec.push_back((*itor));
+			if (type == FILTER_ALL)
+				filevec.push_back(propfile);
+			if (type == FILTER_ATLAS		&& dynamic_cast<cocos_propatlas*		>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_TEXTURE		&& dynamic_cast<cocos_proptexture*		>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_PARTICLE		&& dynamic_cast<cocos_propparticle*		>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_MATERIAL		&& dynamic_cast<cocos_propmaterial*		>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_VERTSHADER	&& dynamic_cast<cocos_propvertshader*	>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_FRAGSHADER	&& dynamic_cast<cocos_propfragshader*	>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_TTF			&& dynamic_cast<cocos_propttf*			>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_FNT			&& dynamic_cast<cocos_propfnt*			>(propfile))
+				filevec.push_back(propfile);
 		}
 	}
+}
+xui_method_explain(cocos_project, get_pathfile,				cocos_propfile*	)( const std::wstring& path, const std::wstring& file )
+{
+	std::vector<xui_treenode*> pathvec = m_pathview->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		cocos_pathdata* pathdata = (cocos_pathdata*)pathvec[i]->get_linkdata();
+		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+
+		if (proppath->get_fullname() != path)
+			continue;
+
+		const xui_proproot_vec& vec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
+		{
+			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(*itor);
+			if (cocos_filedata::get_file(propfile->get_fullname()) == file)
+				return propfile;
+		}
+	}
+
+	return NULL;
 }
 xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, u32 id )
 {
@@ -360,14 +387,15 @@ xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring&
 		cocos_pathdata* pathdata = (cocos_pathdata*)pathvec[i]->get_linkdata();
 		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
 
-		if (proppath->get_fullname() != path)
+		if (proppath == m_like ||
+			proppath->get_fullname() != path)
 			continue;
 
 		const xui_proproot_vec& vec = proppath->get_fileprop();
 		for (xui_proproot_vec::const_iterator itor = vec.begin(); itor != vec.end(); ++itor)
 		{
 			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(*itor);
-			if (cocos_filedata::get_safe(propfile->get_fullname()) == file)
+			if (cocos_filedata::get_file(propfile->get_fullname()) == file)
 			{
 				viewpath = proppath;
 				viewfile = propfile;
@@ -407,7 +435,7 @@ xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring&
 					}
 					else
 					{
-						//onity_prop2dsasset* propleaf = dynamic_cast<onity_prop2dsasset*>(treedata->get_prop());
+						//cocos_prop2dsasset* propleaf = dynamic_cast<cocos_prop2dsasset*>(treedata->get_prop());
 						//if (propleaf)
 						//{
 						//	std::wstringstream text;
@@ -443,16 +471,17 @@ xui_method_explain(cocos_project, get_pathview,				xui_treeview*	)( void )
 {
 	return m_pathview;
 }
+xui_method_explain(cocos_project, get_fileview,				cocos_fileview*	)( void )
+{
+	return m_fileview;
+}
 
 /*
 //notify
 */
 xui_method_explain(cocos_project, ntf_load,					void			)( cocos_propfile* propfile )
 {
-	std::vector<std::wstring> itemvec = xui_global::get_split(m_search->get_text(), L';');
-	std::wstring			  filekey = xui_global::get_upper((itemvec.size() > 0) ? itemvec[0] : L"");
-	std::wstring			  leafkey = xui_global::get_upper((itemvec.size() > 1) ? itemvec[1] : L"");
-
+	std::wstring  keytext  = xui_global::get_upper(m_search->get_text());
 	xui_treeview* lineview = m_fileview->get_lineview();
 	const std::vector<xui_treenode*>& nodes = lineview->get_upmostnodearray();
 	for (u32 i = 0; i < nodes.size(); ++i)
@@ -463,39 +492,21 @@ xui_method_explain(cocos_project, ntf_load,					void			)( cocos_propfile* propfi
 		{
 			node->del_leafnodeall();
 
-			//onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
-			//if (prop2dsres)
-			//{
-			//	std::vector<xui_proproot*> subprop = prop2dsres->get_subprop();
-			//	for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
-			//	{
-			//		onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(subprop[isub]);
-			//		NP2DSAsset* asset = propasset->get_asset();
-			//		std::wstringstream keytext;
-			//		keytext << asset->GetKey();
-			//		if (leafkey.length() == 0 || leafkey == keytext.str() || xui_global::get_upper(xui_global::ascii_to_unicode(asset->GetName())).find(leafkey) != -1)
-			//		{
-			//			node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
-			//			++isubindex;
-			//		}
-			//	}
-			//}
-
-			//onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
-			//if (propjsones)
-			//{
-			//	std::vector<xui_proproot*> subprop = propjsones->get_subprop();
-			//	for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
-			//	{
-			//		onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
-			//		Omiga::EntityTemplate* temp = proptemp->get_template();
-			//		if (leafkey.length() == 0 || xui_global::get_upper(xui_global::ascii_to_unicode(temp->GetName())).find(leafkey) != -1)
-			//		{
-			//			node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
-			//			++isubindex;
-			//		}
-			//	}
-			//}
+			cocos_propatlas* propatlas = dynamic_cast<cocos_propatlas*>(propfile);
+			if (propatlas)
+			{
+				std::vector<xui_proproot*> subprop = propatlas->get_subprop();
+				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
+				{
+					cocos_propframe* propframe = dynamic_cast<cocos_propframe*>(subprop[isub]);
+					std::wstring framename = xui_global::ascii_to_unicode(propframe->get_framename());
+					if (keytext.length() == 0 || xui_global::get_upper(framename).find(keytext) != -1)
+					{
+						node->add_leafnode(isubindex, new cocos_framedata(propframe->get_frameicon(), propframe));
+						++isubindex;
+					}
+				}
+			}
 		}
 	}
 
@@ -556,14 +567,15 @@ xui_method_explain(cocos_project, ntf_modify,				void			)( const std::wstring& p
 		xui_treenode*	pathnode = pathvec[i];
 		cocos_pathdata* pathdata = (cocos_pathdata*)pathnode->get_linkdata();
 		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
-		if (proppath->get_fullname() != path)
+		if (proppath == m_like ||
+			proppath->get_fullname() != path)
 			continue;
 
 		const xui_proproot_vec& filevec = proppath->get_fileprop();
 		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
 		{
 			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(*itor);
-			if (cocos_filedata::get_safe(propfile->get_fullname()) == file)
+			if (cocos_filedata::get_file(propfile->get_fullname()) == file)
 			{
 				propfile->ntf_modify();
 				break;
@@ -583,7 +595,7 @@ xui_method_explain(cocos_project, on_timertick,				void			)( xui_component* send
 		std::wstring path = cocos_filedata::get_path(vec[i].srcpath);
 		std::wstring file = cocos_filedata::get_file(vec[i].srcpath);
 		path = path.substr(0, path.length()-1);
-		file = cocos_filedata::get_safe(file);
+		//file = cocos_filedata::get_safe(file);
 		ntf_modify(path, file);
 	}
 
@@ -597,6 +609,8 @@ xui_method_explain(cocos_project, on_timersavetick,			void			)( xui_component* s
 		xui_treenode*	pathnode = pathvec[i];
 		cocos_pathdata* pathdata = (cocos_pathdata*)pathnode->get_linkdata();
 		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+		if (proppath == m_like)
+			continue;
 
 		const xui_proproot_vec& filevec = proppath->get_fileprop();
 		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
@@ -705,6 +719,7 @@ xui_method_explain(cocos_project, on_pathviewselection,		void			)( xui_component
 	xui_method_ptrcall(m_clear,	 set_visible)(false);
 	refresh_fileview();
 	refresh_pathpane();
+	refresh_pathmenu();
 
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
@@ -785,55 +800,43 @@ xui_method_explain(cocos_project, on_fileviewdoubleclk,		void			)( xui_component
 				cocos_propfile* prop = dynamic_cast<cocos_propfile*>(data->get_prop());
 				if (file)
 				{
-					std::wstring suff = file->get_suff();
+					//std::wstring suff = file->get_suff();
 					//if (suff == L".controller")
 					//{
-					//	onity_animator*  page = onity_mainform::get_ptr()->get_animator();
-					//	onity_mainform::get_ptr()->set_pageshow(page);
-					//	page->set_editprop((onity_propcontroller*)file->get_prop());
+					//	cocos_animator*  page = cocos_mainform::get_ptr()->get_animator();
+					//	cocos_mainform::get_ptr()->set_pageshow(page);
+					//	page->set_editprop((cocos_propcontroller*)file->get_prop());
 					//}
 					//else
 					//if (suff == L".npCourse")
 					//{
-					//	onity_hierarchy* page = onity_mainform::get_ptr()->get_hierarchy();
-					//	onity_mainform::get_ptr()->set_pageshow(page);
-					//	page->set_editprop((onity_propcourse*    )file->get_prop());
+					//	cocos_hierarchy* page = cocos_mainform::get_ptr()->get_hierarchy();
+					//	cocos_mainform::get_ptr()->set_pageshow(page);
+					//	page->set_editprop((cocos_propcourse*    )file->get_prop());
 					//}
 					//else
-					//if (suff == L".npModule" ||
-					//	suff == L".npSprite" ||
-					//	suff == L".npAction" ||
-					//	suff == L".json")
-					//{
-					//	m_fileview->get_lineview()->non_selectednode();
-					//	m_fileview->get_lineview()->set_allowmulti(true);
-					//	m_fileview->get_tileview()->set_viewfile(node, xui_global::get_upper(m_search->get_text()));
+					cocos_propatlas* propatlas = dynamic_cast<cocos_propatlas*>(prop);
+					if (propatlas)
+					{
+						m_fileview->get_lineview()->non_selectednode();
+						m_fileview->get_lineview()->set_allowmulti(true);
+						m_fileview->get_tileview()->set_viewfile(node, xui_global::get_upper(m_search->get_text()));
 
-					//	if (m_search->get_text().length() == 0)
-					//	{
-					//		xui_treenode*   pathnode = m_pathview->get_selectednode().front();
-					//		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-					//		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-					//		proppath->set_viewfile(prop);
-					//		refresh_linetool();
-					//		m_sizeroll->set_value(proppath->get_fileroll());
-					//	}
-					//	else
-					//	{
-					//		if (m_sizeroll->get_value() == 0)
-					//			m_sizeroll->set_value(10);
-					//	}
-					//}
-				}
-				else
-				{
-					//onity_propactor* prop = dynamic_cast<onity_propactor*>(data->get_prop());
-					//if (prop)
-					//{
-					//	onity_timeline* timeline = onity_mainform::get_ptr()->get_timeline();
-					//	onity_mainform::get_ptr()->set_pageshow(timeline);
-					//	timeline->set_editprop(prop);
-					//}
+						if (m_search->get_text().length() == 0)
+						{
+							xui_treenode*   pathnode = m_pathview->get_selectednode().front();
+							cocos_pathdata* pathdata = (cocos_pathdata*)pathnode->get_linkdata();
+							cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+							proppath->set_viewfile(prop);
+							refresh_linetool();
+							m_sizeroll->set_value(proppath->get_fileroll());
+						}
+						else
+						{
+							if (m_sizeroll->get_value() == 0)
+								m_sizeroll->set_value(10);
+						}
+					}
 				}
 			}
 		}
@@ -841,13 +844,13 @@ xui_method_explain(cocos_project, on_fileviewdoubleclk,		void			)( xui_component
 }
 xui_method_explain(cocos_project, on_fileviewassetdrag,		void			)( xui_component* sender, xui_method_dragdrop& args )
 {
-	std::string dragtype;
-	void*       dragdata = NULL;
+	static std::vector<void*>  datavec; datavec.clear();
 
+	std::string typestr;
 	std::vector<xui_treenode*> nodevec = m_fileview->get_lineview()->get_selectednode();
-	if (nodevec.size() > 0)
+	for (u32 i = 0; i < nodevec.size(); ++i)
 	{
-		xui_treenode*   node = nodevec.front();
+		xui_treenode*   node = nodevec[i];
 		cocos_treedata* data = (cocos_treedata*)node->get_linkdata();
 		xui_proproot*   prop = data->get_prop();
 
@@ -855,22 +858,37 @@ xui_method_explain(cocos_project, on_fileviewassetdrag,		void			)( xui_component
 		cocos_propleaf* propleaf = dynamic_cast<cocos_propleaf*>(prop);
 		if (propfile)
 		{
-			dragtype  = propfile->get_dragtype();
-			dragdata  = propfile->get_dragdata();
+			if (typestr.length() > 0 && typestr != propfile->get_dragtype())
+				break;
+
+			typestr = propfile->get_dragtype();
+			datavec.push_back(propfile->get_dragdata());
 		}
 		if (propleaf)
 		{
-			dragtype  = propleaf->get_dragtype();
-			dragdata  = propleaf->get_dragdata();
+			if (typestr.length() > 0 && typestr != propleaf->get_dragtype())
+				break;
+
+			typestr = propleaf->get_dragtype();
+			datavec.push_back(propleaf->get_dragdata());
 		}
 	}
 
-	if (dragdata != NULL && dragtype.length() > 0)
+	if (datavec.size() > 0)
 	{
 		args.drag  = sender;
-		args.type  = dragtype;
-		args.data  = dragdata;
 		args.allow = true;
+
+		if (datavec.size() == 1)
+		{
+			args.type = typestr;
+			args.data = datavec.front();
+		}
+		else
+		{
+			args.type = typestr + "Vector";
+			args.data = &datavec;
+		}
 	}
 }
 xui_method_explain(cocos_project, on_folderclick,			void			)( xui_component* sender, xui_method_args&     args )
@@ -878,97 +896,49 @@ xui_method_explain(cocos_project, on_folderclick,			void			)( xui_component* sen
 	m_search->set_text(L"");
 
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-	std::wstring path = xui_global::get_workpath();
 	if (nodevec.size() > 0)
 	{
-		xui_treenode*   node = nodevec.front();
-		cocos_pathdata* data = (cocos_pathdata*)node->get_linkdata();
-		path = data->get_full();
-	}
+		xui_treenode*   rootnode = nodevec.front();
+		cocos_pathdata* rootdata = (cocos_pathdata*)rootnode->get_linkdata();
+		cocos_proppath* rootprop = dynamic_cast<cocos_proppath*>(rootdata->get_prop());
+		if (rootprop == m_like)
+			return;
 
-	std::wstringstream temp;
-	temp << path.c_str();
-	temp << L"/New Folder";
-	if (xui_global::has_path(temp.str()))
-	{
-		s32 number  = 0;
-		while (true)
+		std::wstring path = rootdata->get_full();
+		std::wstringstream temp;
+		temp <<  path.c_str();
+		temp << (path.length() > 0 ? L"/New Folder" : L"New Folder");
+		if (xui_global::has_path(temp.str()))
 		{
-			temp.str(L"");
-			temp << path.c_str();
-			temp << L"/New Folder ";
-			temp << number;
-			if (xui_global::has_path(temp.str()) == false)
-				break;
+			s32 number = 0;
+			while (true)
+			{
+				temp.str(L"");
+				temp <<  path.c_str();
+				temp << (path.length() > 0 ? L"/New Folder" : L"New Folder");
+				temp << number;
+				if (xui_global::has_path(temp.str()) == false)
+					break;
 
-			++number;
+				++number;
+			}
 		}
-	}
 
-	if (xui_global::add_path(temp.str()) == false)
-		return;
+		if (xui_global::add_path(temp.str()) == false)
+			return;
 
-	cocos_pathdata* pathdata = new cocos_pathdata(temp.str(), NULL, NULL);
-	if (nodevec.size() > 0)
-	{
-		xui_treeview* lineview = m_fileview->get_lineview();
-		xui_treenode* rootnode = nodevec.front();
-		xui_treenode* pathnode = rootnode->add_leafnode(0, pathdata);
-		xui_treenode* linenode = lineview->add_upmostnode(0, new cocos_pathdata(pathdata->get_full(), pathdata->get_prop(), pathnode));
+		cocos_proppath* proppath = new cocos_proppath(cocos_resource::icon_folder, temp.str());
+		xui_treenode*	pathnode = rootnode->add_leafnode(0, new cocos_pathdata(cocos_resource::icon_folder, proppath->get_fullname(), proppath));
+		xui_treeview*	lineview = m_fileview->get_lineview();
+		xui_treenode*	linenode = lineview->add_upmostnode(0, new cocos_pathdata(cocos_resource::icon_folder, proppath->get_fullname(), proppath));
+		rootprop->add_pathprop(proppath);
 		linenode->set_data(pathnode);
 		rootnode->set_expanded(true);
 
 		lineview->refresh();
 		linenode->set_edittext(0);
 	}
-	else
-	{
-		xui_treenode* pathnode = m_pathview->add_upmostnode(0, pathdata);
-		m_pathview->refresh();
-		pathnode->set_edittext(0);
-	}
 }
-//xui_method_explain(onity_project, on_controllerclick,		void			)( xui_component* sender, xui_method_args&	   args )
-//{
-//	m_search->set_text(L"");
-//
-//	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-//	if (nodevec.size() > 0)
-//	{
-//		xui_treenode*   pathnode = nodevec.front();
-//		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-//		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-//
-//		std::wstringstream temp;
-//		temp << pathdata->get_full().c_str();
-//		temp << L"/New Animation State.controller";
-//		if (xui_global::has_file(temp.str()))
-//		{
-//			s32 number  = 0;
-//			while (true)
-//			{
-//				temp.str(L"");
-//				temp << pathdata->get_full().c_str();
-//				temp << L"/New Animation Controller ";
-//				temp << number;
-//				temp << ".controller";
-//				if (xui_global::has_file(temp.str()) == false)
-//					break;
-//
-//				++number;
-//			}
-//		}
-//
-//		onity_propcontroller* propfile = new onity_propcontroller(temp.str());
-//		xui_method_ptrcall(proppath, add_fileprop)(propfile);
-//		xui_method_ptrcall(propfile, save		 )();
-//
-//		xui_treeview* lineview = m_fileview->get_lineview();
-//		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
-//		lineview->refresh();
-//		linenode->set_edittext(0);
-//	}
-//}
 xui_method_explain(cocos_project, on_particleclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	m_search->set_text(L"");
@@ -976,23 +946,26 @@ xui_method_explain(cocos_project, on_particleclick,			void			)( xui_component* s
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
 	{
-		xui_treenode*   pathnode = nodevec.front();
-		cocos_pathdata* pathdata = (cocos_pathdata*)pathnode->get_linkdata();
-		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+		xui_treenode*   rootnode = nodevec.front();
+		cocos_pathdata* rootdata = (cocos_pathdata*)rootnode->get_linkdata();
+		cocos_proppath* rootprop = dynamic_cast<cocos_proppath*>(rootdata->get_prop());
+		if (rootprop == m_like)
+			return;
 
+		std::wstring path = rootdata->get_full();
 		std::wstringstream temp;
-		temp << pathdata->get_full().c_str();
-		temp << L"/New Particle.particle";
+		temp <<  path.c_str();
+		temp << (path.length() > 0 ? L"/New Particle.plist" : L"New Particle.plist");
 		if (xui_global::has_file(temp.str()))
 		{
 			s32 number  = 0;
 			while (true)
 			{
 				temp.str(L"");
-				temp << pathdata->get_full().c_str();
-				temp << L"/New Particle ";
+				temp <<  path.c_str();
+				temp << (path.length() > 0 ? L"/New Particle" : L"New Particle");
 				temp << number;
-				temp << ".particle";
+				temp << ".plist";
 				if (xui_global::has_file(temp.str()) == false)
 					break;
 
@@ -1000,57 +973,60 @@ xui_method_explain(cocos_project, on_particleclick,			void			)( xui_component* s
 			}
 		}
 
-		//onity_propparticle* propfile = new onity_propparticle(temp.str());
-		//xui_method_ptrcall(proppath, add_fileprop)(propfile);
-		//xui_method_ptrcall(propfile, save		 )();
+		cocos_propparticle* propfile = new cocos_propparticle(temp.str());
+		xui_method_ptrcall(rootprop, add_fileprop)(propfile);
+		xui_method_ptrcall(propfile, save		 )();
 
-		//xui_treeview* lineview = m_fileview->get_lineview();
-		//xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
-		//lineview->refresh();
-		//linenode->set_edittext(0);
+		xui_treeview* lineview = m_fileview->get_lineview();
+		xui_treenode* linenode = lineview->add_upmostnode(0, new cocos_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
+		lineview->refresh();
+		linenode->set_edittext(0);
 	}
 }
-//xui_method_explain(onity_project, on_courseclick,			void			)( xui_component* sender, xui_method_args&	   args )
-//{
-//	m_search->set_text(L"");
-//
-//	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
-//	if (nodevec.size() > 0)
-//	{
-//		xui_treenode*   pathnode = nodevec.front();
-//		onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-//		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-//
-//		std::wstringstream temp;
-//		temp << pathdata->get_full().c_str();
-//		temp << L"/New Level.npCourse";
-//		if (xui_global::has_file(temp.str()))
-//		{
-//			s32 number  = 0;
-//			while (true)
-//			{
-//				temp.str(L"");
-//				temp << pathdata->get_full().c_str();
-//				temp << L"/New Level";
-//				temp << number;
-//				temp << ".npCourse";
-//				if (xui_global::has_file(temp.str()) == false)
-//					break;
-//
-//				++number;
-//			}
-//		}
-//
-//		onity_propcourse* propfile = new onity_propcourse(temp.str());
-//		xui_method_ptrcall(proppath, add_fileprop)(propfile);
-//		xui_method_ptrcall(propfile, save		 )();
-//
-//		xui_treeview* lineview = m_fileview->get_lineview();
-//		xui_treenode* linenode = lineview->add_upmostnode(0, new onity_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
-//		lineview->refresh();
-//		linenode->set_edittext(0);
-//	}
-//}
+xui_method_explain(cocos_project, on_materialclick,			void			)( xui_component* sender, xui_method_args&	   args )
+{
+	m_search->set_text(L"");
+
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*   rootnode = nodevec.front();
+		cocos_pathdata* rootdata = (cocos_pathdata*)rootnode->get_linkdata();
+		cocos_proppath* rootprop = dynamic_cast<cocos_proppath*>(rootdata->get_prop());
+		if (rootprop == m_like)
+			return;
+
+		std::wstring path = rootdata->get_full();
+		std::wstringstream temp;
+		temp <<  path.c_str();
+		temp << (path.length() > 0 ? L"/New Material.mat" : L"New Material.mat");
+		if (xui_global::has_file(temp.str()))
+		{
+			s32 number = 0;
+			while (true)
+			{
+				temp.str(L"");
+				temp <<  path.c_str();
+				temp << (path.length() > 0 ? L"/New Material" : L"New Material");
+				temp << number;
+				temp << ".mat";
+				if (xui_global::has_file(temp.str()) == false)
+					break;
+
+				++number;
+			}
+		}
+
+		cocos_propmaterial* propfile = new cocos_propmaterial(temp.str());
+		xui_method_ptrcall(rootprop, add_fileprop)(propfile);
+		xui_method_ptrcall(propfile, save)();
+
+		xui_treeview* lineview = m_fileview->get_lineview();
+		xui_treenode* linenode = lineview->add_upmostnode(0, new cocos_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
+		lineview->refresh();
+		linenode->set_edittext(0);
+	}
+}
 xui_method_explain(cocos_project, on_pathitemclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode* pathnode = (xui_treenode*)sender->get_data();
@@ -1100,7 +1076,7 @@ xui_method_explain(cocos_project, on_pathtoggleclick,		void			)( xui_component* 
 				xui_menuitem*	item = vec[i];
 				xui_treenode*   node = (xui_treenode*)vec[i]->get_data();
 				cocos_pathdata* data = (cocos_pathdata*)node->get_linkdata();
-				item->set_text(data->get_text(0));
+				xui_method_ptrcall(item, set_text)(data->get_text(0));
 			}
 
 			menu->refresh();
@@ -1135,14 +1111,26 @@ xui_method_explain(cocos_project, on_sizerollscroll,		void			)( xui_component* s
 	}
 }
 
+xui_method_explain(cocos_project, on_pathloadclick,			void			)( xui_component* sender, xui_method_args&	   args )
+{
+	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
+	if (vec.size() > 0)
+	{
+		xui_treenode*	node = vec.front();
+		cocos_pathdata* data = (cocos_pathdata*)node->get_linkdata();
+		cocos_proppath* prop = dynamic_cast<cocos_proppath*>(data->get_prop());
+		prop->refresh();
+		refresh_fileview();
+	}
+}
 xui_method_explain(cocos_project, on_showfindclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
 	if (vec.size() > 0)
 	{
-		cocos_pathdata* pathdata = (cocos_pathdata*)vec.front()->get_linkdata();
-		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
-		xui_global::set_showfind(proppath->get_fullname());
+		cocos_pathdata* data = (cocos_pathdata*)vec.front()->get_linkdata();
+		cocos_proppath* prop = dynamic_cast<cocos_proppath*>(data->get_prop());
+		xui_global::set_showfind(prop->get_fullname());
 	}
 }
 xui_method_explain(cocos_project, on_propertyclick,			void			)( xui_component* sender, xui_method_args&	   args )
@@ -1150,47 +1138,13 @@ xui_method_explain(cocos_project, on_propertyclick,			void			)( xui_component* s
 	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
 	if (vec.size() > 0)
 	{
-		cocos_pathdata* pathdata = (cocos_pathdata*)vec.front()->get_linkdata();
-		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
+		cocos_pathdata* data = (cocos_pathdata*)vec.front()->get_linkdata();
+		cocos_proppath* prop = dynamic_cast<cocos_proppath*>(data->get_prop());
 
 		cocos_inspector* inspector = cocos_mainform::get_ptr()->get_inspector();
-		inspector->set_proproot(proppath);
+		inspector->set_proproot(prop);
 	}
 }
-//xui_method_explain(onity_project, on_freetypeclick,			void			)( xui_component* sender, xui_method_args&	   args )
-//{
-//	npu32 style = 0;
-//	if		(sender == m_auto)		style = FS_AUTO;
-//	else if (sender == m_never)		style = FS_NEVER;
-//	else if (sender == m_immediate) style = FS_IMMEDIATE;
-//	else
-//	{}
-//
-//	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
-//	for (u32 i = 0; i < vec.size(); ++i)
-//	{
-//		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
-//		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-//		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_fullname()) + "/";
-//		set_freetype(META_MODULE, pathname, style);
-//		set_freetype(META_SPRITE, pathname, style);
-//		set_freetype(META_ACTION, pathname, style);
-//	}
-//}
-//xui_method_explain(onity_project, on_loadtypeclick,			void			)( xui_component* sender, xui_method_args&	   args )
-//{
-//	bool flag = (sender == m_on);
-//	std::vector<xui_treenode*> vec = m_pathview->get_selectednode();
-//	for (u32 i = 0; i < vec.size(); ++i)
-//	{
-//		onity_pathdata* pathdata = (onity_pathdata*)vec[i]->get_linkdata();
-//		onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
-//		std::string     pathname = xui_global::unicode_to_ascii(proppath->get_fullname()) + "/";
-//		set_loadtype(META_MODULE, pathname, flag);
-//		set_loadtype(META_SPRITE, pathname, flag);
-//		set_loadtype(META_ACTION, pathname, flag);
-//	}
-//}
 xui_method_explain(cocos_project, on_linetoolclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
 	xui_treenode*   pathnode = m_histroy[m_curridx];
@@ -1239,6 +1193,35 @@ xui_method_explain(cocos_project, on_linetoolclick,			void			)( xui_component* s
 		pst_propleaf();
 	}
 	else
+	if (sender == m_favorite)
+	{
+		cocos_treedata* filedata = NULL;
+		if (viewfile)
+		{
+			filedata = (cocos_treedata*)viewfile->get_linkdata();
+		}
+		else
+		if (selectednode.size() > 0)
+		{
+			xui_treenode* node = selectednode.front();
+			if (node->get_data() == NULL)
+			{
+				filedata = (cocos_treedata*)node->get_linkdata();
+			}
+		}
+
+		if (filedata)
+		{
+			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(filedata->get_prop());
+			if (m_favorite->was_push())
+				m_like->add_fileprop(propfile);
+			else
+				m_like->del_fileprop(propfile);
+
+			m_like->save();
+		}
+	}
+	else
 	if (sender == m_backpath && viewfile)
 	{
 		xui_treeview*   lineview = m_fileview->get_lineview();
@@ -1255,6 +1238,7 @@ xui_method_explain(cocos_project, on_linetoolclick,			void			)( xui_component* s
 	{
 		xui_treeview*   lineview = m_fileview->get_lineview();
 		cocos_tileview* tileview = m_fileview->get_tileview();
+
 		if (proppath->get_viewfile()->get_linkdata(lineview) == NULL)
 			return;
 
@@ -1282,6 +1266,7 @@ xui_method_explain(cocos_project, on_linetoolclick,			void			)( xui_component* s
 			xui_method_ptrcall(m_pathview, set_nodevisible	)(pathnode);
 			refresh_fileview();
 			refresh_pathpane();
+			refresh_pathmenu();
 
 			cocos_propfile* viewfile = proppath->get_viewfile();
 			if (viewfile && viewfile->get_linkdata(lineview))
@@ -1328,65 +1313,44 @@ xui_method_explain(cocos_project, refresh_fileview,			void			)( void )
 			for (u32 i = 0; i < pathvec.size(); ++i,++index)
 			{
 				cocos_pathdata* data = (cocos_pathdata*)pathvec[i]->get_linkdata();
-				xui_treenode*   node = lineview->add_upmostnode(index, new cocos_pathdata(data->get_full(), data->get_prop(), pathvec[i]));
+				xui_treenode*   node = lineview->add_upmostnode(index, new cocos_pathdata(cocos_resource::icon_folder, data->get_full(), data->get_prop()));
 				node->set_data(pathvec[i]);
 			}
 		}
 	}
 	else
 	{
-		get_pathfile(convert_filesuff(), filevec);
+		get_pathfile(m_filter->get_selectedindex(), filevec);
 	}
 
-	std::vector<std::wstring> itemvec = xui_global::get_split(m_search->get_text(), L';');
-	std::wstring			  filekey = xui_global::get_upper((itemvec.size() > 0) ? itemvec[0] : L"");
-	std::wstring			  leafkey = xui_global::get_upper((itemvec.size() > 1) ? itemvec[1] : L"");
-
+	std::wstring keytext = xui_global::get_upper(m_search->get_text());
 	for (u32 i = 0; i < filevec.size(); ++i)
 	{
-		cocos_propfile* prop = dynamic_cast<cocos_propfile*>(filevec[i]);
-		if (filekey.length() == 0 || xui_global::get_upper(cocos_filedata::get_file(prop->get_fullname())).find(filekey) != -1)
+		cocos_propfile*		prop		= dynamic_cast<cocos_propfile*>(filevec[i]);
+		std::wstring		safe		= cocos_filedata::get_safe(prop->get_fullname());
+		cocos_propatlas*	propatlas	= dynamic_cast<cocos_propatlas*>(prop);
+		bool showroot = (keytext.length() == 0 || xui_global::get_upper(safe).find(keytext) != -1);
+		bool showleaf = (keytext.length() != 0 && propatlas && propatlas->has_frame(keytext));
+		if (showroot || showleaf)
 		{
 			xui_treenode* node = lineview->add_upmostnode(index, new cocos_filedata(prop->get_fileicon(), prop->get_fullname(), prop));
-			//onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(prop);
-			//if (prop2dsres)
-			//{
-			//	if (leafkey.length() > 0)
-			//		node->set_expanded(true);
+			if (propatlas)
+			{
+				if (showleaf)
+					node->set_expanded(true);
 
-			//	std::vector<xui_proproot*> subprop = prop2dsres->get_subprop();
-			//	for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
-			//	{
-			//		onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(subprop[isub]);
-			//		NP2DSAsset* asset = propasset->get_asset();
-			//		std::wstringstream keytext;
-			//		keytext << asset->GetKey();
-			//		if (leafkey.length() == 0 || leafkey == keytext.str() || xui_global::get_upper(xui_global::ascii_to_unicode(asset->GetName())).find(leafkey) != -1)
-			//		{
-			//			node->add_leafnode(isubindex, new onity_2dsassetdata(propasset->get_resicon(), propasset));
-			//			++isubindex;
-			//		}
-			//	}
-			//}
-
-			//onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(prop);
-			//if (propjsones)
-			//{
-			//	if (leafkey.length() > 0)
-			//		node->set_expanded(true);
-
-			//	std::vector<xui_proproot*> subprop = propjsones->get_subprop();
-			//	for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
-			//	{
-			//		onity_propjsonestemp* proptemp = dynamic_cast<onity_propjsonestemp*>(subprop[isub]);
-			//		Omiga::EntityTemplate* temp = proptemp->get_template();
-			//		if (leafkey.length() == 0 || xui_global::get_upper(xui_global::ascii_to_unicode(temp->GetName())).find(leafkey) != -1)
-			//		{
-			//			node->add_leafnode(isubindex, new onity_jsonestempdata(onity_resource::icon_entity, proptemp));
-			//			++isubindex;
-			//		}
-			//	}
-			//}
+				std::vector<xui_proproot*> subprop = propatlas->get_subprop();
+				for (u32 isub = 0, isubindex = 0; isub < subprop.size(); ++isub)
+				{
+					cocos_propframe* propframe = dynamic_cast<cocos_propframe*>(subprop[isub]);
+					std::wstring framename = xui_global::ascii_to_unicode(propframe->get_framename());
+					if (showroot || xui_global::get_upper(framename).find(keytext) != -1)
+					{
+						node->add_leafnode(isubindex, new cocos_framedata(propframe->get_frameicon(), propframe));
+						++isubindex;
+					}
+				}
+			}
 
 			++index;
 		}
@@ -1476,32 +1440,45 @@ xui_method_explain(cocos_project, refresh_linetool,			void			)( void )
 
 	std::vector<xui_treenode*> selectednode = m_fileview->get_lineview()->get_selectednode();
 	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
-	cocos_filedata* filedata = viewfile == NULL ? NULL : dynamic_cast<cocos_filedata*>(viewfile->get_linkdata());
+	cocos_filedata* filedata = (viewfile == NULL) ? NULL : dynamic_cast<cocos_filedata*>(viewfile->get_linkdata());
 	xui_method_ptrcall(m_backpath,	set_enable)(backenable);
 	xui_method_ptrcall(m_forepath,	set_enable)(foreenable);
-	xui_method_ptrcall(m_add,		set_enable)(viewfile != NULL);
-	xui_method_ptrcall(m_del,		set_enable)(viewfile != NULL && selectednode.size() > 0);
-	xui_method_ptrcall(m_copy,		set_enable)(viewfile != NULL && selectednode.size() > 0);
-	xui_method_ptrcall(m_move,		set_enable)(viewfile != NULL && selectednode.size() > 0 && filedata->get_suff() != L".json");
-	xui_method_ptrcall(m_paste,		set_enable)(viewfile != NULL && m_search->get_text().length() == 0 && m_menuprop.size() > 0);
-}
-xui_method_explain(cocos_project, convert_filesuff,			std::wstring	)( void )
-{
-	u32 index = m_filter->get_selectedindex();
-	switch (index)
+	xui_method_ptrcall(m_add,		set_enable)(false && viewfile != NULL);
+	xui_method_ptrcall(m_del,		set_enable)(false && viewfile != NULL && selectednode.size() > 0);
+	xui_method_ptrcall(m_copy,		set_enable)(false && viewfile != NULL && selectednode.size() > 0);
+	xui_method_ptrcall(m_move,		set_enable)(false && viewfile != NULL && selectednode.size() > 0 && filedata->get_suff() != L".json");
+	xui_method_ptrcall(m_paste,		set_enable)(false && viewfile != NULL && m_search->get_text().length() == 0 && m_menuprop.size() > 0);
+
+	cocos_propfile* propfile = NULL;
+	if (filedata)
 	{
-	case FILTER_TEXTURE:	return L".png";
-	//case FILTER_MODULE:		return L".npModule";
-	//case FILTER_SPRITE:		return L".npSprite";
-	//case FILTER_ACTION:		return L".npAction";
-	//case FILTER_COURSE:		return L".npCourse";
-	case FILTER_PARTICLE:	return L".particle";
-	//case FILTER_CONTROLLER:	return L".controller";
-	//case FILTER_JSON:		return L".json";
+		propfile = dynamic_cast<cocos_propfile*>(filedata->get_prop());
+	}
+	else
+	if (selectednode.size() > 0)
+	{
+		xui_treenode* node = selectednode.front();
+		if (node->get_data() == NULL)
+		{
+			cocos_treedata* data = (cocos_treedata*)node->get_linkdata();
+			propfile = dynamic_cast<cocos_propfile*>(data->get_prop());
+		}
 	}
 
-	return L"";
+	xui_method_ptrcall(m_favorite,	set_enable)(propfile != NULL);
+	xui_method_ptrcall(m_favorite,	ini_toggle)(m_like->has_fileprop(propfile));
 }
+//xui_method_explain(cocos_project, convert_filesuff,			std::wstring	)( void )
+//{
+//	u32 index = m_filter->get_selectedindex();
+//	switch (index)
+//	{
+//	case FILTER_TEXTURE:	return L".png";
+//	case FILTER_PARTICLE:	return L".particle";
+//	}
+//
+//	return L"";
+//}
 xui_method_explain(cocos_project, refresh_tileview,			void			)( void )
 {
 	s32 value = m_sizeroll->get_value();
@@ -1523,73 +1500,24 @@ xui_method_explain(cocos_project, refresh_tileview,			void			)( void )
 			tileview->set_tilevisible(leafvec.front());
 	}
 }
-//xui_method_explain(onity_project, set_freetype,				void			)( u08 type, const std::string& pathname, u32 style )
-//{
-//	NP2DSAssetFileMgr* file_mgr = NULL;
-//	switch (type)
-//	{
-//	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
-//	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
-//	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
-//	}
-//
-//	for (npu32 i = 0; i < file_mgr->GetFileCount(); ++i)
-//	{
-//		std::string temppath = file_mgr->GetFilePH(i);
-//		std::string tempfile = file_mgr->GetFileFN(i);
-//		int index = temppath.find(pathname);
-//		if (index != -1)
-//		{
-//			NP2DSAssetFile*   file = NULL;
-//			switch (type)
-//			{
-//			case META_MODULE: file = NP2DSImageFileMgr::GetIns()->GetFile(i); break;
-//			case META_SPRITE: file = NP2DSFrameFileMgr::GetIns()->GetFile(i); break;
-//			case META_ACTION: file = NP2DSActorFileMgr::GetIns()->GetFile(i); break;
-//			}
-//
-//			for (npu16 index = 0; index < file->GetAssetCount(); ++index)
-//			{
-//				npu32 id = file->GetAssetID(index);
-//				NP2DSAsset* asset = file->GetAsset(id);
-//				if (asset)
-//					asset->SetFree(style);
-//			}
-//
-//			file->SaveXml(temppath+tempfile);
-//		}
-//	}
-//}
-//xui_method_explain(onity_project, set_loadtype,				void			)( u08 type, const std::string& pathname, bool flag )
-//{
-//	NP2DSAssetFileMgr* file_mgr = NULL;
-//	switch (type)
-//	{
-//	case META_MODULE:  file_mgr = NP2DSImageFileMgr::GetIns(); break;
-//	case META_SPRITE:  file_mgr = NP2DSFrameFileMgr::GetIns(); break;
-//	case META_ACTION:  file_mgr = NP2DSActorFileMgr::GetIns(); break;
-//	}
-//
-//	for (npu32 i = 0; i < file_mgr->GetFileCount(); ++i)
-//	{
-//		std::string temppath = file_mgr->GetFilePH(i);
-//		std::string tempfile = file_mgr->GetFileFN(i);
-//		int index = temppath.find(pathname);
-//		if (index != -1)
-//		{
-//			NP2DSAssetFile*   file = NULL;
-//			switch (type)
-//			{
-//			case META_MODULE: file = NP2DSImageFileMgr::GetIns()->GetFile(i); break;
-//			case META_SPRITE: file = NP2DSFrameFileMgr::GetIns()->GetFile(i); break;
-//			case META_ACTION: file = NP2DSActorFileMgr::GetIns()->GetFile(i); break;
-//			}
-//
-//			file->SetEntireLoad(flag);
-//			file->SaveXml(temppath+tempfile);
-//		}
-//	}
-//}
+xui_method_explain(cocos_project, refresh_pathmenu,			void			)( void )
+{
+	bool enable = false;
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*	node = nodevec.front();
+		cocos_treedata* data = (cocos_treedata*)node->get_linkdata();
+		cocos_proppath* prop = dynamic_cast<cocos_proppath*>(data->get_prop());
+		enable = (prop != m_like);
+	}
+
+	xui_method_ptrcall(m_folder,	set_enable)(enable);
+	xui_method_ptrcall(m_particle,	set_enable)(enable);
+	xui_method_ptrcall(m_pathload,	set_enable)(enable);
+	xui_method_ptrcall(m_showfind,	set_enable)(enable);
+	xui_method_ptrcall(m_property,	set_enable)(enable);
+}
 xui_method_explain(cocos_project, add_propleaf,				void			)( void )
 {
 	xui_treenode*   viewfile = m_fileview->get_tileview()->get_viewfile();
@@ -1598,19 +1526,19 @@ xui_method_explain(cocos_project, add_propleaf,				void			)( void )
 	xui_proproot*   propleaf = NULL;
 	xui_treedata*   linkdata = NULL;
 
-	//onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
+	//cocos_prop2dsres* prop2dsres = dynamic_cast<cocos_prop2dsres*>(propfile);
 	//if (prop2dsres)
 	//{
 	//	propleaf = prop2dsres->add_subprop();
-	//	onity_prop2dsasset* propasset = dynamic_cast<onity_prop2dsasset*>(propleaf);
-	//	linkdata = new onity_2dsassetdata(propasset->get_resicon(), propasset);
+	//	cocos_prop2dsasset* propasset = dynamic_cast<cocos_prop2dsasset*>(propleaf);
+	//	linkdata = new cocos_2dsassetdata(propasset->get_resicon(), propasset);
 	//}
 
-	//onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
+	//cocos_propjsones* propjsones = dynamic_cast<cocos_propjsones*>(propfile);
 	//if (propjsones)
 	//{
 	//	propleaf = propjsones->add_subprop();
-	//	linkdata = new onity_jsonestempdata(onity_resource::icon_entity, propleaf);
+	//	linkdata = new cocos_jsonestempdata(cocos_resource::icon_entity, propleaf);
 	//}
 
 	if (linkdata)
@@ -1630,25 +1558,25 @@ xui_method_explain(cocos_project, add_propleaf,				void			)( void )
 }
 xui_method_explain(cocos_project, del_propleaf,				void			)( const xui_proproot_vec& propvec )
 {
-	for (u32 i = 0; i < propvec.size(); ++i)
-	{
-		cocos_propleaf* propleaf = dynamic_cast<cocos_propleaf*>(propvec[i]);
-		cocos_propfile* propfile = propleaf->get_propfile();
-		xui_treedata*   linkdata = propleaf->get_linkdata(m_fileview->get_lineview());
-		xui_treedata*	filedata = propfile->get_linkdata(m_fileview->get_lineview());
-		if (filedata && linkdata)
-		{
-			filedata->get_node()->del_leafnode(linkdata->get_node());
-		}
+	//for (u32 i = 0; i < propvec.size(); ++i)
+	//{
+	//	cocos_propleaf* propleaf = dynamic_cast<cocos_propleaf*>(propvec[i]);
+	//	cocos_propfile* propfile = propleaf->get_propfile();
+	//	xui_treedata*   linkdata = propleaf->get_linkdata(m_fileview->get_lineview());
+	//	xui_treedata*	filedata = propfile->get_linkdata(m_fileview->get_lineview());
+	//	if (filedata && linkdata)
+	//	{
+	//		filedata->get_node()->del_leafnode(linkdata->get_node());
+	//	}
 
-		//onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(propfile);
-		//if (prop2dsres)
-		//	prop2dsres->del_subprop(propleaf);
+	//	cocos_prop2dsres* prop2dsres = dynamic_cast<cocos_prop2dsres*>(propfile);
+	//	if (prop2dsres)
+	//		prop2dsres->del_subprop(propleaf);
 
-		//onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(propfile);
-		//if (propjsones)
-		//	propjsones->del_subprop(propleaf);
-	}
+	//	cocos_propjsones* propjsones = dynamic_cast<cocos_propjsones*>(propfile);
+	//	if (propjsones)
+	//		propjsones->del_subprop(propleaf);
+	//}
 }
 xui_method_explain(cocos_project, pst_propleaf,				void			)( void )
 {
@@ -1662,61 +1590,60 @@ xui_method_explain(cocos_project, pst_propleaf,				void			)( void )
 	if (cocos_filedata::get_suff(dstfull) == cocos_filedata::get_suff(srcfull))
 	{
 		std::vector<cocos_treedata*> vec;
-		//onity_prop2dsres* prop2dsres = dynamic_cast<onity_prop2dsres*>(dstfile);
+		//cocos_prop2dsres* prop2dsres = dynamic_cast<cocos_prop2dsres*>(dstfile);
 		//if (prop2dsres)
 		//{
 		//	for (u32 i = 0; i < m_menuprop.size(); ++i)
 		//	{
-		//		onity_prop2dsasset* srcleaf = dynamic_cast<onity_prop2dsasset*>(m_menuprop[i]);
-		//		onity_prop2dsasset* dstleaf = dynamic_cast<onity_prop2dsasset*>(prop2dsres->add_subprop(srcleaf));
+		//		cocos_prop2dsasset* srcleaf = dynamic_cast<cocos_prop2dsasset*>(m_menuprop[i]);
+		//		cocos_prop2dsasset* dstleaf = dynamic_cast<cocos_prop2dsasset*>(prop2dsres->add_subprop(srcleaf));
 		//		u32 index = dstnode->get_leafnodecount();
-		//		onity_treedata* linkdata = new onity_2dsassetdata(dstleaf->get_resicon(), dstleaf);
+		//		cocos_treedata* linkdata = new cocos_2dsassetdata(dstleaf->get_resicon(), dstleaf);
 		//		dstnode->add_leafnode(index, linkdata);
 		//		vec.push_back(linkdata);
 		//	}
 		//}
 
-		//onity_propjsones* propjsones = dynamic_cast<onity_propjsones*>(dstfile);
+		//cocos_propjsones* propjsones = dynamic_cast<cocos_propjsones*>(dstfile);
 		//if (propjsones)
 		//{
 		//	for (u32 i = 0; i < m_menuprop.size(); ++i)
 		//	{
-		//		onity_propjsonestemp* srcleaf = dynamic_cast<onity_propjsonestemp*>(m_menuprop[i]);
-		//		onity_propjsonestemp* dstleaf = dynamic_cast<onity_propjsonestemp*>(propjsones->add_subprop(srcleaf));
+		//		cocos_propjsonestemp* srcleaf = dynamic_cast<cocos_propjsonestemp*>(m_menuprop[i]);
+		//		cocos_propjsonestemp* dstleaf = dynamic_cast<cocos_propjsonestemp*>(propjsones->add_subprop(srcleaf));
 		//		u32 index = dstnode->get_leafnodecount();
-		//		onity_treedata* linkdata = new onity_jsonestempdata(onity_resource::icon_entity, dstleaf);
+		//		cocos_treedata* linkdata = new cocos_jsonestempdata(cocos_resource::icon_entity, dstleaf);
 		//		dstnode->add_leafnode(index, linkdata);
 		//		vec.push_back(linkdata);
 		//	}
 		//}
 
-		if (m_move->get_data())
-		{
-			m_move->set_data(NULL);
-			del_propleaf(m_menuprop);
-			m_menuprop.clear();
-		}
+		//if (m_move->get_data())
+		//{
+		//	m_move->set_data(NULL);
+		//	del_propleaf(m_menuprop);
+		//	m_menuprop.clear();
+		//}
 
-		if (vec.size() > 0)
-		{
-			std::vector<xui_treenode*> nodes;
-			for (u32 i = 0; i < vec.size(); ++i)
-				nodes.push_back(vec[i]->get_node());
+		//if (vec.size() > 0)
+		//{
+		//	std::vector<xui_treenode*> nodes;
+		//	for (u32 i = 0; i < vec.size(); ++i)
+		//		nodes.push_back(vec[i]->get_node());
 
-			xui_treeview*   lineview = m_fileview->get_lineview();
-			cocos_tileview* tileview = m_fileview->get_tileview();
-			xui_method_ptrcall(lineview, non_selectednode	)();
-			xui_method_ptrcall(lineview, set_selectednode	)(nodes);
-			xui_method_ptrcall(lineview, set_nodevisible	)(nodes.front());
-			xui_method_ptrcall(tileview, set_tilevisible	)(nodes.front());
+		//	xui_treeview*   lineview = m_fileview->get_lineview();
+		//	cocos_tileview* tileview = m_fileview->get_tileview();
+		//	xui_method_ptrcall(lineview, non_selectednode	)();
+		//	xui_method_ptrcall(lineview, set_selectednode	)(nodes);
+		//	xui_method_ptrcall(lineview, set_nodevisible	)(nodes.front());
+		//	xui_method_ptrcall(tileview, set_tilevisible	)(nodes.front());
 
-			std::vector<xui_proproot*> props;
-			for (u32 i = 0; i < vec.size(); ++i)
-				props.push_back(vec[i]->get_prop());
-			
-			cocos_inspector* inspector = cocos_mainform::get_ptr()->get_inspector();
-			inspector->set_proproot(props);
-		}
+		//	std::vector<xui_proproot*> props;
+		//	for (u32 i = 0; i < vec.size(); ++i)
+		//		props.push_back(vec[i]->get_prop());
+		//	
+		//	cocos_inspector* inspector = cocos_mainform::get_ptr()->get_inspector();
+		//	inspector->set_proproot(props);
+		//}
 	}
 }
-

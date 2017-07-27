@@ -11,19 +11,19 @@ public:
 	/*
 	//static
 	*/
-    static cocos_glview* create( HWND hwnd );
+    static cocos_glview*	create				( HWND hwnd );
 
     /* 
 	//override functions 
 	*/
-    virtual bool	isOpenGLReady		( void );
-    virtual void	end					( void );
-    virtual void	swapBuffers			( void );
-	virtual void	setIMEKeyboardState	( bool flag );
-	virtual void	appendEditBoxText	( const std::string& text );
-	virtual void	moveCursorToEnd		( int pos = -1 );
-	virtual void	ClearTextToNavtive	( void );
-    virtual HWND	getWin32Window		( void );
+    virtual bool			isOpenGLReady		( void );
+    virtual void			end					( void );
+    virtual void			swapBuffers			( void );
+	virtual void			setIMEKeyboardState	( bool flag );
+	virtual void			appendEditBoxText	( const std::string& text );
+	virtual void			moveCursorToEnd		( int pos = -1 );
+	virtual void			ClearTextToNavtive	( void );
+    virtual HWND			getWin32Window		( void );
 
 protected:
 	/*
@@ -34,7 +34,7 @@ protected:
 	/*
 	//member
 	*/
-	HWND			m_hwnd;
+	HWND					m_hwnd;
 };
 
 #endif//__cocos_glview_h__

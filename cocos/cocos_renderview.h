@@ -25,6 +25,11 @@ public:
 	virtual ~cocos_renderview( void );
 
 	/*
+	//method
+	*/
+	cocos2d::Scene*	get_2droot			( void );
+
+	/*
 	//virtual
 	*/
 	virtual void	render				( void );
@@ -46,14 +51,13 @@ protected:
 	/*
 	//member
 	*/
-public:
+protected:
 	cocos2d::Scene*	m_cocos2droot;
 	cocos_glview*	m_cocosglview;
 	xui_bitmap*		m_colorbitmap;
 	xui_vector<s32>	m_framebuffersize;
 	GLuint			m_framebuffername;
 	GLuint			m_depthbuffername;
-	GLuint			m_indexbuffername;
 	GLuint			m_framebufferlast;
 };
 

@@ -18,7 +18,7 @@ xui_create_explain(cocos_propfile)( xui_bitmap* icon, const std::wstring& fullna
 , m_fullname(fullname)
 , m_savekind(NULL)
 {
-	m_basekind = new xui_propkind(this, cocos_filedata::get_safe(fullname), "File", cocos_filectrl::create, icon, true);
+	m_basekind = new xui_propkind(this, cocos_filedata::get_file(fullname), "File", cocos_filectrl::create, icon, true);
 	add_propkind(m_basekind);
 
 	std::wstring suff = cocos_filedata::get_suff(fullname);

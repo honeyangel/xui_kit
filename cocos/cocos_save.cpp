@@ -8,13 +8,13 @@
 #include "xui_desktop.h"
 #include "cocos_save.h"
 #include "cocos_mainform.h"
-//#include "onity_project.h"
-//#include "onity_pathdata.h"
-//#include "onity_filedata.h"
-//#include "onity_fileview.h"
-//#include "onity_tileview.h"
-//#include "onity_propfile.h"
-//#include "onity_proppath.h"
+#include "cocos_project.h"
+#include "cocos_pathdata.h"
+#include "cocos_filedata.h"
+#include "cocos_fileview.h"
+#include "cocos_tileview.h"
+#include "cocos_propfile.h"
+#include "cocos_proppath.h"
 
 xui_implement_rtti(cocos_save, xui_window);
 
@@ -112,6 +112,11 @@ xui_create_explain(cocos_save)( void )
 }
 
 /*
+//method
+*/
+
+
+/*
 //callback
 */
 xui_method_explain(cocos_save, on_updateself,		void)( xui_method_update& args )
@@ -157,9 +162,9 @@ xui_method_explain(cocos_save, on_buttonclick,		void)( xui_component* sender, xu
 	{
 		for (u32 i = 0; i < m_save->get_upmostnodecount(); ++i)
 		{
-			//onity_treedata* data = (onity_treedata*)m_save->get_upmostnode(i)->get_linkdata();
-			//onity_propfile* prop = dynamic_cast<onity_propfile*>(data->get_prop());
-			//prop->del_tempfile();
+			cocos_treedata* data = (cocos_treedata*)m_save->get_upmostnode(i)->get_linkdata();
+			cocos_propfile* prop = dynamic_cast<cocos_propfile*>(data->get_prop());
+			prop->del_tempfile();
 		}
 
 		quit();
@@ -180,52 +185,52 @@ xui_method_explain(cocos_save, on_toggleclick,		void)( xui_component* sender, xu
 */
 xui_method_explain(cocos_save, load,				void)( void )
 {
-	//std::vector<onity_propfile*> savevec;
-	//std::vector<xui_treenode*>   pathvec = onity_mainform::get_ptr()->get_project()->get_pathview()->get_entirenode();
-	//for (u32 i = 0; i < pathvec.size(); ++i)
-	//{
-	//	xui_treenode*	pathnode = pathvec[i];
-	//	onity_pathdata* pathdata = (onity_pathdata*)pathnode->get_linkdata();
-	//	onity_proppath* proppath = dynamic_cast<onity_proppath*>(pathdata->get_prop());
+	std::vector<cocos_propfile*> savevec;
+	std::vector<xui_treenode*>   pathvec = cocos_mainform::get_ptr()->get_project()->get_pathview()->get_entirenode();
+	for (u32 i = 0; i < pathvec.size(); ++i)
+	{
+		xui_treenode*	pathnode = pathvec[i];
+		cocos_pathdata* pathdata = (cocos_pathdata*)pathnode->get_linkdata();
+		cocos_proppath* proppath = dynamic_cast<cocos_proppath*>(pathdata->get_prop());
 
-	//	const xui_proproot_vec& filevec = proppath->get_fileprop();
-	//	for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
-	//	{
-	//		onity_propfile* propfile = dynamic_cast<onity_propfile*>(*itor);
-	//		if (propfile->was_modify())
-	//		{
-	//			savevec.push_back(propfile);
-	//		}
-	//	}
-	//}
+		const xui_proproot_vec& filevec = proppath->get_fileprop();
+		for (xui_proproot_vec::const_iterator itor = filevec.begin(); itor != filevec.end(); ++itor)
+		{
+			cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(*itor);
+			if (propfile->was_modify())
+			{
+				savevec.push_back(propfile);
+			}
+		}
+	}
 
-	//if (savevec.size() > 0)
-	//{
-	//	for (u32 i = 0; i < savevec.size(); ++i)
-	//	{
-	//		m_save->add_upmostnode(i, new onity_treedata(
-	//			savevec[i]->get_fileicon(), 
-	//			savevec[i]->get_fullname(),
-	//			true,
-	//			savevec[i]));
-	//	}
-	//}
-	//else
-	//{
-	//	quit();
-	//}
+	if (savevec.size() > 0)
+	{
+		for (u32 i = 0; i < savevec.size(); ++i)
+		{
+			m_save->add_upmostnode(i, new cocos_treedata(
+				savevec[i]->get_fileicon(), 
+				savevec[i]->get_fullname(),
+				true,
+				savevec[i]));
+		}
+	}
+	else
+	{
+		quit();
+	}
 }
 xui_method_explain(cocos_save, save,				void)( void )
 {
-	//for (u32 i = 0; i < m_save->get_upmostnodecount(); ++i)
-	//{
-	//	onity_treedata* data = (onity_treedata*)m_save->get_upmostnode(i)->get_linkdata();
-	//	onity_propfile* prop = dynamic_cast<onity_propfile*>(data->get_prop());
-	//	if (data->get_flag(0))
-	//	{
-	//		prop->save();
-	//	}
-	//}
+	for (u32 i = 0; i < m_save->get_upmostnodecount(); ++i)
+	{
+		cocos_treedata* data = (cocos_treedata*)m_save->get_upmostnode(i)->get_linkdata();
+		cocos_propfile* prop = dynamic_cast<cocos_propfile*>(data->get_prop());
+		if (data->get_flag(0))
+		{
+			prop->save();
+		}
+	}
 }
 xui_method_explain(cocos_save, quit,				void)( void )
 {

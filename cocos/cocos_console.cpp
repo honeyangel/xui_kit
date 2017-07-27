@@ -105,7 +105,7 @@ xui_delete_explain(cocos_console)( void )
 /*
 //static
 */
-xui_method_explain(cocos_console, editor_print,			void)( const std::string& log )
+xui_method_explain(cocos_console, game_print,			void)( const std::string& log )
 {
 	if (log.find("ERROR") == -1)
 		return;

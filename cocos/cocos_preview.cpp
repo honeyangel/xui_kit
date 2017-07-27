@@ -1,17 +1,10 @@
-//#include "NP2DSAsset.h"
-//#include "NP2DSAssetFile.h"
-//#include "NP2DSActor.h"
-//#include "NP2DSLayer.h"
-//#include "NP2DSFrameKey.h"
-//#include "NP2DSFrameRef.h"
-//#include "NP2DSActorRef.h"
-//#include "NPParticleSFX.h"
-//#include "NPRender.h"
-//#include "NP2DSRenderStep.h"
 #include "2d/CCNode.h"
+#include "2d/CCScene.h"
 #include "2d/CCSprite.h"
 #include "2d/CCSpriteFrame.h"
 #include "2d/CCSpriteFrameCache.h"
+#include "2d/CCParticleSystem.h"
+#include "ui/UITextBMFont.h"
 #include "base/CCDirector.h"
 #include "xui_global.h"
 #include "xui_convas.h"
@@ -20,10 +13,13 @@
 #include "xui_slider.h"
 #include "xui_treeview.h"
 #include "cocos_filedata.h"
-//#include "onity_propactor.h"
-//#include "onity_propframe.h"
-//#include "onity_propparticle.h"
 #include "cocos_glview.h"
+#include "cocos_proptexture.h"
+#include "cocos_propatlas.h"
+#include "cocos_propframe.h"
+#include "cocos_propparticle.h"
+#include "cocos_propttf.h"
+#include "cocos_propfnt.h"
 #include "cocos_renderview.h"
 #include "cocos_resource.h"
 #include "cocos_mainform.h"
@@ -37,6 +33,7 @@ xui_implement_rtti(cocos_preview, xui_control);
 */
 xui_create_explain(cocos_preview)( void )
 : xui_control(xui_vector<s32>(260))
+, m_prop(NULL)
 , m_node(NULL)
 , m_scale(1.0f)
 {
@@ -108,6 +105,13 @@ xui_create_explain(cocos_preview)( void )
 	m_widgetvec.push_back(m_head);
 	m_widgetvec.push_back(m_tool);
 	m_widgetvec.push_back(m_view);
+
+	m_sprite = cocos2d::Sprite::create();
+	m_fxroot = cocos2d::Node::create();
+	m_uitext = cocos2d::ui::TextBMFont::create();
+	m_view->get_2droot()->addChild(m_sprite);
+	m_view->get_2droot()->addChild(m_fxroot);
+	m_view->get_2droot()->addChild(m_uitext);
 }
 
 /*
@@ -115,7 +119,13 @@ xui_create_explain(cocos_preview)( void )
 */
 xui_delete_explain(cocos_preview)( void )
 {
-	delete m_node;
+	m_view->get_2droot()->removeChild(m_sprite);
+	m_view->get_2droot()->removeChild(m_fxroot);
+	m_view->get_2droot()->removeChild(m_uitext);
+	m_fxroot->removeAllChildren();
+	delete m_sprite;
+	delete m_fxroot;
+	delete m_uitext;
 	delete m_ctrl;
 }
 
@@ -138,45 +148,73 @@ xui_method_explain(cocos_preview, set_toolshow,			void				)( bool flag )
 }
 xui_method_explain(cocos_preview, set_needshow,			void				)( void )
 {
-	set_visible(true/*m_node != NULL*/);
+	cocos_propparticle* propparticle	= dynamic_cast<cocos_propparticle*	>(m_prop);
+	cocos_propframe*    propframe		= dynamic_cast<cocos_propframe*		>(m_prop);
+	cocos_propatlas*	propatlas		= dynamic_cast<cocos_propatlas*		>(m_prop);
+	cocos_proptexture*  propimage		= dynamic_cast<cocos_proptexture*	>(m_prop);
+	cocos_propttf*		propttf			= dynamic_cast<cocos_propttf*		>(m_prop);	
+	cocos_propfnt*		propfnt			= dynamic_cast<cocos_propfnt*		>(m_prop);
+	set_visible(
+		propparticle ||
+		propframe	 ||
+		propatlas	 ||
+		propimage	 ||
+		propttf		 ||
+		propfnt);
 }
 xui_method_explain(cocos_preview, set_viewprop,			void				)( xui_proproot* prop, bool play )
 {
-	//if (m_node)
-	//{
-	//	if (NPIsExaKindOf(NPParticleSFX, m_node) == false)
-	//		delete m_node;
+	m_prop = prop;
 
-	//	m_node = NULL;
-	//}
+	if (m_node)
+	{
+		m_node->setVisible(false);
+		m_node = NULL;
+	}
 
-	//onity_propparticle* propparticle = dynamic_cast<onity_propparticle*>(prop);
-	//onity_propframe*    propframe    = dynamic_cast<onity_propframe*   >(prop);
-	//onity_propactor*    propactor    = dynamic_cast<onity_propactor*   >(prop);
-	//if (propparticle && propparticle->get_particle())
-	//{
-	//	NPParticleSFX* particle = propparticle->get_particle();
-	//	particle->SetFlag(PARTICLESFX_LOOPPLAY, true);
-	//	particle->Active();
-	//	m_node = particle;
-	//}
-	//else
-	//if (propframe)
-	//{
-	//	NP2DSFrameRef* frameref = new NP2DSFrameRef;
-	//	NP2DSAsset* asset = propframe->get_asset();
-	//	frameref->SetFrame(asset->GetOwnedFile()->GetKey(), asset->GetKey());
-	//	m_node = frameref;
-	//}
-	//else
-	//if (propactor)
-	//{
-	//	NP2DSActorRef* actorref = new NP2DSActorRef;
-	//	NP2DSAsset* asset = propactor->get_asset();
-	//	actorref->SetActor(asset->GetOwnedFile()->GetKey(), asset->GetKey());
-	//	actorref->SetPlay(play);
-	//	m_node = actorref;
-	//}
+	cocos_propparticle* propparticle	= dynamic_cast<cocos_propparticle*	>(m_prop);
+	cocos_propframe*    propframe		= dynamic_cast<cocos_propframe*		>(m_prop);
+	cocos_propatlas*	propatlas		= dynamic_cast<cocos_propatlas*		>(m_prop);
+	cocos_proptexture*  propimage		= dynamic_cast<cocos_proptexture*   >(m_prop);
+	cocos_propfnt*		propfnt			= dynamic_cast<cocos_propfnt*		>(m_prop);
+	if (propparticle)
+	{
+		cocos2d::ParticleSystem* particle = propparticle->get_particle();
+		particle->resetSystem();
+		m_fxroot->removeAllChildren();
+		m_fxroot->addChild(particle);
+		m_node = m_fxroot;
+	}
+	else
+	if (propframe)
+	{
+		m_sprite->setSpriteFrame(propframe->get_frame());
+		m_node = m_sprite;
+	}
+	else
+	if (propatlas || propimage)
+	{
+		cocos2d::Texture2D* texture = NULL;
+		if (propatlas)
+			texture = propatlas->get_texture();
+		if (propimage)
+			texture = propimage->get_texture();
+
+		m_sprite->initWithTexture(texture);
+		m_node = m_sprite;
+	}
+	else
+	if (propfnt)
+	{
+		m_uitext->setFntFile(xui_global::unicode_to_ascii(propfnt->get_fullname()));
+		m_uitext->setString(propfnt->get_viewtext());
+		m_node = m_uitext;
+	}
+
+	if (m_node)
+	{
+		m_node->setVisible(true);
+	}
 
 	m_scale = 1.0f;
 	m_rect	= xui_rect2d<s32>(0);
@@ -204,18 +242,11 @@ xui_method_explain(cocos_preview, on_buttonclick,		void				)( xui_component* sen
 {
 	if (sender == m_play)
 	{
-		//NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_node);
-		//NPParticleSFX* particle = NPDynamicCast(NPParticleSFX, m_node);
-		//if (actorref)
-		//{
-		//	actorref->Reset();
-		//	actorref->SetPlay(true);
-		//}
-		//if (particle)
-		//{
-		//	particle->Finish(true);
-		//	particle->Active();
-		//}
+		if (m_node == m_fxroot)
+		{
+			cocos2d::ParticleSystem* particle = dynamic_cast<cocos2d::ParticleSystem*>(m_fxroot->getChildren().at(0));
+			particle->resetSystem();
+		}
 	}
 	else
 	if (sender == m_large)
@@ -255,74 +286,20 @@ xui_method_explain(cocos_preview, on_viewupdateself,	void				)( xui_component* s
 xui_method_explain(cocos_preview, on_viewrenderself,	void				)( xui_component* sender, xui_method_args&   args )
 {
 	xui_convas::get_ins()->clear(get_backcolor());
-	cocos_project* project = cocos_mainform::get_ptr()->get_project();
-	if (project->get_pathview()->get_upmostnodecount() == 0)
-		return;
 
-	static cocos2d::Sprite* sprite = NULL;
-	if (sprite == NULL)
-	{
-		cocos2d::SpriteFrame* frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName("btn_big_b_v2.png");
-		sprite = cocos2d::Sprite::createWithSpriteFrame(frame);
-		m_view->m_cocos2droot->addChild(sprite);
-	}
-
-	cocos2d::Director::getInstance()->setOpenGLView(m_view->m_cocosglview);
-	cocos2d::Director::getInstance()->replaceScene(m_view->m_cocos2droot);
-
-	xui_vector<s32> size = m_view->get_rendersz();
-	m_view->m_cocosglview->setFrameSize(size.w, size.h);
-	m_view->m_cocosglview->setDesignResolutionSize(size.w, size.h, ResolutionPolicy::EXACT_FIT);
+	set_localtransform();
 	cocos2d::Director::getInstance()->drawScene();
-
-	//extern bool gInitCompleted;
-	//if (gInitCompleted == false)
-	//	return;
-
-	//xui_vector<s32> size = m_view->get_rendersz();
-	//if (m_node)
-	//{
-	//	set_localtransform();
-
-	//	NPVector3 scale = NPVector3(m_scale, m_scale, 1.0f);
-	//	NPVector3 trans = NPVector3(
-	//		((f32)size.w - size.w*m_scale) / 2.0f, 
-	//		((f32)size.h - size.h*m_scale) / 2.0f,
-	//		0.0f);
-
-	//	trans.x = xui_pixel_align(trans.x);
-	//	trans.y = xui_pixel_align(trans.y);
-	//	NP2DSTransRef* transref = NPDynamicCast(NP2DSTransRef, m_node);
-	//	NPParticleSFX* particle = NPDynamicCast(NPParticleSFX, m_node);
-	//	if (transref)
-	//	{
-	//		xui_method_ptrcall(transref, SetWorldScale	)(scale);
-	//		xui_method_ptrcall(transref, SetWorldTrans	)(trans);
-	//	}
-	//	if (particle)
-	//	{
-	//		xui_method_ptrcall(particle, SetWorldS		)(scale);
-	//		xui_method_ptrcall(particle, SetWorldT		)(trans);
-	//	}
-
-	//	m_node->Render();
-
-	//	if (m_rect.was_valid())
-	//	{
-	//		NP2DSRenderUtil::GetIns()->DrawLineBox(
-	//			NPVector2((npf32)m_rect.ax, (npf32)m_rect.ay), 
-	//			NPVector2((npf32)m_rect.bx, (npf32)m_rect.by), 
-	//			m_node->GetFinalMatrix(),
-	//			NPColor::Green);
-	//	}
-	//}
-
-	//NPRender::GetIns()->SetResolutionW(size.w);
-	//NPRender::GetIns()->SetResolutionH(size.h);
-	//NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
-	//NP2DSRenderStep::GetIns()->SetEntryLocalT(NPVector3::Zero);
-	//NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
-	//NP2DSRenderStep::GetIns()->RenderImmediate();
+	cocos_propttf* ttf = dynamic_cast<cocos_propttf*>(m_prop);
+	if (ttf)
+	{
+		xui_family font;
+		font.face = xui_global::get_fontface(xui_global::unicode_to_ascii(ttf->get_fullname()));
+		font.size = 16;
+		xui_family_render draw;
+		draw.normalcolor = xui_colour::white;
+		xui_rect2d<s32> rt = xui_convas::get_ins()->calc_draw(L"123abc确认", font, m_view->get_renderrt(), TEXTALIGN_CC, true);
+		xui_convas::get_ins()->draw_text(L"123abc确认", font, rt, draw, true);
+	}
 }
 xui_method_explain(cocos_preview, on_viewmousewheel,	void				)( xui_component* sender, xui_method_mouse&  args )
 {
@@ -377,81 +354,39 @@ xui_method_explain(cocos_preview, set_speed,			void				)( f32 speed )
 }
 xui_method_explain(cocos_preview, set_localtransform,	void				)( void )
 {
-	//xui_vector<s32> size = m_view->get_rendersz();
-	//if (m_node)
-	//{
-	//	NP2DSFrameRef* frameref = NPDynamicCast(NP2DSFrameRef, m_node);
-	//	NP2DSActorRef* actorref = NPDynamicCast(NP2DSActorRef, m_node);
-	//	NPParticleSFX* particle = NPDynamicCast(NPParticleSFX, m_node);
-	//	if (frameref)
-	//	{
-	//		NPRect bound = frameref->GetOrignBounding();
+	xui_vector<s32> size = m_view->get_rendersz();
+	if (m_node == m_sprite)
+	{
+		s32 w  = m_sprite->getTextureRect().size.width;
+		s32 h  = m_sprite->getTextureRect().size.height;
+		f32 sw = (f32)size.w / w;
+		f32 sh = (f32)size.h / h;
+		f32 s  = xui_min(sw, sh);
+		if (s > 1.0f)
+			s = m_scale;
+		else
+			s = m_scale * s;
 
-	//		f32 sw = (f32)size.w / (f32)bound.GetW();
-	//		f32 sh = (f32)size.h / (f32)bound.GetH();
-	//		f32 s  = xui_min(sw, sh);
-	//		if (s > 1.0f)
-	//			s = 1.0f;
+		cocos2d::Vec2 anchor = m_sprite->getAnchorPointInPoints();
+		cocos2d::Vec2 offset = m_sprite->getOffsetPosition();
 
-	//		NPVector3 scale = NPVector3(s, s, 1.0f);
-	//		NPVector3 trans = NPVector3(
-	//			(-bound.LT*s + (((f32)size.w - bound.GetW()*s)) / 2.0f), 
-	//			(-bound.TP*s + (((f32)size.h - bound.GetH()*s)) / 2.0f),
-	//			0.0f);
-
-	//		trans.x = xui_pixel_align(trans.x);
-	//		trans.y = xui_pixel_align(trans.y);
-
-	//		frameref->SetLocalScale(scale);
-	//		frameref->SetLocalTrans(trans);
-	//	}
-
-	//	if (actorref && actorref->GetActor())
-	//	{
-	//		NP2DSActor* actor = actorref->GetActor();
-
-	//		NPRect bound = NPRect::Empty;
-	//		for (s32 i = (s32)actor->GetLayerCount()-1; i >= 0; --i)
-	//		{
-	//			NP2DSLayer* layer = actor->GetLayer((npu16)i);
-	//			if (layer->GetFrameKeyCount() == 0)
-	//				continue;
-
-	//			std::list<NP2DSFrameKey*>& frameKeyList = layer->GetFrameKeyList();
-	//			NP2DSFrameKey* frameKey  = frameKeyList.front();
-	//			bound = bound.GetUnion(frameKey->GetTransRef()->GetWorldBounding());
-	//		}
-
-	//		f32 sw = (f32)size.w / (f32)bound.GetW();
-	//		f32 sh = (f32)size.h / (f32)bound.GetH();
-	//		f32 s  = xui_min(sw, sh);
-	//		if (s > 1.0f)
-	//			s = 1.0f;
-
-	//		NPVector3 scale = NPVector3(s, s, 1.0f);
-	//		NPVector3 trans = NPVector3(
-	//			(-bound.LT*s + (((f32)size.w - bound.GetW()*s)) / 2.0f), 
-	//			(-bound.TP*s + (((f32)size.h - bound.GetH()*s)) / 2.0f),
-	//			0.0f);
-
-	//		trans.x = xui_pixel_align(trans.x);
-	//		trans.y = xui_pixel_align(trans.y);
-
-	//		actorref->SetLocalFlips(0);
-	//		actorref->SetLocalAngle(0.0f);
-	//		actorref->SetLocalScale(scale);
-	//		actorref->SetLocalTrans(trans);
-	//	}
-
-	//	if (particle)
-	//	{
-	//		NPVector3 trans = NPVector3(size.w/2.0f, size.h/2.0f, 0.0f);
-	//		trans.x = xui_pixel_align(trans.x);
-	//		trans.y = xui_pixel_align(trans.y);
-
-	//		particle->SetLocalT(trans);
-	//	}
-	//}
+		f32 x =   anchor.x*s - offset.x*s + (((f32)size.w - w*s) / 2.0f);
+		f32 y = - anchor.y*s + offset.y*s + (((f32)size.h - h*s) / 2.0f);
+		m_sprite->setScale(s, s);
+		m_sprite->setPosition(x, m_view->get_renderh() - y - h*s);
+	}
+	else
+	if (m_node == m_fxroot)
+	{
+		m_fxroot->setScale(m_scale);
+		m_fxroot->setPosition(size.w/2, size.h/2);
+	}
+	else
+	if (m_node == m_uitext)
+	{
+		m_uitext->setScale(m_scale);
+		m_uitext->setPosition(cocos2d::Vec2(size.w/2, size.h/2));
+	}
 }
 xui_method_explain(cocos_preview, get_incscale,			f32					)( void )
 {

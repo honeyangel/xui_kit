@@ -71,6 +71,7 @@ public:
 	/*
 	//font
 	*/
+	static s32								get_fontface	( const std::string& file );
 	static const std::string&				get_fontfile	( s32 face );
 	static void								add_fontfile	( const std::string& file );
 

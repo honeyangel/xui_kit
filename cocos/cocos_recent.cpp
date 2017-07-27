@@ -145,7 +145,7 @@ xui_method_explain(cocos_recent, on_buttonclick,		void		)( xui_component* sender
 */
 xui_method_explain(cocos_recent, load_config,			void		)( void )
 {
-	FILE* file = fopen("cocos editor.recent", "r");
+	FILE* file = fopen("cocos_editor.recent", "r");
 	if (file)
 	{
 		u32 index = 0;
@@ -164,12 +164,11 @@ xui_method_explain(cocos_recent, load_config,			void		)( void )
 }
 xui_method_explain(cocos_recent, save_config,			void		)( void )
 {
-	FILE* file = fopen("cocos editor.recent", "w");
+	FILE* file = fopen("cocos_editor.recent", "w");
 	if (file)
 	{
 		std::string line = xui_global::unicode_to_ascii(get_selectpath()) + "\n";
 		fwrite((void*)line.c_str(), 1, line.length(), file);
-
 		for (u32 i = 0; i < m_recent->get_upmostnodecount(); ++i)
 		{
 			xui_treenode* node = m_recent->get_upmostnode(i);

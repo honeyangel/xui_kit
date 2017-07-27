@@ -1,48 +1,6 @@
-//#include "Network/NPLoginService.h"
-//#include "NPFileName.h"
-//#include "NPRender.h"
-//#include "NP2DSLib.h"
-//#include "m3eFrameWork.h"
-//#include "Game/Profile/ProfileManager.h"
-//#include "Game/Game.h"
-//#include "Game/Profile/LocalSaveHelper.h"
-//#include "Game/WorldLoader.h"
-//#include "Game/Game.h"
-//#include "Game/GameConfig.h"
-//#include "Game/Profile/AccountLocalSaveHelper.h"
 #include "renderer/CCGLProgramCache.h"
-#include "platform/win32/CCApplication-win32.h"
 #include "platform/CCFileUtils.h"
-#include "2d/CCSpriteFrameCache.h"
 #include "base/CCConfiguration.h"
-
-class  AppDelegate : private cocos2d::Application
-{
-public:
-	AppDelegate(){};
-
-	virtual void initGLContextAttrs(){};
-
-    /**
-    @brief    Implement Director and Scene init code here.
-    @return true    Initialize success, app continue.
-    @return false   Initialize failed, app terminate.
-    */
-	virtual bool applicationDidFinishLaunching(){ return true; }
-
-    /**
-    @brief  The function be called when the application enter background
-    @param  the pointer of the application
-    */
-	virtual void applicationDidEnterBackground(){};
-
-    /**
-    @brief  The function be called when the application enter foreground
-    @param  the pointer of the application
-    */
-	virtual void applicationWillEnterForeground(){};
-};
-
 
 #include "xui_desktop.h"
 #include "xui_syswnd.h"
@@ -56,22 +14,13 @@ public:
 #include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
-//#include "onity_propcourse.h"
 #include "cocos_resource.h"
-//#include "onity_hierarchy.h"
 #include "cocos_inspector.h"
 #include "cocos_console.h"
 #include "cocos_project.h"
-//#include "onity_timeline.h"
-//#include "onity_game.h"
-//#include "onity_scene.h"
-//#include "onity_animator.h"
 #include "cocos_recent.h"
-//#include "onity_config.h"
-//#include "onity_course.h"
 #include "cocos_backup.h"
 #include "cocos_save.h"
-#include "cocos_propfile.h"
 #include "cocos_mainform.h"
 
 xui_implement_rtti(cocos_mainform, xui_window);
@@ -124,18 +73,10 @@ xui_create_explain(cocos_mainform)( void )
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_anchor);
 	xui_method_ptrcall(line_operator,	add_linectrl	)(m_coordinate);
 
-	//onity_course* course_wnd = new onity_course;
-	//xui_method_ptrcall(course_wnd,		set_sidestyle	)(SIDESTYLE_S);
-	//xui_method_ptrcall(course_wnd,		set_borderrt	)(xui_rect2d<s32>(10));
-	//xui_method_ptrcall(course_wnd,		set_renderpt	)(xui_vector<s32>(200, 100));
-	//xui_method_ptrcall(course_wnd,		xm_accept		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_courseaccept);
-
 	m_build			= xui_button::create(cocos_resource::icon_build, L"Build", 80);
 	m_run			= xui_toggle::create(NULL, 32);
 	m_pause			= xui_toggle::create(NULL, 32);
 	m_step			= xui_button::create(NULL, 32);
-	//xui_method_ptrcall(m_build,			set_data		)(course_wnd);
-	xui_method_ptrcall(m_build ,		xm_buttonclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickbuild);
 	xui_method_ptrcall(m_run,			xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
 	xui_method_ptrcall(m_pause,			xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
 	xui_method_ptrcall(m_step,			xm_buttonclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
@@ -160,29 +101,23 @@ xui_create_explain(cocos_mainform)( void )
 	xui_method_ptrcall(tool_debug,		add_item		)(line_debug);
 
 	xui_menu* menu	= xui_menu::create(100);
-	//m_hierarchy		= menu->add_item(onity_resource::icon_hierarchy,	L"Hierarchy");
+	m_hierarchy		= menu->add_item(cocos_resource::icon_hierarchy,	L"Hierarchy");
 	m_inspector		= menu->add_item(cocos_resource::icon_inspector,	L"Inspector");
 	m_project		= menu->add_item(cocos_resource::icon_project,		L"Project");
 	m_console		= menu->add_item(cocos_resource::icon_console,		L"Console");
 	m_timeline		= menu->add_item(cocos_resource::icon_timeline,		L"Timeline");
-	//m_game			= menu->add_item(onity_resource::icon_game,			L"Game");
 	m_scene			= menu->add_item(cocos_resource::icon_scene,		L"Scene");
-	//m_animator		= menu->add_item(onity_resource::icon_animator,		L"Animator");
-	//xui_method_ptrcall(m_hierarchy,		set_data		)(new onity_hierarchy);
+	//xui_method_ptrcall(m_hierarchy,		set_data		)(new cocos_hierarchy);
 	xui_method_ptrcall(m_inspector,		set_data		)(new cocos_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new cocos_project);
 	xui_method_ptrcall(m_console,		set_data		)(new cocos_console);
-	//xui_method_ptrcall(m_timeline,		set_data		)(new onity_timeline);
-	//xui_method_ptrcall(m_game,			set_data		)(new onity_game);
-	//xui_method_ptrcall(m_animator,		set_data		)(new onity_animator);
-	//xui_method_ptrcall(m_scene,			set_data		)(new onity_scene);
-	//xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
+	//xui_method_ptrcall(m_timeline,		set_data		)(new cocos_timeline);
+	//xui_method_ptrcall(m_scene,			set_data		)(new cocos_scene);
+	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
-	//xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
-	//xui_method_ptrcall(m_animator,		xm_click		) += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_scene,			xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
@@ -226,20 +161,18 @@ xui_method_explain(cocos_mainform, get_ptr,				cocos_mainform*		)( void )
 {
 	const std::vector<xui_control*>& vec = xui_desktop::get_ins()->get_children();
 	if (vec.size() > 0)
-		return xui_dynamic_cast(cocos_mainform, vec.front());
+		return xui_dynamic_cast(cocos_mainform, vec[0]);
 
 	return NULL;
 }
 xui_method_explain(cocos_mainform, get_pagename,		std::string			)( xui_dockpage* page )
 {
 	cocos_mainform* mainform = get_ptr();
-	if		(page == mainform->get_console	())	return "console";
-	else if	(page == mainform->get_project	())	return "project";
+	if		(page == mainform->get_project())	return "project";
 	//else if	(page == mainform->get_hierarchy())	return "hierarchy";
 	else if (page == mainform->get_inspector())	return "inspector";
-	//else if (page == mainform->get_game		())	return "game";
 	//else if (page == mainform->get_scene	()) return "scene";
-	//else if (page == mainform->get_animator	())	return "animator";
+	else if (page == mainform->get_console	())	return "console";
 	//else if (page == mainform->get_timeline	())	return "timeline";
 	else
 	{
@@ -249,13 +182,11 @@ xui_method_explain(cocos_mainform, get_pagename,		std::string			)( xui_dockpage*
 xui_method_explain(cocos_mainform, get_pagectrl,		xui_dockpage*		)( const std::string& name )
 {
 	cocos_mainform* mainform = get_ptr();
-	if		(name == "console")		return mainform->get_console();
-	else if	(name == "project")		return mainform->get_project();
+	if		(name == "project")		return mainform->get_project();
 	//else if	(name == "hierarchy")	return mainform->get_hierarchy();
 	else if (name == "inspector")	return mainform->get_inspector();
-	//else if (name == "game")		return mainform->get_game();
 	//else if (name == "scene")		return mainform->get_scene();
-	//else if (name == "animator")	return mainform->get_animator();
+	else if (name == "console")		return mainform->get_console();
 	//else if (name == "timeline")	return mainform->get_timeline();
 	else
 	{
@@ -266,10 +197,10 @@ xui_method_explain(cocos_mainform, get_pagectrl,		xui_dockpage*		)( const std::s
 /*
 //method
 */
-//xui_method_explain(onity_mainform, get_hierarchy,		onity_hierarchy*	)( void )
-//{
-//	return (onity_hierarchy*)	xui_method_ptrcall(m_hierarchy, get_data)();
-//}
+xui_method_explain(cocos_mainform, get_hierarchy,		cocos_hierarchy*	)( void )
+{
+	return (cocos_hierarchy*)	xui_method_ptrcall(m_hierarchy, get_data)();
+}
 xui_method_explain(cocos_mainform, get_inspector,		cocos_inspector*	)( void )
 {
 	return (cocos_inspector*)	xui_method_ptrcall(m_inspector, get_data)();
@@ -278,18 +209,10 @@ xui_method_explain(cocos_mainform, get_project,			cocos_project*		)( void )
 {
 	return (cocos_project*)		xui_method_ptrcall(m_project,	get_data)();
 }
-//xui_method_explain(onity_mainform, get_game,			onity_game*			)( void )
-//{
-//	return (onity_game*)		xui_method_ptrcall(m_game,		get_data)();
-//}
 xui_method_explain(cocos_mainform, get_scene,			cocos_scene*		)( void )
 {
 	return (cocos_scene*)		xui_method_ptrcall(m_scene,		get_data)();
 }
-//xui_method_explain(onity_mainform, get_animator,		onity_animator*		)( void )
-//{
-//	return (onity_animator*)	xui_method_ptrcall(m_animator,	get_data)();
-//}
 xui_method_explain(cocos_mainform, get_console,			cocos_console*		)( void )
 {
 	return (cocos_console*)		xui_method_ptrcall(m_console,	get_data)();
@@ -298,10 +221,6 @@ xui_method_explain(cocos_mainform, get_timeline,		cocos_timeline*		)( void )
 {
 	return (cocos_timeline*)	xui_method_ptrcall(m_timeline,	get_data)();
 }
-//xui_method_explain(onity_mainform, get_course,			onity_course*		)( void )
-//{
-//	return (onity_course*)		xui_method_ptrcall(m_build,		get_data)();
-//}
 
 /*
 //method
@@ -332,9 +251,6 @@ xui_method_explain(cocos_mainform, on_load,				void				)( xui_method_args&   arg
 	xui_window::on_load(args);
 	on_clickreset(NULL, args);
 	on_clickload (NULL, args);
-
-	static AppDelegate app;
-	cocos2d::GLProgramCache::getInstance();
 
 	cocos_recent* dialog = new cocos_recent;
 	dialog->xm_accept   += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_recentaccept);
@@ -401,76 +317,64 @@ xui_method_explain(cocos_mainform, on_clickcoordinate,	void				)( xui_component*
 		break;
 	}
 }
-xui_method_explain(cocos_mainform, on_clickbuild,		void				)( xui_component* sender, xui_method_args&  args )
-{
-	//onity_hierarchy* hierarchy = get_hierarchy();
-	//if (hierarchy->get_editprop())
-	//{
-	//	onity_course* wnd = get_course();
-	//	wnd->set_visible(true);
-
-	//	if (wnd->get_parent() == NULL)
-	//		xui_desktop::get_ins()->add_child(wnd);
-	//}
-}
 xui_method_explain(cocos_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
-	//m_steptime = 0;
+	m_steptime = 0;
 
-	//if (sender == m_run)
-	//{
-	//	onity_hierarchy* hierarchy = get_hierarchy();
-	//	hierarchy->reset(true);
+	if (sender == m_run)
+	{
+		//cocos_hierarchy* hierarchy = get_hierarchy();
+		//hierarchy->reset(true);
 
-	//	onity_scene* scene = get_scene();
-	//	scene->set_trans(xui_vector<s32>(0));
-	//	scene->set_ratio(1.0);
+		//cocos_scene* scene = get_scene();
+		//scene->set_trans(xui_vector<s32>(0));
+		//scene->set_ratio(1.0);
 
-	//	if (m_run->was_push())
-	//	{
-	//		OnityEditMode = false;
-	//		m_run->set_data(NULL);
-	//		BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_Splash);
-	//		BreezeGame::LocalSaveHelper::Instance()->SaveLocalInfo();
-	//		BreezeGame::Game::Instance()->Resume();
+		//if (m_run->was_push())
+		//{
+		//	OnityEditMode = false;
+		//	m_run->set_data(NULL);
+		//	BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_Splash);
+		//	BreezeGame::LocalSaveHelper::Instance()->SaveLocalInfo();
+		//	BreezeGame::Game::Instance()->Resume();
 
-	//		onity_game* game = get_game();
-	//		if (m_mainview->get_showpage() != game && hierarchy->get_editprop())
-	//		{
-	//			OnityEditMode = true;
-	//			m_run->set_data((void*)0x1);
-	//			BreezeGame::GameConfig::Instance()->SetGameVersion(BreezeGame::GV_DEBUG);
-	//			BreezeGame::ProfileManager::Instance()->SetLogin(true);
-	//			BreezeGame::AccountLocalSaveHelper::Instance()->Load();
-	//			BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_MainMenu);
+		//	cocos_game* game = get_game();
+		//	if (m_mainview->get_showpage() != game && hierarchy->get_editprop())
+		//	{
+		//		OnityEditMode = true;
+		//		m_run->set_data((void*)0x1);
+		//		BreezeGame::GameConfig::Instance()->SetGameVersion(BreezeGame::GV_DEBUG);
+		//		BreezeGame::ProfileManager::Instance()->SetLogin(true);
+		//		BreezeGame::AccountLocalSaveHelper::Instance()->Load();
+		//		BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_MainMenu);
 
-	//			set_pageshow(game);
-	//		}
+		//		set_pageshow(game);
+		//	}
 
-	//		m3eFrameWorkUpdate(1.0f);
-	//	}
-	//	else
-	//	{
-	//		m_pause->ini_toggle(false);
+		//	m3eFrameWorkUpdate(1.0f);
+		//}
+		//else
+		//{
+		//	m_pause->ini_toggle(false);
 
-	//		BreezeGame::ProfileManager::Instance()->Logout(true);
-	//		NPLoginService::GetInstance()->Logout();
-	//		BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_None);
-	//		BreezeGame::Game::Instance()->Pause();
-	//		m3eFrameWorkUpdate(1.0f);
+		//	BreezeGame::ProfileManager::Instance()->Logout(true);
+		//	NPLoginService::GetInstance()->Logout();
+		//	BreezeGame::Game::Instance()->GetLoader()->Load(BreezeGame::LT_None);
+		//	BreezeGame::Game::Instance()->Pause();
+		//	m3eFrameWorkUpdate(1.0f);
 
-	//		if (m_run->get_data())
-	//		{
-	//			set_pageshow(get_scene());
-	//		}
-	//	}
-	//}
-	//else
-	//if (sender == m_step && m_run->was_push())
-	//{
-	//	m_pause->set_push(true);
-	//	m_steptime = 200;
-	//}
+		//	if (m_run->get_data())
+		//	{
+		//		set_pageshow(get_scene());
+		//	}
+		//}
+	}
+	else
+	if (sender == m_step && m_run->was_push())
+	{
+		m_pause->set_push(true);
+		m_steptime = 200;
+	}
 }
 xui_method_explain(cocos_mainform, on_clickwndmenu,		void				)( xui_component* sender, xui_method_args&  args )
 {
@@ -487,7 +391,7 @@ xui_method_explain(cocos_mainform, on_clickwndmenu,		void				)( xui_component* s
 xui_method_explain(cocos_mainform, on_clicksave,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	extern std::wstring TOOLPATH;
-	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "cocos editor.dock";
+	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "cocos_editor.dock";
 	FILE* file = fopen(filename.c_str(), "w");
 	if (file)
 	{
@@ -533,7 +437,7 @@ xui_method_explain(cocos_mainform, on_clicksave,		void				)( xui_component* send
 xui_method_explain(cocos_mainform, on_clickload,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	extern std::wstring TOOLPATH;
-	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "cocos editor.dock";
+	std::string filename = xui_global::unicode_to_ascii(TOOLPATH) + "cocos_editor.dock";
 	FILE* file = fopen(filename.c_str(), "r");
 	if (file)
 	{
@@ -583,10 +487,8 @@ xui_method_explain(cocos_mainform, on_clickreset,		void				)( xui_component* sen
 	menulist.push_back(m_project);
 	menulist.push_back(m_console);
 	menulist.push_back(m_timeline);
-	//menulist.push_back(m_hierarchy);
+	menulist.push_back(m_hierarchy);
 	menulist.push_back(m_scene);
-	//menulist.push_back(m_game);
-	//menulist.push_back(m_animator);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -602,7 +504,7 @@ xui_method_explain(cocos_mainform, on_clicksaveall,		void				)( xui_component* s
 {
 	xui_proproot_vec filevec;
 	cocos_project* project = get_project();
-	project->get_pathfile(L"", filevec);
+	project->get_pathfile(FILTER_ALL, filevec);
 	for (u32 i = 0; i < filevec.size(); ++i)
 	{
 		cocos_propfile* file = dynamic_cast<cocos_propfile*>(filevec[i]);
@@ -668,17 +570,25 @@ xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* s
 {
 	cocos_recent* dialog = xui_dynamic_cast(cocos_recent, sender);
 	xui_global::set_workpath(dialog->get_selectpath());
-
+	xui_global::add_path(L"cocos_editor");
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
 
-	//NPRender::Init();
-	//NP2DSLib::Init();
+	FILE* file = fopen("cocos_editor/cocos_editor.ignore", "r");
+	if (file)
+	{
+		while (feof(file) == false)
+		{
+			std::string line = xui_global::get_fileline(file);
+			if (line.length() > 0)
+				m_ignorepaths.push_back(xui_global::ascii_to_unicode(line));
+		}
+
+		fclose(file);
+	}
+
 	cocos2d::Configuration::getInstance()->gatherGPUInfo();
-	cocos2d::FileUtils::getInstance()->addSearchPath(xui_global::unicode_to_ascii(dialog->get_selectpath())+"/", true);
-	cocos2d::GLProgramCache::getInstance()->reloadDefaultGLPrograms();
-	cocos2d::SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Atlas/common.plist");
-	glEnable(GL_VERTEX_ATTRIB_ARRAY_POINTER);
+	cocos2d::FileUtils::getInstance()->addSearchPath(xui_global::unicode_to_ascii(dialog->get_selectpath()) + "/", true);
 
 	cocos_project* project = get_project();
 	m_backupfiles.clear();
@@ -692,11 +602,8 @@ xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* s
 	}
 	else
 	{
+		cocos2d::GLProgramCache::getInstance()->reloadDefaultGLPrograms();
 		xui_global::set_fwatchstart(xui_global::get_workpath());
-
-		//onity_config* config = new onity_config;
-		//config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
-		//xui_desktop::get_ins()->add_child(config);
 	}
 }
 xui_method_explain(cocos_mainform, on_backupaccept,		void				)( xui_component* sender, xui_method_args&  args )
@@ -706,25 +613,9 @@ xui_method_explain(cocos_mainform, on_backupaccept,		void				)( xui_component* s
 	xui_desktop::get_ins()->del_child(backup);
 	m_backupfiles.clear();
 
+	cocos2d::GLProgramCache::getInstance()->reloadDefaultGLPrograms();
 	xui_global::set_fwatchstart(xui_global::get_workpath());
-
-	//onity_config* config = new onity_config;
-	//config->xm_accept += new xui_method_member<xui_method_args, onity_mainform>(this, &onity_mainform::on_configaccept);
-	//xui_desktop::get_ins()->add_child(config);
 }
-//xui_method_explain(onity_mainform, on_configaccept,		void				)( xui_component* sender, xui_method_args&  args )
-//{
-//	onity_game*    game    = get_game();
-//	xui_method_ptrcall(game,	ini_game	)();
-//	xui_global::set_fwatchstart(xui_global::get_workpath());
-//	Omiga::EntityManager::Instance()->SetAddEvent(onity_hierarchy::on_entityadd);
-//	Omiga::EntityManager::Instance()->SetDelEvent(onity_hierarchy::on_entitydel);
-//	m3eFrameWorkUpdate(1.0f);
-//
-//	onity_config* dialog = xui_dynamic_cast(onity_config, sender);
-//	dialog->set_visible(false);
-//	xui_desktop::get_ins()->del_child(dialog);
-//}
 xui_method_explain(cocos_mainform, on_globalkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
 {
 	if (args.kcode == KEY_S && args.ctrl && args.handle == false)
@@ -742,14 +633,12 @@ xui_method_explain(cocos_mainform, on_globalkeybddown,	void				)( xui_component*
 xui_method_explain(cocos_mainform, del_allview,			void				)( void )
 {
 	std::vector<xui_menuitem*> menulist;
-	//menulist.push_back(m_hierarchy);
+	menulist.push_back(m_hierarchy);
 	menulist.push_back(m_inspector);
 	menulist.push_back(m_console);
 	menulist.push_back(m_project);
 	menulist.push_back(m_timeline);
-	//menulist.push_back(m_game);
 	menulist.push_back(m_scene);
-	//menulist.push_back(m_animator);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -773,6 +662,15 @@ xui_method_explain(cocos_mainform, get_backupfilenum,	u32					)( void ) const
 xui_method_explain(cocos_mainform, get_backupfile,		xui_proproot*		)( u32 index ) const
 {
 	return m_backupfiles[index];
+}
+xui_method_explain(cocos_mainform, was_ignorepath,		bool				)( const std::wstring& path )
+{
+	std::vector<std::wstring>::iterator itor = std::find(
+		m_ignorepaths.begin(),
+		m_ignorepaths.end(),
+		path);
+
+	return itor != m_ignorepaths.end();
 }
 xui_method_explain(cocos_mainform, set_saveshow,		void				)( void )
 {

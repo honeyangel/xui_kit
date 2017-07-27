@@ -5,9 +5,9 @@
 #include "xui_treenode.h"
 #include "xui_treedata.h"
 #include "cocos_backup.h"
-//#include "onity_filedata.h"
-//#include "onity_propfile.h"
-//#include "onity_treedata.h"
+#include "cocos_filedata.h"
+#include "cocos_propfile.h"
+#include "cocos_treedata.h"
 #include "cocos_mainform.h"
 
 xui_implement_rtti(cocos_backup, xui_window);
@@ -139,11 +139,11 @@ xui_method_explain(cocos_backup, load,				void)( void )
 	cocos_mainform* mainform = cocos_mainform::get_ptr();
 	for (u32 i = 0; i < mainform->get_backupfilenum(); ++i)
 	{
-		//onity_propfile* prop = dynamic_cast<onity_propfile*>(mainform->get_backupfile(i));
-		//m_backup->add_upmostnode(i, new onity_treedata(
-		//	prop->get_fileicon(), 
-		//	prop->get_fullname(),
-		//	true,
-		//	prop));
+		cocos_propfile* prop = dynamic_cast<cocos_propfile*>(mainform->get_backupfile(i));
+		m_backup->add_upmostnode(i, new cocos_treedata(
+			prop->get_fileicon(), 
+			prop->get_fullname(),
+			true,
+			prop));
 	}
 }

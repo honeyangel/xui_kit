@@ -2,6 +2,7 @@
 #define __cocos_save_h__
 
 #include "xui_window.h"
+#include "cocos_propfile.h"
 
 class cocos_save : public xui_window
 {

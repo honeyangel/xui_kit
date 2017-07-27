@@ -19,11 +19,9 @@ xui_create_explain(cocos_renderview)( const xui_vector<s32>& size, const xui_vec
 	m_framebuffersize	= buffersize;
 	m_framebuffername	= -1;
 	m_depthbuffername	= -1;
-	m_indexbuffername	= -1;
 	m_framebufferlast	= -1;
 	m_cocosglview		= cocos_glview::create(NULL);
 	m_cocos2droot		= cocos2d::Scene::create();
-	//m_cocos2droot->retain();
 
 	create_framebuffer();
 }
@@ -33,15 +31,23 @@ xui_create_explain(cocos_renderview)( const xui_vector<s32>& size, const xui_vec
 */
 xui_delete_explain(cocos_renderview)( void )
 {
+	delete m_cocosglview;
+	delete m_cocos2droot;
 	delete_framebuffer();
-	//delete m_cocosglview;
-	//delete m_cocos2droot;
+}
+
+/*
+//method
+*/
+xui_method_explain(cocos_renderview, get_2droot,			cocos2d::Scene*	)( void )
+{
+	return m_cocos2droot;
 }
 
 /*
 //virtual
 */
-xui_method_explain(cocos_renderview, render,				void)( void )
+xui_method_explain(cocos_renderview, render,				void			)( void )
 {
 	xui_rect2d<s32> cornerrt = get_cornerrt   ();
 	xui_rect2d<s32> renderrt = get_renderrtabs();
@@ -118,7 +124,7 @@ xui_method_explain(cocos_renderview, render,				void)( void )
 /*
 //callback
 */
-xui_method_explain(cocos_renderview, on_setrendersz,		void)( xui_method_args& args )
+xui_method_explain(cocos_renderview, on_setrendersz,		void			)( xui_method_args& args )
 {
 	xui_control::on_setrendersz(args);
 	if (m_colorbitmap)
@@ -136,13 +142,12 @@ xui_method_explain(cocos_renderview, on_setrendersz,		void)( xui_method_args& ar
 /*
 //method
 */
-xui_method_explain(cocos_renderview, create_framebuffer,	void)( void )
+xui_method_explain(cocos_renderview, create_framebuffer,	void			)( void )
 {
 	if (m_framebuffername == -1)
 	{
 		glGenFramebuffers (1, &m_framebuffername);
 		glGenRenderbuffers(1, &m_depthbuffername);
-		glGenRenderbuffers(1, &m_indexbuffername);
 		attach_framebuffer();
 
 		m_colorbitmap = new xui_bitmap(m_framebuffersize, xui_bitmap_format::R8G8B8, NULL);
@@ -154,17 +159,14 @@ xui_method_explain(cocos_renderview, create_framebuffer,	void)( void )
 			0);
 
 		glBindRenderbuffer			(GL_RENDERBUFFER, m_depthbuffername);
-		glRenderbufferStorage		(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,		m_framebuffersize.w, m_framebuffersize.h);
-		glFramebufferRenderbuffer	(GL_FRAMEBUFFER,  GL_DEPTH_STENCIL_ATTACHMENT,		GL_RENDERBUFFER, m_depthbuffername);
-		//glBindRenderbuffer			(GL_RENDERBUFFER, m_indexbuffername);
-		//glRenderbufferStorage		(GL_RENDERBUFFER, GL_STENCIL_INDEX8,		m_framebuffersize.w, m_framebuffersize.h);
-		//glFramebufferRenderbuffer	(GL_FRAMEBUFFER,  GL_STENCIL_ATTACHMENT,	GL_RENDERBUFFER, m_indexbuffername);
+		glRenderbufferStorage		(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_framebuffersize.w, m_framebuffersize.h);
+		glFramebufferRenderbuffer	(GL_FRAMEBUFFER,  GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depthbuffername);
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		detach_framebuffer();
 	}
 }
-xui_method_explain(cocos_renderview, delete_framebuffer,	void)( void )
+xui_method_explain(cocos_renderview, delete_framebuffer,	void			)( void )
 {
 	if (m_colorbitmap)
 	{
@@ -183,19 +185,20 @@ xui_method_explain(cocos_renderview, delete_framebuffer,	void)( void )
 		glDeleteRenderbuffers(1, &m_depthbuffername);
 		m_depthbuffername  = -1;
 	}
-
-	if (m_indexbuffername != -1)
-	{
-		glDeleteRenderbuffers(1, &m_indexbuffername);
-		m_indexbuffername  = -1;
-	}
 }
-xui_method_explain(cocos_renderview, attach_framebuffer,	void)( void )
+xui_method_explain(cocos_renderview, attach_framebuffer,	void			)( void )
 {
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&m_framebufferlast);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffername);
+
+	xui_vector<s32> sz = get_rendersz();
+	m_cocos2droot->initWithSize(cocos2d::Size(sz.w, sz.h));
+	cocos2d::Director::getInstance()->setOpenGLView(m_cocosglview);
+	cocos2d::Director::getInstance()->replaceScene(m_cocos2droot);
+	m_cocosglview->setFrameSize(sz.w, sz.h);
+	m_cocosglview->setDesignResolutionSize(sz.w, sz.h, ResolutionPolicy::EXACT_FIT);
 }
-xui_method_explain(cocos_renderview, detach_framebuffer,	void)( void )
+xui_method_explain(cocos_renderview, detach_framebuffer,	void			)( void )
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferlast);
 }

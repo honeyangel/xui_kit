@@ -1,5 +1,3 @@
-//#include "NPFileName.h"
-
 #include "xui_global.h"
 #include "xui_treenode.h"
 #include "xui_proproot.h"
@@ -8,14 +6,6 @@
 #include "cocos_mainform.h"
 #include "cocos_resource.h"
 #include "cocos_propfile.h"
-//#include "cocos_proptexture.h"
-//#include "cocos_propparticle.h"
-//#include "onity_propmodule.h"
-//#include "onity_propsprite.h"
-//#include "onity_propaction.h"
-//#include "onity_propcontroller.h"
-//#include "onity_propjsones.h"
-//#include "onity_propcourse.h"
 #include "cocos_filedata.h"
 
 /*
@@ -64,7 +54,7 @@ xui_method_explain(cocos_filedata, get_icon,		xui_bitmap*			)( u32 index )
 }
 xui_method_explain(cocos_filedata, get_text,		std::wstring		)( u32 index )
 {
-	return get_safe(m_text);
+	return get_file(m_text);
 }
 xui_method_explain(cocos_filedata, set_text,		void				)( u32 index, const std::wstring& text )
 {
@@ -74,13 +64,13 @@ xui_method_explain(cocos_filedata, set_text,		void				)( u32 index, const std::w
 
 	xui_global::set_fwatchclose();
 	std::wstring suff = get_suff();
-	std::wstring curr = get_path()+text+suff;
+	std::wstring curr = get_path()+get_safe(text)+suff;
 	std::wstring last = m_text;
 	if (xui_global::rna_file(last, curr))
 	{
 		ntf_rename(last, curr);
-		//cocos_project* project = cocos_mainform::get_ptr()->get_project();
-		//project->ntf_rename(last, curr);
+		cocos_project* project = cocos_mainform::get_ptr()->get_project();
+		project->ntf_rename(last, curr);
 	}
 	xui_global::set_fwatchstart(xui_global::get_workpath());
 }
@@ -94,9 +84,9 @@ xui_method_explain(cocos_filedata, ntf_rename,		void				)( const std::wstring& l
 	m_text.replace(npos, last.length(), curr);
 	m_node->use_linkdata();
 
-	//cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(m_prop);
-	//if (propfile)
-	//	propfile->ntf_rename(last, curr);
+	cocos_propfile* propfile = dynamic_cast<cocos_propfile*>(m_prop);
+	if (propfile)
+		propfile->ntf_rename(last, curr);
 }
 
 /*
@@ -150,37 +140,29 @@ xui_method_explain(cocos_filedata, get_safe,		std::wstring		)( const std::wstrin
 
 	return temp;
 }
-xui_method_explain(cocos_filedata, new_fileprop,	xui_proproot*		)( const std::wstring& full )
+xui_method_explain(cocos_filedata, was_particle,	bool				)( const std::wstring& full )
 {
-	std::wstring suff = get_suff(full);
+	bool result = false;
+	if (get_suff(full) == L".plist")
+	{
+		FILE* file = fopen(xui_global::unicode_to_ascii(full).c_str(), "r");
+		if (file)
+		{
+			xui_global::get_fileline(file);
+			xui_global::get_fileline(file);
+			for (u32 i = 0; i < 5; ++i)
+			{
+				std::string line = xui_global::get_fileline(file);
+				if (line.find("real") != -1)
+				{
+					result = true;
+					break;
+				}
+			}
 
-	//u08 type = META_NONE;
-	//if		(suff == L".npModule") type = META_MODULE;
-	//else if (suff == L".npSprite") type = META_SPRITE;
-	//else if (suff == L".npAction") type = META_ACTION;
-	//else
-	//{}
+			fclose(file);
+		}
+	}
 
-	//if (type != META_NONE)
-	//	onity_prop2dsres::load_meta(type, xui_global::unicode_to_ascii(full));
-
-	//if (suff == L".png" && full.find(L"MODULE") != -1 && full.find(L"BIG") == -1)
-	//	return NULL;
-
-	cocos_propfile* propfile = NULL;
-	//if		(suff == L".png")			propfile = new onity_proptexture	(full);
-	//else if (suff == L".npModule")		propfile = new onity_propmodule		(full);
-	//else if (suff == L".npSprite")		propfile = new onity_propsprite		(full);
-	//else if (suff == L".npAction")		propfile = new onity_propaction		(full);
-	//else if (suff == L".npCourse")		propfile = new onity_propcourse		(full);
-	//else if (suff == L".particle")		propfile = new onity_propparticle	(full);
-	//else if (suff == L".controller")	propfile = new onity_propcontroller	(full);
-	//else if (suff == L".json")			propfile = new onity_propjsones		(full);
-	//else
-	//{}
-
-	if (propfile && xui_global::has_file(full+L".tmp"))
-		cocos_mainform::get_ptr()->add_backupfile(propfile);
-
-	return propfile;
+	return result;
 }

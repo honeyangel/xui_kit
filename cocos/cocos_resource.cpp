@@ -96,6 +96,7 @@ xui_bitmap* cocos_resource::icon_physics	= NULL;
 xui_bitmap* cocos_resource::icon_input		= NULL;
 xui_bitmap* cocos_resource::icon_ai			= NULL;
 xui_bitmap* cocos_resource::icon_filter		= NULL;
+xui_bitmap* cocos_resource::icon_favorite	= NULL;
 
 xui_method_explain(cocos_resource, init, void)( void )
 {
@@ -193,6 +194,7 @@ xui_method_explain(cocos_resource, init, void)( void )
 	icon_input		= xui_bitmap::create("icon/input.png");
 	icon_ai			= xui_bitmap::create("icon/ai.png");
 	icon_filter		= xui_bitmap::create("icon/filter.png");
+	icon_favorite	= xui_bitmap::create("icon/favorite.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

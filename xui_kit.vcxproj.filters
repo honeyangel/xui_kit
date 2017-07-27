@@ -103,6 +103,9 @@
     <Filter Include="LibFTF">
       <UniqueIdentifier>{9935b8aa-f2e4-4f9d-94c0-6387efe7be44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LibOGL">
+      <UniqueIdentifier>{92dac464-3fa0-457d-853c-e2df6277db9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xui_colour.h">
@@ -413,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="xui_droplist.h">
       <Filter>LibGUI\listview</Filter>
+    </ClInclude>
+    <ClInclude Include="libogl\inc\GLee.h">
+      <Filter>LibOGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -847,6 +853,9 @@
     </ClCompile>
     <ClCompile Include="xui_droplist.cpp">
       <Filter>LibGUI\listview</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\GLee.c">
+      <Filter>LibOGL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

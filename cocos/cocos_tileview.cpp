@@ -1,20 +1,10 @@
-//#include "NPFileName.h"
-//#include "NPRender.h"
-//#include "NPSourceTexture.h"
-//#include "NP2DSImage.h"
-//#include "NP2DSFrame.h"
-//#include "NP2DSActor.h"
-//#include "NP2DSLayer.h"
-//#include "NP2DSFrameKey.h"
-//#include "NP2DSTransRef.h"
-//#include "NP2DSTextureCache.h"
-//#include "NP2DSRenderUtil.h"
-//#include "NP2DSRenderStep.h"
 #include "base/CCDirector.h"
 #include "2d/CCScene.h"
 #include "2d/CCSpriteFrame.h"
 #include "2d/CCSprite.h"
 #include "2d/CCSpriteFrameCache.h"
+#include "2d/CCDrawNode.h"
+#include "renderer/CCTexture2D.h"
 
 #include "xui_global.h"
 #include "xui_scroll.h"
@@ -22,11 +12,12 @@
 #include "xui_treenode.h"
 #include "xui_treeview.h"
 #include "cocos_resource.h"
-//#include "onity_prop2dsasset.h"
-//#include "onity_proptexture.h"
 #include "cocos_filedata.h"
 #include "cocos_propfile.h"
+#include "cocos_propatlas.h"
+#include "cocos_propframe.h"
 #include "cocos_renderview.h"
+#include "cocos_proptexture.h"
 #include "cocos_fileview.h"
 #include "cocos_tileview.h"
 #include "cocos_glview.h"
@@ -40,8 +31,11 @@ xui_create_explain(cocos_tileview)( void )
 : xui_control(xui_vector<s32>(0))
 , m_tilesize(20)
 , m_viewfile(NULL)
+, m_curindex(0)
 {
 	m_drawview = new cocos_renderview(xui_vector<s32>(100), xui_vector<s32>(2048, 1024));
+	m_drawnode = cocos2d::DrawNode::create();
+	m_drawview->get_2droot()->addChild(m_drawnode);
 	xui_method_ptrcall(m_drawview, xm_invalid			) += new xui_method_member<xui_method_args,		cocos_tileview>(this, &cocos_tileview::on_drawviewinvalid);
 	xui_method_ptrcall(m_drawview, xm_renderself		) += new xui_method_member<xui_method_args,		cocos_tileview>(this, &cocos_tileview::on_drawviewrenderself);
 	xui_method_ptrcall(m_drawview, xm_keybddown			) += new xui_method_member<xui_method_keybd,	cocos_tileview>(this, &cocos_tileview::on_drawviewkeybddown);
@@ -74,8 +68,21 @@ xui_create_explain(cocos_tileview)( void )
 	m_widgetvec.push_back(m_viewroll);
 	m_widgetvec.push_back(m_drawview);
 	m_widgetvec.push_back(m_editctrl);
+}
 
+/*
+//destructor
+*/
+xui_delete_explain(cocos_tileview)( void )
+{
+	for (u32 i = 0; i < m_2dsprite.size(); ++i)
+	{
+		cocos2d::Node* parent = m_2dsprite[i]->getParent();
+		if (parent)
+			parent->removeChild(m_2dsprite[i]);
 
+		delete m_2dsprite[i];
+	}
 }
 
 /*
@@ -260,10 +267,13 @@ xui_method_explain(cocos_tileview, on_drawviewinvalid,			void						)( xui_compon
 }
 xui_method_explain(cocos_tileview, on_drawviewrenderself,		void						)( xui_component* sender, xui_method_args&	   args )
 {
+	m_drawnode->clear();
+	m_curindex = 0;
+	for (u32 i = 0; i < m_2dsprite.size(); ++i)
+		m_2dsprite[i]->setVisible(false);
+
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.25f));
-	//extern bool gInitCompleted;
-	//if (gInitCompleted == false)
-	//	return;
+	m_plusnode.clear();
 
 	xui_rect2d<s32> rt = m_drawview->get_renderrtins();
 	xui_treeview* lineview = get_lineview();
@@ -315,28 +325,25 @@ xui_method_explain(cocos_tileview, on_drawviewrenderself,		void						)( xui_comp
 		}
 	}
 
-	static cocos2d::Sprite* sprite = NULL;
-	if (sprite == NULL)
-	{
-		cocos2d::SpriteFrame* frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName("btn_big_b_v2.png");
-		sprite = cocos2d::Sprite::createWithSpriteFrame(frame);
-		m_drawview->m_cocos2droot->addChild(sprite);
-	}
-
-	xui_vector<s32> size = m_drawview->get_rendersz();
-	m_drawview->m_cocos2droot->initWithSize(cocos2d::Size(size.w, size.h));
-	cocos2d::Director::getInstance()->setOpenGLView(m_drawview->m_cocosglview);
-	cocos2d::Director::getInstance()->replaceScene(m_drawview->m_cocos2droot);
-
-	m_drawview->m_cocosglview->setFrameSize(size.w, size.h);
-	m_drawview->m_cocosglview->setDesignResolutionSize(size.w, size.h, ResolutionPolicy::EXACT_FIT);
 	cocos2d::Director::getInstance()->drawScene();
-	//NPRender::GetIns()->SetResolutionW(size.w);
-	//NPRender::GetIns()->SetResolutionH(size.h);
-	//NPRender::GetIns()->SetViewport(0, 0, size.w, size.h);
-	//NP2DSRenderStep::GetIns()->SetEntryLocalT(NPVector3::Zero);
-	//NP2DSRenderStep::GetIns()->SetEntryWorldS(NPVector3::PositiveOne);
-	//NP2DSRenderStep::GetIns()->RenderImmediate();
+
+	for (std::map<xui_treenode*, xui_rect2d<s32> >::iterator itor = m_plusnode.begin(); itor != m_plusnode.end(); ++itor)
+	{
+		xui_rect2d<s32> plusrt = (*itor).second;
+		xui_convas::get_ins()->draw_image(cocos_resource::icon_circle, plusrt, xui_colour::gray);
+		xui_bitmap* icon = NULL;
+		if ((*itor).first->was_expanded())
+		{
+			plusrt.oft_x(-1);
+			icon = cocos_resource::icon_back;
+		}
+		else
+		{
+			plusrt.oft_x( 1);
+			icon = cocos_resource::icon_play;
+		}
+		xui_convas::get_ins()->draw_image(icon, plusrt, xui_colour::white);
+	}
 }
 xui_method_explain(cocos_tileview, on_drawviewkeybddown,		void						)( xui_component* sender, xui_method_keybd&	   args )
 {
@@ -499,10 +506,12 @@ xui_method_explain(cocos_tileview, draw_file,					void						)( const xui_rect2d<
 	drawrt.bx -= m_tilesize/5;
 	drawrt.by -= name_size;
 
-	cocos_filedata* filedata = (cocos_filedata*)node->get_linkdata();
-	std::wstring suff = filedata->get_suff();
-	if (suff == L".png")	draw_texture(drawrt, node);
-	else					draw_icon	(drawrt, node);
+	cocos_filedata*		data		= (cocos_filedata*)node->get_linkdata();
+	cocos_propatlas*	propatlas	= dynamic_cast<cocos_propatlas*	 >(data->get_prop());
+	cocos_proptexture*	propimage	= dynamic_cast<cocos_proptexture*>(data->get_prop());
+	std::wstring		suff		= data->get_suff();
+	if (propatlas || propimage)	draw_texture(drawrt, node);
+	else						draw_icon	(drawrt, node);
 
 	if (node->get_leafnodecount() > 0)
 	{
@@ -513,19 +522,7 @@ xui_method_explain(cocos_tileview, draw_file,					void						)( const xui_rect2d<
 		plusrt.bx = center.x+half;
 		plusrt.ay = center.y-half;
 		plusrt.by = center.y+half;
-		xui_convas::get_ins()->draw_image(cocos_resource::icon_circle, plusrt, xui_colour::gray);
-		xui_bitmap* icon = NULL;
-		if (node->was_expanded())
-		{
-			plusrt.oft_x(-1);
-			icon = cocos_resource::icon_back;
-		}
-		else
-		{
-			plusrt.oft_x( 1);
-			icon = cocos_resource::icon_play;
-		}
-		xui_convas::get_ins()->draw_image(icon, plusrt, xui_colour::white);
+		m_plusnode[node] = plusrt;
 	}
 }
 xui_method_explain(cocos_tileview, draw_icon,					void						)( const xui_rect2d<s32>& rt, xui_treenode* node )
@@ -564,177 +561,68 @@ xui_method_explain(cocos_tileview, draw_leaf,					void						)( const xui_rect2d<
 		xui_convas::get_ins()->fill_rectangle(drawrt, xui_colour(0.5f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 
 	cocos_treedata* data = (cocos_treedata*)node->get_linkdata();
-	//onity_prop2dsasset* prop2dsasset = dynamic_cast<onity_prop2dsasset*>(data->get_prop());
-	//if (prop2dsasset)
-	//{
-	//	NP2DSAsset* asset = prop2dsasset->get_asset();
-	//	if		(NPIsExaKindOf(NP2DSImage, asset))	draw_image(drawrt, (NP2DSImage*)asset);
-	//	else if (NPIsExaKindOf(NP2DSFrame, asset))	draw_frame(drawrt, (NP2DSFrame*)asset);
-	//	else if (NPIsExaKindOf(NP2DSActor, asset))	draw_actor(drawrt, (NP2DSActor*)asset);
-	//	else
-	//	{}
-	//}
-	//else
+	cocos_propframe* propframe = dynamic_cast<cocos_propframe*>(data->get_prop());
+	if (propframe)
 	{
-		draw_icon(drawrt, data->get_node());
+		draw_frame(drawrt, propframe->get_frame());
+	}
+	else
+	{
+		draw_icon (drawrt, data->get_node());
 	}
 }
 xui_method_explain(cocos_tileview, draw_texture,				void						)( const xui_rect2d<s32>& rt, xui_treenode* node )
 {
-	//NPVector2 p1((npf32)rt.ax, (npf32)rt.ay);
-	//NPVector2 p2((npf32)rt.bx, (npf32)rt.by);
-	//NP2DSRenderUtil::GetIns()->DrawRect(p1, p2, NPMatrix4x4::Identity, NPColor(90.0f/255.0f, 90.0f/255.0f, 90.0f/255.0f));
+	cocos2d::Vec2 p1(rt.ax, m_drawview->get_renderh()-rt.ay);
+	cocos2d::Vec2 p2(rt.bx, m_drawview->get_renderh()-rt.by);
+	m_drawnode->drawSolidRect(p1, p2, cocos2d::Color4F(90.0f/255.0f, 90.0f/255.0f, 90.0f/255.0f, 1.0f));
 
-	//onity_filedata*    filedata = (onity_filedata*)node->get_linkdata();
-	//onity_proptexture* fileprop = dynamic_cast<onity_proptexture*>(filedata->get_prop());
-	//NPSourceTexture*   texture  = fileprop->get_texture();
-	//if (texture)
-	//{
-	//	npu32 w = texture->GetWidth ();
-	//	npu32 h = texture->GetHeight();
-	//	npf32 s = (npf32)(m_tilesize) / xui_max(w, h);
-	//	npf32 x = p1.x;
-	//	npf32 y = p1.y;
-	//	NPTransform t;
-	//	t.SetIdentity();
-	//	t.SetS(NPVector3(s, s, 1.0f));
-	//	t.SetT(NPVector3(x, y, 0.0f));
-	//	NP2DSImage image(-1, "", -1, 0, 0, (nps16)texture->GetPixelWidth(), (nps16)texture->GetPixelHeight(), true);
-	//	NP2DSRenderUtil::GetIns()->DrawImage(
-	//		&image, 
-	//		t.GetMatrix(),
-	//		NPColor::White, 
-	//		0,
-	//		0,
-	//		0,
-	//		0,
-	//		texture->GetKey());
-	//}
+	cocos_filedata*		filedata	= (cocos_filedata*)node->get_linkdata();
+	cocos_proptexture*	propimage	= dynamic_cast<cocos_proptexture*>(filedata->get_prop());
+	cocos_propatlas*	propatlas	= dynamic_cast<cocos_propatlas*  >(filedata->get_prop());
+	cocos2d::Texture2D* texture		= NULL;
+	if (propimage)
+		texture = propimage->get_texture();
+	if (propatlas)
+		texture = propatlas->get_texture();
+	if (texture)
+	{
+		cocos2d::Sprite* sprite = push_2dsprite();
+		sprite->initWithTexture(texture);
+		cocos2d::Vec2 anchor = sprite->getAnchorPointInPoints();
+
+		s32 w = texture->getPixelsWide();
+		s32 h = texture->getPixelsHigh();
+		f32 s = (f32)(m_tilesize) / xui_max(w, h);
+		f32 x = rt.ax + anchor.x*s;
+		f32 y = rt.ay - anchor.y*s;
+		sprite->setScale(s, s);
+		sprite->setPosition(x, m_drawview->get_renderh() - y - h*s);
+	}
 }
-//xui_method_explain(onity_tileview, draw_image,					void						)( const xui_rect2d<s32>& rt, NP2DSImage* image )
-//{
-//	f32 sw = (f32)m_tilesize / (f32)image->GetSrcW();
-//	f32 sh = (f32)m_tilesize / (f32)image->GetSrcH();
-//	f32 s  = xui_min(sw, sh);
-//	if (s > 1.0f)
-//		s = 1.0f;
-//
-//	NPVector3 scale = NPVector3(s, s, 1.0f);
-//	NPVector3 trans = NPVector3(
-//		(((f32)m_tilesize - image->GetSrcW() * s) / 2.0f) + (f32)rt.ax, 
-//		(((f32)m_tilesize - image->GetSrcH() * s) / 2.0f) + (f32)rt.ay,
-//		0.0f);
-//
-//	trans.x = xui_pixel_align(trans.x);
-//	trans.y = xui_pixel_align(trans.y);
-//
-//	NPTransform t;
-//	t.SetIdentity();
-//	t.SetS(scale);
-//	t.SetT(trans);
-//
-//	NP2DSRenderUtil::GetIns()->DrawImage(
-//		image,
-//		t.GetMatrix(),
-//		NPColor::White,
-//		0,
-//		0,
-//		0,
-//		0);
-//}
-//xui_method_explain(onity_tileview, draw_frame,					void						)( const xui_rect2d<s32>& rt, NP2DSFrame* frame )
-//{
-//	NPRect bound = frame->GetBounding();
-//
-//	f32 sw = (f32)m_tilesize / (f32)bound.GetW();
-//	f32 sh = (f32)m_tilesize / (f32)bound.GetH();
-//	f32 s  = xui_min(sw, sh);
-//	if (s > 1.0f)
-//		s = 1.0f;
-//
-//	NPVector3 scale = NPVector3(s, s, 1.0f);
-//	NPVector3 trans = NPVector3(
-//		(-bound.LT*s + (((f32)rt.get_w() - bound.GetW()*s)) / 2.0f) + (f32)rt.ax, 
-//		(-bound.TP*s + (((f32)rt.get_h() - bound.GetH()*s)) / 2.0f) + (f32)rt.ay,
-//		0.0f);
-//
-//	trans.x = xui_pixel_align(trans.x);
-//	trans.y = xui_pixel_align(trans.y);
-//
-//	if (frame->WasAcceptScale())
-//	{
-//		bound.SetW((nps32)(scale.x * bound.GetW()));
-//		bound.SetH((nps32)(scale.y * bound.GetH()));
-//		bound.OftX((nps32)(trans.x));
-//		bound.OftY((nps32)(trans.y));
-//		NP2DSRenderUtil::GetIns()->DrawFrameStrench(
-//			frame,
-//			NPVector2::PositiveOne,
-//			bound,
-//			NPMatrix4x4::Identity,
-//			NPColor::White,
-//			0,
-//			0,
-//			0,
-//			0);
-//	}
-//	else
-//	{
-//		NPTransform t;
-//		t.SetIdentity();
-//		t.SetS(scale);
-//		t.SetT(trans);
-//
-//		NP2DSRenderUtil::GetIns()->DrawFrame(
-//			frame,
-//			t.GetMatrix(),
-//			NPColor::White,
-//			0,
-//			0,
-//			0,
-//			0);
-//	}
-//}
-//xui_method_explain(onity_tileview, draw_actor,					void						)( const xui_rect2d<s32>& rt, NP2DSActor* actor )
-//{
-//	NPRect bound = NPRect::Empty;
-//	for (s32 i = (s32)actor->GetLayerCount()-1; i >= 0; --i)
-//	{
-//		NP2DSLayer* layer = actor->GetLayer((npu16)i);
-//		if (layer->GetFrameKeyCount() == 0)
-//			continue;
-//
-//		std::list<NP2DSFrameKey*>& frameKeyList = layer->GetFrameKeyList();
-//		NP2DSFrameKey* frameKey  = frameKeyList.front();
-//		bound = bound.GetUnion(frameKey->GetTransRef()->GetWorldBounding());
-//	}
-//
-//	f32 sw = (f32)m_tilesize / (f32)bound.GetW();
-//	f32 sh = (f32)m_tilesize / (f32)bound.GetH();
-//	f32 s  = xui_min(sw, sh);
-//	if (s > 1.0f)
-//		s = 1.0f;
-//
-//	NPVector3 scale = NPVector3(s, s, 1.0f);
-//	NPVector3 trans = NPVector3(
-//		(-bound.LT*s + (((f32)rt.get_w() - bound.GetW()*s)) / 2.0f) + (f32)rt.ax, 
-//		(-bound.TP*s + (((f32)rt.get_h() - bound.GetH()*s)) / 2.0f) + (f32)rt.ay,
-//		0.0f);
-//
-//	trans.x = xui_pixel_align(trans.x);
-//	trans.y = xui_pixel_align(trans.y);
-//
-//	for (s32 i = (s32)actor->GetLayerCount()-1; i >= 0; --i)
-//	{
-//		NP2DSLayer* layer = actor->GetLayer((npu16)i);
-//		if (layer->GetFrameKeyCount() == 0)
-//			continue;
-//
-//		std::list<NP2DSFrameKey*>& frameKeyList = layer->GetFrameKeyList();
-//		NP2DSFrameKey* frameKey  = frameKeyList.front();
-//		frameKey->GetTransRef()->Render(scale, trans);
-//	}
-//}
+xui_method_explain(cocos_tileview, draw_frame,					void						)( const xui_rect2d<s32>& rt, cocos2d::SpriteFrame* frame )
+{
+	cocos2d::Sprite* sprite = push_2dsprite();
+	sprite->setSpriteFrame(frame);
+
+	cocos2d::Rect framerect = frame->getRect();
+	f32 sw = (f32)m_tilesize / (f32)framerect.size.width;
+	f32 sh = (f32)m_tilesize / (f32)framerect.size.height;
+	f32 s = xui_min(sw, sh);
+	if (s > 1.0f)
+		s = 1.0f;
+
+	cocos2d::Vec2 anchor = sprite->getAnchorPointInPoints();
+	cocos2d::Vec2 offset = sprite->getOffsetPosition();
+
+	f32 x = rt.ax + anchor.x*s - offset.x*s + (((f32)m_tilesize - framerect.size.width  * s) / 2.0f);
+	f32 y = rt.ay - anchor.y*s + offset.y*s + (((f32)m_tilesize - framerect.size.height * s) / 2.0f);
+	//x = xui_pixel_align(trans.x);
+	//y = xui_pixel_align(trans.y);
+
+	sprite->setScale(s, s);
+	sprite->setPosition(x, m_drawview->get_renderh() - y - framerect.size.height*s);
+}
 xui_method_explain(cocos_tileview, draw_node,					void						)( s32 ic, s32 ir, s32 x, s32 y, s32 w, s32 s, xui_treenode* node )
 {
 	xui_rect2d<s32> tilert;
@@ -791,4 +679,22 @@ xui_method_explain(cocos_tileview, draw_background,				void						)( s32 ic, s32 
 
 		++ir; ic = 0;
 	}
+}
+xui_method_explain(cocos_tileview, push_2dsprite,				cocos2d::Sprite*			)( void )
+{
+	if (m_curindex >= m_2dsprite.size())
+	{
+		for (u32 i = 0; i < 10; ++i)
+		{
+			cocos2d::Sprite* sprite = cocos2d::Sprite::create();
+			sprite->setVisible(false);
+			m_2dsprite.push_back(sprite);
+			m_drawview->get_2droot()->addChild(sprite);
+		}
+	}
+
+	cocos2d::Sprite* result = m_2dsprite[m_curindex];
+	result->setVisible(true);
+	++m_curindex;
+	return result;
 }

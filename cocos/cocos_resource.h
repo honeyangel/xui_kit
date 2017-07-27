@@ -108,6 +108,7 @@ public:
 	static xui_bitmap*	icon_input;
 	static xui_bitmap*	icon_physics;
 	static xui_bitmap*	icon_filter;
+	static xui_bitmap*	icon_favorite;
 };
 
 #endif//__cocos_resource_h__

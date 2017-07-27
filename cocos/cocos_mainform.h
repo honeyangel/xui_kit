@@ -17,15 +17,12 @@ enum
 	TOC_WORLD,
 };
 
-//class onity_hierarchy;
+class cocos_hierarchy;
 class cocos_inspector;
 class cocos_project;
-//class onity_game;
-//class onity_animator;
 class cocos_console;
 class cocos_timeline;
 class cocos_scene;
-//class onity_course;
 class cocos_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -46,18 +43,16 @@ public:
 	/*
 	//method
 	*/
-	//onity_hierarchy*			get_hierarchy		( void );
+	cocos_hierarchy*			get_hierarchy		( void );
 	cocos_inspector*			get_inspector		( void );
 	cocos_project*				get_project			( void );
-	//onity_animator*				get_animator		( void );
-	//onity_game*					get_game			( void );
 	cocos_scene*				get_scene			( void );
 	cocos_console*				get_console			( void );
 	cocos_timeline*				get_timeline		( void );
-	//onity_course*				get_course			( void );
 	void						add_backupfile		( xui_proproot* prop );
 	u32							get_backupfilenum	( void ) const;
 	xui_proproot*				get_backupfile		( u32 index ) const;
+	bool						was_ignorepath		( const std::wstring& path );
 
 	/*
 	//method
@@ -81,7 +76,6 @@ protected:
 	void						on_clicktransform	( xui_component* sender, xui_method_args&  args );
 	void						on_clickanchor		( xui_component* sender, xui_method_args&  args );
 	void						on_clickcoordinate	( xui_component* sender, xui_method_args&  args );
-	void						on_clickbuild		( xui_component* sender, xui_method_args&  args );
 	void						on_clickdebug		( xui_component* sender, xui_method_args&  args );
 	void						on_clickwndmenu		( xui_component* sender, xui_method_args&  args );
 	void						on_clicksave		( xui_component* sender, xui_method_args&  args );
@@ -91,8 +85,6 @@ protected:
 	void						on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
 	void						on_recentaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_backupaccept		( xui_component* sender, xui_method_args&  args );
-	//void						on_configaccept		( xui_component* sender, xui_method_args&  args );
-	//void						on_courseaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
 
 	/*
@@ -118,19 +110,18 @@ protected:
 	xui_button*					m_saveall;
 	xui_button*					m_setting;
 	xui_toggle*					m_window;
-	//xui_menuitem*				m_hierarchy;
+	xui_menuitem*				m_hierarchy;
 	xui_menuitem*				m_inspector;
 	xui_menuitem*				m_project;
 	xui_menuitem*				m_console;
 	xui_menuitem*				m_timeline;
-	//xui_menuitem*				m_game;
 	xui_menuitem*				m_scene;
-	//xui_menuitem*				m_animator;
 	xui_menuitem*				m_save;
 	xui_menuitem*				m_load;
 	xui_menuitem*				m_reset;
 	s32							m_steptime;
 	std::vector<xui_proproot*>	m_backupfiles;
+	std::vector<std::wstring>	m_ignorepaths;
 };
 
 #endif//__cocos_mainform_h__

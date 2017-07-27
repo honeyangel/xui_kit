@@ -816,6 +816,16 @@ xui_method_explain(xui_global, get_fwatch,		const xui_notify_vec&			)( void )
 //font
 */
 std::vector<std::string> g_fontfilevec;
+xui_method_explain(xui_global, get_fontface,	s32								)( const std::string& file )
+{
+	for (s32 i = 0; i < (s32)g_fontfilevec.size(); ++i)
+	{
+		if (g_fontfilevec[i] == file)
+			return i;
+	}
+
+	return 0;
+}
 xui_method_explain(xui_global, get_fontfile,	const std::string&				)( s32 face )
 {
 	return g_fontfilevec[face];

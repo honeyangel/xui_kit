@@ -187,6 +187,7 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,	  GL_CLAMP);
 
 	glDisable(GL_POLYGON_SMOOTH);
+	glUseProgram(0);
 	glBegin(GL_QUADS);
 	glColor4fv(color.value);
 
@@ -587,6 +588,7 @@ xui_method_explain(xui_convas, draw_line,			void					)( const xui_vector<s32>&	p
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LINE_SMOOTH);
+	glUseProgram(0);
 	glBegin(GL_LINES);
 	glColor4fv(color.value);
 
@@ -607,6 +609,7 @@ xui_method_explain(xui_convas, draw_path,			void					)( xui_vector<s32>*			pt,
 		return;
 
 	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINE_LOOP);
 	glColor4fv(color.value);
@@ -626,6 +629,7 @@ xui_method_explain(xui_convas, fill_poly,			void					)( xui_vector<s32>*			pt,
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_POLYGON_SMOOTH);
+	glUseProgram(0);
 	glBegin(GL_TRIANGLES);
 	glColor4fv(color.value);
 
@@ -739,6 +743,7 @@ xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32
 	else		glDisable(GL_POLYGON_SMOOTH);
 
 	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
 	glBegin(GL_QUADS);
 	glColor4fv(color.value);
 
@@ -758,6 +763,7 @@ xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32
 
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
 	glBegin(GL_QUADS);
 
 	glColor4fv(colors[0].value);
@@ -970,6 +976,7 @@ xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt
 	if (smooth)		glEnable (GL_LINE_SMOOTH);
 	else			glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
 	glBegin(GL_LINE_STRIP);
 	glColor4fv(color.value);
 
@@ -1006,6 +1013,7 @@ xui_method_explain(xui_convas, fill_arc,			void					)( const xui_rect2d<s32>&	rt
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_POLYGON_SMOOTH);
+	glUseProgram(0);
 	glBegin(GL_TRIANGLE_FAN);
 	glColor4fv(color.value);
 
@@ -1042,6 +1050,7 @@ xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	c
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_LINE_SMOOTH);
+	glUseProgram(0);
 	glBegin(GL_LINES);
 	glColor4fv(color.value);
 
