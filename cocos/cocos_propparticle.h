@@ -2,6 +2,7 @@
 #define __cocos_propparticle_h__
 
 #include "cocos_propfile.h"
+#include "cocos_propdata_blend.h"
 
 namespace cocos2d
 {
@@ -125,12 +126,14 @@ protected:
 	static xui_vector<f64>		get_positionvar		( void* userptr );
 	static void					set_positionvar		( void* userptr, const xui_vector<f64>& value );
 
-	static s32					get_blendfunction	( void* userptr );
-	static void					set_blendfunction	( void* userptr, s32 value );
-	static s32					get_blendsrc		( void* userptr );
-	static void					set_blendsrc		( void* userptr, s32 value );
-	static s32					get_blenddst		( void* userptr );
-	static void					set_blenddst		( void* userptr, s32 value );
+	static cocos_blend_value	get_blendfunc		( void* userptr );
+	static void					set_blendfunc		( void* userptr, const cocos_blend_value& value );
+	//static s32					get_blendfunction	( void* userptr );
+	//static void					set_blendfunction	( void* userptr, s32 value );
+	//static s32					get_blendsrc		( void* userptr );
+	//static void					set_blendsrc		( void* userptr, s32 value );
+	//static s32					get_blenddst		( void* userptr );
+	//static void					set_blenddst		( void* userptr, s32 value );
 
 	/*
 	//member

@@ -4,6 +4,7 @@
 #include "xui_bitmap_format.h"
 #include "cocos_glview.h"
 #include "cocos_renderview.h"
+#include "cocos_mainform.h"
 #include "2d/CCScene.h"
 #include "base/CCDirector.h"
 
@@ -20,8 +21,8 @@ xui_create_explain(cocos_renderview)( const xui_vector<s32>& size, const xui_vec
 	m_framebuffername	= -1;
 	m_depthbuffername	= -1;
 	m_framebufferlast	= -1;
-	m_cocosglview		= cocos_glview::create(NULL);
-	m_cocos2droot		= cocos2d::Scene::create();
+	//m_cocosglview		= cocos_glview::create(NULL);
+	m_cocos2droot		= cocos2d::Node::create();
 
 	create_framebuffer();
 }
@@ -31,7 +32,7 @@ xui_create_explain(cocos_renderview)( const xui_vector<s32>& size, const xui_vec
 */
 xui_delete_explain(cocos_renderview)( void )
 {
-	delete m_cocosglview;
+	//delete m_cocosglview;
 	delete m_cocos2droot;
 	delete_framebuffer();
 }
@@ -39,7 +40,7 @@ xui_delete_explain(cocos_renderview)( void )
 /*
 //method
 */
-xui_method_explain(cocos_renderview, get_2droot,			cocos2d::Scene*	)( void )
+xui_method_explain(cocos_renderview, get_2droot,			cocos2d::Node*	)( void )
 {
 	return m_cocos2droot;
 }
@@ -76,6 +77,14 @@ xui_method_explain(cocos_renderview, render,				void			)( void )
 		xui_rect2d<s32> viewport = xui_convas::get_ins()->get_viewport();
 		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
 		attach_framebuffer();
+		xui_vector<s32> sz = get_rendersz();
+		cocos2d::GLView* glview = cocos2d::Director::getInstance()->getOpenGLView();
+		glview->setFrameSize(sz.w, sz.h);
+		glview->setDesignResolutionSize(sz.w, sz.h, ResolutionPolicy::EXACT_FIT);
+
+		cocos2d::Scene* scene = cocos_mainform::get_ptr()->get_cocosscene();
+		scene->initWithSize(cocos2d::Size(sz.w, sz.h));
+		scene->addChild(m_cocos2droot);
 		xui_convas::get_ins()->set_viewport(get_renderrt());
 		xui_convas::get_ins()->set_cliprect(xui_rect2d<s32>(0));
 		xui_convas::get_ins()->begin();
@@ -83,6 +92,7 @@ xui_method_explain(cocos_renderview, render,				void			)( void )
 		on_renderself(      args);
 		xm_renderself(this, args);
 		detach_framebuffer();
+		scene->removeChild(m_cocos2droot);
 		xui_convas::get_ins()->set_viewport(viewport);
 		xui_convas::get_ins()->set_cliprect(cliprect);
 		xui_convas::get_ins()->begin();
@@ -190,13 +200,6 @@ xui_method_explain(cocos_renderview, attach_framebuffer,	void			)( void )
 {
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&m_framebufferlast);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffername);
-
-	xui_vector<s32> sz = get_rendersz();
-	m_cocos2droot->initWithSize(cocos2d::Size(sz.w, sz.h));
-	cocos2d::Director::getInstance()->setOpenGLView(m_cocosglview);
-	cocos2d::Director::getInstance()->replaceScene(m_cocos2droot);
-	m_cocosglview->setFrameSize(sz.w, sz.h);
-	m_cocosglview->setDesignResolutionSize(sz.w, sz.h, ResolutionPolicy::EXACT_FIT);
 }
 xui_method_explain(cocos_renderview, detach_framebuffer,	void			)( void )
 {

@@ -18,7 +18,7 @@ xui_create_explain(cocos_propdata_texture)(
 	get_func			userget, 
 	set_func			userset, 
 	void*				userptr )
-: xui_propdata_object_func(kind, name, cocos_propctrl_asset::create, "Texture2D", cocos_selector::get_ptr, get_texicon, get_texname, userget, userset, userptr)
+: xui_propdata_object_func(kind, name, cocos_propctrl_asset::create, "Texture2D", cocos_selector::get_ptr, get_icon, get_name, userget, userset, userptr)
 {
 	xm_doubleclick += new xui_method_member<xui_method_args, cocos_propdata_texture>(this, &cocos_propdata_texture::on_doubleclick);
 }
@@ -50,18 +50,18 @@ xui_method_explain(cocos_propdata_texture, on_doubleclick,	void		)( xui_componen
 /*
 //static
 */
-xui_method_explain(cocos_propdata_texture, get_texicon,		xui_bitmap*	)( xui_propdata* propdata )
+xui_method_explain(cocos_propdata_texture, get_icon,		xui_bitmap*	)( xui_propdata* propdata )
 {
 	return cocos_resource::icon_texture;
 }
-xui_method_explain(cocos_propdata_texture, get_texname,		std::wstring)( xui_propdata* propdata )
+xui_method_explain(cocos_propdata_texture, get_name,		std::wstring)( xui_propdata* propdata )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
 	cocos2d::Texture2D* texture = (cocos2d::Texture2D*)dataobject->get_value();
 	if (texture)
 	{
 		std::wstring full = xui_global::ascii_to_unicode(texture->getFileName());
-		return cocos_filedata::get_safe(full);
+		return cocos_filedata::get_file(full);
 	}
 
 	return L"None";

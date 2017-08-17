@@ -29,6 +29,7 @@ xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32
 	m_dockarea	= dockarea;
 	m_initdock	= initdock;
 	m_minlimit  = minlimit;
+	m_autofree	= false;
 	m_namectrl	= xui_drawer::create(L"");
 	xui_method_ptrcall(m_namectrl, set_parent)(this);
 	m_namectrl->xm_topdraw	 += new xui_method_member<xui_method_args,  xui_dockpage>(this, &xui_dockpage::on_namectrltopdraw  );
@@ -40,6 +41,14 @@ xui_create_explain(xui_dockpage)( const xui_vector<s32>& size, u32 dockarea, s32
 /*
 //method
 */
+xui_method_explain(xui_dockpage, was_autofree,			bool					)( void ) const
+{
+	return m_autofree;
+}
+xui_method_explain(xui_dockpage, set_autofree,			void					)( bool flag )
+{
+	m_autofree = flag;
+}
 xui_method_explain(xui_dockpage, get_inborder,			const xui_rect2d<s32>&	)( void ) const
 {
 	return m_inborder;
@@ -191,7 +200,7 @@ xui_method_explain(xui_dockpage, update_else,			void					)( f32 delta )
 	{
 		for (u32 i = 0; i < m_widgetvec.size(); ++i)
 		{
-			if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
+			if (m_widgetvec[i]->was_visible())
 				m_widgetvec[i]->update(delta);
 		}
 	}
@@ -411,7 +420,7 @@ xui_method_explain(xui_dockpage, on_namectrlmouserise,	void					)( xui_component
 		if (dockstyle != DOCKSTYLE_N)
 		{
 			xui_dockview* rootview = xui_dynamic_cast(xui_dockview, m_parent);
-			rootview->del_dockpage(this);
+			rootview->del_dockpage(this, false);
 			if (dockstyle == DOCKSTYLE_U)
 			{
 				xui_vector<s32> pt = xui_desktop::get_ins()->get_mousecurr();

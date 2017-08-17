@@ -1,6 +1,8 @@
 #include "renderer/CCGLProgramCache.h"
 #include "platform/CCFileUtils.h"
 #include "base/CCConfiguration.h"
+#include "base/CCDirector.h"
+#include "2d/CCScene.h"
 
 #include "xui_desktop.h"
 #include "xui_syswnd.h"
@@ -14,21 +16,21 @@
 #include "xui_menuitem.h"
 #include "xui_dockpage.h"
 #include "xui_dockview.h"
+#include "cocos_propcsd.h"
+#include "cocos_scene.h"
 #include "cocos_resource.h"
 #include "cocos_inspector.h"
+#include "cocos_hierarchy.h"
 #include "cocos_console.h"
 #include "cocos_project.h"
+#include "cocos_toolbox.h"
 #include "cocos_recent.h"
 #include "cocos_backup.h"
 #include "cocos_save.h"
+#include "cocos_glview.h"
 #include "cocos_mainform.h"
 
 xui_implement_rtti(cocos_mainform, xui_window);
-
-/*
-//global
-*/
-bool OnityEditMode = false;
 
 /*
 //constructor
@@ -40,6 +42,8 @@ xui_create_explain(cocos_mainform)( void )
 	xm_keybddown   += new xui_method_member<xui_method_keybd, cocos_mainform>(this, &cocos_mainform::on_globalkeybddown);
 	m_dockstyle		= DOCKSTYLE_F;
 
+	m_glview		= cocos_glview::create(NULL);
+	m_cocosscene	= cocos2d::Scene::create();
 	m_select		= xui_toggle::create(cocos_resource::icon_select,		32);
 	m_translate		= xui_toggle::create(cocos_resource::icon_translate,	32);
 	m_scale			= xui_toggle::create(cocos_resource::icon_scale,		32);
@@ -106,19 +110,19 @@ xui_create_explain(cocos_mainform)( void )
 	m_project		= menu->add_item(cocos_resource::icon_project,		L"Project");
 	m_console		= menu->add_item(cocos_resource::icon_console,		L"Console");
 	m_timeline		= menu->add_item(cocos_resource::icon_timeline,		L"Timeline");
-	m_scene			= menu->add_item(cocos_resource::icon_scene,		L"Scene");
-	//xui_method_ptrcall(m_hierarchy,		set_data		)(new cocos_hierarchy);
+	m_toolbox		= menu->add_item(cocos_resource::icon_setting,		L"Toolbox");
+	xui_method_ptrcall(m_hierarchy,		set_data		)(new cocos_hierarchy);
 	xui_method_ptrcall(m_inspector,		set_data		)(new cocos_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new cocos_project);
 	xui_method_ptrcall(m_console,		set_data		)(new cocos_console);
+	xui_method_ptrcall(m_toolbox,		set_data		)(new cocos_toolbox);
 	//xui_method_ptrcall(m_timeline,		set_data		)(new cocos_timeline);
-	//xui_method_ptrcall(m_scene,			set_data		)(new cocos_scene);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_toolbox,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
-	xui_method_ptrcall(m_scene,			xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
 	m_load			= menu->add_item(NULL, L"Load");
@@ -144,6 +148,7 @@ xui_create_explain(cocos_mainform)( void )
 	m_toolpane		= new xui_panel(xui_vector<s32>(40));
 	m_mainview		= xui_dockview::create();
 	xui_method_ptrcall(m_mainview,		xm_invalid		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_mainviewinvalid);
+	xui_method_ptrcall(m_mainview,		xm_pagechanged	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_mainviewchanged);
 	xui_method_ptrcall(m_toolpane,		ini_component	)(0, 0, DOCKSTYLE_T);
 	xui_method_ptrcall(m_toolpane,		set_borderrt	)(xui_rect2d<s32>(8));
 	xui_method_ptrcall(m_toolpane,		add_child		)(line_transform);
@@ -152,6 +157,15 @@ xui_create_explain(cocos_mainform)( void )
 	xui_method_ptrcall(m_toolpane,		add_child		)(line_menu);
 	add_child(m_toolpane);
 	add_child(m_mainview);
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(cocos_mainform)( void )
+{
+	delete m_glview;
+	delete m_cocosscene;
 }
 
 /*
@@ -168,11 +182,11 @@ xui_method_explain(cocos_mainform, get_ptr,				cocos_mainform*		)( void )
 xui_method_explain(cocos_mainform, get_pagename,		std::string			)( xui_dockpage* page )
 {
 	cocos_mainform* mainform = get_ptr();
-	if		(page == mainform->get_project())	return "project";
-	//else if	(page == mainform->get_hierarchy())	return "hierarchy";
+	if		(page == mainform->get_project  ())	return "project";
+	else if	(page == mainform->get_hierarchy())	return "hierarchy";
 	else if (page == mainform->get_inspector())	return "inspector";
-	//else if (page == mainform->get_scene	()) return "scene";
 	else if (page == mainform->get_console	())	return "console";
+	else if (page == mainform->get_toolbox  ()) return "toolbox";
 	//else if (page == mainform->get_timeline	())	return "timeline";
 	else
 	{
@@ -182,11 +196,11 @@ xui_method_explain(cocos_mainform, get_pagename,		std::string			)( xui_dockpage*
 xui_method_explain(cocos_mainform, get_pagectrl,		xui_dockpage*		)( const std::string& name )
 {
 	cocos_mainform* mainform = get_ptr();
-	if		(name == "project")		return mainform->get_project();
-	//else if	(name == "hierarchy")	return mainform->get_hierarchy();
-	else if (name == "inspector")	return mainform->get_inspector();
-	//else if (name == "scene")		return mainform->get_scene();
-	else if (name == "console")		return mainform->get_console();
+	if		(name == "project")		return mainform->get_project	();
+	else if	(name == "hierarchy")	return mainform->get_hierarchy	();
+	else if (name == "inspector")	return mainform->get_inspector	();
+	else if (name == "console")		return mainform->get_console	();
+	else if (name == "toolbox")		return mainform->get_toolbox	();
 	//else if (name == "timeline")	return mainform->get_timeline();
 	else
 	{
@@ -197,6 +211,10 @@ xui_method_explain(cocos_mainform, get_pagectrl,		xui_dockpage*		)( const std::s
 /*
 //method
 */
+xui_method_explain(cocos_mainform, get_cocosscene,		cocos2d::Scene*		)( void )
+{
+	return m_cocosscene;
+}
 xui_method_explain(cocos_mainform, get_hierarchy,		cocos_hierarchy*	)( void )
 {
 	return (cocos_hierarchy*)	xui_method_ptrcall(m_hierarchy, get_data)();
@@ -209,13 +227,13 @@ xui_method_explain(cocos_mainform, get_project,			cocos_project*		)( void )
 {
 	return (cocos_project*)		xui_method_ptrcall(m_project,	get_data)();
 }
-xui_method_explain(cocos_mainform, get_scene,			cocos_scene*		)( void )
-{
-	return (cocos_scene*)		xui_method_ptrcall(m_scene,		get_data)();
-}
 xui_method_explain(cocos_mainform, get_console,			cocos_console*		)( void )
 {
 	return (cocos_console*)		xui_method_ptrcall(m_console,	get_data)();
+}
+xui_method_explain(cocos_mainform, get_toolbox,			cocos_toolbox*		)( void )
+{
+	return (cocos_toolbox*)		xui_method_ptrcall(m_toolbox,	get_data)();
 }
 xui_method_explain(cocos_mainform, get_timeline,		cocos_timeline*		)( void )
 {
@@ -225,6 +243,36 @@ xui_method_explain(cocos_mainform, get_timeline,		cocos_timeline*		)( void )
 /*
 //method
 */
+xui_method_explain(cocos_mainform, get_scene,			cocos_scene*		)( void )
+{
+	return xui_dynamic_cast(cocos_scene, m_mainview->get_showpage());
+}
+xui_method_explain(cocos_mainform, get_scene,			cocos_scene*		)( cocos_propcsd* prop )
+{
+	std::vector<xui_dockpage*> pagelist = m_mainview->get_pagelist();
+	for (u32 i = 0; i < pagelist.size(); ++i)
+	{
+		cocos_scene* scene = xui_dynamic_cast(cocos_scene, pagelist[i]);
+		if (scene && scene->get_editprop() == prop)
+			return scene;
+	}
+
+	return NULL;
+}
+xui_method_explain(cocos_mainform, add_scene,			cocos_scene*		)( cocos_propcsd* prop )
+{
+	cocos_scene* newpage = get_scene(prop);
+	if (newpage == NULL)
+	{
+		newpage  = new cocos_scene(prop);
+		m_mainview->set_pageshow(newpage, true);
+		m_mainview->refresh();
+		newpage->set_rootvisible();
+	}
+
+	m_mainview->set_showpage(newpage);
+	return newpage;
+}
 xui_method_explain(cocos_mainform, was_gamerun,			bool				)( void ) const
 {
 	return m_run->was_push();
@@ -486,9 +534,9 @@ xui_method_explain(cocos_mainform, on_clickreset,		void				)( xui_component* sen
 	menulist.push_back(m_inspector);
 	menulist.push_back(m_project);
 	menulist.push_back(m_console);
-	menulist.push_back(m_timeline);
+	menulist.push_back(m_toolbox);
+	//menulist.push_back(m_timeline);
 	menulist.push_back(m_hierarchy);
-	menulist.push_back(m_scene);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -566,6 +614,11 @@ xui_method_explain(cocos_mainform, on_mainviewinvalid,	void				)( xui_component*
 		set_clientsz(sz);
 	}
 }
+xui_method_explain(cocos_mainform, on_mainviewchanged,	void				)( xui_component* sender, xui_method_args&	args )
+{
+	cocos_hierarchy* hierarchy = get_hierarchy();
+	hierarchy->reset();
+}
 xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
 	cocos_recent* dialog = xui_dynamic_cast(cocos_recent, sender);
@@ -589,6 +642,8 @@ xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* s
 
 	cocos2d::Configuration::getInstance()->gatherGPUInfo();
 	cocos2d::FileUtils::getInstance()->addSearchPath(xui_global::unicode_to_ascii(dialog->get_selectpath()) + "/", true);
+	cocos2d::Director::getInstance()->setOpenGLView(m_glview);
+	cocos2d::Director::getInstance()->replaceScene(m_cocosscene);
 
 	cocos_project* project = get_project();
 	m_backupfiles.clear();
@@ -626,19 +681,18 @@ xui_method_explain(cocos_mainform, on_globalkeybddown,	void				)( xui_component*
 	}
 }
 
-
 /*
 //method
 */
 xui_method_explain(cocos_mainform, del_allview,			void				)( void )
 {
 	std::vector<xui_menuitem*> menulist;
-	menulist.push_back(m_hierarchy);
 	menulist.push_back(m_inspector);
 	menulist.push_back(m_console);
 	menulist.push_back(m_project);
-	menulist.push_back(m_timeline);
-	menulist.push_back(m_scene);
+	menulist.push_back(m_toolbox);
+	//menulist.push_back(m_timeline);
+	menulist.push_back(m_hierarchy);
 
 	for (u32 i = 0; i < menulist.size(); ++i)
 	{
@@ -647,7 +701,7 @@ xui_method_explain(cocos_mainform, del_allview,			void				)( void )
 		{
 			xui_dockview* rootview = xui_dynamic_cast(xui_dockview, page->get_parent());
 			if (rootview)
-				rootview->del_dockpage(page);
+				rootview->del_dockpage(page, false);
 		}
 	}
 }

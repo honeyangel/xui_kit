@@ -9,6 +9,7 @@
 #include "cocos_propfragshader.h"
 #include "cocos_propttf.h"
 #include "cocos_propfnt.h"
+#include "cocos_propcsd.h"
 #include "cocos_pathdata.h"
 #include "cocos_filedata.h"
 #include "cocos_pathctrl.h"
@@ -208,6 +209,7 @@ xui_method_explain(cocos_proppath, new_fileprop,	cocos_propfile*			)( const std:
 		else if (suff == L".frag")			propfile = new cocos_propfragshader	(full);
 		else if (suff == L".ttf")			propfile = new cocos_propttf		(full);
 		else if (suff == L".fnt")			propfile = new cocos_propfnt		(full);
+		else if (suff == L".csd")			propfile = new cocos_propcsd		(full);
 	}
 	//else if (suff == L".npSprite")		propfile = new cocos_propsprite		(full);
 	//else if (suff == L".npAction")		propfile = new cocos_propaction		(full);

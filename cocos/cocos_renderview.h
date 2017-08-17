@@ -5,10 +5,9 @@
 
 namespace cocos2d
 {
-	class Scene;
+	class Node;
 }
 
-class cocos_glview;
 class cocos_renderview : public xui_control
 {
 	xui_declare_rtti
@@ -27,7 +26,7 @@ public:
 	/*
 	//method
 	*/
-	cocos2d::Scene*	get_2droot			( void );
+	cocos2d::Node*	get_2droot			( void );
 
 	/*
 	//virtual
@@ -52,8 +51,8 @@ protected:
 	//member
 	*/
 protected:
-	cocos2d::Scene*	m_cocos2droot;
-	cocos_glview*	m_cocosglview;
+	cocos2d::Node*	m_cocos2droot;
+	//cocos_glview*	m_cocosglview;
 	xui_bitmap*		m_colorbitmap;
 	xui_vector<s32>	m_framebuffersize;
 	GLuint			m_framebuffername;

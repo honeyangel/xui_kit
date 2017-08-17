@@ -97,6 +97,11 @@ xui_bitmap* cocos_resource::icon_input		= NULL;
 xui_bitmap* cocos_resource::icon_ai			= NULL;
 xui_bitmap* cocos_resource::icon_filter		= NULL;
 xui_bitmap* cocos_resource::icon_favorite	= NULL;
+xui_bitmap* cocos_resource::icon_custom		= NULL;
+xui_bitmap* cocos_resource::icon_anchorl	= NULL;
+xui_bitmap* cocos_resource::icon_anchorr	= NULL;
+xui_bitmap* cocos_resource::icon_anchort	= NULL;
+xui_bitmap* cocos_resource::icon_anchorb	= NULL;
 
 xui_method_explain(cocos_resource, init, void)( void )
 {
@@ -195,6 +200,11 @@ xui_method_explain(cocos_resource, init, void)( void )
 	icon_ai			= xui_bitmap::create("icon/ai.png");
 	icon_filter		= xui_bitmap::create("icon/filter.png");
 	icon_favorite	= xui_bitmap::create("icon/favorite.png");
+	icon_custom		= xui_bitmap::create("icon/custom.png");
+	icon_anchorl	= xui_bitmap::create("icon/anchorl.png");
+	icon_anchorr	= xui_bitmap::create("icon/anchorr.png");
+	icon_anchort	= xui_bitmap::create("icon/anchort.png");
+	icon_anchorb	= xui_bitmap::create("icon/anchorb.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

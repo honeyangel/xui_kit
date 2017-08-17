@@ -93,7 +93,7 @@ xui_method_explain(xui_dockview, set_pageshow,			void								)( xui_dockpage* pa
 		}
 		else
 		{
-			del_dockpage(page);
+			del_dockpage(page, page->was_autofree());
 		}
 	}
 }
@@ -111,7 +111,13 @@ xui_method_explain(xui_dockview, get_showpage,			xui_dockpage*						)( void )
 }
 xui_method_explain(xui_dockview, set_showpage,			void								)( xui_dockpage* page )
 {
-	m_showpage = page;
+	if (m_showpage != page)
+	{
+		m_showpage  = page;
+
+		xui_method_args args;
+		xm_pagechanged(this, args);
+	}
 }
 xui_method_explain(xui_dockview, has_dockpage,			bool								)( xui_dockpage* page )
 {
@@ -331,12 +337,12 @@ xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* pa
 		if (page->has_dockarea(m_dockstyle) == false)
 			return;
 
-		if (m_showpage == NULL)
-			m_showpage  = page;
-
 		add_dockctrl(page);
 		m_pagelist.push_back(page);
 		m_menuctrl->set_visible(m_pagelist.size() > 0);
+
+		if (m_showpage == NULL)
+			set_showpage(page);
 	}
 	else
 	{
@@ -374,7 +380,7 @@ xui_method_explain(xui_dockview, add_dockpage,			void								)( xui_dockpage* pa
 
 	invalid();
 }
-xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* page )
+xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* page, bool destroy )
 {
 	del_dockctrl(page);
 	for (u32 i = 0; i < m_pagelist.size(); ++i)
@@ -387,7 +393,10 @@ xui_method_explain(xui_dockview, del_dockpage,			void								)( xui_dockpage* pa
 	}
 
 	if (m_showpage == page)
-		m_showpage  = m_pagelist.size() > 0 ? m_pagelist.front() : NULL;
+		set_showpage(m_pagelist.size() > 0 ? m_pagelist.front() : NULL);
+
+	if (destroy)
+		xui_desktop::get_ins()->move_recycle(page);
 
 	m_menuctrl->set_visible(m_pagelist.size() > 0);
 	refresh();
@@ -456,8 +465,11 @@ xui_method_explain(xui_dockview, save_config,			void								)( FILE* file, get_p
 	for (u32 i = 0; i < m_pagelist.size(); ++i)
 	{
 		std::string pagename = func(m_pagelist[i]);
-		sprintf(buffer, "%s%s\n", space.c_str(), pagename.c_str());
-		fwrite(buffer, 1, strlen(buffer), file);
+		if (pagename.length() > 0)
+		{
+			sprintf(buffer, "%s%s\n", space.c_str(), pagename.c_str());
+			fwrite(buffer, 1, strlen(buffer), file);
+		}
 	}
 }
 xui_method_explain(xui_dockview, load_config,			void								)( FILE* file, get_pagectrl func )

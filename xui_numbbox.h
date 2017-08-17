@@ -11,7 +11,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_numbbox( const xui_vector<s32>& size, u08 numbtype, s32 interval );
+	xui_numbbox( const xui_vector<s32>& size, u08 numbtype, f64 interval, bool showarrow );
 
 	/*
 	//override
@@ -22,7 +22,8 @@ protected:
 	/*
 	//callback
 	*/
-	virtual void			on_perform			( xui_method_args& args );
+	virtual void			on_perform			( xui_method_args&  args );
+	virtual void			on_mousewheel		( xui_method_mouse& args );
 
 	/*
 	//event
@@ -34,7 +35,7 @@ protected:
 	/*
 	//member
 	*/
-	s32						m_interval;
+	f64						m_interval;
 	xui_button*				m_incarrow;
 	xui_button*				m_decarrow;
 	f32						m_holdtime;

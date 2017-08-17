@@ -205,7 +205,7 @@ xui_create_explain(xui_colour_pickwnd)( void )
 		xui_method_ptrcall(roll,	xm_mousemove	) += new xui_method_member<xui_method_mouse, xui_colour_pickwnd>(this, &xui_colour_pickwnd::on_comprolldowndrag);
 		xui_method_ptrcall(roll,	ini_component	)(0, 0, DOCKSTYLE_L);
 		xui_method_ptrcall(roll,	set_sidestyle	)(SIDESTYLE_S);
-		xui_numbbox* edit = new xui_numbbox(xui_vector<s32>(60, 16), NT_UNSIGNEDINT, 1);
+		xui_numbbox* edit = new xui_numbbox(xui_vector<s32>(60, 16), NT_UNSIGNEDINT, 1, false);
 		xui_method_ptrcall(edit,	xm_textchanged	) += new xui_method_member<xui_method_args,  xui_colour_pickwnd>(this, &xui_colour_pickwnd::on_compedittextchanged);
 		xui_method_ptrcall(edit,	ini_component	)(0, 0, DOCKSTYLE_R);
 		xui_method_ptrcall(edit,	set_sidestyle	)(SIDESTYLE_S);

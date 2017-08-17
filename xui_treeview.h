@@ -149,6 +149,8 @@ public:
 	void								set_allowmulti		( bool flag );
 	bool								was_acceptdrag		( void ) const;
 	void								set_acceptdrag		( bool flag );
+	u08									get_allowplace		( void ) const;
+	void								set_allowplace		( u08 place );
 
 	/*
 	//column

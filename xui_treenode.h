@@ -41,6 +41,7 @@ public:
 	void								get_leafnodetotal	( std::vector<xui_treenode*>& nodes, bool total = true );
 	u32									get_leafnodecount	( void ) const;
 	const std::vector<xui_treenode*>&	get_leafnodearray	( void ) const;
+	u32									get_leafnodeindex	( xui_treenode* node ) const;
 	xui_treenode*						get_leafnode		( u32 index );
 	xui_treenode*						add_leafnode		( u32 index, xui_treedata* data );
 	//void								add_leafnode		( u32 index, xui_treenode* node );

@@ -1,4 +1,5 @@
 #include "xui_convas.h"
+#include "xui_global.h"
 #include "xui_button.h"
 #include "xui_numbbox.h"
 
@@ -7,7 +8,7 @@ xui_implement_rtti(xui_numbbox, xui_textbox);
 /*
 //constructor
 */
-xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, s32 interval ) 
+xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, f64 interval, bool showarrow ) 
 : xui_textbox(size)
 {
 	m_numbtype = numbtype;
@@ -16,7 +17,7 @@ xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, s32 i
 	m_decarrow = NULL;
 	m_holdtime = 0.0f;
 
-	if (m_numbtype != NT_FLOAT)
+	if (showarrow)
 	{
 		m_incarrow = new xui_button(xui_vector<s32>(16, 8));
 		m_incarrow->set_parent(this);
@@ -49,7 +50,7 @@ xui_method_explain(xui_numbbox, get_renderrtins,	xui_rect2d<s32>	)( void ) const
 /*
 //callback
 */
-xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args& args )
+xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args&  args )
 {
 	xui_textbox::on_perform(args);
 	if (m_incarrow && m_decarrow)
@@ -59,6 +60,24 @@ xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args& args )
 		m_incarrow->on_perform_pt(pt.x, pt.y-m_incarrow->get_renderh());
 		m_decarrow->on_perform_pt(pt.x, pt.y);
 	}
+}
+xui_method_explain(xui_numbbox, on_mousewheel,		void			)( xui_method_mouse& args )
+{
+	xui_textbox::on_mousewheel(args);
+
+	f64 value = _wtof(m_text.c_str()) + (args.wheel > 0 ? m_interval : -m_interval);
+	if (value < 0.0 && m_numbtype == NT_UNSIGNEDINT)
+		value = 0.0;
+
+	char temp[32];
+	if (m_numbtype == NT_FLOAT) sprintf(temp, "%.2f", (f32)value);
+	else						sprintf(temp, "%d",   (s32)value);
+	set_text(xui_global::ascii_to_unicode(temp));
+
+	xui_method_args    enter_args;
+	xm_textenter(this, enter_args);
+
+	args.handle = true;
 }
 
 /*
@@ -94,18 +113,19 @@ xui_method_explain(xui_numbbox, on_arrowrenderself, void			)( xui_component* sen
 }
 xui_method_explain(xui_numbbox, on_arrowclick,		void			)( xui_component* sender, xui_method_args& args )
 {
-	s32 value = _wtoi(m_text.c_str());
+	f64 value = _wtof(m_text.c_str());
 	if (sender == m_incarrow)
 		value  += m_interval;
 	if (sender == m_decarrow)
 		value  -= m_interval;
 
-	if (value  < 0 && m_numbtype == NT_UNSIGNEDINT)
-		value  = 0;
+	if (value  < 0.0 && m_numbtype == NT_UNSIGNEDINT)
+		value  = 0.0;
 
-	std::wstringstream tmp;
-	tmp << value;
-	set_text(tmp.str());
+	char temp[32];
+	if (m_numbtype == NT_FLOAT) sprintf(temp, "%.2f", (f32)value);
+	else						sprintf(temp, "%d",   (s32)value);
+	set_text(xui_global::ascii_to_unicode(temp));
 
 	xui_method_args    enter_args;
 	xm_textenter(this, enter_args);

@@ -114,6 +114,9 @@ xui_method_explain(xui_button, on_renderself,	void				)( xui_method_args&  args 
 		if (has_catch())
 			pt += xui_vector<s32>(0, 1);
 
+		if (m_drawcolor == false)
+			color *= get_rendercolor();
+
 		xui_convas::get_ins()->draw_image(
 			icon, 
 			xui_rect2d<s32>(pt+get_screenpt(), m_iconsize), 

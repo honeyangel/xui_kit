@@ -3,7 +3,7 @@
 /*
 //constructor
 */
-xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow, bool tail, const xui_family& textfont, const xui_family_render& textdraw )
+xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow, bool tail, bool plusshow, const xui_family& textfont, const xui_family_render& textdraw )
 {
 	m_root		= root;
 	m_func		= func;
@@ -16,6 +16,7 @@ xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, 
 	m_flag		= flag;
 	m_tail		= tail;
 	m_headshow	= headshow;
+	m_plusshow	= plusshow;
 	m_textfont	= textfont;
 	m_textdraw	= textdraw;
 }
@@ -75,6 +76,10 @@ xui_method_explain(xui_propkind, was_tail,		bool					)( void ) const
 xui_method_explain(xui_propkind, was_headshow,	bool					)( void ) const
 {
 	return m_headshow;
+}
+xui_method_explain(xui_propkind, was_plusshow,	bool					)( void ) const
+{
+	return m_plusshow;
 }
 xui_method_explain(xui_propkind, get_textfont,	const xui_family&		)( void ) const
 {

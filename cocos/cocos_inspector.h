@@ -63,11 +63,11 @@ protected:
 	/*
 	//member
 	*/
-	xui_propview*				m_propview;
-	cocos_preview*				m_drawview;
-	xui_control*				m_sizectrl;
-	cocos_renderview*			m_tipsview;
-	cocos2d::Node*				m_tipsnode;
+	xui_propview*		m_propview;
+	cocos_preview*		m_drawview;
+	xui_control*		m_sizectrl;
+	cocos_renderview*	m_tipsview;
+	cocos2d::Node*		m_tipsnode;
 };
 
 #endif//__cocos_inspector_h__

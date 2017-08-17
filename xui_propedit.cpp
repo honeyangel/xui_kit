@@ -1,4 +1,5 @@
 #include "xui_convas.h"
+#include "xui_global.h"
 #include "xui_desktop.h"
 #include "xui_toggle.h"
 #include "xui_numbbox.h"
@@ -205,7 +206,7 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f
 	m_namectrl->set_cursor(CURSOR_WE);
 	m_namectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_namectrlmousemove);
 
-	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, (s32)interval);
+	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, interval, numbtype != NT_FLOAT);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 4, 2));
@@ -214,6 +215,8 @@ xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f
 	textctrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlnonfocus);
 	textctrl->xm_getfocus		+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_editctrlgetfocus);
 	textctrl->xm_textchanged	+= new xui_method_member<xui_method_args,  xui_propedit_number>(this, &xui_propedit_number::on_textctrltextchanged);
+	//textctrl->xm_mousewheel		+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_textctrlmousewheel);
+
 
 	m_interval = interval;
 	m_editctrl = textctrl;
@@ -236,10 +239,12 @@ xui_method_explain(xui_propedit_number, get_value,				f64					)( void ) const
 }
 xui_method_explain(xui_propedit_number, set_value,				void				)( f64 value )
 {
-	std::wstringstream tmp;
-	tmp << value;
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
-	textctrl->ini_textbox(tmp.str());
+	char temp[32];
+	if (textctrl->get_numbtype() == NT_FLOAT)	sprintf(temp, "%.2f", (f32)value);
+	else										sprintf(temp, "%d",	  (s32)value);
+
+	textctrl->ini_textbox(xui_global::ascii_to_unicode(temp));
 }
 
 /*
@@ -259,6 +264,19 @@ xui_method_explain(xui_propedit_number, on_textctrltextchanged, void				)( xui_c
 {
 	m_propctrl->on_editvalue(this);
 }
+//xui_method_explain(xui_propedit_number, on_textctrlmousewheel,	void				)( xui_component* sender, xui_method_mouse& args )
+//{
+//	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
+//	f64 value = get_value() + (args.wheel > 0 ? m_interval : -m_interval);
+//	if (value < 0.0 && textctrl->get_numbtype() == NT_UNSIGNEDINT)
+//		value = 0.0;
+//
+//	std::wstringstream tmp;
+//	tmp << value;
+//	textctrl->set_text(tmp.str());
+//
+//	args.handle = true;
+//}
 xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_component* sender, xui_method_mouse& args )
 {
 	if (sender->has_catch())
@@ -270,9 +288,8 @@ xui_method_explain(xui_propedit_number, on_namectrlmousemove,	void				)( xui_com
 		if (value < 0.0 && textctrl->get_numbtype() == NT_UNSIGNEDINT)
 			value = 0.0;
 
-		std::wstringstream tmp;
-		tmp << value;
-		textctrl->set_text(tmp.str());
+		set_value(value);
+		m_propctrl->on_editvalue(this);
 	}
 }
 

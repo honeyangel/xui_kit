@@ -109,6 +109,11 @@ public:
 	static xui_bitmap*	icon_physics;
 	static xui_bitmap*	icon_filter;
 	static xui_bitmap*	icon_favorite;
+	static xui_bitmap*	icon_custom;
+	static xui_bitmap*	icon_anchorl;
+	static xui_bitmap*	icon_anchorr;
+	static xui_bitmap*	icon_anchort;
+	static xui_bitmap*	icon_anchorb;
 };
 
 #endif//__cocos_resource_h__

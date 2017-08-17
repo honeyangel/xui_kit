@@ -468,8 +468,13 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 				continue;
 
 			xui_vector<s32> pt = xui_global::get_syswndmouse(wnd);
-			if (component = wnd->get_popupctrl()->choose(pt))
+			component = wnd->get_popupctrl()->choose(pt);
+			if (component)
+			{
+				m_mousecurr = pt;
+				args.point  = pt;
 				break;
+			}
 		}
 	}
 	if (component == NULL)

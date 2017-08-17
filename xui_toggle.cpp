@@ -152,7 +152,8 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 	case TOGGLE_CIRCLE:
 		{
 			if (was_hover() || m_push)
-			xui_convas::get_ins()->fill_circle(center, 5,	 color*get_rendercolor(),	0, 360);
+				xui_convas::get_ins()->fill_circle(center, 5,	 color*get_rendercolor(),	0, 360);
+
 			xui_convas::get_ins()->draw_circle(center, 5,	 color*m_sidecolor,			0, 360);
 		}
 		break;
@@ -167,6 +168,12 @@ xui_method_explain(xui_toggle, on_renderself,		void			)( xui_method_args&  args 
 			xui_button::on_renderself(args);
 			if (m_menu && m_text.length() > 0)
 			{
+				if (m_drawcolor == false)
+				{
+					if (was_hover() || m_push)
+						color *= xui_button::default_downcolor;
+				}
+
 				xui_convas::get_ins()->fill_triangle(xui_vector<s32>(rt.bx-6, center.y), 3, TRIANGLE_DOWN, color);
 			}
 		}

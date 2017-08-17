@@ -184,8 +184,8 @@ xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& ar
 	xui_drawer*	 subhname = m_subhedit->get_namectrl();
 	xui_control* subhedit = m_subhedit->get_editctrl();
 
-	s32 xwnamewidth = xui_max(subxname->get_renderw(), subwname->get_renderw());
-	s32 yhnamewidth = xui_max(subyname->get_renderw(), subhname->get_renderw());
+	s32 xwnamewidth = 16;//xui_max(subxname->get_renderw(), subwname->get_renderw());
+	s32 yhnamewidth = 16;//xui_max(subyname->get_renderw(), subhname->get_renderw());
 	s32 xyeditwidth = (rt.get_w() - rt.get_w()/2 - 12 - xwnamewidth - yhnamewidth) / 2;
 	//subxname
 	pt.x = rt.get_w()/2;

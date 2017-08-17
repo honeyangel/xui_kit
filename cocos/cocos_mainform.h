@@ -17,12 +17,20 @@ enum
 	TOC_WORLD,
 };
 
+namespace cocos2d
+{
+	class Scene;
+}
+
+class cocos_toolbox;
 class cocos_hierarchy;
 class cocos_inspector;
 class cocos_project;
 class cocos_console;
 class cocos_timeline;
 class cocos_scene;
+class cocos_propcsd;
+class cocos_glview;
 class cocos_mainform : public xui_window
 {
 	xui_declare_rtti
@@ -41,15 +49,24 @@ public:
 	cocos_mainform( void );
 
 	/*
+	//destructor
+	*/
+	virtual ~cocos_mainform( void );
+
+	/*
 	//method
 	*/
+	cocos2d::Scene*				get_cocosscene		( void );
 	cocos_hierarchy*			get_hierarchy		( void );
 	cocos_inspector*			get_inspector		( void );
 	cocos_project*				get_project			( void );
-	cocos_scene*				get_scene			( void );
 	cocos_console*				get_console			( void );
 	cocos_timeline*				get_timeline		( void );
-	void						add_backupfile		( xui_proproot* prop );
+	cocos_toolbox*				get_toolbox			( void );
+	cocos_scene*				get_scene			( void );
+	cocos_scene*				get_scene			( cocos_propcsd* prop );
+	cocos_scene*				add_scene			( cocos_propcsd* prop );
+	void						add_backupfile		( xui_proproot*  prop );
 	u32							get_backupfilenum	( void ) const;
 	xui_proproot*				get_backupfile		( u32 index ) const;
 	bool						was_ignorepath		( const std::wstring& path );
@@ -83,6 +100,7 @@ protected:
 	void						on_clickreset		( xui_component* sender, xui_method_args&  args );
 	void						on_clicksaveall		( xui_component* sender, xui_method_args&  args );
 	void						on_mainviewinvalid	( xui_component* sender, xui_method_args&  args );
+	void						on_mainviewchanged	( xui_component* sender, xui_method_args&  args );
 	void						on_recentaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_backupaccept		( xui_component* sender, xui_method_args&  args );
 	void						on_globalkeybddown	( xui_component* sender, xui_method_keybd& args );
@@ -95,6 +113,8 @@ protected:
 	/*
 	//member
 	*/
+	cocos_glview*				m_glview;
+	cocos2d::Scene*				m_cocosscene;
 	xui_panel*					m_toolpane;
 	xui_dockview*				m_mainview;
 	xui_toggle*					m_select;
@@ -115,7 +135,7 @@ protected:
 	xui_menuitem*				m_project;
 	xui_menuitem*				m_console;
 	xui_menuitem*				m_timeline;
-	xui_menuitem*				m_scene;
+	xui_menuitem*				m_toolbox;
 	xui_menuitem*				m_save;
 	xui_menuitem*				m_load;
 	xui_menuitem*				m_reset;

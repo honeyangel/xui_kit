@@ -229,7 +229,7 @@ xui_method_explain(xui_panel, update_else,		void								)( f32 delta )
 	xui_container::update_else(delta);
 	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
-		if (m_childctrl[i]->was_enable() && m_childctrl[i]->was_visible())
+		if (m_childctrl[i]->was_visible())
 			m_childctrl[i]->update(delta);
 	}
 }

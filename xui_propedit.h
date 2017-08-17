@@ -134,6 +134,7 @@ public:
 	//event
 	*/
 	void					on_textctrltextchanged	( xui_component* sender, xui_method_args&  args );
+	//void					on_textctrlmousewheel	( xui_component* sender, xui_method_mouse& args );
 	void					on_namectrlmousemove	( xui_component* sender, xui_method_mouse& args );
 
 protected:

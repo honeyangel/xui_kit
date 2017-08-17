@@ -19,8 +19,8 @@ public:
 	/*
 	//static
 	*/
-	static xui_bitmap*		get_texicon		( xui_propdata* propdata );
-	static std::wstring		get_texname		( xui_propdata* propdata );
+	static xui_bitmap*		get_icon		( xui_propdata* propdata );
+	static std::wstring		get_name		( xui_propdata* propdata );
 
 protected:
 	/*

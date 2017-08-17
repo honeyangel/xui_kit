@@ -37,6 +37,7 @@
 #include "cocos_propfragshader.h"
 #include "cocos_propttf.h"
 #include "cocos_propfnt.h"
+#include "cocos_propcsd.h"
 #include "cocos_framedata.h"
 #include "cocos_resource.h"
 #include "cocos_renderview.h"
@@ -202,6 +203,7 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_filter,	add_item			)(L"Frag Shader");
 	xui_method_ptrcall(m_filter,	add_item			)(L"TTF");
 	xui_method_ptrcall(m_filter,	add_item			)(L"FNT");
+	xui_method_ptrcall(m_filter,	add_item			)(L"CSD");
 	xui_method_ptrcall(m_filter,	ini_dropbox			)(0);
 
 	m_head		= new xui_panel(xui_vector<s32>(28));
@@ -342,6 +344,8 @@ xui_method_explain(cocos_project, get_pathfile,				void			)( s32 type, xui_propr
 				filevec.push_back(propfile);
 			if (type == FILTER_FNT			&& dynamic_cast<cocos_propfnt*			>(propfile))
 				filevec.push_back(propfile);
+			if (type == FILTER_CSD			&& dynamic_cast<cocos_propcsd*			>(propfile))
+				filevec.push_back(propfile);
 		}
 	}
 }
@@ -377,6 +381,11 @@ xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring&
 xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, const std::wstring& name )
 {
 	m_search->set_text(L"");
+	if (m_fileview->get_tileview()->get_viewfile() != NULL)
+	{
+		xui_method_args args;
+		on_linetoolclick(m_backpath, args);
+	}
 
 	cocos_proppath* viewpath = NULL;
 	cocos_propfile* viewfile = NULL;
@@ -816,6 +825,12 @@ xui_method_explain(cocos_project, on_fileviewdoubleclk,		void			)( xui_component
 					//}
 					//else
 					cocos_propatlas* propatlas = dynamic_cast<cocos_propatlas*>(prop);
+					cocos_propcsd*   propcsd   = dynamic_cast<cocos_propcsd*  >(prop);
+					if (propcsd)
+					{
+						cocos_mainform::get_ptr()->add_scene(propcsd);
+					}
+					else
 					if (propatlas)
 					{
 						m_fileview->get_lineview()->non_selectednode();

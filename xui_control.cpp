@@ -243,7 +243,7 @@ xui_method_explain(xui_control, update_else,		void					)( f32 delta )
 {
 	for (u32 i = 0; i < m_widgetvec.size(); ++i)
 	{
-		if (m_widgetvec[i]->was_enable() && m_widgetvec[i]->was_visible())
+		if (m_widgetvec[i]->was_visible())
 			m_widgetvec[i]->update(delta);
 	}
 }

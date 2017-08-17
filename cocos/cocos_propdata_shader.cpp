@@ -26,7 +26,7 @@ xui_create_explain(cocos_propdata_shader)(
 /*
 //event
 */
-xui_method_explain(cocos_propdata_shader, on_doubleclick,	void		)(xui_component* sender, xui_method_args& args)
+xui_method_explain(cocos_propdata_shader, on_doubleclick,	void		)( xui_component* sender, xui_method_args& args )
 {
 	cocos_propfile* prop = (cocos_propfile*)get_value();
 	if (prop)
@@ -45,11 +45,11 @@ xui_method_explain(cocos_propdata_shader, on_doubleclick,	void		)(xui_component*
 /*
 //static
 */
-xui_method_explain(cocos_propdata_shader, get_icon,			xui_bitmap*	)(xui_propdata* propdata)
+xui_method_explain(cocos_propdata_shader, get_icon,			xui_bitmap*	)( xui_propdata* propdata )
 {
 	return cocos_resource::icon_game;
 }
-xui_method_explain(cocos_propdata_shader, get_name,			std::wstring)(xui_propdata* propdata)
+xui_method_explain(cocos_propdata_shader, get_name,			std::wstring)( xui_propdata* propdata )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
 	cocos_propfile* prop = (cocos_propfile*)dataobject->get_value();

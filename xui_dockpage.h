@@ -30,6 +30,8 @@ public:
 	/*
 	//method
 	*/
+	bool					was_autofree		( void ) const;
+	void					set_autofree		( bool flag );
 	const xui_rect2d<s32>&	get_inborder		( void ) const;
 	void					set_inborder		( const xui_rect2d<s32>& border );
 	bool					has_dockarea		( u08 dockstyle );
@@ -83,6 +85,7 @@ protected:
 	u32						m_dockarea;
 	s32						m_minlimit;
 	xui_rect2d<s32>			m_inborder;
+	bool					m_autofree;
 };
 
 #endif//__xui_dockpage_h__

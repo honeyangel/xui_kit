@@ -186,6 +186,16 @@ xui_method_explain(xui_treenode, get_leafnodearray, const std::vector<xui_treeno
 {
 	return m_leafnode;
 }
+xui_method_explain(xui_treenode, get_leafnodeindex, u32									)( xui_treenode* node ) const
+{
+	for (u32 i = 0; i < m_leafnode.size(); ++i)
+	{
+		if (m_leafnode[i] == node)
+			return i;
+	}
+
+	return -1;
+}
 xui_method_explain(xui_treenode, get_leafnode,		xui_treenode*						)( u32 index )
 {
 	return m_leafnode[index];

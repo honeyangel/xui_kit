@@ -120,13 +120,13 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 	{
 		xui_method_ptrcall(m_namectrl, set_textfont	)(m_propkind->get_textfont());
 		xui_method_ptrcall(m_namectrl, set_textdraw	)(m_propkind->get_textdraw());
-		xui_method_ptrcall(m_namectrl, set_sidestyle)(m_propkind->xm_namechanged.count() >  0 ? SIDESTYLE_S            : SIDESTYLE_N);
+		xui_method_ptrcall(m_namectrl, set_sidestyle)(m_propkind->xm_namechanged.count() >  0 ? SIDESTYLE_S : SIDESTYLE_N);
 		xui_method_ptrcall(m_namectrl, set_readonly	)(m_propkind->xm_namechanged.count() == 0);
 		xui_method_ptrcall(m_namectrl, set_drawcolor)(m_propkind->xm_namechanged.count() >  0);
 		xui_method_ptrcall(m_namectrl, set_visible	)(m_propkind->was_headshow());
 		xui_method_ptrcall(m_iconctrl, set_visible	)(m_propkind->was_headshow());
-		xui_method_ptrcall(m_flagctrl, set_visible	)(m_propkind->was_headshow() && m_propkind->xm_flagchanged.count() >  0);
-		xui_method_ptrcall(m_kindplus, set_visible	)(m_propkind->was_headshow() && m_propctrlvec.size() > 0);
+		xui_method_ptrcall(m_flagctrl, set_visible	)(m_propkind->was_headshow() &&  m_propkind->xm_flagchanged.count() >  0);
+		xui_method_ptrcall(m_kindplus, set_visible	)(m_propkind->was_headshow() && (m_propkind->was_plusshow() || m_propctrlvec.size() > 0));
 		xui_method_ptrcall(m_iconctrl, ini_drawer	)(m_propkind->get_icon(), xui_vector<s32>(24));
 
 		bool name_same = true;
@@ -251,6 +251,28 @@ xui_method_explain(xui_kindctrl, on_flagctrlclick,			void			)( xui_component* se
 xui_method_explain(xui_kindctrl, on_kindexpand,				void			)( xui_component* sender, xui_method_args& args )
 {
 	invalid();
+	if (m_kindplus->was_visible())
+	{
+		xui_propview* propview = xui_dynamic_cast(xui_propview, get_parent());
+		bool afterkind = false;
+		for (u32 i = 0; i < propview->get_kindctrlcount(); ++i)
+		{
+			xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, propview->get_kindctrl(i));
+			if (afterkind)
+			{
+				xui_propkind* propkind = kindctrl->get_propkind();
+				if (propkind->was_headshow())
+					break;
+				else
+					kindctrl->set_expanded(was_expanded());
+			}
+			else
+			{
+				if (kindctrl == this)
+					afterkind = true;
+			}
+		}
+	}
 }
 xui_method_explain(xui_kindctrl, on_propkindchange,			void			)( void )
 {

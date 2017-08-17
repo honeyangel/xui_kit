@@ -45,7 +45,7 @@ public:
 	//page
 	*/
 	void								add_dockpage			( xui_dockpage* page, u08 dockstyle, bool autosize = true, bool merge = false );
-	void								del_dockpage			( xui_dockpage* page );
+	void								del_dockpage			( xui_dockpage* page, bool destroy );
 	void								del_dockview			( xui_dockview* view );
 	void								mov_dockview			( std::vector<xui_dockview*>& viewlist, xui_dockview* rootview );
 
@@ -54,6 +54,11 @@ public:
 	*/
 	void								save_config				( FILE* file, get_pagename func, u32 indent );
 	void								load_config				( FILE* file, get_pagectrl func );
+
+	/*
+	//method
+	*/
+	xui_method<xui_method_args>			xm_pagechanged;
 
 protected:
 	/*

@@ -1,5 +1,6 @@
 #include "2d/CCParticleSystemQuad.h"
 #include "renderer/CCTextureCache.h"
+
 #include "xui_global.h"
 #include "xui_toggle.h"
 #include "xui_propview.h"
@@ -332,6 +333,12 @@ xui_create_explain(cocos_propparticle)( const std::wstring& full )
 
 	m_blendkind = new xui_propkind(this, L"Blend Function", "ParticleBlend", xui_kindctrl::create, cocos_resource::icon_world, true);
 	xui_method_ptrcall(m_blendkind, xm_propchanged) += new xui_method_member<xui_method_propdata, cocos_propparticle>(this, &cocos_propparticle::on_propchanged);
+	m_blendkind->add_propdata(new cocos_propdata_blend(
+		m_blendkind, 
+		get_blendfunc, 
+		set_blendfunc, 
+		this));
+#if 0
 	textmap.clear();
 	textmap[GL_ZERO]				= L"GL_ZERO";
 	textmap[GL_ONE]					= L"GL_ONE";
@@ -380,6 +387,7 @@ xui_create_explain(cocos_propparticle)( const std::wstring& full )
 		subprop,
 		true,
 		showmap));
+#endif
 
 	//m_menukind = new xui_propkind(this, L"", "SpriteSRCAdd", onity_kindctrl_particleadd::create, NULL, true, false, true);
 	//add_propkind(m_menukind);
@@ -469,19 +477,19 @@ xui_method_explain(cocos_propparticle, get_particle,			cocos2d::ParticleSystem*	
 /*
 //override
 */
-xui_method_explain(cocos_propparticle, get_dragtype,			std::string		)( void )
+xui_method_explain(cocos_propparticle, get_dragtype,			std::string					)( void )
 {
 	return "ParticleSystem";
 }
-xui_method_explain(cocos_propparticle, get_dragdata,			void*			)( void )
+xui_method_explain(cocos_propparticle, get_dragdata,			void*						)( void )
 {
-	return get_particle();
+	return this;
 }
-xui_method_explain(cocos_propparticle, was_modify,				bool			)( void )
+xui_method_explain(cocos_propparticle, was_modify,				bool						)( void )
 {
 	return m_modify;
 }
-xui_method_explain(cocos_propparticle, load,					void			)( void )
+xui_method_explain(cocos_propparticle, load,					void						)( void )
 {
 	m_modify = false;
 
@@ -501,7 +509,7 @@ xui_method_explain(cocos_propparticle, load,					void			)( void )
 		m_particle->setPosition(0.0f, 0.0f);
 	}
 }
-xui_method_explain(cocos_propparticle, save_as,					void			)( const std::wstring& fullname, bool modify )
+xui_method_explain(cocos_propparticle, save_as,					void						)( const std::wstring& fullname, bool modify )
 {
 	m_modify = modify;
 	//TODO
@@ -515,12 +523,12 @@ xui_method_explain(cocos_propparticle, save_as,					void			)( const std::wstring
 /*
 //event
 */
-xui_method_explain(cocos_propparticle, on_propchanged,			void			)( xui_component* sender, xui_method_propdata&	args )
+xui_method_explain(cocos_propparticle, on_propchanged,			void						)( xui_component* sender, xui_method_propdata&	args )
 {
 	m_modify = true;
 	m_particle->resetSystem();
 }
-xui_method_explain(cocos_propparticle, on_flagchanged,			void			)( xui_component* sender, xui_method_args&		args )
+xui_method_explain(cocos_propparticle, on_flagchanged,			void						)( xui_component* sender, xui_method_args&		args )
 {
 
 }
@@ -528,13 +536,13 @@ xui_method_explain(cocos_propparticle, on_flagchanged,			void			)( xui_component
 /*
 //static
 */
-xui_method_explain(cocos_propparticle, get_texture,				void*			)( void* userptr )
+xui_method_explain(cocos_propparticle, get_texture,				void*						)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getTexture();
 }
-xui_method_explain(cocos_propparticle, set_texture,				void			)( void* userptr, void* value )
+xui_method_explain(cocos_propparticle, set_texture,				void						)( void* userptr, void* value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -548,268 +556,268 @@ xui_method_explain(cocos_propparticle, set_texture,				void			)( void* userptr, 
 	}
 }
 
-xui_method_explain(cocos_propparticle, get_duration,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_duration,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getDuration();
 }
-xui_method_explain(cocos_propparticle, set_duration,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_duration,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setDuration(value);
 }
-xui_method_explain(cocos_propparticle, get_maxparticle,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_maxparticle,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getTotalParticles();
 }
-xui_method_explain(cocos_propparticle, set_maxparticle,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_maxparticle,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setTotalParticles(value);
 }
-xui_method_explain(cocos_propparticle, get_lifespan,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_lifespan,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getLife();
 }
-xui_method_explain(cocos_propparticle, set_lifespan,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_lifespan,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setLife(value);
 }
-xui_method_explain(cocos_propparticle, get_lifespanvar,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_lifespanvar,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getLifeVar();
 }
-xui_method_explain(cocos_propparticle, set_lifespanvar,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_lifespanvar,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setLifeVar(value);
 }
-xui_method_explain(cocos_propparticle, get_startsize,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_startsize,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getStartSize();
 }
-xui_method_explain(cocos_propparticle, set_startsize,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_startsize,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartSize(value);
 }
-xui_method_explain(cocos_propparticle, get_startsizevar,		f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_startsizevar,		f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getStartSizeVar();
 }
-xui_method_explain(cocos_propparticle, set_startsizevar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_startsizevar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartSizeVar(value);
 }
-xui_method_explain(cocos_propparticle, get_finishsize,			f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_finishsize,			f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getEndSize();
 }
-xui_method_explain(cocos_propparticle, set_finishsize,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_finishsize,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndSize(value);
 }
-xui_method_explain(cocos_propparticle, get_finishsizevar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_finishsizevar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getEndSizeVar();
 }
-xui_method_explain(cocos_propparticle, set_finishsizevar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_finishsizevar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndSizeVar(value);
 }
-xui_method_explain(cocos_propparticle, get_angle,				f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_angle,				f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getAngle();
 }
-xui_method_explain(cocos_propparticle, set_angle,				void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_angle,				void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setAngle(value);
 }
-xui_method_explain(cocos_propparticle, get_anglevar,			f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_anglevar,			f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getAngleVar();
 }
-xui_method_explain(cocos_propparticle, set_anglevar,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_anglevar,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setAngleVar(value);
 }
-xui_method_explain(cocos_propparticle, get_rotationstart,		f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_rotationstart,		f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getStartSpin();
 }
-xui_method_explain(cocos_propparticle, set_rotationstart,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotationstart,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartSpin(value);
 }
-xui_method_explain(cocos_propparticle, get_rotationstartvar,	f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_rotationstartvar,	f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getStartSpinVar();
 }
-xui_method_explain(cocos_propparticle, set_rotationstartvar,	void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotationstartvar,	void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartSpinVar(value);
 }
-xui_method_explain(cocos_propparticle, get_rotationend,			f64				)( void* userptr)
+xui_method_explain(cocos_propparticle, get_rotationend,			f64							)( void* userptr)
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getEndSpin();
 }
-xui_method_explain(cocos_propparticle, set_rotationend,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotationend,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndSpin(value);
 }
-xui_method_explain(cocos_propparticle, get_rotationendvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_rotationendvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return particle->getEndSpinVar();
 }
-xui_method_explain(cocos_propparticle, set_rotationendvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotationendvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndSpinVar(value);
 }
 
-xui_method_explain(cocos_propparticle, get_startcolor,			xui_colour		)( void* userptr )
+xui_method_explain(cocos_propparticle, get_startcolor,			xui_colour					)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Color4F color = particle->getStartColor();
 	return xui_colour(color.a, color.r, color.g, color.b);
 }
-xui_method_explain(cocos_propparticle, set_startcolor,			void			)( void* userptr, const xui_colour& value )
+xui_method_explain(cocos_propparticle, set_startcolor,			void						)( void* userptr, const xui_colour& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartColor(cocos2d::Color4F(value.r, value.g, value.b, value.a));
 }
-xui_method_explain(cocos_propparticle, get_startcolorvar,		xui_colour		)( void* userptr )
+xui_method_explain(cocos_propparticle, get_startcolorvar,		xui_colour					)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Color4F color = particle->getStartColorVar();
 	return xui_colour(color.a, color.r, color.g, color.b);
 }
-xui_method_explain(cocos_propparticle, set_startcolorvar,		void			)( void* userptr, const xui_colour& value )
+xui_method_explain(cocos_propparticle, set_startcolorvar,		void						)( void* userptr, const xui_colour& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartColorVar(cocos2d::Color4F(value.r, value.g, value.b, value.a));
 }
-xui_method_explain(cocos_propparticle, get_endcolor,			xui_colour		)( void* userptr )
+xui_method_explain(cocos_propparticle, get_endcolor,			xui_colour					)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Color4F color = particle->getEndColor();
 	return xui_colour(color.a, color.r, color.g, color.b);
 }
-xui_method_explain(cocos_propparticle, set_endcolor,			void			)( void* userptr, const xui_colour& value )
+xui_method_explain(cocos_propparticle, set_endcolor,			void						)( void* userptr, const xui_colour& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndColor(cocos2d::Color4F(value.r, value.g, value.b, value.a));
 }
-xui_method_explain(cocos_propparticle, get_endcolorvar,			xui_colour		)( void* userptr )
+xui_method_explain(cocos_propparticle, get_endcolorvar,			xui_colour					)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Color4F color = particle->getEndColorVar();
 	return xui_colour(color.a, color.r, color.g, color.b);
 }
-xui_method_explain(cocos_propparticle, set_endcolorvar,			void			)( void* userptr, const xui_colour& value )
+xui_method_explain(cocos_propparticle, set_endcolorvar,			void						)( void* userptr, const xui_colour& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndColorVar(cocos2d::Color4F(value.r, value.g, value.b, value.a));
 }
 
-xui_method_explain(cocos_propparticle, get_position,			xui_vector<f64>	)( void* userptr )
+xui_method_explain(cocos_propparticle, get_position,			xui_vector<f64>				)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Vec2 position = particle->getPosition();
 	return xui_vector<f64>(position.x, position.y);
 }
-xui_method_explain(cocos_propparticle, set_position,			void			)( void* userptr, const xui_vector<f64>& value )
+xui_method_explain(cocos_propparticle, set_position,			void						)( void* userptr, const xui_vector<f64>& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setPosition(cocos2d::Vec2(value.x, value.y));
 }
-xui_method_explain(cocos_propparticle, get_positionvar,			xui_vector<f64>	)( void* userptr )
+xui_method_explain(cocos_propparticle, get_positionvar,			xui_vector<f64>				)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	cocos2d::Vec2 position = particle->getPosVar();
 	return xui_vector<f64>(position.x, position.y);
 }
-xui_method_explain(cocos_propparticle, set_positionvar,			void			)( void* userptr, const xui_vector<f64>& value )
+xui_method_explain(cocos_propparticle, set_positionvar,			void						)( void* userptr, const xui_vector<f64>& value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setPosVar(cocos2d::Vec2(value.x, value.y));
 }
 
-xui_method_explain(cocos_propparticle, get_emittertype,			s32				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_emittertype,			s32							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	return (s32)particle->getEmitterMode();
 }
-xui_method_explain(cocos_propparticle, set_emittertype,			void			)( void* userptr, s32 value )
+xui_method_explain(cocos_propparticle, set_emittertype,			void						)( void* userptr, s32 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEmitterMode((cocos2d::ParticleSystem::Mode)value);
 }
-xui_method_explain(cocos_propparticle, get_speed,				f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_speed,				f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -818,13 +826,13 @@ xui_method_explain(cocos_propparticle, get_speed,				f64				)( void* userptr )
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_speed,				void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_speed,				void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setSpeed(value);
 }
-xui_method_explain(cocos_propparticle, get_speedvar,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_speedvar,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -833,13 +841,13 @@ xui_method_explain(cocos_propparticle, get_speedvar,			f64				)( void* userptr )
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_speedvar,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_speedvar,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setSpeedVar(value);
 }
-xui_method_explain(cocos_propparticle, get_radialacc,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_radialacc,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -848,13 +856,13 @@ xui_method_explain(cocos_propparticle, get_radialacc,			f64				)( void* userptr 
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_radialacc,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_radialacc,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setRadialAccel(value);
 }
-xui_method_explain(cocos_propparticle, get_radialaccvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_radialaccvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -863,13 +871,13 @@ xui_method_explain(cocos_propparticle, get_radialaccvar,		f64				)( void* userpt
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_radialaccvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_radialaccvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setRadialAccelVar(value);
 }
-xui_method_explain(cocos_propparticle, get_tangenacc,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_tangenacc,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -878,13 +886,13 @@ xui_method_explain(cocos_propparticle, get_tangenacc,			f64				)( void* userptr 
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_tangenacc,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_tangenacc,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setTangentialAccel(value);
 }
-xui_method_explain(cocos_propparticle, get_tangenaccvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_tangenaccvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -893,13 +901,13 @@ xui_method_explain(cocos_propparticle, get_tangenaccvar,		f64				)( void* userpt
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_tangenaccvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_tangenaccvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setTangentialAccelVar(value);
 }
-xui_method_explain(cocos_propparticle, get_maxradius,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_maxradius,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -908,13 +916,13 @@ xui_method_explain(cocos_propparticle, get_maxradius,			f64				)( void* userptr 
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_maxradius,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_maxradius,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartRadius(value);
 }
-xui_method_explain(cocos_propparticle, get_maxradiusvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_maxradiusvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -923,13 +931,13 @@ xui_method_explain(cocos_propparticle, get_maxradiusvar,		f64				)( void* userpt
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_maxradiusvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_maxradiusvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setStartRadiusVar(value);
 }
-xui_method_explain(cocos_propparticle, get_minradius,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_minradius,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -938,13 +946,13 @@ xui_method_explain(cocos_propparticle, get_minradius,			f64				)( void* userptr 
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_minradius,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_minradius,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndRadius(value);
 }
-xui_method_explain(cocos_propparticle, get_minradiusvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_minradiusvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -953,13 +961,13 @@ xui_method_explain(cocos_propparticle, get_minradiusvar,		f64				)( void* userpt
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_minradiusvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_minradiusvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setEndRadiusVar(value);
 }
-xui_method_explain(cocos_propparticle, get_rotatespeed,			f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_rotatespeed,			f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -968,13 +976,13 @@ xui_method_explain(cocos_propparticle, get_rotatespeed,			f64				)( void* userpt
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_rotatespeed,			void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotatespeed,			void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setRotatePerSecond(value);
 }
-xui_method_explain(cocos_propparticle, get_rotatespeedvar,		f64				)( void* userptr )
+xui_method_explain(cocos_propparticle, get_rotatespeedvar,		f64							)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
@@ -983,13 +991,31 @@ xui_method_explain(cocos_propparticle, get_rotatespeedvar,		f64				)( void* user
 
 	return 0.0;
 }
-xui_method_explain(cocos_propparticle, set_rotatespeedvar,		void			)( void* userptr, f64 value )
+xui_method_explain(cocos_propparticle, set_rotatespeedvar,		void						)( void* userptr, f64 value )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
 	cocos2d::ParticleSystem* particle = prop->get_particle();
 	particle->setRotatePerSecondVar(value);
 }
 
+xui_method_explain(cocos_propparticle, get_blendfunc,			cocos_blend_value			)( void* userptr )
+{
+	cocos_propparticle* prop = (cocos_propparticle*)userptr;
+	cocos2d::ParticleSystem* particle = prop->get_particle();
+	cocos2d::BlendFunc func = particle->getBlendFunc();
+	return cocos_blend_value(func.src, func.dst);
+}
+xui_method_explain(cocos_propparticle, set_blendfunc,			void						)( void* userptr, const cocos_blend_value& value )
+{
+	cocos_propparticle* prop = (cocos_propparticle*)userptr;
+	cocos2d::ParticleSystem* particle = prop->get_particle();
+	cocos2d::BlendFunc func;
+	func.src = value.src;
+	func.dst = value.dst;
+	particle->setBlendFunc(func);
+}
+
+#if 0
 xui_method_explain(cocos_propparticle, get_blendfunction,		s32				)( void* userptr )
 {
 	cocos_propparticle* prop = (cocos_propparticle*)userptr;
@@ -1052,3 +1078,4 @@ xui_method_explain(cocos_propparticle, set_blenddst,			void			)( void* userptr, 
 	func.dst = value;
 	particle->setBlendFunc(func);
 }
+#endif

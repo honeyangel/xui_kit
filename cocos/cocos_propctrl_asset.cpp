@@ -1,4 +1,6 @@
 #include "2d/CCNode.h"
+#include "2d/CCParticleSystemQuad.h"
+
 #include "xui_global.h"
 #include "xui_propview.h"
 #include "cocos_mainform.h"
@@ -7,6 +9,7 @@
 #include "cocos_selector.h"
 #include "cocos_mainform.h"
 #include "cocos_project.h"
+#include "cocos_propparticle.h"
 #include "cocos_propctrl_asset.h"
 
 ///*
@@ -253,7 +256,15 @@ xui_method_explain(cocos_propctrl_asset,	on_editctrlmouseenter,	void				)( xui_c
 		return;
 
 	cocos_inspector* inspector = cocos_mainform::get_ptr()->get_inspector();
-	inspector->show_tips((cocos2d::Ref*)value, get_screenpt());
+	if (dataobject->has_droptype("ParticleSystem"))
+	{
+		cocos_propparticle* prop = (cocos_propparticle*)value;
+		inspector->show_tips(prop->get_particle(), get_screenpt());
+	}
+	else
+	{
+		inspector->show_tips((cocos2d::Ref*)value, get_screenpt());
+	}
 }
 xui_method_explain(cocos_propctrl_asset,	on_editctrlmouseleave,	void				)( xui_component* sender, xui_method_mouse& args )
 {

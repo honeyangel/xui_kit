@@ -125,7 +125,7 @@ xui_method_explain(xui_propctrl_vector,			on_perform,			void			)( xui_method_arg
 	xui_control* subxedit = m_subxedit->get_editctrl();
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
 	xui_control* subyedit = m_subyedit->get_editctrl();
-	s32 namewidth = xui_max(subxname->get_renderw(), subyname->get_renderw());
+	s32 namewidth = 16;//xui_max(subxname->get_renderw(), subyname->get_renderw());
 	s32 editwidth = (rt.get_w() - rt.get_w()/2 - 12 - 2*namewidth) / 2;
 	//subxname
 	pt.x = rt.get_w()/2;

@@ -586,13 +586,13 @@ xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 {
 	xui_control::update_else(delta);
 
-	if (m_timehead->was_enable() && m_timehead->was_visible())
+	if (m_timehead->was_visible())
 		m_timehead->update(delta);
-	if (m_timerect->was_enable() && m_timerect->was_visible())
+	if (m_timerect->was_visible())
 		m_timerect->update(delta);
-	if (m_timetree->was_enable() && m_timetree->was_visible())
+	if (m_timetree->was_visible())
 		m_timetree->update(delta);
-	if (m_tldelete->was_enable() && m_tldelete->was_visible())
+	if (m_tldelete->was_visible())
 		m_tldelete->update(delta);
 
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);

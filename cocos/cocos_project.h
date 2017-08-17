@@ -16,6 +16,7 @@ enum
 	FILTER_FRAGSHADER,
 	FILTER_TTF,
 	FILTER_FNT,
+	FILTER_CSD,
 };
 
 class cocos_fileview;

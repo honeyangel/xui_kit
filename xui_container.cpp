@@ -147,7 +147,7 @@ xui_method_explain(xui_container, update_else,		void			)( f32 delta )
 	xui_control::update_else(delta);
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 	{
-		if (m_ascrollitem[i]->was_enable() && m_ascrollitem[i]->was_visible())
+		if (m_ascrollitem[i]->was_visible())
 			m_ascrollitem[i]->update(delta);
 	}
 }

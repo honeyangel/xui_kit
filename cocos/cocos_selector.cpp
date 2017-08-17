@@ -481,6 +481,7 @@ xui_method_explain(cocos_selector, convert_droptype,		s32					)( const std::stri
 	else if (droptype == "FragShader")		return FILTER_FRAGSHADER;
 	else if (droptype == "TTF")				return FILTER_TTF;
 	else if (droptype == "FNT")				return FILTER_FNT;
+	else if (droptype == "CSD")				return FILTER_CSD;
 	//else if (droptype == "NP2DSActor")		return L".npAction";
 	//else if (droptype == "NP2DSSceneFile")	return L".npCourse";
 	//else if (droptype == "NPParticleSFX")	return L".particle";

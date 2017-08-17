@@ -33,8 +33,8 @@ public:
 		cocos_propctrl_asset::create, 
 		"Texture2D", 
 		cocos_selector::get_ptr, 
-		cocos_propdata_texture::get_texicon, 
-		cocos_propdata_texture::get_texname, 
+		cocos_propdata_texture::get_icon, 
+		cocos_propdata_texture::get_name, 
 		ptr)
 	{
 		xm_doubleclick += new xui_method_member<xui_method_args, cocos_propdata_texture_impl>(this, &cocos_propdata_texture_impl::on_doubleclick);
