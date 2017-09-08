@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_drawer.h"
+#include "xui_numbbox.h"
 #include "xui_desktop.h"
 #include "xui_propview.h"
 #include "xui_propctrl_expand.h"
@@ -308,7 +309,7 @@ xui_create_explain(xui_propctrl_expand_number)( xui_propdata* propdata )
 : xui_propctrl_expand(propdata)
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
-	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval());
+	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval(), datanumber->get_numbtype() != NT_FLOAT);
 
 	xui_drawer*  namectrl = editnumber->get_namectrl();
 	xui_control* textctrl = editnumber->get_editctrl();

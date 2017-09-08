@@ -238,7 +238,18 @@ xui_method_explain(cocos_propctrl_location, on_linkpropdata,		void				)( bool se
 	}
 }
 xui_method_explain(cocos_propctrl_location, on_editvalue,			void				)( xui_propedit* sender )
-{}
+{
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propkind* kind = m_propdatavec[i]->get_kind();
+		if (kind)
+		{
+			xui_method_propdata args;
+			args.propdata = m_propdatavec[i];
+			kind->xm_propchanged(this, args);
+		}
+	}
+}
 
 /*
 //override
@@ -298,6 +309,7 @@ xui_method_explain(cocos_propctrl_location, on_numbctrltextchanged, void				)( x
 	tmp >> value;
 
 	set_margin(sender, value);
+	on_editvalue(NULL);
 }
 xui_method_explain(cocos_propctrl_location, on_toggctrlclick,		void				)( xui_component* sender, xui_method_args& args )
 {
@@ -324,6 +336,8 @@ xui_method_explain(cocos_propctrl_location, on_toggctrlclick,		void				)( xui_co
 	{
 		set_vertstretch();
 	}
+
+	on_editvalue(NULL);
 }
 xui_method_explain(cocos_propctrl_location, on_editpaneperform,		void				)( xui_component* sender, xui_method_args& args )
 {

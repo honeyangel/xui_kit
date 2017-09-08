@@ -116,7 +116,7 @@ public:
 	/*
 	//constructor
 	*/
-	xui_propedit_number( xui_propctrl* propctrl, u08 numbtype, f64 interval );
+	xui_propedit_number( xui_propctrl* propctrl, u08 numbtype, f64 interval, bool showarrow );
 
 	/*
 	//method

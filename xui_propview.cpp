@@ -88,6 +88,7 @@ xui_method_explain(xui_propview, set_proproot,		void					)( xui_proproot* propro
 			{
 				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
 				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
+				xui_method_ptrcall(kindctrl, refresh	 )();
 			}
 		}
 	}

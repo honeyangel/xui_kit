@@ -25,6 +25,7 @@
 #include "cocos_propnodeparticle.h"
 #include "cocos_propnodesprite.h"
 #include "cocos_propparticle.h"
+#include "cocos_propnodeimageview.h"
 #include "cocos_scene.h"
 #include "cocos_boundbox.h"
 #include "cocos_hierarchy.h"
@@ -241,10 +242,10 @@ xui_method_explain(cocos_hierarchy, new_propnode,			cocos_propnodebase*			)( coc
 
 	return newprop;
 }
-xui_method_explain(cocos_hierarchy, new_propnode,			cocos_propnodebase*			)( cocos_propnodebase* proproot, cocos2d::SpriteFrame*  frame, u32 index )
+xui_method_explain(cocos_hierarchy, new_propnode,			cocos_propnodebase*			)( cocos_propnodebase* proproot, cocos2d::Ref*		data,	   u32 index )
 {
-	cocos_propnodesprite* newprop = dynamic_cast<cocos_propnodesprite*>(new_propnode(proproot, L"Sprite"));
-	newprop->get_sprite()->setSpriteFrame(frame);
+	cocos_propnodeimageview* newprop = dynamic_cast<cocos_propnodeimageview*>(new_propnode(proproot, L"ImageView"));
+	cocos_propnodeimageview::set_background(newprop, data);
 
 	return newprop;
 }
@@ -536,7 +537,8 @@ xui_method_explain(cocos_hierarchy, on_treemousedragdrop,	void						)( xui_compo
 			new_propnode(rootprop, (cocos_propfile*)args.data, index);
 		}
 		else
-		if (args.type == "SpriteFrame")
+		if (args.type == "SpriteFrame" ||
+			args.type == "Texture2D")
 		{
 			new_propnode(rootprop, (cocos2d::SpriteFrame*)args.data, index);
 		}

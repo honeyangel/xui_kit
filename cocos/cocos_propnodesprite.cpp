@@ -30,7 +30,7 @@ xui_create_explain(cocos_propnodesprite)( cocos_propcsd* file, cocos2d::Node* no
 	add_color		();
 	add_flip		();
 	add_special		();
-	add_image		();
+	add_background	();
 	add_advance		();
 	add_userdata	();
 }
@@ -46,15 +46,15 @@ xui_method_explain(cocos_propnodesprite, get_sprite,	cocos2d::Sprite*	)( void )
 /*
 //method
 */
-xui_method_explain(cocos_propnodesprite, add_image,		void				)( void )
+xui_method_explain(cocos_propnodesprite, add_background,void				)( void )
 {
 	xui_propkind* kind = new xui_propkind(this, L"", "NodeSprite", xui_kindctrl::create, m_icon, true, false);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodesprite>(this, &cocos_propnodesprite::on_propchanged);
 	kind->add_propdata(new cocos_propdata_image(
 		kind,
-		L"Image",
-		get_image,
-		set_image,
+		L"Background",
+		get_background,
+		set_background,
 		this));
 	kind->add_propdata(new cocos_propdata_blend(
 		kind,
@@ -64,48 +64,19 @@ xui_method_explain(cocos_propnodesprite, add_image,		void				)( void )
 
 	add_propkind(kind);
 }
-xui_method_explain(cocos_propnodesprite, add_flip,		void				)( void )
-{
-	xui_propkind* kind = new xui_propkind(this, L"", "NodeFlip", xui_kindctrl::create, m_icon, true, false);
-	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodesprite>(this, &cocos_propnodesprite::on_propchanged);
-	kind->add_propdata(new cocos_propdata_flip(kind, this));
-	add_propkind(kind);
-}
 
 /*
 //static
 */
-xui_method_explain(cocos_propnodesprite, get_image,		void*				)( void* userptr )
+xui_method_explain(cocos_propnodesprite, get_background,void*				)( void* userptr )
 {
-	cocos_propnodesprite*	prop	= (cocos_propnodesprite*)userptr;
-	cocos2d::Sprite*		sprite	= prop->get_sprite();
-	cocos2d::SpriteFrame*	frame	= sprite->getSpriteFrame();
-	if (frame->getName().length() > 0)
-		return frame;
-	else
-		return sprite->getTexture();
+	cocos_propnodesprite* prop = (cocos_propnodesprite*)userptr;
+	return get_image(prop->get_sprite());
 }
-xui_method_explain(cocos_propnodesprite, set_image,		void				)( void* userptr, void* value )
+xui_method_explain(cocos_propnodesprite, set_background,void				)( void* userptr, void* value )
 {
-	cocos2d::Ref*			base	= (cocos2d::Ref*)value;
-	cocos2d::Texture2D*		texture = dynamic_cast<cocos2d::Texture2D*	>(base);
-	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
-
-	cocos_propnodesprite*	prop	= (cocos_propnodesprite*)userptr;
-	cocos2d::Sprite*		sprite	= prop->get_sprite();
-	if (frame)
-	{
-		sprite->setSpriteFrame(frame);
-	}
-	else
-	if (texture)
-	{
-		sprite->initWithTexture(texture);
-	}
-	else
-	{
-		sprite->init();
-	}
+	cocos_propnodesprite* prop = (cocos_propnodesprite*)userptr;
+	set_image(prop->get_sprite(), value);
 }
 xui_method_explain(cocos_propnodesprite, get_blendfunc, cocos_blend_value	)( void* userptr )
 {

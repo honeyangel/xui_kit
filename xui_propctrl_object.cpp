@@ -87,10 +87,10 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( bool selfupd
 		{
 			xui_prop_getname namefunc = dataobject->get_namefunc();
 			if (namefunc)
-				textctrl->set_text(namefunc(dataobject));
+				textctrl->ini_drawer(namefunc(dataobject));
 			xui_prop_geticon iconfunc = dataobject->get_iconfunc();
 			if (iconfunc)
-				textctrl->set_icon(iconfunc(dataobject));
+				textctrl->ini_drawer(iconfunc(dataobject), xui_vector<s32>(16));
 		}
 		else
 		{

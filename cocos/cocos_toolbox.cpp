@@ -26,7 +26,6 @@ xui_create_explain(cocos_toolbox)(void)
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"CheckBox");
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"ImageView");
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"Text");
-	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"TextAtlas");
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"TextBMFont");
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"LoadingBar");
 	xui_method_ptrcall(m_controller,	add_toolctrl	)(cocos_resource::icon_custom, L"Slider");

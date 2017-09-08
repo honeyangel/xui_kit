@@ -9,7 +9,6 @@ namespace cocos2d
 	class Sprite;
 }
 
-class cocos_propfile;
 class cocos_propnodesprite : public cocos_propnodebase
 {
 public:
@@ -27,14 +26,13 @@ protected:
 	/*
 	//method
 	*/
-	void						add_image		( void );
-	void						add_flip		( void );
+	void						add_background	( void );
 
 	/*
 	//static
 	*/
-	static void*				get_image		( void* userptr );
-	static void					set_image		( void* userptr, void* value );
+	static void*				get_background	( void* userptr );
+	static void					set_background	( void* userptr, void* value );
 	static cocos_blend_value	get_blendfunc	( void* userptr );
 	static void					set_blendfunc	( void* userptr, const cocos_blend_value& value );
 	//static cocos_value_unitvec	def_size		( void* userptr );

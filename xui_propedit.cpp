@@ -200,13 +200,13 @@ xui_method_explain(xui_propedit_enum, on_enumctrlselection,		void				)( xui_comp
 /*
 //constructor
 */
-xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f64 interval )
+xui_create_explain(xui_propedit_number)( xui_propctrl* propctrl, u08 numbtype, f64 interval, bool showarrow )
 : xui_propedit_base(propctrl)
 {
 	m_namectrl->set_cursor(CURSOR_WE);
 	m_namectrl->xm_mousemove	+= new xui_method_member<xui_method_mouse, xui_propedit_number>(this, &xui_propedit_number::on_namectrlmousemove);
 
-	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, interval, numbtype != NT_FLOAT);
+	xui_textbox* textctrl = new xui_numbbox(xui_vector<s32>(48, 18), numbtype, interval, showarrow);
 	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
 	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 4, 2));

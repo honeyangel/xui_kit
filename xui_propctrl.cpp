@@ -273,7 +273,7 @@ xui_create_explain(xui_propctrl_number)( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
-	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval());
+	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval(), datanumber->get_numbtype() != NT_FLOAT);
 	xui_propctrl_implement_attach(editnumber)
 }
 xui_propctrl_implement_link(xui_propctrl_number, xui_propedit_number, xui_propdata_number, f64)

@@ -1,7 +1,21 @@
 #include "2d/CCNode.h"
 #include "2d/CCSprite.h"
+#include "2d/CCSpriteFrame.h"
 #include "2d/CCParticleSystemQuad.h"
 #include "ui/UILayoutComponent.h"
+#include "ui/UIWidget.h"
+#include "ui/UIButton.h"
+#include "ui/UICheckBox.h"
+#include "ui/UIImageView.h"
+#include "ui/UIText.h"
+#include "ui/UITextBMFont.h"
+#include "ui/UILoadingBar.h"
+#include "ui/UISlider.h"
+#include "ui/UITextField.h"
+#include "ui/UILayout.h"
+#include "ui/UIPageView.h"
+#include "ui/UIListView.h"
+#include "ui/UIScrollView.h"
 #include "cocostudio/CCComExtensionData.h"
 
 #include "xui_global.h"
@@ -22,6 +36,19 @@
 #include "cocos_propnodeparticle.h"
 #include "cocos_propnodereal.h"
 #include "cocos_propnodesprite.h"
+#include "cocos_propnodebutton.h"
+#include "cocos_propnodecheckbox.h"
+#include "cocos_propnodeimageview.h"
+#include "cocos_propnodetext.h"
+#include "cocos_propnodetextbmfont.h"
+#include "cocos_propnodeloadingbar.h"
+#include "cocos_propnodeslider.h"
+#include "cocos_propnodetextfield.h"
+#include "cocos_propnodepanel.h"
+#include "cocos_propnodescroll.h"
+#include "cocos_propnodepageview.h"
+#include "cocos_propnodelistview.h"
+#include "cocos_propctrl_flip.h"
 #include "cocos_nodedata.h"
 #include "cocos_resource.h"
 #include "cocos_propctrl_location.h"
@@ -119,6 +146,18 @@ xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Nod
 {
 	if		(dynamic_cast<cocos2d::ParticleSystemQuad*>(node))	return L"Particle";
 	else if (dynamic_cast<cocos2d::Sprite*>(node))				return L"Sprite";
+	else if (dynamic_cast<cocos2d::ui::Button*>(node))			return L"Button";
+	else if (dynamic_cast<cocos2d::ui::CheckBox*>(node))		return L"CheckBox";
+	else if (dynamic_cast<cocos2d::ui::ImageView*>(node))		return L"ImageView";
+	else if (dynamic_cast<cocos2d::ui::Text*>(node))			return L"Text";
+	else if (dynamic_cast<cocos2d::ui::TextBMFont*>(node))		return L"TextBMFont";
+	else if (dynamic_cast<cocos2d::ui::LoadingBar*>(node))		return L"LoadingBar";
+	else if (dynamic_cast<cocos2d::ui::Slider*>(node))			return L"Slider";
+	else if (dynamic_cast<cocos2d::ui::TextField*>(node))		return L"TextField";
+	else if (dynamic_cast<cocos2d::ui::ListView*>(node))		return L"ListView";
+	else if (dynamic_cast<cocos2d::ui::PageView*>(node))		return L"PageView";
+	else if (dynamic_cast<cocos2d::ui::ScrollView*>(node))		return L"ScrollView";
+	else if (dynamic_cast<cocos2d::ui::Layout*>(node))			return L"Layout";
 	else
 	{
 		if (node->getParent() == NULL)
@@ -134,6 +173,18 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	else if (rtti == L"Sprite")		return new cocos_propnodesprite		(file, node);
 	else if (rtti == L"Layer")		return new cocos_propnodelayer		(file, node);
 	else if (rtti == L"Node")		return new cocos_propnodereal		(file, node);
+	else if (rtti == L"Button")		return new cocos_propnodebutton		(file, node);
+	else if (rtti == L"CheckBox")	return new cocos_propnodecheckbox	(file, node);
+	else if (rtti == L"ImageView")	return new cocos_propnodeimageview	(file, node);
+	else if (rtti == L"Text")		return new cocos_propnodetext		(file, node);
+	else if (rtti == L"TextBMFont")	return new cocos_propnodetextbmfont	(file, node);
+	else if (rtti == L"LoadingBar")	return new cocos_propnodeloadingbar	(file, node);
+	else if (rtti == L"Slider")		return new cocos_propnodeslider		(file, node);
+	else if (rtti == L"TextField")	return new cocos_propnodetextfield	(file, node);
+	else if (rtti == L"Layout")		return new cocos_propnodelayout		(file, node);
+	else if (rtti == L"ScrollView")	return new cocos_propnodescrollview	(file, node);
+	else if (rtti == L"ListView")	return new cocos_propnodelistview	(file, node);
+	else if (rtti == L"PageView")	return new cocos_propnodepageview	(file, node);
 	else
 	{
 		return NULL;
@@ -145,6 +196,18 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	if		(rtti == L"Particle")	node = cocos2d::ParticleSystemQuad::create();
 	else if (rtti == L"Sprite")		node = cocos2d::Sprite::create();
 	else if (rtti == L"Node")		node = cocos2d::Node::create();
+	else if (rtti == L"Button")		node = cocos2d::ui::Button::create();
+	else if (rtti == L"CheckBox")	node = cocos2d::ui::CheckBox::create();
+	else if (rtti == L"ImageView")	node = cocos2d::ui::ImageView::create();
+	else if (rtti == L"Text")		node = cocos2d::ui::Text::create();
+	else if (rtti == L"TextBMFont")	node = cocos2d::ui::TextBMFont::create();
+	else if (rtti == L"LoadingBar")	node = cocos2d::ui::LoadingBar::create();
+	else if (rtti == L"Slider")		node = cocos2d::ui::Slider::create();
+	else if (rtti == L"TextField")	node = cocos2d::ui::TextField::create();
+	else if (rtti == L"Layout")		node = cocos2d::ui::Layout::create();
+	else if (rtti == L"ScrollView")	node = cocos2d::ui::ScrollView::create();
+	else if (rtti == L"ListView")	node = cocos2d::ui::ListView::create();
+	else if (rtti == L"PageView")	node = cocos2d::ui::PageView::create();
 	else
 	{
 		return NULL;
@@ -327,6 +390,13 @@ xui_method_explain(cocos_propnodebase, add_color,		void					)( void )
 		0,
 		100));
 
+	add_propkind(kind);
+}
+xui_method_explain(cocos_propnodebase, add_flip,		void					)( void )
+{
+	xui_propkind* kind = new xui_propkind(this, L"", "NodeFlip", xui_kindctrl::create, m_icon, true, false);
+	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodebase>(this, &cocos_propnodebase::on_propchanged);
+	kind->add_propdata(new cocos_propdata_flip(kind, this));
 	add_propkind(kind);
 }
 xui_method_explain(cocos_propnodebase, add_special,		void					)( void )
@@ -517,12 +587,20 @@ xui_method_explain(cocos_propnodebase, set_bias,		void					)( void* userptr, con
 xui_method_explain(cocos_propnodebase, get_zorder,		f64						)( void* userptr )
 {
 	cocos_propnodebase* prop = (cocos_propnodebase*)userptr;
+	cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(prop->get_node());
+	if (widget)
+		return widget->getGlobalZOrderOffset();
+
 	return prop->get_node()->getGlobalZOrder();
 }
 xui_method_explain(cocos_propnodebase, set_zorder,		void					)( void* userptr, f64  value )
 {
 	cocos_propnodebase* prop = (cocos_propnodebase*)userptr;
-	prop->get_node()->setGlobalZOrder(value);
+	cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(prop->get_node());
+	if (widget)
+		widget->setGlobalZOffset(value);
+	else
+		prop->get_node()->setGlobalZOrder(value);
 }
 xui_method_explain(cocos_propnodebase, get_color,		xui_colour				)( void* userptr )
 {
@@ -565,4 +643,44 @@ xui_method_explain(cocos_propnodebase, set_userdata,	void					)( void* userptr, 
 	}
 
 	extensionData->setCustomProperty(xui_global::unicode_to_ascii(value));
+}
+
+/*
+//helper
+*/
+xui_method_explain(cocos_propnodebase, get_image,		void*					)( cocos2d::Sprite* sprite )
+{
+	if (sprite)
+	{
+		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
+		if (frame && frame->getName().length() > 0)
+		{
+			return frame;
+		}
+		else
+		{
+			return sprite->getTexture();
+		}
+	}
+
+	return NULL;
+}
+xui_method_explain(cocos_propnodebase, set_image,		void					)( cocos2d::Sprite* sprite, void* value )
+{
+	cocos2d::Ref*			base = (cocos2d::Ref*)value;
+	cocos2d::Texture2D*		texture = dynamic_cast<cocos2d::Texture2D*>(base);
+	cocos2d::SpriteFrame*	frame = dynamic_cast<cocos2d::SpriteFrame*>(base);
+	if (frame)
+	{
+		sprite->initWithSpriteFrame(frame);
+	}
+	else
+	if (texture)
+	{
+		sprite->initWithTexture(texture);
+	}
+	else
+	{
+		sprite->init();
+	}
 }

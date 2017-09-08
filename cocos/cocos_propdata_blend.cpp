@@ -76,7 +76,11 @@ xui_method_explain(cocos_propdata_blend, get_value,			cocos_blend_value	)( void 
 }
 xui_method_explain(cocos_propdata_blend, set_value,			void				)( const cocos_blend_value& value )
 {
-	(*m_userset)(m_userptr, value);
+	if (get_value() != value)
+	{
+		(*m_userset)(m_userptr, value);
+		on_valuechanged();
+	}
 }
 
 /*

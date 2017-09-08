@@ -7,6 +7,7 @@
 namespace cocos2d
 {
 	class Node;
+	class Sprite;
 }
 
 class cocos_propcsd;
@@ -55,6 +56,7 @@ protected:
 	void						add_base		( void );
 	void						add_common		( void );
 	void						add_color		( void );
+	void						add_flip		( void );
 	void						add_special		( void );
 	void						add_advance		( void );
 	void						add_userdata	( void );
@@ -91,6 +93,12 @@ protected:
 
 	static std::wstring			get_userdata	( void* userptr );
 	static void					set_userdata	( void* userptr, const std::wstring& value );
+
+	/*
+	//helper
+	*/
+	static void*				get_image		( cocos2d::Sprite* sprite );
+	static void					set_image		( cocos2d::Sprite* sprite, void* value );
 
 	/*
 	//event

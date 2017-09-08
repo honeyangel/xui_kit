@@ -1,5 +1,6 @@
 #include "xui_convas.h"
 #include "xui_button.h"
+#include "xui_numbbox.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
 #include "xui_propctrl_rect2d.h"
@@ -22,10 +23,10 @@ xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 	m_render   = xui_rect2d<s32>(0, 0, 200, xui_propview::default_lineheight*2);
 
 	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(propdata);
-	m_subxedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval());
-	m_subyedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval());
-	m_subwedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval());
-	m_subhedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval());
+	m_subxedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
+	m_subyedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
+	m_subwedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
+	m_subhedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
 	m_namectrl = new xui_drawer(xui_vector<s32>(100, 20));
 	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
 	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);

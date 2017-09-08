@@ -164,7 +164,7 @@ xui_method_explain(xui_propctrl_simple, new_propedit,		xui_propedit_base*	)( xui
 	if (databool  )	return new xui_propedit_bool	(this);
 	if (dataenum  )	return new xui_propedit_enum	(this, xui_method_ptrcall(dataenum,   get_textmap )());
 	if (datastring)	return new xui_propedit_string	(this);
-	if (datanumber)	return new xui_propedit_number	(this, xui_method_ptrcall(datanumber, get_numbtype)(), xui_method_ptrcall(datanumber, get_interval)());
+	if (datanumber)	return new xui_propedit_number	(this, xui_method_ptrcall(datanumber, get_numbtype)(), xui_method_ptrcall(datanumber, get_interval)(), false);
 
 	return NULL;
 }

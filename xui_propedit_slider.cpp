@@ -12,7 +12,7 @@ xui_create_explain(xui_propedit_slider)( xui_propctrl* propctrl, u08 numbtype, f
 {
 	m_minvalue = minvalue;
 	m_maxvalue = maxvalue;
-	m_editnumb = new xui_propedit_number(propctrl, numbtype, interval);
+	m_editnumb = new xui_propedit_number(propctrl, numbtype, interval, numbtype != NT_FLOAT);
 	xui_drawer*  namectrl = m_editnumb->get_namectrl();
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editnumb->get_editctrl());
 	namectrl->xm_nonfocus		+= new xui_method_member<xui_method_args,  xui_propedit_slider>(this, &xui_propedit_slider::on_spinctrlnonfocus);

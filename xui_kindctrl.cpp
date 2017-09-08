@@ -156,6 +156,32 @@ xui_method_explain(xui_kindctrl, on_invalid,				void			)( xui_method_args& args 
 	sz.h += m_border.ay + m_border.by;
 	sz.h += get_elsectrlsize();
 
+	if (m_kindplus->was_visible() == false)
+	{
+		xui_propview* propview = xui_dynamic_cast(xui_propview, get_parent());
+		if (propview)
+		{
+			bool expand = true;
+			for (u32 i = 0; i < propview->get_kindctrlcount(); ++i)
+			{
+				xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, propview->get_kindctrl(i));
+				if (kindctrl == this)
+				{
+					m_kindplus->set_expanded(expand);
+					break;
+				}
+				else
+				{
+					xui_propkind* propkind = kindctrl->get_propkind();
+					if (propkind->was_headshow())
+					{
+						expand = kindctrl->was_expanded();
+					}
+				}
+			}
+		}
+	}
+
 	if (m_propkind && m_kindplus->was_expanded())
 	{
 		const xui_propdata_vec& vec = m_propkind->get_propdata();
@@ -250,9 +276,10 @@ xui_method_explain(xui_kindctrl, on_flagctrlclick,			void			)( xui_component* se
 }
 xui_method_explain(xui_kindctrl, on_kindexpand,				void			)( xui_component* sender, xui_method_args& args )
 {
-	invalid();
 	if (m_kindplus->was_visible())
 	{
+		invalid();
+
 		xui_propview* propview = xui_dynamic_cast(xui_propview, get_parent());
 		bool afterkind = false;
 		for (u32 i = 0; i < propview->get_kindctrlcount(); ++i)
@@ -264,7 +291,7 @@ xui_method_explain(xui_kindctrl, on_kindexpand,				void			)( xui_component* send
 				if (propkind->was_headshow())
 					break;
 				else
-					kindctrl->set_expanded(was_expanded());
+					kindctrl->invalid();
 			}
 			else
 			{

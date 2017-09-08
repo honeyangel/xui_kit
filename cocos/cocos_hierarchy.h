@@ -29,7 +29,7 @@ public:
 	std::vector<xui_treenode*>	get_realnode			( void );
 	cocos_propnodebase*			new_propnode			( cocos_propnodebase* proproot, const std::wstring& nodertti, u32 index = -1 );
 	cocos_propnodebase*			new_propnode			( cocos_propnodebase* proproot, cocos_propfile*		propfile, u32 index = -1 );
-	cocos_propnodebase*			new_propnode			( cocos_propnodebase* proproot, cocos2d::SpriteFrame*  frame, u32 index = -1 );
+	cocos_propnodebase*			new_propnode			( cocos_propnodebase* proproot, cocos2d::Ref*		data,	  u32 index = -1 );
 	void						add_propnode			( cocos_propnodebase* proproot, cocos_propnodebase* propleaf, u32 index = -1 );
 	void						del_propnode			( cocos_propnodebase* proproot, cocos_propnodebase* propleaf, bool destroy = false );
 	void						del_propnode			( void );

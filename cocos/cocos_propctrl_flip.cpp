@@ -1,5 +1,6 @@
 #include "2d/CCParticleSystemQuad.h"
 #include "2d/CCSprite.h"
+#include "ui/UIWidget.h"
 
 #include "xui_global.h"
 #include "xui_toggle.h"
@@ -89,15 +90,32 @@ xui_method_explain(cocos_propctrl_flip, on_linkpropdata,	void				)( bool selfupd
 		cocos_propdata_flip* dataflip	= dynamic_cast<cocos_propdata_flip*>(m_propdata);
 		cocos_propnodebase*  propnode	= dataflip->get_propnode();
 		cocos2d::Sprite*	 sprite		= dynamic_cast<cocos2d::Sprite*>(propnode->get_node());
+		cocos2d::ui::Widget* widget		= dynamic_cast<cocos2d::ui::Widget*>(propnode->get_node());
 		if (sprite)
 		{
 			m_horzctrl->ini_toggle(sprite->isFlippedX());
 			m_vertctrl->ini_toggle(sprite->isFlippedY());
 		}
+		if (widget)
+		{
+			m_horzctrl->ini_toggle(widget->isFlippedX());
+			m_vertctrl->ini_toggle(widget->isFlippedY());
+		}
 	}
 }
 xui_method_explain(cocos_propctrl_flip, on_editvalue,		void				)( xui_propedit* sender )
-{}
+{
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propkind* kind = m_propdatavec[i]->get_kind();
+		if (kind)
+		{
+			xui_method_propdata args;
+			args.propdata = m_propdatavec[i];
+			kind->xm_propchanged(this, args);
+		}
+	}
+}
 
 /*
 //override
@@ -137,16 +155,23 @@ xui_method_explain(cocos_propctrl_flip, on_toggleclick,		void				)( xui_componen
 		cocos_propdata_flip* data	= dynamic_cast<cocos_propdata_flip*>(m_propdatavec[i]);
 		cocos_propnodebase*  prop	= dynamic_cast<cocos_propnodebase*>(data->get_propnode());
 		cocos2d::Sprite*	 sprite = dynamic_cast<cocos2d::Sprite*>(prop->get_node());
+		cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(prop->get_node());
 		if (sender == m_horzctrl)
 		{
 			if (sprite)
 				sprite->setFlippedX(m_horzctrl->was_push());
+			if (widget)
+				widget->setFlippedX(m_horzctrl->was_push());
 		}
 		else
 		if (sender == m_vertctrl)
 		{
 			if (sprite)
 				sprite->setFlippedY(m_vertctrl->was_push());
+			if (widget)
+				widget->setFlippedY(m_vertctrl->was_push());
 		}
 	}
+
+	on_editvalue(NULL);
 }
