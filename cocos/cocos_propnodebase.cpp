@@ -17,6 +17,11 @@
 #include "ui/UIListView.h"
 #include "ui/UIScrollView.h"
 #include "cocostudio/CCComExtensionData.h"
+#include "external/LayoutCenter.h"
+#include "external/AdapterNode.h"
+#include "external/ShaderRect.h"
+#include "external/TextIFBM.h"
+#include "2d/WeCLabel.h"
 
 #include "xui_global.h"
 #include "xui_numbbox.h"
@@ -48,6 +53,11 @@
 #include "cocos_propnodescroll.h"
 #include "cocos_propnodepageview.h"
 #include "cocos_propnodelistview.h"
+#include "cocos_propnodelayoutcenter.h"
+#include "cocos_propnodeadapter.h"
+#include "cocos_propnodeshaderrect.h"
+#include "cocos_propnodetextifbm.h"
+#include "cocos_propnodeweclabel.h"
 #include "cocos_propctrl_flip.h"
 #include "cocos_nodedata.h"
 #include "cocos_resource.h"
@@ -158,6 +168,11 @@ xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Nod
 	else if (dynamic_cast<cocos2d::ui::PageView*>(node))		return L"PageView";
 	else if (dynamic_cast<cocos2d::ui::ScrollView*>(node))		return L"ScrollView";
 	else if (dynamic_cast<cocos2d::ui::Layout*>(node))			return L"Layout";
+	else if (dynamic_cast<cocos2d::ui::LayoutCenter*>(node))	return L"LayoutCenter";
+	else if (dynamic_cast<cocos2d::ui::AdapterNode*>(node))		return L"AdapterNode";
+	else if (dynamic_cast<cocos2d::ui::ShaderRect*>(node))		return L"ShaderRect";
+	else if (dynamic_cast<cocos2d::ui::TextIFBM*>(node))		return L"TextIFBM";
+	else if (dynamic_cast<cocos2d::ui::WeCLabel*>(node))		return L"WeCLabel";
 	else
 	{
 		if (node->getParent() == NULL)
@@ -169,22 +184,27 @@ xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Nod
 xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_propcsd* file, cocos2d::Node* node )
 {
 	std::wstring rtti = get_type(node);
-	if		(rtti == L"Particle")	return new cocos_propnodeparticle	(file, node);
-	else if (rtti == L"Sprite")		return new cocos_propnodesprite		(file, node);
-	else if (rtti == L"Layer")		return new cocos_propnodelayer		(file, node);
-	else if (rtti == L"Node")		return new cocos_propnodereal		(file, node);
-	else if (rtti == L"Button")		return new cocos_propnodebutton		(file, node);
-	else if (rtti == L"CheckBox")	return new cocos_propnodecheckbox	(file, node);
-	else if (rtti == L"ImageView")	return new cocos_propnodeimageview	(file, node);
-	else if (rtti == L"Text")		return new cocos_propnodetext		(file, node);
-	else if (rtti == L"TextBMFont")	return new cocos_propnodetextbmfont	(file, node);
-	else if (rtti == L"LoadingBar")	return new cocos_propnodeloadingbar	(file, node);
-	else if (rtti == L"Slider")		return new cocos_propnodeslider		(file, node);
-	else if (rtti == L"TextField")	return new cocos_propnodetextfield	(file, node);
-	else if (rtti == L"Layout")		return new cocos_propnodelayout		(file, node);
-	else if (rtti == L"ScrollView")	return new cocos_propnodescrollview	(file, node);
-	else if (rtti == L"ListView")	return new cocos_propnodelistview	(file, node);
-	else if (rtti == L"PageView")	return new cocos_propnodepageview	(file, node);
+	if		(rtti == L"Particle")		return new cocos_propnodeparticle		(file, node);
+	else if (rtti == L"Sprite")			return new cocos_propnodesprite			(file, node);
+	else if (rtti == L"Layer")			return new cocos_propnodelayer			(file, node);
+	else if (rtti == L"Node")			return new cocos_propnodereal			(file, node);
+	else if (rtti == L"Button")			return new cocos_propnodebutton			(file, node);
+	else if (rtti == L"CheckBox")		return new cocos_propnodecheckbox		(file, node);
+	else if (rtti == L"ImageView")		return new cocos_propnodeimageview		(file, node);
+	else if (rtti == L"Text")			return new cocos_propnodetext			(file, node);
+	else if (rtti == L"TextBMFont")		return new cocos_propnodetextbmfont		(file, node);
+	else if (rtti == L"LoadingBar")		return new cocos_propnodeloadingbar		(file, node);
+	else if (rtti == L"Slider")			return new cocos_propnodeslider			(file, node);
+	else if (rtti == L"TextField")		return new cocos_propnodetextfield		(file, node);
+	else if (rtti == L"Layout")			return new cocos_propnodelayout			(file, node);
+	else if (rtti == L"ScrollView")		return new cocos_propnodescrollview		(file, node);
+	else if (rtti == L"ListView")		return new cocos_propnodelistview		(file, node);
+	else if (rtti == L"PageView")		return new cocos_propnodepageview		(file, node);
+	else if (rtti == L"LayoutCenter")	return new cocos_propnodelayoutcenter	(file, node);
+	else if (rtti == L"AdapterNode")	return new cocos_propnodeadapter		(file, node);
+	else if (rtti == L"ShaderRect")		return new cocos_propnodeshaderrect		(file, node);
+	else if (rtti == L"TextIFBM")		return new cocos_propnodetextifbm		(file, node);
+	else if (rtti == L"WeCLabel")		return new cocos_propnodeweclabel		(file, node);
 	else
 	{
 		return NULL;
@@ -193,21 +213,26 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_propcsd* file, const std::wstring& rtti )
 {
 	cocos2d::Node* node = NULL;
-	if		(rtti == L"Particle")	node = cocos2d::ParticleSystemQuad::create();
-	else if (rtti == L"Sprite")		node = cocos2d::Sprite::create();
-	else if (rtti == L"Node")		node = cocos2d::Node::create();
-	else if (rtti == L"Button")		node = cocos2d::ui::Button::create();
-	else if (rtti == L"CheckBox")	node = cocos2d::ui::CheckBox::create();
-	else if (rtti == L"ImageView")	node = cocos2d::ui::ImageView::create();
-	else if (rtti == L"Text")		node = cocos2d::ui::Text::create();
-	else if (rtti == L"TextBMFont")	node = cocos2d::ui::TextBMFont::create();
-	else if (rtti == L"LoadingBar")	node = cocos2d::ui::LoadingBar::create();
-	else if (rtti == L"Slider")		node = cocos2d::ui::Slider::create();
-	else if (rtti == L"TextField")	node = cocos2d::ui::TextField::create();
-	else if (rtti == L"Layout")		node = cocos2d::ui::Layout::create();
-	else if (rtti == L"ScrollView")	node = cocos2d::ui::ScrollView::create();
-	else if (rtti == L"ListView")	node = cocos2d::ui::ListView::create();
-	else if (rtti == L"PageView")	node = cocos2d::ui::PageView::create();
+	if		(rtti == L"Particle")		node = cocos2d::ParticleSystemQuad::create();
+	else if (rtti == L"Sprite")			node = cocos2d::Sprite::create();
+	else if (rtti == L"Node")			node = cocos2d::Node::create();
+	else if (rtti == L"Button")			node = cocos2d::ui::Button::create();
+	else if (rtti == L"CheckBox")		node = cocos2d::ui::CheckBox::create();
+	else if (rtti == L"ImageView")		node = cocos2d::ui::ImageView::create();
+	else if (rtti == L"Text")			node = cocos2d::ui::Text::create();
+	else if (rtti == L"TextBMFont")		node = cocos2d::ui::TextBMFont::create();
+	else if (rtti == L"LoadingBar")		node = cocos2d::ui::LoadingBar::create();
+	else if (rtti == L"Slider")			node = cocos2d::ui::Slider::create();
+	else if (rtti == L"TextField")		node = cocos2d::ui::TextField::create();
+	else if (rtti == L"Layout")			node = cocos2d::ui::Layout::create();
+	else if (rtti == L"ScrollView")		node = cocos2d::ui::ScrollView::create();
+	else if (rtti == L"ListView")		node = cocos2d::ui::ListView::create();
+	else if (rtti == L"PageView")		node = cocos2d::ui::PageView::create();
+	else if (rtti == L"LayoutCenter")	node = cocos2d::ui::LayoutCenter::create();
+	else if (rtti == L"AdapterNode")	node = cocos2d::ui::AdapterNode::create();
+	else if (rtti == L"ShaderRect")		node = cocos2d::ui::ShaderRect::create();
+	else if (rtti == L"TextIFBM")		node = cocos2d::ui::TextIFBM::create();
+	else if (rtti == L"WeCLabel")		node = cocos2d::ui::WeCLabel::create();
 	else
 	{
 		return NULL;

@@ -20,6 +20,10 @@ xui_create_explain(cocos_propdata_unitvec)( xui_propkind* kind, const std::wstri
 /*
 //method
 */
+xui_method_explain(cocos_propdata_unitvec,		def_exist,			bool				)( void )
+{
+	return m_userdef != NULL;
+}
 xui_method_explain(cocos_propdata_unitvec,		get_value,			cocos_value_unitvec	)( void ) const
 {
 	return (*m_userget)(m_userptr);
@@ -248,6 +252,9 @@ xui_implement_rtti(cocos_propctrl_unitvecsz, cocos_propctrl_unitvec);
 xui_create_explain(cocos_propctrl_unitvecsz)( xui_propdata* propdata )
 : cocos_propctrl_unitvec(propdata)
 {
+	cocos_propdata_unitvec* dataunitvec = dynamic_cast<cocos_propdata_unitvec*>(propdata);
+	bool showbutton = dataunitvec->def_exist();
+
 	xui_drawer*  subxname = m_subxedit->get_namectrl();
 	xui_drawer*  subyname = m_subyedit->get_namectrl();
 	subxname->set_text(L"W");
@@ -259,6 +266,7 @@ xui_create_explain(cocos_propctrl_unitvecsz)( xui_propdata* propdata )
 	xui_method_ptrcall(m_defvalue, set_drawcolor	)(true);
 	xui_method_ptrcall(m_defvalue, set_corner		)(3);
 	xui_method_ptrcall(m_defvalue, set_textalign	)(TEXTALIGN_CC);
+	xui_method_ptrcall(m_defvalue, ini_component	)(true, showbutton);
 	xui_method_ptrcall(m_defvalue, ini_drawer		)(L"Default Size");
 	xui_method_ptrcall(m_defvalue, xm_buttonclick	) += new xui_method_member<xui_method_args, cocos_propctrl_unitvecsz>(this, &cocos_propctrl_unitvecsz::on_defvalueclick);
 	m_widgetvec.push_back(m_defvalue);
@@ -279,7 +287,7 @@ xui_method_explain(cocos_propctrl_unitvecsz,	on_invalid,			void				)( xui_method
 	xui_propview* propview = get_propview();
 	xui_vector<s32> sz;
 	sz.w = get_renderw();
-	sz.h = xui_propview::default_lineheight*2 + m_border.ay + m_border.by;
+	sz.h = xui_propview::default_lineheight * (m_defvalue->was_visible()?2:1) + m_border.ay + m_border.by;
 
 	if (get_rendersz() != sz)
 	{
@@ -294,12 +302,15 @@ xui_method_explain(cocos_propctrl_unitvecsz,	on_perform,			void				)( xui_method
 {
 	cocos_propctrl_unitvec::on_perform(args);
 
-	xui_rect2d<s32> rt = get_renderrt();
-	xui_vector<s32> pt;
-	//defvalue
-	pt.x = rt.get_w()/2 + 20;
-	pt.y = xui_propview::default_lineheight + (xui_propview::default_lineheight - m_defvalue->get_renderh()) / 2;
-	m_defvalue->on_perform_pt(pt);
+	if (m_defvalue->was_visible())
+	{
+		xui_rect2d<s32> rt = get_renderrt();
+		xui_vector<s32> pt;
+		//defvalue
+		pt.x = rt.get_w()/2 + 20;
+		pt.y = xui_propview::default_lineheight + (xui_propview::default_lineheight - m_defvalue->get_renderh()) / 2;
+		m_defvalue->on_perform_pt(pt);
+	}
 }
 
 /*

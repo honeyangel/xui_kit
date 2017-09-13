@@ -36,6 +36,12 @@ xui_create_explain(cocos_toolbox)(void)
 	xui_method_ptrcall(m_container,		add_toolctrl	)(cocos_resource::icon_custom, L"ListView");
 	xui_method_ptrcall(m_container,		add_toolctrl	)(cocos_resource::icon_custom, L"PageView");
 	xui_method_ptrcall(m_container,		add_toolctrl	)(cocos_resource::icon_custom, L"ScrollView");
+	m_custom		= new cocos_toolpane(L"Custom");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"AdapterNode");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"LayoutCenter");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"ShaderRect");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"TextIFBM");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"WeCLabel");
 	m_fill			= new xui_panel(xui_vector<s32>(100));
 	xui_method_ptrcall(m_fill,			ini_component	)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_fill,			set_drawcolor	)(false);
@@ -43,6 +49,7 @@ xui_create_explain(cocos_toolbox)(void)
 	xui_method_ptrcall(m_fill,			add_child		)(m_object);
 	xui_method_ptrcall(m_fill,			add_child		)(m_controller);
 	xui_method_ptrcall(m_fill,			add_child		)(m_container);
+	xui_method_ptrcall(m_fill,			add_child		)(m_custom);
 	xui_method_ptrcall(m_fill,			xm_perform		) += new xui_method_member<xui_method_args, cocos_toolbox>(this, &cocos_toolbox::on_fillperform);
 	xui_method_ptrcall(m_fill,			xm_renderelse	) += new xui_method_member<xui_method_args, cocos_toolbox>(this, &cocos_toolbox::on_fillrenderelse);
 

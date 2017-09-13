@@ -48,6 +48,7 @@ public:
 	/*
 	//method
 	*/
+	bool						def_exist		( void );
 	virtual cocos_value_unitvec	get_value		( void ) const;
 	virtual void				set_value		( const cocos_value_unitvec& value );
 	virtual void				def_value		( void );

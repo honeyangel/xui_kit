@@ -13,7 +13,9 @@
 xui_create_explain(cocos_propnodewidget)( xui_bitmap* icon, cocos_propcsd* file, cocos2d::Node* node )
 : cocos_propnodebase(icon, file, node)
 , m_widget(dynamic_cast<cocos2d::ui::Widget*>(node))
-{}
+{
+	m_widget->setLayoutComponentEnabled(true);
+}
 
 /*
 //method
