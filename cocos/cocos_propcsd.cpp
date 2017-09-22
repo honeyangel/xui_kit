@@ -35,7 +35,13 @@ xui_method_explain(cocos_propcsd, get_node,		cocos2d::Node*		)( void )
 {
 	if (m_node == NULL)
 	{
-		m_node = cocos2d::CSLoader::createNodeWithXMLFile(xui_global::unicode_to_ascii(m_fullname));
+		if (xui_global::has_file(m_fullname))
+			m_node = cocos2d::CSLoader::createNodeWithXMLFile(xui_global::unicode_to_ascii(m_fullname));
+		else
+		{
+			m_node = cocos2d::Node::create();
+			m_node->setContentSize(cocos2d::Size(640, 1136));
+		}
 	}
 	if (m_prop == NULL)
 	{
@@ -78,7 +84,7 @@ xui_method_explain(cocos_propcsd, load,			void				)( void )
 {
 	m_modify = false;
 
-	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene(this);
 	if (scene)
 		scene->set_editprop(NULL);
 
@@ -98,6 +104,8 @@ xui_method_explain(cocos_propcsd, load,			void				)( void )
 xui_method_explain(cocos_propcsd, save_as,		void				)( const std::wstring& fullname, bool modify )
 {
 	m_modify = modify;
+	get_node();
+
 	//TODO
 	FILE* file = fopen(xui_global::unicode_to_ascii(fullname).c_str(), "w");
 	if (file)

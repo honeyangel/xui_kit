@@ -42,6 +42,8 @@ xui_create_explain(cocos_toolbox)(void)
 	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"ShaderRect");
 	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"TextIFBM");
 	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"WeCLabel");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"SpineNode");
+	xui_method_ptrcall(m_custom,		add_toolctrl	)(cocos_resource::icon_custom, L"SpineBlender");
 	m_fill			= new xui_panel(xui_vector<s32>(100));
 	xui_method_ptrcall(m_fill,			ini_component	)(0, 0, DOCKSTYLE_F);
 	xui_method_ptrcall(m_fill,			set_drawcolor	)(false);

@@ -20,6 +20,7 @@ public:
 	//method
 	*/
 	const xui_propkind_vec&	get_propkind	( void ) const;
+	xui_propkind*			get_propkind	( const std::string& type );
 	bool					has_propkind	( xui_propkind* propkind ) const;
 	void					add_propkind	( xui_propkind* propkind );
 	void					del_propkind	( xui_propkind* propkind );

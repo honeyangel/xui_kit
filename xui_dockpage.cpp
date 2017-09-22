@@ -465,7 +465,7 @@ xui_method_explain(xui_dockpage, get_dockview,			xui_dockview*			)( xui_componen
 xui_method_explain(xui_dockpage, cal_dockinfo,			u08						)( xui_dockview* dockview, const xui_vector<s32>& pt )
 {
 	u08 dockstyle = DOCKSTYLE_N;
-	if (dockview)
+	if (m_dockarea != AREALIMIT_N && dockview)
 	{
 		xui_rect2d<s32> rt = dockview->get_freerect() + dockview->get_screenpt();
 		rt.ax += m_border.ax;

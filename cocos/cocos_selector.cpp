@@ -481,11 +481,8 @@ xui_method_explain(cocos_selector, convert_droptype,		s32					)( const std::stri
 	else if (droptype == "FragShader")		return FILTER_FRAGSHADER;
 	else if (droptype == "TTF")				return FILTER_TTF;
 	else if (droptype == "FNT")				return FILTER_FNT;
+	else if (droptype == "SpineAtlas")		return FILTER_SPINEATLAS;
+	else if (droptype == "Spine")			return FILTER_SPINE;
 	else if (droptype == "CSD")				return FILTER_CSD;
-	//else if (droptype == "NP2DSActor")		return L".npAction";
-	//else if (droptype == "NP2DSSceneFile")	return L".npCourse";
-	//else if (droptype == "NPParticleSFX")	return L".particle";
-	//else if (droptype == "NP2DSStateCtrl")	return L".controller";
-	//else if (droptype == "EntityTemplate")	return L".json";
 	else									return FILTER_NONE;
 }

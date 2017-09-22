@@ -21,6 +21,8 @@
 #include "external/AdapterNode.h"
 #include "external/ShaderRect.h"
 #include "external/TextIFBM.h"
+#include "external/SpineNode.h"
+#include "external/SpineBlender.h"
 #include "2d/WeCLabel.h"
 
 #include "xui_global.h"
@@ -58,6 +60,8 @@
 #include "cocos_propnodeshaderrect.h"
 #include "cocos_propnodetextifbm.h"
 #include "cocos_propnodeweclabel.h"
+#include "cocos_propnodespinenode.h"
+#include "cocos_propnodespineblender.h"
 #include "cocos_propctrl_flip.h"
 #include "cocos_nodedata.h"
 #include "cocos_resource.h"
@@ -173,6 +177,8 @@ xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Nod
 	else if (dynamic_cast<cocos2d::ui::ShaderRect*>(node))		return L"ShaderRect";
 	else if (dynamic_cast<cocos2d::ui::TextIFBM*>(node))		return L"TextIFBM";
 	else if (dynamic_cast<cocos2d::ui::WeCLabel*>(node))		return L"WeCLabel";
+	else if (dynamic_cast<cocos2d::ui::SpineNode*>(node))		return L"SpineNode";
+	else if (dynamic_cast<cocos2d::ui::SpineBlender*>(node))	return L"SpineBlender";
 	else
 	{
 		if (node->getParent() == NULL)
@@ -205,6 +211,8 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	else if (rtti == L"ShaderRect")		return new cocos_propnodeshaderrect		(file, node);
 	else if (rtti == L"TextIFBM")		return new cocos_propnodetextifbm		(file, node);
 	else if (rtti == L"WeCLabel")		return new cocos_propnodeweclabel		(file, node);
+	else if (rtti == L"SpineNode")		return new cocos_propnodespinenode		(file, node);
+	else if (rtti == L"SpineBlender")	return new cocos_propnodespineblender	(file, node);
 	else
 	{
 		return NULL;
@@ -233,6 +241,8 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	else if (rtti == L"ShaderRect")		node = cocos2d::ui::ShaderRect::create();
 	else if (rtti == L"TextIFBM")		node = cocos2d::ui::TextIFBM::create();
 	else if (rtti == L"WeCLabel")		node = cocos2d::ui::WeCLabel::create();
+	else if (rtti == L"SpineNode")		node = cocos2d::ui::SpineNode::create();
+	else if (rtti == L"SpineBlender")	node = cocos2d::ui::SpineBlender::create();
 	else
 	{
 		return NULL;

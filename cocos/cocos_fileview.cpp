@@ -110,6 +110,14 @@ xui_method_explain(cocos_fileview, on_updateself,			void			)( xui_method_update&
 			m_locknode = NULL;
 	}
 }
+xui_method_explain(cocos_fileview, on_perform,				void			)( xui_method_args&   args )
+{
+	xui_control::on_perform(args);
+	if (m_tileview->was_visible() == false)
+		m_tileview->on_perform_sz(m_lineview->get_rendersz());
+	if (m_lineview->was_visible() == false)
+		m_lineview->on_perform_sz(m_tileview->get_rendersz());
+}
 
 /*
 //event

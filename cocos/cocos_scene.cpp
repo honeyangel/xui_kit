@@ -1,6 +1,7 @@
 #include "2d/CCScene.h"
 #include "2d/CCNode.h"
 #include "2d/CCSpriteFrame.h"
+#include "2d/WeCChartFontManager.h"
 #include "base/CCDirector.h"
 
 #include "xui_panel.h"
@@ -33,7 +34,7 @@ xui_implement_rtti(cocos_scene, xui_dockpage);
 //constructor
 */
 xui_create_explain(cocos_scene)( cocos_propcsd* prop )
-: xui_dockpage(xui_vector<s32>(200), AREALIMIT_A, 200, DOCKSTYLE_F)
+: xui_dockpage(xui_vector<s32>(200), AREALIMIT_N, 200, DOCKSTYLE_F)
 , m_trans(xui_vector<s32>(0))
 , m_ratio(1.0)
 , m_multisel(false)
@@ -164,7 +165,7 @@ xui_create_explain(cocos_scene)( cocos_propcsd* prop )
 
 	m_rootnode = cocos2d::Node::create();
 	m_drawview->get_2droot()->addChild(m_rootnode);
-	m_rootnode->addChild(m_editprop->get_node());
+	//m_rootnode->addChild(m_editprop->get_node());
 }
 
 /*
@@ -186,15 +187,19 @@ xui_delete_explain(cocos_scene)( void )
 */
 xui_method_explain(cocos_scene, get_selectedvec,			cocos_boundbox_vec		)( void )
 {
-	return cocos_mainform::get_ptr()->get_scene()->get_selectedboundbox();
+	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+	if (scene)
+		return scene->get_selectedboundbox();
+
+	return cocos_boundbox_vec();
 }
 xui_method_explain(cocos_scene, set_editprop,				void					)( cocos_propcsd* prop )
 {
-	m_rootnode->removeAllChildren();
+	//m_rootnode->removeAllChildren();
 	m_editprop = prop;
 	if (m_editprop)
 	{
-		m_rootnode->addChild(m_editprop->get_node());
+		//m_rootnode->addChild(m_editprop->get_node());
 	}
 }
 xui_method_explain(cocos_scene, get_editprop,				cocos_propcsd*			)( void )
@@ -405,12 +410,35 @@ xui_method_explain(cocos_scene, on_drawviewupdateself,		void					)( xui_componen
 	m_lockctrl->update(args.delta);
 	m_rootnode->setPosition(m_trans.x, m_trans.y);
 	m_rootnode->setScale(m_ratio);
-	m_rootnode->update(args.delta);
+	if (m_editprop)
+	{
+		cocos2d::Node* node = m_editprop->get_node();
+		node->update(args.delta);
+	}
 }
 xui_method_explain(cocos_scene, on_drawviewrenderself,		void					)( xui_component* sender, xui_method_args&		args )
 {
 	xui_convas::get_ins()->clear(xui_colour(1.0f, 0.3f));
-	cocos2d::Director::getInstance()->drawScene();
+	if (m_editprop)
+	{
+		cocos2d::Node* node = m_editprop->get_node();
+		cocos2d::Size  size = node->getContentSize();
+		if (size.width  > 0 &&
+			size.height > 0)
+		{
+			xui_rect2d<s32> rt;
+			rt.ax = m_trans.x;
+			rt.ay = m_drawview->get_renderh() - m_trans.y - size.height*m_ratio;
+			rt.set_w(size.width *m_ratio);
+			rt.set_h(size.height*m_ratio);
+			xui_convas::get_ins()->fill_rectangle(rt, xui_colour::black);
+		}
+
+		m_rootnode->addChild(node);
+		cocos2d::WeCCharFontManager::getInstance()->forceClearMemory();
+		cocos2d::Director::getInstance()->drawScene();
+		m_rootnode->removeAllChildren();
+	}
 }
 xui_method_explain(cocos_scene, on_drawviewrenderelse,		void					)( xui_component* sender, xui_method_args&		args )
 {

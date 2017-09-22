@@ -27,6 +27,16 @@ xui_method_explain(xui_proproot, get_propkind,	const xui_propkind_vec&	)( void )
 {
 	return m_propkind;
 }
+xui_method_explain(xui_proproot, get_propkind,	xui_propkind*			)( const std::string& type )
+{
+	for (u32 i = 0; i < m_propkind.size(); ++i)
+	{
+		if (m_propkind[i]->get_type() == type)
+			return m_propkind[i];
+	}
+
+	return NULL;
+}
 xui_method_explain(xui_proproot, has_propkind,	bool					)( xui_propkind* propkind ) const
 {
 	for (u32 i = 0; i < m_propkind.size(); ++i)

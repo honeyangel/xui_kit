@@ -29,6 +29,7 @@ class cocos_project;
 class cocos_console;
 class cocos_timeline;
 class cocos_scene;
+class cocos_game;
 class cocos_propcsd;
 class cocos_glview;
 class cocos_mainform : public xui_window
@@ -63,6 +64,7 @@ public:
 	cocos_console*				get_console			( void );
 	cocos_timeline*				get_timeline		( void );
 	cocos_toolbox*				get_toolbox			( void );
+	cocos_game*					get_game			( void );
 	cocos_scene*				get_scene			( void );
 	cocos_scene*				get_scene			( cocos_propcsd* prop );
 	cocos_scene*				add_scene			( cocos_propcsd* prop );
@@ -93,6 +95,7 @@ protected:
 	void						on_clicktransform	( xui_component* sender, xui_method_args&  args );
 	void						on_clickanchor		( xui_component* sender, xui_method_args&  args );
 	void						on_clickcoordinate	( xui_component* sender, xui_method_args&  args );
+	void						on_clickbuild		( xui_component* sender, xui_method_args&  args );
 	void						on_clickdebug		( xui_component* sender, xui_method_args&  args );
 	void						on_clickwndmenu		( xui_component* sender, xui_method_args&  args );
 	void						on_clicksave		( xui_component* sender, xui_method_args&  args );
@@ -136,10 +139,12 @@ protected:
 	xui_menuitem*				m_console;
 	xui_menuitem*				m_timeline;
 	xui_menuitem*				m_toolbox;
+	xui_menuitem*				m_game;
 	xui_menuitem*				m_save;
 	xui_menuitem*				m_load;
 	xui_menuitem*				m_reset;
 	s32							m_steptime;
+	cocos_scene*				m_scene;
 	std::vector<xui_proproot*>	m_backupfiles;
 	std::vector<std::wstring>	m_ignorepaths;
 };

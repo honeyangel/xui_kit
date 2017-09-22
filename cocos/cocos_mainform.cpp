@@ -1,4 +1,5 @@
 #include "renderer/CCGLProgramCache.h"
+#include "2d/WeCChartFontManager.h"
 #include "platform/CCFileUtils.h"
 #include "base/CCConfiguration.h"
 #include "base/CCDirector.h"
@@ -24,6 +25,7 @@
 #include "cocos_console.h"
 #include "cocos_project.h"
 #include "cocos_toolbox.h"
+#include "cocos_game.h"
 #include "cocos_recent.h"
 #include "cocos_backup.h"
 #include "cocos_save.h"
@@ -38,6 +40,7 @@ xui_implement_rtti(cocos_mainform, xui_window);
 xui_create_explain(cocos_mainform)( void )
 : xui_window(xui_vector<s32>(0), false)
 , m_steptime(0)
+, m_scene(NULL)
 {
 	xm_keybddown   += new xui_method_member<xui_method_keybd, cocos_mainform>(this, &cocos_mainform::on_globalkeybddown);
 	m_dockstyle		= DOCKSTYLE_F;
@@ -83,6 +86,7 @@ xui_create_explain(cocos_mainform)( void )
 	m_step			= xui_button::create(NULL, 32);
 	xui_method_ptrcall(m_run,			xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
 	xui_method_ptrcall(m_pause,			xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
+	xui_method_ptrcall(m_build,			xm_buttonclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickbuild);
 	xui_method_ptrcall(m_step,			xm_buttonclick	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickdebug);
 	xui_method_ptrcall(m_run,			xm_renderself	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_paintdebug);
 	xui_method_ptrcall(m_pause,			xm_renderself	) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_paintdebug);
@@ -111,17 +115,20 @@ xui_create_explain(cocos_mainform)( void )
 	m_console		= menu->add_item(cocos_resource::icon_console,		L"Console");
 	m_timeline		= menu->add_item(cocos_resource::icon_timeline,		L"Timeline");
 	m_toolbox		= menu->add_item(cocos_resource::icon_setting,		L"Toolbox");
+	m_game			= menu->add_item(cocos_resource::icon_game,			L"Game");
 	xui_method_ptrcall(m_hierarchy,		set_data		)(new cocos_hierarchy);
 	xui_method_ptrcall(m_inspector,		set_data		)(new cocos_inspector);
 	xui_method_ptrcall(m_project,		set_data		)(new cocos_project);
 	xui_method_ptrcall(m_console,		set_data		)(new cocos_console);
 	xui_method_ptrcall(m_toolbox,		set_data		)(new cocos_toolbox);
+	xui_method_ptrcall(m_game,			set_data		)(new cocos_game);
 	//xui_method_ptrcall(m_timeline,		set_data		)(new cocos_timeline);
 	xui_method_ptrcall(m_hierarchy,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_inspector,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_project,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_console,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_toolbox,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
+	xui_method_ptrcall(m_game,			xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	xui_method_ptrcall(m_timeline,		xm_click		) += new xui_method_member<xui_method_args, cocos_mainform>(this, &cocos_mainform::on_clickwndmenu);
 	menu->add_separate();
 	m_save			= menu->add_item(NULL, L"Save");
@@ -234,6 +241,10 @@ xui_method_explain(cocos_mainform, get_console,			cocos_console*		)( void )
 xui_method_explain(cocos_mainform, get_toolbox,			cocos_toolbox*		)( void )
 {
 	return (cocos_toolbox*)		xui_method_ptrcall(m_toolbox,	get_data)();
+}
+xui_method_explain(cocos_mainform, get_game,			cocos_game*			)( void )
+{
+	return (cocos_game*)		xui_method_ptrcall(m_game,		get_data)();
 }
 xui_method_explain(cocos_mainform, get_timeline,		cocos_timeline*		)( void )
 {
@@ -364,6 +375,10 @@ xui_method_explain(cocos_mainform, on_clickcoordinate,	void				)( xui_component*
 		xui_method_ptrcall(drawer, ini_drawer	)(L"Local");
 		break;
 	}
+}
+xui_method_explain(cocos_mainform, on_clickbuild,		void				)( xui_component* sender, xui_method_args&  args )
+{
+	set_pageshow(get_game());
 }
 xui_method_explain(cocos_mainform, on_clickdebug,		void				)( xui_component* sender, xui_method_args&  args )
 {
@@ -616,8 +631,13 @@ xui_method_explain(cocos_mainform, on_mainviewinvalid,	void				)( xui_component*
 }
 xui_method_explain(cocos_mainform, on_mainviewchanged,	void				)( xui_component* sender, xui_method_args&	args )
 {
-	cocos_hierarchy* hierarchy = get_hierarchy();
-	hierarchy->reset();
+	cocos_scene* scene = xui_dynamic_cast(cocos_scene, m_mainview->get_showpage());
+	if (scene && m_scene != scene)
+	{
+		m_scene = scene;
+		cocos_hierarchy* hierarchy = get_hierarchy();
+		hierarchy->reset();
+	}
 }
 xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* sender, xui_method_args&  args )
 {
@@ -691,6 +711,7 @@ xui_method_explain(cocos_mainform, del_allview,			void				)( void )
 	menulist.push_back(m_console);
 	menulist.push_back(m_project);
 	menulist.push_back(m_toolbox);
+	menulist.push_back(m_game);
 	//menulist.push_back(m_timeline);
 	menulist.push_back(m_hierarchy);
 

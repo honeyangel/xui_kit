@@ -93,6 +93,16 @@ xui_method_explain(xui_propkind, get_propdata,	const xui_propdata_vec&	)( void )
 {
 	return m_propdata;
 }
+xui_method_explain(xui_propkind, get_propdata,	xui_propdata*			)( const std::wstring& name )
+{
+	for (u32 i = 0; i < m_propdata.size(); ++i)
+	{
+		if (m_propdata[i]->get_name() == name)
+			return m_propdata[i];
+	}
+
+	return NULL;
+}
 xui_method_explain(xui_propkind, add_propdata,	void					)( xui_propdata* propdata )
 {
 	m_propdata.push_back(propdata);

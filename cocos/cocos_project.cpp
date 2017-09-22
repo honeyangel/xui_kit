@@ -37,6 +37,8 @@
 #include "cocos_propfragshader.h"
 #include "cocos_propttf.h"
 #include "cocos_propfnt.h"
+#include "cocos_propspineatlas.h"
+#include "cocos_propspine.h"
 #include "cocos_propcsd.h"
 #include "cocos_framedata.h"
 #include "cocos_resource.h"
@@ -62,9 +64,11 @@ xui_create_explain(cocos_project)( void )
 	menu1->add_separate();
 	m_particle		= menu1->add_item(cocos_resource::icon_particle, L"Particle");
 	m_material		= menu1->add_item(cocos_resource::icon_animator, L"Material");
+	m_scene			= menu1->add_item(cocos_resource::icon_scene,	 L"Scene");
 	xui_method_ptrcall(m_folder,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_folderclick);
 	xui_method_ptrcall(m_particle,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_particleclick);
 	xui_method_ptrcall(m_material,	xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_materialclick);
+	xui_method_ptrcall(m_scene,		xm_click			) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_sceneclick);
 	m_timer			= xui_timermgr::get_ins()->add_timer(this, 1.0f, NULL);
 	xui_method_ptrcall(m_timer,		xm_tick				) += new xui_method_member<xui_method_args,		cocos_project>(this, &cocos_project::on_timertick);
 	m_timer_save	= xui_timermgr::get_ins()->add_timer(this, 30.f, NULL);
@@ -203,6 +207,8 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_filter,	add_item			)(L"Frag Shader");
 	xui_method_ptrcall(m_filter,	add_item			)(L"TTF");
 	xui_method_ptrcall(m_filter,	add_item			)(L"FNT");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Spine Atlas");
+	xui_method_ptrcall(m_filter,	add_item			)(L"Spine");
 	xui_method_ptrcall(m_filter,	add_item			)(L"CSD");
 	xui_method_ptrcall(m_filter,	ini_dropbox			)(0);
 
@@ -344,6 +350,10 @@ xui_method_explain(cocos_project, get_pathfile,				void			)( s32 type, xui_propr
 				filevec.push_back(propfile);
 			if (type == FILTER_FNT			&& dynamic_cast<cocos_propfnt*			>(propfile))
 				filevec.push_back(propfile);
+			if (type == FILTER_SPINEATLAS	&& dynamic_cast<cocos_propspineatlas*	>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_SPINE		&& dynamic_cast<cocos_propspine*		>(propfile))
+				filevec.push_back(propfile);
 			if (type == FILTER_CSD			&& dynamic_cast<cocos_propcsd*			>(propfile))
 				filevec.push_back(propfile);
 		}
@@ -380,7 +390,9 @@ xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring&
 }
 xui_method_explain(cocos_project, loc_filenode,				void			)( const std::wstring& path, const std::wstring& file, const std::wstring& name )
 {
-	m_search->set_text(L"");
+	xui_method_ptrcall(m_filter, ini_dropbox)(0);
+	xui_method_ptrcall(m_search, set_text	)(L"");
+
 	if (m_fileview->get_tileview()->get_viewfile() != NULL)
 	{
 		xui_method_args args;
@@ -908,7 +920,8 @@ xui_method_explain(cocos_project, on_fileviewassetdrag,		void			)( xui_component
 }
 xui_method_explain(cocos_project, on_folderclick,			void			)( xui_component* sender, xui_method_args&     args )
 {
-	m_search->set_text(L"");
+	xui_method_ptrcall(m_filter, ini_dropbox)(0);
+	xui_method_ptrcall(m_search, set_text	)(L"");
 
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
@@ -956,7 +969,8 @@ xui_method_explain(cocos_project, on_folderclick,			void			)( xui_component* sen
 }
 xui_method_explain(cocos_project, on_particleclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
-	m_search->set_text(L"");
+	xui_method_ptrcall(m_filter, ini_dropbox)(0);
+	xui_method_ptrcall(m_search, set_text	)(L"");
 
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
@@ -1000,7 +1014,8 @@ xui_method_explain(cocos_project, on_particleclick,			void			)( xui_component* s
 }
 xui_method_explain(cocos_project, on_materialclick,			void			)( xui_component* sender, xui_method_args&	   args )
 {
-	m_search->set_text(L"");
+	xui_method_ptrcall(m_filter, ini_dropbox)(0);
+	xui_method_ptrcall(m_search, set_text	)(L"");
 
 	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
 	if (nodevec.size() > 0)
@@ -1034,7 +1049,52 @@ xui_method_explain(cocos_project, on_materialclick,			void			)( xui_component* s
 
 		cocos_propmaterial* propfile = new cocos_propmaterial(temp.str());
 		xui_method_ptrcall(rootprop, add_fileprop)(propfile);
-		xui_method_ptrcall(propfile, save)();
+		xui_method_ptrcall(propfile, save		 )();
+
+		xui_treeview* lineview = m_fileview->get_lineview();
+		xui_treenode* linenode = lineview->add_upmostnode(0, new cocos_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));
+		lineview->refresh();
+		linenode->set_edittext(0);
+	}
+}
+xui_method_explain(cocos_project, on_sceneclick,			void			)( xui_component* sender, xui_method_args&	   args )
+{
+	xui_method_ptrcall(m_filter, ini_dropbox)(0);
+	xui_method_ptrcall(m_search, set_text	)(L"");
+
+	std::vector<xui_treenode*> nodevec = m_pathview->get_selectednode();
+	if (nodevec.size() > 0)
+	{
+		xui_treenode*   rootnode = nodevec.front();
+		cocos_pathdata* rootdata = (cocos_pathdata*)rootnode->get_linkdata();
+		cocos_proppath* rootprop = dynamic_cast<cocos_proppath*>(rootdata->get_prop());
+		if (rootprop == m_like)
+			return;
+
+		std::wstring path = rootdata->get_full();
+		std::wstringstream temp;
+		temp <<  path.c_str();
+		temp << (path.length() > 0 ? L"/New Scene.csd" : L"New Scene.csd");
+		if (xui_global::has_file(temp.str()))
+		{
+			s32 number = 0;
+			while (true)
+			{
+				temp.str(L"");
+				temp <<  path.c_str();
+				temp << (path.length() > 0 ? L"/New Scene" : L"New Scene");
+				temp << number;
+				temp << ".csd";
+				if (xui_global::has_file(temp.str()) == false)
+					break;
+
+				++number;
+			}
+		}
+
+		cocos_propcsd* propfile = new cocos_propcsd(temp.str());
+		xui_method_ptrcall(rootprop, add_fileprop)(propfile);
+		xui_method_ptrcall(propfile, save		 )();
 
 		xui_treeview* lineview = m_fileview->get_lineview();
 		xui_treenode* linenode = lineview->add_upmostnode(0, new cocos_filedata(propfile->get_fileicon(), propfile->get_fullname(), propfile));

@@ -5,6 +5,8 @@
 #include "2d/CCSpriteFrameCache.h"
 #include "2d/CCParticleSystem.h"
 #include "ui/UITextBMFont.h"
+#include "external/SpineNode.h"
+#include "spine/SkeletonAnimation.h"
 #include "base/CCDirector.h"
 #include "xui_global.h"
 #include "xui_convas.h"
@@ -20,6 +22,7 @@
 #include "cocos_propparticle.h"
 #include "cocos_propttf.h"
 #include "cocos_propfnt.h"
+#include "cocos_propspine.h"
 #include "cocos_renderview.h"
 #include "cocos_resource.h"
 #include "cocos_mainform.h"
@@ -109,9 +112,11 @@ xui_create_explain(cocos_preview)( void )
 	m_sprite = cocos2d::Sprite::create();
 	m_fxroot = cocos2d::Node::create();
 	m_uitext = cocos2d::ui::TextBMFont::create();
+	m_spanim = cocos2d::ui::SpineNode::create();
 	m_view->get_2droot()->addChild(m_sprite);
 	m_view->get_2droot()->addChild(m_fxroot);
 	m_view->get_2droot()->addChild(m_uitext);
+	m_view->get_2droot()->addChild(m_spanim);
 }
 
 /*
@@ -122,10 +127,12 @@ xui_delete_explain(cocos_preview)( void )
 	m_view->get_2droot()->removeChild(m_sprite);
 	m_view->get_2droot()->removeChild(m_fxroot);
 	m_view->get_2droot()->removeChild(m_uitext);
+	m_view->get_2droot()->removeChild(m_spanim);
 	m_fxroot->removeAllChildren();
 	delete m_sprite;
 	delete m_fxroot;
 	delete m_uitext;
+	delete m_spanim;
 	delete m_ctrl;
 }
 
@@ -154,13 +161,15 @@ xui_method_explain(cocos_preview, set_needshow,			void				)( void )
 	cocos_proptexture*  propimage		= dynamic_cast<cocos_proptexture*	>(m_prop);
 	cocos_propttf*		propttf			= dynamic_cast<cocos_propttf*		>(m_prop);	
 	cocos_propfnt*		propfnt			= dynamic_cast<cocos_propfnt*		>(m_prop);
+	cocos_propspine*	propspine		= dynamic_cast<cocos_propspine*		>(m_prop);
 	set_visible(
 		propparticle ||
 		propframe	 ||
 		propatlas	 ||
 		propimage	 ||
 		propttf		 ||
-		propfnt);
+		propfnt		 ||
+		propspine);
 }
 xui_method_explain(cocos_preview, set_viewprop,			void				)( xui_proproot* prop, bool play )
 {
@@ -177,6 +186,7 @@ xui_method_explain(cocos_preview, set_viewprop,			void				)( xui_proproot* prop,
 	cocos_propatlas*	propatlas		= dynamic_cast<cocos_propatlas*		>(m_prop);
 	cocos_proptexture*  propimage		= dynamic_cast<cocos_proptexture*   >(m_prop);
 	cocos_propfnt*		propfnt			= dynamic_cast<cocos_propfnt*		>(m_prop);
+	cocos_propspine*	propspine		= dynamic_cast<cocos_propspine*		>(m_prop);
 	if (propparticle)
 	{
 		cocos2d::ParticleSystem* particle = propparticle->get_particle();
@@ -184,6 +194,16 @@ xui_method_explain(cocos_preview, set_viewprop,			void				)( xui_proproot* prop,
 		m_fxroot->removeAllChildren();
 		m_fxroot->addChild(particle);
 		m_node = m_fxroot;
+	}
+	else
+	if (propspine)
+	{
+		std::wstring full = propspine->get_fullname();
+		std::string  path = xui_global::unicode_to_ascii(cocos_filedata::get_path(full));
+		std::string  safe = xui_global::unicode_to_ascii(cocos_filedata::get_safe(full));
+		m_spanim->setSpinePath(path+safe+".json");
+		m_spanim->setAtlasPath(path+safe+".atlas");
+		m_node = m_spanim;
 	}
 	else
 	if (propframe)
@@ -374,6 +394,25 @@ xui_method_explain(cocos_preview, set_localtransform,	void				)( void )
 		f32 y = - anchor.y*s + offset.y*s + (((f32)size.h - h*s) / 2.0f);
 		m_sprite->setScale(s, s);
 		m_sprite->setPosition(x, m_view->get_renderh() - y - h*s);
+	}
+	else
+	if (m_node == m_spanim)
+	{
+		spSkeletonData* data = m_spanim->getSkeletonAnim()->getSkeleton()->data;
+		s32 w = data->width;
+		s32 h = data->height;
+		f32 sw = (f32)size.w / w;
+		f32 sh = (f32)size.h / h;
+		f32 s = xui_min(sw, sh);
+		if (s > 1.0f)
+			s = m_scale;
+		else
+			s = m_scale * s;
+
+		f32 x = (((f32)size.w - w*s) / 2.0f);
+		f32 y = (((f32)size.h - h*s) / 2.0f);
+		m_spanim->setScale(s, s);
+		m_spanim->setPosition(cocos2d::Vec2(x, m_view->get_renderh() - y - h*s));
 	}
 	else
 	if (m_node == m_fxroot)

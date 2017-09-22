@@ -13,6 +13,11 @@ class cocos_renderview;
 class cocos_propcsd;
 typedef std::vector<cocos_boundbox*> cocos_boundbox_vec;
 
+namespace cocos2d
+{
+	class Node;
+}
+
 class cocos_scene : public xui_dockpage
 {
 	xui_declare_rtti

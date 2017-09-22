@@ -11,6 +11,7 @@ namespace cocos2d
 	namespace ui
 	{
 		class TextBMFont;
+		class SpineNode;
 	}
 }
 
@@ -84,6 +85,7 @@ protected:
 	cocos2d::Sprite*			m_sprite;
 	cocos2d::Node*				m_fxroot;
 	cocos2d::ui::TextBMFont*	m_uitext;
+	cocos2d::ui::SpineNode*		m_spanim;
 	xui_rect2d<s32>				m_rect;
 	xui_action_ctrl*			m_ctrl;
 };

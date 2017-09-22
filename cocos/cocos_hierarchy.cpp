@@ -27,6 +27,7 @@
 #include "cocos_propparticle.h"
 #include "cocos_propnodeimageview.h"
 #include "cocos_scene.h"
+#include "cocos_game.h"
 #include "cocos_boundbox.h"
 #include "cocos_hierarchy.h"
 
@@ -130,10 +131,11 @@ xui_create_explain(cocos_hierarchy)( void )
 */
 xui_method_explain(cocos_hierarchy, reset,					void				)( void )
 {
-	m_tree->del_upmostnodeall();
 	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
 	if (scene)
 	{
+		m_tree->del_upmostnodeall();
+
 		cocos_propcsd*		file = scene->get_editprop();
 		cocos_propnodebase* prop = file->get_prop();
 		xui_treenode*		root = m_tree->add_upmostnode(0, new cocos_nodedata(prop));
@@ -144,6 +146,8 @@ xui_method_explain(cocos_hierarchy, reset,					void				)( void )
 		{
 			add_propnode(root, vec[i], -1);
 		}
+
+		cocos_mainform::get_ptr()->get_game()->set_viewprop(file);
 	}
 }
 
@@ -436,7 +440,8 @@ xui_method_explain(cocos_hierarchy, on_treeselection,		void						)( xui_componen
 	}
 
 	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
-	scene->set_toolupdate();
+	if (scene)
+		scene->set_toolupdate();
 }
 xui_method_explain(cocos_hierarchy, on_treekeybddown,		void						)( xui_component* sender, xui_method_keybd&			args )
 {

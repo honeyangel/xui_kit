@@ -16,6 +16,8 @@ enum
 	FILTER_FRAGSHADER,
 	FILTER_TTF,
 	FILTER_FNT,
+	FILTER_SPINEATLAS,
+	FILTER_SPINE,
 	FILTER_CSD,
 };
 
@@ -72,6 +74,7 @@ protected:
 	void						on_folderclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_particleclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_materialclick	( xui_component* sender, xui_method_args&	  args );
+	void						on_sceneclick		( xui_component* sender, xui_method_args&	  args );
 	void						on_pathitemclick	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtogglerender	( xui_component* sender, xui_method_args&	  args );
 	void						on_pathtoggleclick	( xui_component* sender, xui_method_args&	  args );
@@ -107,6 +110,7 @@ protected:
 	xui_menuitem*				m_folder;
 	xui_menuitem*				m_particle;
 	xui_menuitem*				m_material;
+	xui_menuitem*				m_scene;
 	xui_textbox*				m_search;
 	xui_button*					m_clear;
 	xui_timer*					m_timer;

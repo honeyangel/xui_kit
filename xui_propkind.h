@@ -32,6 +32,7 @@ public:
 	const xui_family&				get_textfont( void ) const;
 	const xui_family_render&		get_textdraw( void ) const;
 	const xui_propdata_vec&			get_propdata( void ) const;
+	xui_propdata*					get_propdata( const std::wstring& name );
 	void							add_propdata( xui_propdata* propdata );
 
 	const std::wstring&				get_name	( void ) const;
