@@ -639,8 +639,8 @@ xui_method_explain(cocos_hierarchy, on_treemousedoubleclick,void						)( xui_com
 		cocos_propnodebase*	prop = dynamic_cast<cocos_propnodebase*>(data->get_prop());
 		cocos_boundbox*		bbox = prop->get_boundbox();
 
-		//cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
-		//scene->set_nodevisible(bbox);
+		cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+		scene->set_nodevisible(bbox);
 	}
 }
 

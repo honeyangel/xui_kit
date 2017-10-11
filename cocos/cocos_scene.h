@@ -60,6 +60,7 @@ protected:
 	*/
 	f64							get_incratio				( void );
 	f64							get_decratio				( void );
+	cocos_boundbox*				hit_propvisible				( const xui_vector<s32>& pt, xui_treenode* root );
 
 	/*
 	//event
@@ -93,7 +94,6 @@ protected:
 	//draw
 	*/
 	void						draw_locknode				( void );				
-	void						draw_multisel				( void );
 
 	/*
 	//member

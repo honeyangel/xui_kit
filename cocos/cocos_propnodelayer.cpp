@@ -36,6 +36,8 @@ xui_method_explain(cocos_propnodelayer, add_content,		void			)( void )
 		set_contentsize,
 		this,
 		NT_UNSIGNEDINT));
+
+	add_propkind(kind);
 }
 
 /*

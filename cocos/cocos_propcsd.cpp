@@ -40,6 +40,7 @@ xui_method_explain(cocos_propcsd, get_node,		cocos2d::Node*		)( void )
 		else
 		{
 			m_node = cocos2d::Node::create();
+			m_node->setName(xui_global::unicode_to_ascii(cocos_filedata::get_safe(m_fullname)));
 			m_node->setContentSize(cocos2d::Size(640, 1136));
 		}
 	}

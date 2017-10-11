@@ -40,11 +40,12 @@ xui_method_explain(cocos_snaptool, cal_selfbbox,	cocos_boundbox*			)( const std:
 {
 	if (selectedvec.size() > 0)
 	{
+		s32 viewh = m_drawview->get_renderh();
 		xui_vector<s32> pt = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
 		for (u32 i = 0; i < selectedvec.size(); ++i)
 		{
 			cocos_boundbox* bbox = selectedvec[i];
-			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio);
+			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio, viewh);
 			if (rect.was_inside(pt))
 				return bbox;
 		}
@@ -156,10 +157,10 @@ xui_method_explain(cocos_snaptool, set_snapdraw,	void					)( const std::vector<c
 	xui_rect2d<s32> horz;
 	xui_rect2d<s32> vert;
 	xui_rect2d<s32> self = cal_selfrect(selectedvec);
-	cal_snapmove(boundboxvec, self, snap, step, &horz, &vert);
+	xui_vector<s32> move = cal_snapmove(boundboxvec, self, snap, step, &horz, &vert);
 
 	cocos_snapinfo_map::iterator itor;
-	if (step.x == 0)
+	if (move.x != 0 && step.x == 0)
 	{
 		itor = m_horzsnap.find(snap.x);
 		if (itor != m_horzsnap.end())
@@ -168,7 +169,7 @@ xui_method_explain(cocos_snaptool, set_snapdraw,	void					)( const std::vector<c
 		if (itor != m_horzmidd.end())
 			draw_horzsnap(self, (*itor).first, (*itor).second);
 	}
-	if (step.y == 0)
+	if (move.y != 0 && step.y == 0)
 	{
 		itor = m_vertsnap.find(snap.y);
 		if (itor != m_vertsnap.end())
@@ -178,13 +179,13 @@ xui_method_explain(cocos_snaptool, set_snapdraw,	void					)( const std::vector<c
 			draw_vertsnap(self, (*itor).first, (*itor).second);
 	}
 
-	if (step.x != 0)
+	if (move.x != 0 && step.x != 0)
 	{
 		itor = m_horzstep.find(step.x);
 		if (itor != m_horzstep.end())
 			draw_horzstep(self, (*itor).first, (*itor).second, horz);
 	}
-	if (step.y != 0)
+	if (move.y != 0 && step.y != 0)
 	{
 		itor = m_vertstep.find(step.y);
 		if (itor != m_vertstep.end())
@@ -200,17 +201,17 @@ xui_method_explain(cocos_snaptool, cal_snapmove,	xui_vector<s32>			)( const std:
 		for (itor = m_horzsnap.begin(); itor != m_horzsnap.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (self.ax >= line-2 && self.ax <= line+2 && cal_linestep(move.x, line-self.ax))
+			if (self.ax >= line-4 && self.ax <= line+4 && cal_linestep(move.x, line-self.ax))
 				snap.x   = line;
-			if (self.bx >= line-2 && self.bx <= line+2 && cal_linestep(move.x, line-self.bx))
+			if (self.bx >= line-4 && self.bx <= line+4 && cal_linestep(move.x, line-self.bx))
 				snap.x   = line;
 		}
 		for (itor = m_vertsnap.begin(); itor != m_vertsnap.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (self.ay >= line-2 && self.ay <= line+2 && cal_linestep(move.y, line-self.ay))
+			if (self.ay >= line-4 && self.ay <= line+4 && cal_linestep(move.y, line-self.ay))
 				snap.y   = line;
-			if (self.by >= line-2 && self.by <= line+2 && cal_linestep(move.y, line-self.by))
+			if (self.by >= line-4 && self.by <= line+4 && cal_linestep(move.y, line-self.by))
 				snap.y   = line;
 		}
 
@@ -218,13 +219,13 @@ xui_method_explain(cocos_snaptool, cal_snapmove,	xui_vector<s32>			)( const std:
 		for (itor = m_horzmidd.begin(); itor != m_horzmidd.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (midd.x  >= line-2 && midd.x  <= line+2 && cal_linestep(move.x, line-midd.x))
+			if (midd.x  >= line-4 && midd.x  <= line+4 && cal_linestep(move.x, line-midd.x))
 				snap.x   = line;
 		}
 		for (itor = m_vertmidd.begin(); itor != m_vertmidd.end(); ++itor)
 		{
 			s32 line = (*itor).first;
-			if (midd.y  >= line-2 && midd.y  <= line+2 && cal_linestep(move.y, line-midd.y))
+			if (midd.y  >= line-4 && midd.y  <= line+4 && cal_linestep(move.y, line-midd.y))
 				snap.y   = line;
 		}
 
@@ -250,7 +251,7 @@ xui_method_explain(cocos_snaptool, cal_snapmove,	xui_vector<s32>			)( const std:
 				{}
 			}
 
-			s32 steparray[5] = {0, -1, 1, -2, 2};
+			s32 steparray[7] = {0, -1, 1, -2, 2, -3, 3};
 			if (horzstep > 0)
 			{
 				for (u08 istep = 0; istep < 5; ++istep)
@@ -312,11 +313,12 @@ xui_method_explain(cocos_snaptool, cal_selfrect,	xui_rect2d<s32>			)( const std:
 {
 	if (selectedvec.size() > 0)
 	{
+		s32 viewh = m_drawview->get_renderh();
 		xui_vector<s32> pt = m_drawview->get_renderpt(xui_desktop::get_ins()->get_mousecurr());
 		for (u32 i = 0; i < selectedvec.size(); ++i)
 		{
 			cocos_boundbox* bbox = selectedvec[i];
-			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio);
+			xui_rect2d<s32> rect = bbox->get_bounding(m_trans, m_ratio, viewh);
 			if (rect.was_inside(pt))
 				return bbox->ori_bounding();
 		}
@@ -340,8 +342,8 @@ xui_method_explain(cocos_snaptool, draw_horzsnap,	void					)( const xui_rect2d<s
 	}
 
 	xui_vector<s32> pt = m_drawview->get_screenpt();
-	xui_vector<s32> p1(xui_round(snap*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
-	xui_vector<s32> p2(xui_round(snap*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
+	xui_vector<s32> p1(xui_round(snap*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymin*m_ratio) + m_trans.y));
+	xui_vector<s32> p2(xui_round(snap*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymax*m_ratio) + m_trans.y));
 	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
 xui_method_explain(cocos_snaptool, draw_vertsnap,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec )
@@ -356,8 +358,8 @@ xui_method_explain(cocos_snaptool, draw_vertsnap,	void					)( const xui_rect2d<s
 	}
 
 	xui_vector<s32> pt = m_drawview->get_screenpt();
-	xui_vector<s32> p1(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(snap*m_ratio + m_trans.y*m_ratio));
-	xui_vector<s32> p2(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(snap*m_ratio + m_trans.y*m_ratio));
+	xui_vector<s32> p1(xui_round(xmin*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(snap*m_ratio) + m_trans.y));
+	xui_vector<s32> p2(xui_round(xmax*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(snap*m_ratio) + m_trans.y));
 	xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::blue);
 }
 xui_method_explain(cocos_snaptool, draw_horzstep,	void					)( const xui_rect2d<s32>& self, s32 snap, const std::vector<snap_info>& vec, const xui_rect2d<s32>& curr )
@@ -391,8 +393,8 @@ xui_method_explain(cocos_snaptool, draw_horzstep,	void					)( const xui_rect2d<s
 
 		xui_vector<s32> p1;
 		xui_vector<s32> p2;
-		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(ymid*m_ratio + m_trans.y*m_ratio));
-		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(ymid*m_ratio + m_trans.y*m_ratio));
+		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymid*m_ratio) + m_trans.y));
+		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymid*m_ratio) + m_trans.y));
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::white);
 		if (temprect.get_h() > 0)
 			continue;
@@ -400,8 +402,8 @@ xui_method_explain(cocos_snaptool, draw_horzstep,	void					)( const xui_rect2d<s
 		s32 ymin = xui_min(currrect.ay, nextrect.ay);
 		s32 ymax = xui_max(currrect.by, nextrect.by);
 		s32 temp = nextrect.ax > currrect.bx ? currrect.bx : currrect.ax;
-		p1 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
-		p2 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
+		p1 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymin*m_ratio) + m_trans.y));
+		p2 = xui_vector<s32>(xui_round(temp*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymax*m_ratio) + m_trans.y));
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }
@@ -436,8 +438,8 @@ xui_method_explain(cocos_snaptool, draw_vertstep,	void					)( const xui_rect2d<s
 
 		xui_vector<s32> p1;
 		xui_vector<s32> p2;
-		p1 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x*m_ratio), xui_round(ymin*m_ratio + m_trans.y*m_ratio));
-		p2 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x*m_ratio), xui_round(ymax*m_ratio + m_trans.y*m_ratio));
+		p1 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymin*m_ratio) + m_trans.y));
+		p2 = xui_vector<s32>(xui_round(xmid*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(ymax*m_ratio) + m_trans.y));
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::white);
 		if (temprect.get_w() > 0)
 			continue;
@@ -445,8 +447,8 @@ xui_method_explain(cocos_snaptool, draw_vertstep,	void					)( const xui_rect2d<s
 		s32 xmin = xui_min(currrect.ax, nextrect.ax);
 		s32 xmax = xui_max(currrect.bx, nextrect.bx);
 		s32 temp = nextrect.ay > currrect.by ? currrect.by : currrect.ay;
-		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x*m_ratio), xui_round(temp*m_ratio + m_trans.y*m_ratio));
-		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x*m_ratio), xui_round(temp*m_ratio + m_trans.y*m_ratio));
+		p1 = xui_vector<s32>(xui_round(xmin*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(temp*m_ratio) + m_trans.y));
+		p2 = xui_vector<s32>(xui_round(xmax*m_ratio + m_trans.x), m_drawview->get_renderh() - (xui_round(temp*m_ratio) + m_trans.y));
 		xui_convas::get_ins()->draw_line(p1+pt, p2+pt, xui_colour::red);
 	}
 }

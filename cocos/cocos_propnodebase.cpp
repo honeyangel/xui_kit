@@ -76,8 +76,8 @@ xui_create_explain(cocos_propnodebase)( xui_bitmap* icon, cocos_propcsd* file, c
 , m_icon(icon)
 , m_file(file)
 , m_node(node)
-, m_boundbox(NULL)
 {
+	m_boundbox = new cocos_boundbox(this);
 	cocos2d::Vector<cocos2d::Node*> children = node->getChildren();
 	for (s32 i = 0; i < children.size(); ++i)
 	{
@@ -249,6 +249,7 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	}
 
 	node->setName(xui_global::unicode_to_ascii(rtti));
+	node->setContentSize(cocos2d::Size(100, 100));
 	return new_prop(file, node);
 }
 
@@ -284,6 +285,8 @@ xui_method_explain(cocos_propnodebase, add_location,	void					)( void )
 }
 xui_method_explain(cocos_propnodebase, add_anchor,		void					)( void )
 {
+	m_boundbox->add_operator(OP_PIVOT);
+
 	xui_propkind* kind = new xui_propkind(this, L"", "NodeAnchor", xui_kindctrl::create, m_icon, true, false);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodebase>(this, &cocos_propnodebase::on_propchanged);
 	kind->add_propdata(new xui_propdata_vector(
@@ -299,6 +302,8 @@ xui_method_explain(cocos_propnodebase, add_anchor,		void					)( void )
 }
 xui_method_explain(cocos_propnodebase, add_position,	void					)( void )
 {
+	m_boundbox->add_operator(OP_TRANS);
+
 	xui_propkind* kind = new xui_propkind(this, L"", "NodePosition", xui_kindctrl::create, m_icon, true, false);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodebase>(this, &cocos_propnodebase::on_propchanged);
 	kind->add_propdata(new cocos_propdata_unitvec(
@@ -314,6 +319,8 @@ xui_method_explain(cocos_propnodebase, add_position,	void					)( void )
 }
 xui_method_explain(cocos_propnodebase, add_size,		void					)( bool editsize, cocos_propdata_unitvec::get_func def_func )
 {
+	m_boundbox->add_operator(OP_SCALE);
+
 	xui_propkind* kind = new xui_propkind(this, L"", "NodeSize", xui_kindctrl::create, m_icon, true, false);
 	kind->xm_propchanged += new xui_method_member<xui_method_propdata, cocos_propnodebase>(this, &cocos_propnodebase::on_propchanged);
 	kind->add_propdata(new cocos_propdata_unitvec(

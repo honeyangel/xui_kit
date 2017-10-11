@@ -6,15 +6,17 @@
 
 enum 
 {
-	ST_NONE,
-	ST_SIMPLE,
-	ST_ENTIRE,
+	OP_NONE		= 0,
+	OP_TRANS	= 0x01,
+	OP_PIVOT	= 0x02,
+	OP_SCALE	= 0x04,
 };
 
 enum 
 {
 	BO_NONE,
 	BO_MOVE,
+	BO_MOVE_P,
 	BO_SIZE_L,
 	BO_SIZE_T,
 	BO_SIZE_R,
@@ -25,13 +27,14 @@ enum
 	BO_SIZE_RB,
 };
 
+class cocos_propnodebase;
 class cocos_boundbox
 {
 public:
 	/*
 	//constructor
 	*/
-	cocos_boundbox( xui_proproot* prop, u08 type );
+	cocos_boundbox( cocos_propnodebase* prop );
 
 	/*
 	//static
@@ -41,40 +44,43 @@ public:
 	/*
 	//position
 	*/
-	xui_vector<s32>			get_position	( const xui_vector<s32>& trans, f64 ratio );
+	xui_vector<s32>			get_pivotbox	( const xui_vector<s32>& trans, f64 ratio, s32 viewh );
+	xui_vector<s32>			get_position	( const xui_vector<s32>& trans, f64 ratio, s32 viewh );
 	virtual xui_vector<s32>	ori_position	( void );
 	virtual void			set_position	( const xui_vector<s32>& pos );
 
 	/*
 	//bounding
 	*/
-	xui_rect2d<s32>			get_bounding	( const xui_vector<s32>& trans, f64 ratio );
+	xui_rect2d<s32>			get_bounding	( const xui_vector<s32>& trans, f64 ratio, s32 viewh );
 	virtual	xui_rect2d<s32>	ori_bounding	( void ); 
-	virtual void			opt_bounding	( const xui_vector<s32>& trans, f64 ratio, const xui_vector<s32>& delta, u08 op );
+	virtual void			opt_bounding	( const xui_vector<s32>& trans, f64 ratio, s32 viewh, const xui_vector<s32>& delta, u08 op );
 	virtual void			set_bounding	( const xui_rect2d<s32>& rt, u08 op );
 
 	/*
 	//method
 	*/
-	xui_proproot*			get_linkprop	( void );
-	void					syn_bounding	( const xui_vector<s32>& trans, f64 ratio );
-	virtual u08				hit_operator	( const xui_vector<s32>& trans, f64 ratio, const xui_vector<s32>& pt );
+	cocos_propnodebase*		get_linkprop	( void );
+	void					syn_bounding	( const xui_vector<s32>& trans, f64 ratio, s32 viewh );
+	void					add_operator	( u08 op );
+	virtual u08				hit_operator	( const xui_vector<s32>& trans, f64 ratio, s32 viewh, const xui_vector<s32>& pt );
 	virtual bool			was_selected	( void );
 
 	/*
 	//render
 	*/
-	virtual void			draw			( const xui_vector<s32>& trans, f64 ratio, const xui_vector<s32>& pt, bool alwaysdraw = false );
-	virtual void			draw_bounding	( const xui_rect2d<s32>& rt, const xui_vector<s32>& pivot );
+	virtual void			draw			( const xui_vector<s32>& trans, f64 ratio, s32 viewh, const xui_vector<s32>& pt, bool alwaysdraw = false );
+	virtual void			draw_bounding	( const xui_rect2d<s32>& rt );
 	virtual void			draw_operator	( const xui_rect2d<s32>& rt, const xui_vector<s32>& pivot );
 
 protected:
 	/*
 	//member
 	*/
-	xui_proproot*			m_linkprop;
+	cocos_propnodebase*		m_linkprop;
 	xui_rect2d<s32>			m_bounding;
-	u08						m_sizetype;
+	xui_vector<s32>			m_pivotbox;
+	u08						m_operator;
 };
 
 #endif//__cocos_boundbox_h__

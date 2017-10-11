@@ -129,7 +129,7 @@ xui_method_explain(cocos_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 		}
 
 		if		(sender == m_horzcancel)	stepequal = 0;
-		else if (sender == m_horzequal)		stepequal = stepequal / (vec.size()-1);
+		else if (sender == m_horzequal)		stepequal = stepequal / ((s32)vec.size()-1);
 		else
 		{}
 
@@ -166,16 +166,16 @@ xui_method_explain(cocos_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 				sender == m_vertdec ||
 				sender == m_vertequal)
 			{
-				stepequal += (nextrect.ay-prevrect.ay-prevrect.get_h());
+				stepequal += (nextrect.by-prevrect.by+prevrect.get_h());
 				if (sender == m_vertinc)
-					steparray.push_back(nextrect.ay-prevrect.ay-prevrect.get_h()+1);
+					steparray.push_back(nextrect.by-prevrect.by+prevrect.get_h()-1);
 				if (sender == m_vertdec)
-					steparray.push_back(nextrect.ay-prevrect.ay-prevrect.get_h()-1);
+					steparray.push_back(nextrect.by-prevrect.by+prevrect.get_h()+1);
 			}
 		}
 
 		if		(sender == m_vertcancel)	stepequal = 0;
-		else if (sender == m_vertequal)		stepequal = stepequal / (vec.size()-1);
+		else if (sender == m_vertequal)		stepequal = stepequal / ((s32)vec.size()-1);
 		else
 		{}
 
@@ -187,9 +187,9 @@ xui_method_explain(cocos_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 			s32 delta  =  0;
 			if (sender == m_vertinc ||
 				sender == m_vertdec)
-				delta  =  prevrect.by - nextrect.ay + steparray[i-1] ;
+				delta  =  prevrect.ay - nextrect.by + steparray[i-1] ;
 			else
-				delta  =  prevrect.by - nextrect.ay + stepequal;
+				delta  =  prevrect.ay - nextrect.by + stepequal;
 
 			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
 		}

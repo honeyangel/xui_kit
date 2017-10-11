@@ -13,6 +13,7 @@
 #include "xui_propctrl_stdvec.h"
 #include "xui_propctrl_vector.h"
 #include "xui_kindctrl.h"
+#include "xui_global.h"
 #include "cocos_mainform.h"
 #include "cocos_inspector.h"
 #include "cocos_propcsd.h"
@@ -146,12 +147,45 @@ xui_method_explain(cocos_game, set_dropctrlupdate,		void			)( void )
 }
 xui_method_explain(cocos_game, load_config,				void			)( void )
 {
-	m_sizedata.push_back(xui_vector<f64>(640, 1136));
-	m_sizedata.push_back(xui_vector<f64>(768, 1024));
+	FILE* file = fopen("cocos_editor/cocos_editor.resolution", "r");
+	if (file)
+	{
+		while (feof(file) == false)
+		{
+			std::string line = xui_global::get_fileline(file);
+			if (line.length() > 0)
+			{
+				s32 w = 0;
+				s32 h = 0;
+				sscanf(line.c_str(), "%d,%d", &w, &h);
+				m_sizedata.push_back(xui_vector<f64>(w, h));
+			}
+		}
+
+		fclose(file);
+	}
+	else
+	{
+		m_sizedata.push_back(xui_vector<f64>(640, 1136));
+	}
+
 	set_dropctrlupdate();
 }
 xui_method_explain(cocos_game, save_config,				void			)( void )
 {
+	FILE* file = fopen("cocos_editor/cocos_editor.resolution", "w");
+	if (file)
+	{
+		char buffer[32];
+		for (u32 i = 0; i < m_sizedata.size(); ++i)
+		{
+			sprintf(buffer, "%d,%d\n", (s32)m_sizedata[i].w, (s32)m_sizedata[i].h);
+			fwrite(buffer, 1, strlen(buffer), file);
+		}
+
+		fclose(file);
+	}
+
 	set_dropctrlupdate();
 }
 

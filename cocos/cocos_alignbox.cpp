@@ -117,9 +117,9 @@ xui_method_explain(cocos_alignbox, on_vertbuttonclick,	void		)( xui_component* s
 		{
 			xui_rect2d<s32> rect = vec[i]->ori_bounding();
 			s32 delta = 0;
-			if		(sender == m_top)		delta = headrect.ay - rect.ay; 
+			if		(sender == m_bottom)	delta = headrect.ay - rect.ay; 
 			else if (sender == m_vcenter)	delta = headrect.ay - rect.ay + headrect.get_h()/2 - rect.get_h()/2;
-			else if (sender == m_bottom)	delta = headrect.by - rect.by;
+			else if (sender == m_top)		delta = headrect.by - rect.by;
 			else
 			{}
 
