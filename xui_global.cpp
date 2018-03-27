@@ -576,7 +576,7 @@ xui_method_explain(xui_global, set_cursor,		void							)( u32 cursor )
 		}
 	}
 }
-xui_method_explain(xui_global, cpy_string,		void						)( const std::wstring& text )
+xui_method_explain(xui_global, cpy_string,		void							)( const std::wstring& text )
 {
 	HGLOBAL hGlobal = GlobalAlloc(GHND, (text.length() + 1) * sizeof(wchar_t));
 	wchar_t* buffer = (wchar_t*)GlobalLock(hGlobal);
@@ -588,7 +588,7 @@ xui_method_explain(xui_global, cpy_string,		void						)( const std::wstring& tex
 	SetClipboardData(CF_UNICODETEXT, hGlobal);
 	CloseClipboard();
 }
-xui_method_explain(xui_global, pst_string,		std::wstring				)( void )
+xui_method_explain(xui_global, pst_string,		std::wstring					)( void )
 {
 	std::wstring result;
 
@@ -885,7 +885,6 @@ xui_method_explain(xui_global, get_openpath,	std::wstring					)( void )
 	SHGetPathFromIDList(lpitem, buffer);
 	return std::wstring(buffer);
 }
-
 xui_method_explain(xui_global, get_workpath,	std::wstring					)( void )
 {
 	if (g_workpath.empty())

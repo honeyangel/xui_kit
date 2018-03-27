@@ -426,6 +426,8 @@ xui_method_explain(xui_propctrl_stdvec,			on_sortctrlmouserise,	void			)( xui_co
 		{
 			if (m_dropelem < m_dragelem || m_dropelem > m_dragelem+1)
 			{
+				on_readyundo();
+
 				for (u32 i = 0; i < m_propdatavec.size(); ++i)
 				{
 					xui_propdata_stdvec* data = dynamic_cast<xui_propdata_stdvec*>(m_propdatavec[i]);

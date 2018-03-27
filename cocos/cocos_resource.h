@@ -114,6 +114,8 @@ public:
 	static xui_bitmap*	icon_anchorr;
 	static xui_bitmap*	icon_anchort;
 	static xui_bitmap*	icon_anchorb;
+	static xui_bitmap*	icon_undo;
+	static xui_bitmap*	icon_redo;
 };
 
 #endif//__cocos_resource_h__

@@ -1,5 +1,9 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
+#include "cocos_propnodebase.h"
+#include "cocos_mainform.h"
+#include "cocos_scene.h"
+#include "cocos_scenecmd_prop.h"
 #include "cocos_resource.h"
 #include "cocos_boundbox.h"
 #include "cocos_alignbox.h"
@@ -92,10 +96,15 @@ xui_method_explain(cocos_alignbox, on_horzbuttonclick,	void		)( xui_component* s
 	std::vector<cocos_boundbox*> vec = (*m_func)();
 	if (vec.size() > 1)
 	{
+		std::wstring path  = cocos_propnodebase::get_path(0);
+		cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+
 		xui_rect2d<s32> headrect = vec.front()->ori_bounding();
 		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			xui_rect2d<s32> rect = vec[i]->ori_bounding();
+			cocos_boundbox* box  = vec[i];
+			cocos_proproot* prop = box->get_linkprop();
+			xui_rect2d<s32> rect = box->ori_bounding();
 			s32 delta = 0;
 			if		(sender == m_left)		delta = headrect.ax - rect.ax; 
 			else if (sender == m_hcenter)	delta = headrect.ax - rect.ax + headrect.get_w()/2 - rect.get_w()/2;
@@ -103,7 +112,14 @@ xui_method_explain(cocos_alignbox, on_horzbuttonclick,	void		)( xui_component* s
 			else
 			{}
 
-			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(delta, 0));
+			if (delta != 0)
+			{
+				box->set_position(box->ori_position()+xui_vector<s32>(delta, 0));
+
+				xui_propdata* data = prop->get_propdata(path);
+				if (data->has_byte())
+					scene->add_cmdcache(new cocos_scenecmd_prop(prop, data));
+			}
 		}
 	}
 }
@@ -112,10 +128,15 @@ xui_method_explain(cocos_alignbox, on_vertbuttonclick,	void		)( xui_component* s
 	std::vector<cocos_boundbox*> vec = (*m_func)();
 	if (vec.size() > 1)
 	{
+		std::wstring path  = cocos_propnodebase::get_path(0);
+		cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+
 		xui_rect2d<s32> headrect = vec.front()->ori_bounding();
 		for (u32 i = 1; i < vec.size(); ++i)
 		{
-			xui_rect2d<s32> rect = vec[i]->ori_bounding();
+			cocos_boundbox* box  = vec[i];
+			cocos_proproot* prop = box->get_linkprop();
+			xui_rect2d<s32> rect = box->ori_bounding();
 			s32 delta = 0;
 			if		(sender == m_bottom)	delta = headrect.ay - rect.ay; 
 			else if (sender == m_vcenter)	delta = headrect.ay - rect.ay + headrect.get_h()/2 - rect.get_h()/2;
@@ -123,7 +144,14 @@ xui_method_explain(cocos_alignbox, on_vertbuttonclick,	void		)( xui_component* s
 			else
 			{}
 
-			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
+			if (delta != 0)
+			{
+				box->set_position(box->ori_position()+xui_vector<s32>(0, delta));
+
+				xui_propdata* data = prop->get_propdata(path);
+				if (data->has_byte())
+					scene->add_cmdcache(new cocos_scenecmd_prop(prop, data));
+			}
 		}
 	}
 }

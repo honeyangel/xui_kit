@@ -1,4 +1,4 @@
-#include "external/LayoutCenter.h"
+#include "LayoutCenter.h"
 #include "cocos_propnodelayoutcenter.h"
 
 /*

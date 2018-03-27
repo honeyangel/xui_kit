@@ -15,57 +15,7 @@ xui_create_explain(cocos_propdata_blend)( xui_propkind* kind, getfunc userget, s
 , m_userget(userget)
 , m_userset(userset)
 , m_userptr(userptr)
-{
-	//xui_propdata_vec				subprop;
-	//std::map<s32, std::vector<u32>>	showmap;
-	//std::map<s32, std::wstring>		textmap;
-	//textmap[GL_ZERO]				= L"GL_ZERO";
-	//textmap[GL_ONE]					= L"GL_ONE";
-	//textmap[GL_SRC_COLOR]			= L"GL_SRC_COLOR";
-	//textmap[GL_ONE_MINUS_SRC_COLOR] = L"GL_ONE_MINUS_SRC_COLOR";
-	//textmap[GL_SRC_ALPHA]			= L"GL_SRC_ALPHA";
-	//textmap[GL_ONE_MINUS_SRC_ALPHA] = L"GL_ONE_MINUS_SRC_ALPHA";
-	//textmap[GL_DST_COLOR]			= L"GL_DST_COLOR";
-	//textmap[GL_ONE_MINUS_DST_COLOR] = L"GL_ONE_MINUS_DST_COLOR";
-	//textmap[GL_DST_ALPHA]			= L"GL_DST_ALPHA";
-	//textmap[GL_ONE_MINUS_DST_ALPHA] = L"GL_ONE_MINUS_DST_ALPHA";
-	//textmap[GL_SRC_ALPHA_SATURATE]	= L"GL_SRC_ALPHA_SATURATE";
-	//subprop.push_back(new xui_propdata_enum_func(
-	//	kind,
-	//	L"Src",
-	//	xui_propctrl_enum::create,
-	//	textmap,
-	//	get_blendsrc,
-	//	set_blendsrc,
-	//	this));
-	//subprop.push_back(new xui_propdata_enum_func(
-	//	kind,
-	//	L"Dst",
-	//	xui_propctrl_enum::create,
-	//	textmap,
-	//	get_blenddst,
-	//	set_blenddst,
-	//	this));
-
-	//textmap.clear();
-	//textmap[0] = L"Normal";
-	//textmap[1] = L"Addition";
-	//textmap[2] = L"User";
-	//showmap.clear();
-	//showmap[2].push_back(0);
-	//showmap[2].push_back(1);
-	//kind->add_propdata(new xui_propdata_expand_enum_func(
-	//	kind,
-	//	L"Blend",
-	//	xui_propctrl_expand_enum::create,
-	//	textmap,
-	//	get_blendfunction,
-	//	set_blendfunction,
-	//	this,
-	//	subprop,
-	//	true,
-	//	showmap));
-}
+{}
 
 /*
 //method
@@ -84,64 +34,16 @@ xui_method_explain(cocos_propdata_blend, set_value,			void				)( const cocos_ble
 }
 
 /*
-//static
+//override
 */
-//xui_method_explain(cocos_propdata_blendwrap, get_blendfunction, s32					)(void* userptr)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data = wrap->get_value();
-//	if		(data.src == GL_SRC_ALPHA && data.dst == GL_ONE_MINUS_SRC_ALPHA)	return 0;
-//	else if (data.src == GL_SRC_ALPHA && data.dst == GL_ONE)					return 1;
-//	else																		return 2;
-//}
-//xui_method_explain(cocos_propdata_blendwrap, set_blendfunction, void				)(void* userptr, s32 value)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data;
-//	switch (value)
-//	{
-//	case 0:
-//		data.src = GL_SRC_ALPHA;
-//		data.dst = GL_ONE_MINUS_SRC_ALPHA;
-//		break;
-//	case 1:
-//		data.src = GL_SRC_ALPHA;
-//		data.dst = GL_ONE;
-//		break;
-//	case 2:
-//		data.src = GL_ONE;
-//		data.dst = GL_ONE;
-//		break;
-//	}
-//
-//	wrap->set_value(data);
-//}
-//xui_method_explain(cocos_propdata_blendwrap, get_blendsrc,		s32					)(void* userptr)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data = wrap->get_value();
-//	return (s32)data.src;
-//}
-//xui_method_explain(cocos_propdata_blendwrap, set_blendsrc,		void				)(void* userptr, s32 value)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data = wrap->get_value();
-//	data.src = value;
-//	wrap->set_value(data);
-//}
-//xui_method_explain(cocos_propdata_blendwrap, get_blenddst,		s32					)(void* userptr)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data = wrap->get_value();
-//	return (s32)data.dst;
-//}
-//xui_method_explain(cocos_propdata_blendwrap, set_blenddst,		void				)(void* userptr, s32 value)
-//{
-//	cocos_propdata_blendwrap* wrap = (cocos_propdata_blendwrap*)userptr;
-//	cocos_blend_data data = wrap->get_value();
-//	data.dst = value;
-//	wrap->set_value(data);
-//}
+xui_method_explain(cocos_propdata_blend, do_serialize,		u08*				)( void )
+{
+	return get_byte<cocos_blend_value>(get_value());
+}
+xui_method_explain(cocos_propdata_blend, un_serialize,		void				)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast<cocos_blend_value>(byte));
+}
 
 //////////////////////////////////////////////////////////////////////////
 xui_implement_rtti(cocos_propctrl_blend, xui_propctrl);
@@ -337,6 +239,8 @@ xui_method_explain(cocos_propctrl_blend, on_buttonclick,	void			)( xui_component
 	cocos_blend_value value;
 	if		(sender == m_linedef)	value = cocos_blend_value(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	else if (sender == m_lineadd)	value = cocos_blend_value(GL_SRC_ALPHA, GL_ONE);
+
+	on_readyundo();
 
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{

@@ -27,6 +27,18 @@ xui_method_explain(cocos_propdata_scale9, set_value,				void				)( const cocos_v
 	}
 }
 
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_scale9, do_serialize,				u08*				)( void )
+{
+	return get_byte<cocos_value_scale9>(get_value());
+}
+xui_method_explain(cocos_propdata_scale9, un_serialize,				void				)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast<cocos_value_scale9>(byte));
+}
+
 //////////////////////////////////////////////////////////////////////////
 xui_implement_rtti(cocos_propctrl_scale9, xui_propctrl);
 
@@ -55,6 +67,7 @@ xui_create_explain(cocos_propctrl_scale9)( xui_propdata* propdata )
 	xui_method_ptrcall(m_editpane, set_drawcolor	)(false);
 	xui_method_ptrcall(m_editpane, set_hscrollauto	)(false);
 	xui_method_ptrcall(m_editpane, set_vscrollauto	)(false);
+	xui_method_ptrcall(m_editpane, xm_getfocus		) += new xui_method_member<xui_method_args,  cocos_propctrl_scale9>(this, &cocos_propctrl_scale9::on_editpanegetfocus);
 	xui_method_ptrcall(m_editpane, xm_mousedown		) += new xui_method_member<xui_method_mouse, cocos_propctrl_scale9>(this, &cocos_propctrl_scale9::on_editpanemousedown);
 	xui_method_ptrcall(m_editpane, xm_mousemove		) += new xui_method_member<xui_method_mouse, cocos_propctrl_scale9>(this, &cocos_propctrl_scale9::on_editpanemousemove);
 	xui_method_ptrcall(m_editpane, xm_mouserise		) += new xui_method_member<xui_method_mouse, cocos_propctrl_scale9>(this, &cocos_propctrl_scale9::on_editpanemouserise);
@@ -221,6 +234,12 @@ xui_method_explain(cocos_propctrl_scale9, on_perform,				void			)( xui_method_ar
 /*
 //event
 */
+xui_method_explain(cocos_propctrl_scale9, on_editpanegetfocus,		void			)( xui_component* sender, xui_method_args&  args )
+{
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->was_ancestor(this) == false)
+		on_readyundo();
+}
 xui_method_explain(cocos_propctrl_scale9, on_editpaneperform,		void			)( xui_component* sender, xui_method_args&  args )
 {
 	xui_rect2d<s32> rt = m_editpane->get_renderrtins();

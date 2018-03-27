@@ -24,6 +24,7 @@ xui_create_explain(xui_propedit_colour)( xui_propctrl* propctrl )
 	xui_drawer* pickctrl = new xui_drawer(xui_vector<s32>(16, 16));
 	xui_method_ptrcall(pickctrl, ini_drawer		)(xui_global::icon_pickcolour);
 	pickctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlnonfocus);
+	pickctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlgetfocus);
 	pickctrl->xm_mouseclick += new xui_method_member<xui_method_mouse, xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlclick);
 	pickctrl->xm_keybddown	+= new xui_method_member<xui_method_keybd, xui_propedit_colour>(this, &xui_propedit_colour::on_pickctrlkeybddown);
 
@@ -75,6 +76,12 @@ xui_method_explain(xui_propedit_colour, on_pickctrlnonfocus,	void				)( xui_comp
 		m_propctrl->on_editvalue(this);
 		xui_global::set_scolorclose();
 	}
+}
+xui_method_explain(xui_propedit_colour, on_pickctrlgetfocus,	void				)( xui_component* sender, xui_method_args&  args )
+{
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->get_ancestor(xui_propctrl::RTTIPTR()) != m_propctrl)
+		m_propctrl->on_readyundo();
 }
 xui_method_explain(xui_propedit_colour, on_editctrlclick,		void				)( xui_component* sender, xui_method_mouse& args )
 {

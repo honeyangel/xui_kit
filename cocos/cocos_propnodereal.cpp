@@ -3,6 +3,7 @@
 #include "xui_propctrl_vector.h"
 #include "xui_textbox.h"
 #include "cocos_resource.h"
+#include "cocos_boundbox.h"
 #include "cocos_propctrl_location.h"
 #include "cocos_propnodereal.h"
 
@@ -20,4 +21,7 @@ xui_create_explain(cocos_propnodereal)( cocos_propcsd* file, cocos2d::Node* node
 	add_color		();
 	add_advance		();
 	add_userdata	();
+
+	m_boundbox->add_operator(OP_SCALE);
+	m_boundbox->set_ignoresz(true);
 }

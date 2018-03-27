@@ -31,7 +31,7 @@ xui_method_explain(cocos_propdata_texture, on_doubleclick,	void		)( xui_componen
 	cocos2d::Texture2D* texture = (cocos2d::Texture2D*)get_value();
 	if (texture)
 	{
-		std::wstring full = xui_global::ascii_to_unicode(texture->getFileName());
+		std::wstring full = xui_global::ascii_to_unicode(texture->getPath());
 		std::wstring work = xui_global::get_workpath();
 		if (full != L"dummy" && full.length() > work.length())
 		{
@@ -60,7 +60,7 @@ xui_method_explain(cocos_propdata_texture, get_name,		std::wstring)( xui_propdat
 	cocos2d::Texture2D* texture = (cocos2d::Texture2D*)dataobject->get_value();
 	if (texture)
 	{
-		std::wstring full = xui_global::ascii_to_unicode(texture->getFileName());
+		std::wstring full = xui_global::ascii_to_unicode(texture->getPath());
 		return cocos_filedata::get_file(full);
 	}
 

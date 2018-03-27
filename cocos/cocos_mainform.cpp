@@ -647,7 +647,8 @@ xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* s
 	dialog->set_visible(false);
 	xui_desktop::get_ins()->del_child(dialog);
 
-	FILE* file = fopen("cocos_editor/cocos_editor.ignore", "r");
+	FILE* file = NULL;
+	file = fopen("cocos_editor/cocos_editor.ignore", "r");
 	if (file)
 	{
 		while (feof(file) == false)
@@ -661,9 +662,23 @@ xui_method_explain(cocos_mainform, on_recentaccept,		void				)( xui_component* s
 	}
 
 	cocos2d::Configuration::getInstance()->gatherGPUInfo();
-	cocos2d::FileUtils::getInstance()->addSearchPath(xui_global::unicode_to_ascii(dialog->get_selectpath()) + "/", true);
 	cocos2d::Director::getInstance()->setOpenGLView(m_glview);
 	cocos2d::Director::getInstance()->replaceScene(m_cocosscene);
+
+	std::string workpath = xui_global::unicode_to_ascii(dialog->get_selectpath()) + "/";
+	cocos2d::FileUtils::getInstance()->addSearchPath(workpath, true);
+	file = fopen("cocos_editor/cocos_editor.search", "r");
+	if (file)
+	{
+		while (feof(file) == false)
+		{
+			std::string line = xui_global::get_fileline(file);
+			if (line.length() > 0)
+				cocos2d::FileUtils::getInstance()->addSearchPath(workpath+line);
+		}
+
+		fclose(file);
+	}
 
 	cocos_project* project = get_project();
 	m_backupfiles.clear();
@@ -693,11 +708,28 @@ xui_method_explain(cocos_mainform, on_backupaccept,		void				)( xui_component* s
 }
 xui_method_explain(cocos_mainform, on_globalkeybddown,	void				)( xui_component* sender, xui_method_keybd& args )
 {
-	if (args.kcode == KEY_S && args.ctrl && args.handle == false)
+	if (args.ctrl && args.handle == false)
 	{
-		//cocos_propfile* propfile = get_hierarchy()->get_editprop();
-		//if (propfile && propfile->was_modify())
-		//	propfile->save();
+		cocos_scene* scene = get_scene();
+		if (scene)
+		{
+			switch (args.kcode)
+			{
+			case KEY_Z:
+				scene->undo_operator();
+				break;
+			case KEY_R:
+				scene->redo_operator();
+				break;
+			}
+		}
+
+		if (args.kcode == KEY_S)
+		{
+			//cocos_propfile* propfile = get_hierarchy()->get_editprop();
+			//if (propfile && propfile->was_modify())
+			//	propfile->save();
+		}
 	}
 }
 

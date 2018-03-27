@@ -49,7 +49,7 @@ protected:
 		cocos2d::Texture2D* texture = (cocos2d::Texture2D*)get_value();
 		if (texture)
 		{
-			std::wstring full = xui_global::ascii_to_unicode(texture->getFileName());
+			std::wstring full = xui_global::ascii_to_unicode(texture->getPath());
 			std::wstring work = xui_global::get_workpath();
 			if (full != L"dummy" && full.length() > work.length())
 			{

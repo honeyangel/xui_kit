@@ -1,0 +1,742 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="external">
+      <UniqueIdentifier>{e4f69b03-90c2-4438-9e44-759eea8c3595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hierarchy">
+      <UniqueIdentifier>{fb5e88dd-13a2-4d9e-b6ed-f43579c807dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inspector">
+      <UniqueIdentifier>{9dfab11d-f859-499f-bb04-dd1a8afba7ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project">
+      <UniqueIdentifier>{d695b032-950f-4bc6-80b9-dbab9182ae15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{4627d39d-e7df-47c5-b3e8-45b4d91f94f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="toolbox">
+      <UniqueIdentifier>{eae26991-265f-4c16-9d55-9d287856a304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command">
+      <UniqueIdentifier>{953f50fc-bc54-44bf-8876-38b89bfeb504}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cocos_app.cpp" />
+    <ClCompile Include="cocos_backup.cpp" />
+    <ClCompile Include="cocos_console.cpp" />
+    <ClCompile Include="cocos_game.cpp" />
+    <ClCompile Include="cocos_glview.cpp" />
+    <ClCompile Include="cocos_hierarchy.cpp" />
+    <ClCompile Include="cocos_inspector.cpp" />
+    <ClCompile Include="cocos_mainform.cpp" />
+    <ClCompile Include="cocos_project.cpp" />
+    <ClCompile Include="cocos_recent.cpp" />
+    <ClCompile Include="cocos_renderview.cpp" />
+    <ClCompile Include="cocos_resource.cpp" />
+    <ClCompile Include="cocos_save.cpp" />
+    <ClCompile Include="cocos_scene.cpp" />
+    <ClCompile Include="cocos_timedata.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="cocos_alignbox.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_blankbox.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_boundbox.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_filectrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_filedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_fileview.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_framedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_gradpane.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_likedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_nodedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_pathctrl.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_pathdata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_preview.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propatlas.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propcsd.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_asset.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_callback.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_flip.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_fontsize.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_location.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_particlectrl.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_sampler.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propctrl_uniform.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_blend.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_bs.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_fnt.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_image.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_material.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_particle.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_scale9.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_shader.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_spine.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_spineanim.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_spineatlas.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_texture.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_ttf.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_unitvec.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propedit_unit.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propfile.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propfnt.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propfragshader.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propframe.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propleaf.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_proplike.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propmaterial.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_proppath.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propparticle.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_proproot.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propspine.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propspineatlas.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_proptexture.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propttf.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propvertshader.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_treedata.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeadapter.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodebase.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodebutton.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodecheckbox.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodecustom.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeimageview.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodelayer.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodelayoutcenter.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodelistview.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeloadingbar.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodepageview.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodepanel.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeparticle.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodereal.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodescroll.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeshaderrect.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeslider.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodespineblender.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodespinenode.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodesprite.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodetext.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodetextbmfont.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodetextfield.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodetextifbm.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeweclabel.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodewidget.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_savectrl.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_savekind.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_selector.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_toolbox.cpp">
+      <Filter>toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_toolpane.cpp">
+      <Filter>toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_snaptool.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_tileview.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNode.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenter.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRect.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlender.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNode.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBM.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBMReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObject.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3D.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DReader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodeobject3d.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propnodenode3dobject.cpp">
+      <Filter>hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propdata_c3b.cpp">
+      <Filter>inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_propc3b.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_scenecmd_list.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos_scenecmd_prop.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cocos_app.h" />
+    <ClInclude Include="cocos_backup.h" />
+    <ClInclude Include="cocos_console.h" />
+    <ClInclude Include="cocos_game.h" />
+    <ClInclude Include="cocos_glview.h" />
+    <ClInclude Include="cocos_hierarchy.h" />
+    <ClInclude Include="cocos_inspector.h" />
+    <ClInclude Include="cocos_mainform.h" />
+    <ClInclude Include="cocos_project.h" />
+    <ClInclude Include="cocos_recent.h" />
+    <ClInclude Include="cocos_renderview.h" />
+    <ClInclude Include="cocos_resource.h" />
+    <ClInclude Include="cocos_save.h" />
+    <ClInclude Include="cocos_scene.h" />
+    <ClInclude Include="cocos_timedata.h" />
+    <ClInclude Include="cocos_alignbox.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_blankbox.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_boundbox.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_filectrl.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_filedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_fileview.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_framedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_gradpane.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_likedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_nodedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_pathctrl.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_pathdata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_preview.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propatlas.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propcsd.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_asset.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_callback.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_flip.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_fontsize.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_location.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_particlectrl.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_sampler.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propctrl_uniform.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_blend.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_bs.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_fnt.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_image.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_material.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_particle.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_scale9.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_shader.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_spine.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_spineanim.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_spineatlas.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_texture.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_ttf.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_unitvec.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propedit_unit.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propfile.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propfnt.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propfragshader.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propframe.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propleaf.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_proplike.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propmaterial.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_proppath.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propparticle.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_proproot.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propspine.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propspineatlas.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_proptexture.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propttf.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propvertshader.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_treedata.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeadapter.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodebase.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodebutton.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodecheckbox.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodecustom.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeimageview.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodelayer.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodelayoutcenter.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodelistview.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeloadingbar.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodepageview.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodepanel.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeparticle.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodereal.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodescroll.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeshaderrect.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeslider.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodespineblender.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodespinenode.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodesprite.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodetext.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodetextbmfont.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodetextfield.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodetextifbm.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeweclabel.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodewidget.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_savectrl.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_savekind.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_selector.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_toolbox.h">
+      <Filter>toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_toolpane.h">
+      <Filter>toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_snaptool.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_tileview.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNode.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenter.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRect.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlender.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNode.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBM.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBMReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObject.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3D.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DOptions_generated.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DReader.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodeobject3d.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propnodenode3dobject.h">
+      <Filter>hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propdata_c3b.h">
+      <Filter>inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_propc3b.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_scenecmd.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_scenecmd_list.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos_scenecmd_prop.h">
+      <Filter>command</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

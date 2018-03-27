@@ -66,13 +66,9 @@ xui_method_explain(cocos_propnodeimageview, def_size,		cocos_value_unitvec		)( v
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size size = frame->getOriginalSize();
-			value.w.pix = size.width;
-			value.h.pix = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.w.pix = rect.size.width;
+		value.h.pix = rect.size.height;
 	}
 
 	return value;
@@ -91,7 +87,7 @@ xui_method_explain(cocos_propnodeimageview, set_background, void					)( void* us
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeimageview* prop = (cocos_propnodeimageview*)userptr;
-	if		(texture)	prop->get_imageview()->loadTexture(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_imageview()->loadTexture(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_imageview()->loadTexture(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_imageview()->loadTexture("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 
@@ -112,13 +108,9 @@ xui_method_explain(cocos_propnodeimageview, get_scale9,		cocos_value_scale9		)( 
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size  size = frame->getOriginalSize();
-			value.size.w = size.width;
-			value.size.h = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.size.w = rect.size.width;
+		value.size.h = rect.size.height;
 	}
 
 	return value;

@@ -95,6 +95,7 @@ public:
 	void							set_parent			( xui_component* component );
 	bool							was_parent			( xui_component* component ) const;	
 	bool							was_ancestor		( xui_component* component ) const;
+	xui_component*					get_ancestor		( const xui_rtti* rtti );
 
 	/*
 	//window

@@ -140,13 +140,9 @@ xui_method_explain(cocos_propnodepanel, def_size,		cocos_value_unitvec	)( void* 
 		cocos2d::Sprite* sprite = scale9->getSprite();
 		if (sprite)
 		{
-			cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-			if (frame)
-			{
-				cocos2d::Size size = frame->getOriginalSize();
-				value.w.pix = size.width;
-				value.h.pix = size.height;
-			}
+			cocos2d::Rect rect = sprite->getTextureRect();
+			value.w.pix = rect.size.width;
+			value.h.pix = rect.size.height;
 		}
 	}
 
@@ -169,13 +165,9 @@ xui_method_explain(cocos_propnodepanel, get_scale9,		cocos_value_scale9	)( void*
 		cocos2d::Sprite* sprite = scale9->getSprite();
 		if (sprite)
 		{
-			cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-			if (frame)
-			{
-				cocos2d::Size  size = frame->getOriginalSize();
-				value.size.w = size.width;
-				value.size.h = size.height;
-			}
+			cocos2d::Rect rect = sprite->getTextureRect();
+			value.size.w = rect.size.width;
+			value.size.h = rect.size.height;
 		}
 	}
 
@@ -292,7 +284,7 @@ xui_method_explain(cocos_propnodepanel, set_background, void				)( void* userptr
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodepanel* prop = (cocos_propnodepanel*)userptr;
-	if		(texture)	prop->get_panel()->setBackGroundImage(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_panel()->setBackGroundImage(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_panel()->setBackGroundImage(frame->getName(),			cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_panel()->removeBackGroundImage();
 }

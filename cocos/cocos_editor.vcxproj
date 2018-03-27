@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNode.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenter.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObject.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3D.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRect.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlender.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNode.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeReader.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBM.cpp" />
+    <ClCompile Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBMReader.cpp" />
+    <ClCompile Include="cocos_alignbox.cpp" />
+    <ClCompile Include="cocos_app.cpp" />
+    <ClCompile Include="cocos_backup.cpp" />
+    <ClCompile Include="cocos_blankbox.cpp" />
+    <ClCompile Include="cocos_boundbox.cpp" />
+    <ClCompile Include="cocos_console.cpp" />
+    <ClCompile Include="cocos_filectrl.cpp" />
+    <ClCompile Include="cocos_filedata.cpp" />
+    <ClCompile Include="cocos_fileview.cpp" />
+    <ClCompile Include="cocos_framedata.cpp" />
+    <ClCompile Include="cocos_game.cpp" />
+    <ClCompile Include="cocos_glview.cpp" />
+    <ClCompile Include="cocos_gradpane.cpp" />
+    <ClCompile Include="cocos_hierarchy.cpp" />
+    <ClCompile Include="cocos_inspector.cpp" />
+    <ClCompile Include="cocos_likedata.cpp" />
+    <ClCompile Include="cocos_mainform.cpp" />
+    <ClCompile Include="cocos_nodedata.cpp" />
+    <ClCompile Include="cocos_pathctrl.cpp" />
+    <ClCompile Include="cocos_pathdata.cpp" />
+    <ClCompile Include="cocos_preview.cpp" />
+    <ClCompile Include="cocos_project.cpp" />
+    <ClCompile Include="cocos_propatlas.cpp" />
+    <ClCompile Include="cocos_propc3b.cpp" />
+    <ClCompile Include="cocos_propcsd.cpp" />
+    <ClCompile Include="cocos_propctrl_asset.cpp" />
+    <ClCompile Include="cocos_propctrl_callback.cpp" />
+    <ClCompile Include="cocos_propctrl_flip.cpp" />
+    <ClCompile Include="cocos_propctrl_fontsize.cpp" />
+    <ClCompile Include="cocos_propctrl_location.cpp" />
+    <ClCompile Include="cocos_propctrl_particlectrl.cpp" />
+    <ClCompile Include="cocos_propctrl_sampler.cpp" />
+    <ClCompile Include="cocos_propctrl_uniform.cpp" />
+    <ClCompile Include="cocos_propdata_blend.cpp" />
+    <ClCompile Include="cocos_propdata_bs.cpp" />
+    <ClCompile Include="cocos_propdata_c3b.cpp" />
+    <ClCompile Include="cocos_propdata_fnt.cpp" />
+    <ClCompile Include="cocos_propdata_image.cpp" />
+    <ClCompile Include="cocos_propdata_material.cpp" />
+    <ClCompile Include="cocos_propdata_particle.cpp" />
+    <ClCompile Include="cocos_propdata_scale9.cpp" />
+    <ClCompile Include="cocos_propdata_shader.cpp" />
+    <ClCompile Include="cocos_propdata_spine.cpp" />
+    <ClCompile Include="cocos_propdata_spineanim.cpp" />
+    <ClCompile Include="cocos_propdata_spineatlas.cpp" />
+    <ClCompile Include="cocos_propdata_texture.cpp" />
+    <ClCompile Include="cocos_propdata_ttf.cpp" />
+    <ClCompile Include="cocos_propdata_unitvec.cpp" />
+    <ClCompile Include="cocos_propedit_unit.cpp" />
+    <ClCompile Include="cocos_propfile.cpp" />
+    <ClCompile Include="cocos_propfnt.cpp" />
+    <ClCompile Include="cocos_propfragshader.cpp" />
+    <ClCompile Include="cocos_propframe.cpp" />
+    <ClCompile Include="cocos_propleaf.cpp" />
+    <ClCompile Include="cocos_proplike.cpp" />
+    <ClCompile Include="cocos_propmaterial.cpp" />
+    <ClCompile Include="cocos_propnodeadapter.cpp" />
+    <ClCompile Include="cocos_propnodebase.cpp" />
+    <ClCompile Include="cocos_propnodebutton.cpp" />
+    <ClCompile Include="cocos_propnodecheckbox.cpp" />
+    <ClCompile Include="cocos_propnodecustom.cpp" />
+    <ClCompile Include="cocos_propnodeimageview.cpp" />
+    <ClCompile Include="cocos_propnodelayer.cpp" />
+    <ClCompile Include="cocos_propnodelayoutcenter.cpp" />
+    <ClCompile Include="cocos_propnodelistview.cpp" />
+    <ClCompile Include="cocos_propnodeloadingbar.cpp" />
+    <ClCompile Include="cocos_propnodenode3dobject.cpp" />
+    <ClCompile Include="cocos_propnodeobject3d.cpp" />
+    <ClCompile Include="cocos_propnodepageview.cpp" />
+    <ClCompile Include="cocos_propnodepanel.cpp" />
+    <ClCompile Include="cocos_propnodeparticle.cpp" />
+    <ClCompile Include="cocos_propnodereal.cpp" />
+    <ClCompile Include="cocos_propnodescroll.cpp" />
+    <ClCompile Include="cocos_propnodeshaderrect.cpp" />
+    <ClCompile Include="cocos_propnodeslider.cpp" />
+    <ClCompile Include="cocos_propnodespineblender.cpp" />
+    <ClCompile Include="cocos_propnodespinenode.cpp" />
+    <ClCompile Include="cocos_propnodesprite.cpp" />
+    <ClCompile Include="cocos_propnodetext.cpp" />
+    <ClCompile Include="cocos_propnodetextbmfont.cpp" />
+    <ClCompile Include="cocos_propnodetextfield.cpp" />
+    <ClCompile Include="cocos_propnodetextifbm.cpp" />
+    <ClCompile Include="cocos_propnodeweclabel.cpp" />
+    <ClCompile Include="cocos_propnodewidget.cpp" />
+    <ClCompile Include="cocos_propparticle.cpp" />
+    <ClCompile Include="cocos_proppath.cpp" />
+    <ClCompile Include="cocos_proproot.cpp" />
+    <ClCompile Include="cocos_propspine.cpp" />
+    <ClCompile Include="cocos_propspineatlas.cpp" />
+    <ClCompile Include="cocos_proptexture.cpp" />
+    <ClCompile Include="cocos_propttf.cpp" />
+    <ClCompile Include="cocos_propvertshader.cpp" />
+    <ClCompile Include="cocos_recent.cpp" />
+    <ClCompile Include="cocos_renderview.cpp" />
+    <ClCompile Include="cocos_resource.cpp" />
+    <ClCompile Include="cocos_save.cpp" />
+    <ClCompile Include="cocos_savectrl.cpp" />
+    <ClCompile Include="cocos_savekind.cpp" />
+    <ClCompile Include="cocos_scene.cpp" />
+    <ClCompile Include="cocos_scenecmd_list.cpp" />
+    <ClCompile Include="cocos_scenecmd_prop.cpp" />
+    <ClCompile Include="cocos_selector.cpp" />
+    <ClCompile Include="cocos_snaptool.cpp" />
+    <ClCompile Include="cocos_tileview.cpp" />
+    <ClCompile Include="cocos_timedata.cpp" />
+    <ClCompile Include="cocos_toolbox.cpp" />
+    <ClCompile Include="cocos_toolpane.cpp" />
+    <ClCompile Include="cocos_treedata.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNode.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\AdapterNodeReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenter.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\LayoutCenterReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObject.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Node3DObjectReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3D.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\Object3DReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRect.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\ShaderRectReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlender.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineBlenderReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNode.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeOptions_generated.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\SpineNodeReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBM.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFBMReader.h" />
+    <ClInclude Include="..\..\WeCGame\IF\Classes\Ext\wec\TextIFOptions_generated.h" />
+    <ClInclude Include="cocos_alignbox.h" />
+    <ClInclude Include="cocos_app.h" />
+    <ClInclude Include="cocos_backup.h" />
+    <ClInclude Include="cocos_blankbox.h" />
+    <ClInclude Include="cocos_boundbox.h" />
+    <ClInclude Include="cocos_console.h" />
+    <ClInclude Include="cocos_filectrl.h" />
+    <ClInclude Include="cocos_filedata.h" />
+    <ClInclude Include="cocos_fileview.h" />
+    <ClInclude Include="cocos_framedata.h" />
+    <ClInclude Include="cocos_game.h" />
+    <ClInclude Include="cocos_glview.h" />
+    <ClInclude Include="cocos_gradpane.h" />
+    <ClInclude Include="cocos_hierarchy.h" />
+    <ClInclude Include="cocos_inspector.h" />
+    <ClInclude Include="cocos_likedata.h" />
+    <ClInclude Include="cocos_mainform.h" />
+    <ClInclude Include="cocos_nodedata.h" />
+    <ClInclude Include="cocos_pathctrl.h" />
+    <ClInclude Include="cocos_pathdata.h" />
+    <ClInclude Include="cocos_preview.h" />
+    <ClInclude Include="cocos_project.h" />
+    <ClInclude Include="cocos_propatlas.h" />
+    <ClInclude Include="cocos_propc3b.h" />
+    <ClInclude Include="cocos_propcsd.h" />
+    <ClInclude Include="cocos_propctrl_asset.h" />
+    <ClInclude Include="cocos_propctrl_callback.h" />
+    <ClInclude Include="cocos_propctrl_flip.h" />
+    <ClInclude Include="cocos_propctrl_fontsize.h" />
+    <ClInclude Include="cocos_propctrl_location.h" />
+    <ClInclude Include="cocos_propctrl_particlectrl.h" />
+    <ClInclude Include="cocos_propctrl_sampler.h" />
+    <ClInclude Include="cocos_propctrl_uniform.h" />
+    <ClInclude Include="cocos_propdata_blend.h" />
+    <ClInclude Include="cocos_propdata_bs.h" />
+    <ClInclude Include="cocos_propdata_c3b.h" />
+    <ClInclude Include="cocos_propdata_fnt.h" />
+    <ClInclude Include="cocos_propdata_image.h" />
+    <ClInclude Include="cocos_propdata_material.h" />
+    <ClInclude Include="cocos_propdata_particle.h" />
+    <ClInclude Include="cocos_propdata_scale9.h" />
+    <ClInclude Include="cocos_propdata_shader.h" />
+    <ClInclude Include="cocos_propdata_spine.h" />
+    <ClInclude Include="cocos_propdata_spineanim.h" />
+    <ClInclude Include="cocos_propdata_spineatlas.h" />
+    <ClInclude Include="cocos_propdata_texture.h" />
+    <ClInclude Include="cocos_propdata_ttf.h" />
+    <ClInclude Include="cocos_propdata_unitvec.h" />
+    <ClInclude Include="cocos_propedit_unit.h" />
+    <ClInclude Include="cocos_propfile.h" />
+    <ClInclude Include="cocos_propfnt.h" />
+    <ClInclude Include="cocos_propfragshader.h" />
+    <ClInclude Include="cocos_propframe.h" />
+    <ClInclude Include="cocos_propleaf.h" />
+    <ClInclude Include="cocos_proplike.h" />
+    <ClInclude Include="cocos_propmaterial.h" />
+    <ClInclude Include="cocos_propnodeadapter.h" />
+    <ClInclude Include="cocos_propnodebase.h" />
+    <ClInclude Include="cocos_propnodebutton.h" />
+    <ClInclude Include="cocos_propnodecheckbox.h" />
+    <ClInclude Include="cocos_propnodecustom.h" />
+    <ClInclude Include="cocos_propnodeimageview.h" />
+    <ClInclude Include="cocos_propnodelayer.h" />
+    <ClInclude Include="cocos_propnodelayoutcenter.h" />
+    <ClInclude Include="cocos_propnodelistview.h" />
+    <ClInclude Include="cocos_propnodeloadingbar.h" />
+    <ClInclude Include="cocos_propnodenode3dobject.h" />
+    <ClInclude Include="cocos_propnodeobject3d.h" />
+    <ClInclude Include="cocos_propnodepageview.h" />
+    <ClInclude Include="cocos_propnodepanel.h" />
+    <ClInclude Include="cocos_propnodeparticle.h" />
+    <ClInclude Include="cocos_propnodereal.h" />
+    <ClInclude Include="cocos_propnodescroll.h" />
+    <ClInclude Include="cocos_propnodeshaderrect.h" />
+    <ClInclude Include="cocos_propnodeslider.h" />
+    <ClInclude Include="cocos_propnodespineblender.h" />
+    <ClInclude Include="cocos_propnodespinenode.h" />
+    <ClInclude Include="cocos_propnodesprite.h" />
+    <ClInclude Include="cocos_propnodetext.h" />
+    <ClInclude Include="cocos_propnodetextbmfont.h" />
+    <ClInclude Include="cocos_propnodetextfield.h" />
+    <ClInclude Include="cocos_propnodetextifbm.h" />
+    <ClInclude Include="cocos_propnodeweclabel.h" />
+    <ClInclude Include="cocos_propnodewidget.h" />
+    <ClInclude Include="cocos_propparticle.h" />
+    <ClInclude Include="cocos_proppath.h" />
+    <ClInclude Include="cocos_proproot.h" />
+    <ClInclude Include="cocos_propspine.h" />
+    <ClInclude Include="cocos_propspineatlas.h" />
+    <ClInclude Include="cocos_proptexture.h" />
+    <ClInclude Include="cocos_propttf.h" />
+    <ClInclude Include="cocos_propvertshader.h" />
+    <ClInclude Include="cocos_recent.h" />
+    <ClInclude Include="cocos_renderview.h" />
+    <ClInclude Include="cocos_resource.h" />
+    <ClInclude Include="cocos_save.h" />
+    <ClInclude Include="cocos_savectrl.h" />
+    <ClInclude Include="cocos_savekind.h" />
+    <ClInclude Include="cocos_scene.h" />
+    <ClInclude Include="cocos_scenecmd.h" />
+    <ClInclude Include="cocos_scenecmd_list.h" />
+    <ClInclude Include="cocos_scenecmd_prop.h" />
+    <ClInclude Include="cocos_selector.h" />
+    <ClInclude Include="cocos_snaptool.h" />
+    <ClInclude Include="cocos_tileview.h" />
+    <ClInclude Include="cocos_timedata.h" />
+    <ClInclude Include="cocos_toolbox.h" />
+    <ClInclude Include="cocos_toolpane.h" />
+    <ClInclude Include="cocos_treedata.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WeCGame\cocos2d\cocos\2d\libcocos2d.vcxproj">
+      <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WeCGame\cocos2d\cocos\editor-support\spine\proj.win32\libSpine.vcxproj">
+      <Project>{b7c2a162-dec9-4418-972e-240ab3cbfcae}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\xui_kit.vcxproj">
+      <Project>{e5ecc7c0-780e-481e-9ad2-96694045ff51}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1E2C44A1-8BA3-44D4-A33E-1C06BF322832}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>cocos_editor</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\Debug_Editor.win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\Release_Editor.win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;COCOS_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)extensions;..\..\WeCGame\;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END);$(EngineRoot);..\;..\libogl\inc;..\..\WeCGame\cocos2d\cocos\;..\..\WeCGame\cocos2d\external\win32-specific\gles\include\OGLES\;..\..\WeCGame\cocos2d\cocos\editor-support\;..\..\WeCGame\cocos2d\external\;..\..\WeCGame\cocos2d\external\freetype2\include\win32\freetype2\;..\..\WeCGame\IF\Classes\Ext\wec;..\..\WeCGame\IF\Classes;..\..\WeCGame\cocos2d;..\..\WeCGame\cocos2d\extensions</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END);..\..\WeCGame\cocos2d\external\png\prebuilt\win32\;..\..\WeCGame\cocos2d\external\jpeg\prebuilt\win32\;..\..\WeCGame\cocos2d\external\tiff\prebuilt\win32\;..\..\WeCGame\cocos2d\external\glfw3\prebuilt\win32\;..\..\WeCGame\cocos2d\external\chipmunk\prebuilt\win32\release-lib\;..\..\WeCGame\cocos2d\external\win32-specific\gles\prebuilt\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END);opengl32.lib;winmm.lib</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;COCOS_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)extensions;..\..\WeCGame\;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END);$(EngineRoot);..\;..\libogl\inc;..\..\WeCGame\cocos2d\cocos\;..\..\WeCGame\cocos2d\external\win32-specific\gles\include\OGLES\;..\..\WeCGame\cocos2d\cocos\editor-support\;..\..\WeCGame\cocos2d\external\;..\..\WeCGame\cocos2d\external\freetype2\include\win32\freetype2\;..\..\WeCGame\IF\Classes\Ext\wec;..\..\WeCGame\IF\Classes;..\..\WeCGame\cocos2d;..\..\WeCGame\cocos2d\extensions</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END);..\..\WeCGame\cocos2d\external\png\prebuilt\win32\;..\..\WeCGame\cocos2d\external\jpeg\prebuilt\win32\;..\..\WeCGame\cocos2d\external\tiff\prebuilt\win32\;..\..\WeCGame\cocos2d\external\glfw3\prebuilt\win32\;..\..\WeCGame\cocos2d\external\chipmunk\prebuilt\win32\release-lib\;..\..\WeCGame\cocos2d\external\win32-specific\gles\prebuilt\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END);opengl32.lib;winmm.lib</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

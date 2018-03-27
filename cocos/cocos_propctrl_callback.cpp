@@ -16,9 +16,44 @@ xui_create_explain(cocos_propdata_callback)( xui_propkind* kind, cocos_propnodew
 /*
 //method
 */
-xui_method_explain(cocos_propdata_callback, get_propnode,			cocos_propnodewidget*	)( void )
+//xui_method_explain(cocos_propdata_callback, get_propnode,			cocos_propnodewidget*	)( void )
+//{
+//	return m_propnode;
+//}
+xui_method_explain(cocos_propdata_callback, get_value,				cocos_value_callback	)( void )
 {
-	return m_propnode;
+	cocos_value_callback value;
+	cocos2d::ui::Widget* widget = m_propnode->get_widget();
+	value.type = widget->getCallbackType();
+	value.name = widget->getCallbackName();
+	return value;
+}
+xui_method_explain(cocos_propdata_callback, set_value,				void					)( const cocos_value_callback& value )
+{
+	cocos2d::ui::Widget* widget = m_propnode->get_widget();
+	widget->setCallbackType(value.type);
+	widget->setCallbackName(value.name);
+}
+
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_callback, do_serialize,			u08*					)( void )
+{
+	cocos_value_callback value = get_value();
+	u32  size = value.type.length()+value.name.length()+2;
+	u08* byte = new u08[size];
+	memset(byte, 0, size);
+	memcpy(byte,						value.type.c_str(), value.type.length());
+	memcpy(byte+value.type.length()+1,	value.name.c_str(), value.name.length());
+	return byte;
+}
+xui_method_explain(cocos_propdata_callback, un_serialize,			void					)( u08* byte )
+{
+	cocos_value_callback value;
+	value.type = (const char*)(byte);
+	value.name = (const char*)(byte+value.type.length()+1);
+	set_value(value);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -91,15 +126,11 @@ xui_method_explain(cocos_propctrl_callback, on_linkpropdata,		void					)( bool s
 
 	bool same = true;
 	cocos_propdata_callback* datacallback = dynamic_cast<cocos_propdata_callback*>(m_propdata);
-	cocos2d::ui::Widget* datawidget = datacallback->get_propnode()->get_widget();
-	std::string type = datawidget->getCallbackType();
-	std::string name = datawidget->getCallbackName();
+	cocos_value_callback value = datacallback->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_callback* data = dynamic_cast<cocos_propdata_callback*>(m_propdatavec[i]);
-		cocos2d::ui::Widget* widget = data->get_propnode()->get_widget();
-		if (type != widget->getCallbackType() ||
-			name != widget->getCallbackName())
+		if (data->get_value() != value)
 		{
 			same = false;
 			break;
@@ -109,12 +140,12 @@ xui_method_explain(cocos_propctrl_callback, on_linkpropdata,		void					)( bool s
 	if (same)
 	{
 		u32 selectedindex = 0;
-		if		(type == "Touch") selectedindex = 1;
-		else if (type == "Click") selectedindex = 2;
-		else if (type == "Event") selectedindex = 3;
+		if		(value.type == "Touch") selectedindex = 1;
+		else if (value.type == "Click") selectedindex = 2;
+		else if (value.type == "Event") selectedindex = 3;
 
 		xui_method_ptrcall(m_typectrl, ini_dropbox	)(selectedindex);
-		xui_method_ptrcall(m_textctrl, ini_textbox	)(xui_global::ascii_to_unicode(name));
+		xui_method_ptrcall(m_textctrl, ini_textbox	)(xui_global::ascii_to_unicode(value.name));
 		xui_method_ptrcall(m_textctrl, set_enable	)(selectedindex > 0);
 	}
 }
@@ -168,6 +199,10 @@ xui_method_explain(cocos_propctrl_callback, on_editctrlgetfocus,	void					)( xui
 	m_namectrl->set_textcolor(xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 	m_typectrl->set_sidecolor(xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 	m_textctrl->set_sidecolor(xui_colour(1.0f, 42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
+
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->was_ancestor(this) == false)
+		on_readyundo();
 }
 xui_method_explain(cocos_propctrl_callback, on_typectrlselection,	void					)( xui_component* sender, xui_method_args& args )
 {
@@ -177,8 +212,9 @@ xui_method_explain(cocos_propctrl_callback, on_typectrlselection,	void					)( xu
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_callback* data = dynamic_cast<cocos_propdata_callback*>(m_propdatavec[i]);
-		cocos2d::ui::Widget* widget = data->get_propnode()->get_widget();
-		widget->setCallbackType(type);
+		cocos_value_callback value = data->get_value();
+		value.type = type;
+		data->set_value(value);
 	}
 
 	on_editvalue(NULL);
@@ -189,8 +225,9 @@ xui_method_explain(cocos_propctrl_callback, on_textctrltextchanged, void					)( 
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_callback* data = dynamic_cast<cocos_propdata_callback*>(m_propdatavec[i]);
-		cocos2d::ui::Widget* widget = data->get_propnode()->get_widget();
-		widget->setCallbackName(name);
+		cocos_value_callback value = data->get_value();
+		value.name = name;
+		data->set_value(value);
 	}
 
 	on_editvalue(NULL);

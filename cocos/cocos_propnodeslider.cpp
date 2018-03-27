@@ -112,13 +112,9 @@ xui_method_explain(cocos_propnodeslider, def_size,		cocos_value_unitvec	)( void*
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size size = frame->getOriginalSize();
-			value.w.pix = size.width;
-			value.h.pix = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.w.pix = rect.size.width;
+		value.h.pix = rect.size.height;
 	}
 
 	return value;
@@ -144,7 +140,7 @@ xui_method_explain(cocos_propnodeslider, set_backimage, void				)( void* userptr
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeslider* prop = (cocos_propnodeslider*)userptr;
-	if		(texture)	prop->get_slider()->loadBarTexture(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_slider()->loadBarTexture(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_slider()->loadBarTexture(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_slider()->loadBarTexture("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 
@@ -171,7 +167,7 @@ xui_method_explain(cocos_propnodeslider, set_foreimage, void				)( void* userptr
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeslider* prop = (cocos_propnodeslider*)userptr;
-	if		(texture)	prop->get_slider()->loadProgressBarTexture(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_slider()->loadProgressBarTexture(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_slider()->loadProgressBarTexture(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_slider()->loadProgressBarTexture("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }
@@ -196,7 +192,7 @@ xui_method_explain(cocos_propnodeslider, set_normal,	void				)( void* userptr, v
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeslider* prop = (cocos_propnodeslider*)userptr;
-	if		(texture)	prop->get_slider()->loadSlidBallTextureNormal(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_slider()->loadSlidBallTextureNormal(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_slider()->loadSlidBallTextureNormal(frame->getName(),			cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_slider()->loadSlidBallTextureNormal("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }
@@ -221,7 +217,7 @@ xui_method_explain(cocos_propnodeslider, set_press,		void				)( void* userptr, v
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeslider* prop = (cocos_propnodeslider*)userptr;
-	if		(texture)	prop->get_slider()->loadSlidBallTexturePressed(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_slider()->loadSlidBallTexturePressed(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_slider()->loadSlidBallTexturePressed(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_slider()->loadSlidBallTexturePressed("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }
@@ -246,7 +242,7 @@ xui_method_explain(cocos_propnodeslider, set_disable,	void				)( void* userptr, 
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeslider* prop = (cocos_propnodeslider*)userptr;
-	if		(texture)	prop->get_slider()->loadSlidBallTextureDisabled(texture->getFileName(), cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_slider()->loadSlidBallTextureDisabled(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_slider()->loadSlidBallTextureDisabled(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_slider()->loadSlidBallTextureDisabled("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }

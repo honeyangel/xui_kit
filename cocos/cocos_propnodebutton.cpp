@@ -149,13 +149,9 @@ xui_method_explain(cocos_propnodebutton, def_size,		cocos_value_unitvec		)( void
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size size = frame->getOriginalSize();
-			value.w.pix = size.width;
-			value.h.pix = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.w.pix = rect.size.width;
+		value.h.pix = rect.size.height;
 	}
 	
 	return value;
@@ -174,13 +170,9 @@ xui_method_explain(cocos_propnodebutton, get_scale9,	cocos_value_scale9		)( void
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size  size = frame->getOriginalSize();
-			value.size.w = size.width;
-			value.size.h = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.size.w = rect.size.width;
+		value.size.h = rect.size.height;
 	}
 
 	return value;
@@ -215,7 +207,7 @@ xui_method_explain(cocos_propnodebutton, set_normal,	void					)( void* userptr, 
 	cocos2d::SpriteFrame*	frame = dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodebutton* prop = (cocos_propnodebutton*)userptr;
-	if		(texture)	prop->get_button()->loadTextureNormal(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_button()->loadTextureNormal(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_button()->loadTextureNormal(frame->getName(),			cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_button()->loadTextureNormal("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 
@@ -234,7 +226,7 @@ xui_method_explain(cocos_propnodebutton, set_press,		void					)( void* userptr, 
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodebutton* prop = (cocos_propnodebutton*)userptr;
-	if		(texture)	prop->get_button()->loadTexturePressed(texture->getFileName(),	cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_button()->loadTexturePressed(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_button()->loadTexturePressed(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_button()->loadTexturePressed("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }
@@ -251,7 +243,7 @@ xui_method_explain(cocos_propnodebutton, set_disable,	void					)( void* userptr,
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodebutton* prop = (cocos_propnodebutton*)userptr;
-	if		(texture)	prop->get_button()->loadTextureDisabled(texture->getFileName(), cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_button()->loadTextureDisabled(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_button()->loadTextureDisabled(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_button()->loadTextureDisabled("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 }

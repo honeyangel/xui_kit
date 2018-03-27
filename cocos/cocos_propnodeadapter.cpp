@@ -1,4 +1,4 @@
-#include "external/AdapterNode.h"
+#include "AdapterNode.h"
 #include "xui_kindctrl.h"
 #include "xui_propctrl.h"
 #include "xui_propdata.h"
@@ -47,6 +47,8 @@ xui_method_explain(cocos_propnodeadapter, add_adapter,		void						)( void )
 		set_designheight,
 		this,
 		NT_UNSIGNEDINT));
+
+	add_propkind(kind);
 }
 
 /*

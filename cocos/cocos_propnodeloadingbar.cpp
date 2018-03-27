@@ -90,13 +90,9 @@ xui_method_explain(cocos_propnodeloadingbar, def_size,			cocos_value_unitvec		)(
 	cocos2d::Sprite* sprite = scale9->getSprite();
 	if (sprite)
 	{
-		cocos2d::SpriteFrame* frame = sprite->getSpriteFrame(false);
-		if (frame)
-		{
-			cocos2d::Size size = frame->getOriginalSize();
-			value.w.pix = size.width;
-			value.h.pix = size.height;
-		}
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.w.pix = rect.size.width;
+		value.h.pix = rect.size.height;
 	}
 
 	return value;
@@ -115,7 +111,7 @@ xui_method_explain(cocos_propnodeloadingbar, set_background,	void					)( void* u
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(base);
 
 	cocos_propnodeloadingbar* prop = (cocos_propnodeloadingbar*)userptr;
-	if		(texture)	prop->get_loadingbar()->loadTexture(texture->getFileName(), cocos2d::ui::Widget::TextureResType::LOCAL);
+	if		(texture)	prop->get_loadingbar()->loadTexture(texture->getPath(),		cocos2d::ui::Widget::TextureResType::LOCAL);
 	else if (frame)		prop->get_loadingbar()->loadTexture(frame->getName(),		cocos2d::ui::Widget::TextureResType::PLIST);
 	else				prop->get_loadingbar()->loadTexture("",						cocos2d::ui::Widget::TextureResType::LOCAL);
 

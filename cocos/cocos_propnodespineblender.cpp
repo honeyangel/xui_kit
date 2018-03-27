@@ -1,4 +1,4 @@
-#include "external/SpineBlender.h"
+#include "SpineBlender.h"
 #include "spine/SkeletonAnimation.h"
 #include "xui_kindctrl.h"
 #include "xui_global.h"
@@ -266,7 +266,7 @@ xui_method_explain(cocos_propnodespineblender, set_masktex,				void						)( void
 	else
 	{
 		cocos2d::Texture2D* texture = (cocos2d::Texture2D*)value;
-		prop->get_spineblender()->setMaskPath(texture->getFileName());
+		prop->get_spineblender()->setMaskPath(texture->getPath());
 	}
 }
 xui_method_explain(cocos_propnodespineblender, was_rendertarget,		bool						)( void* userptr )

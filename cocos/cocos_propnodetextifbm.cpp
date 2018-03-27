@@ -1,4 +1,4 @@
-#include "external/TextIFBM.h"
+#include "TextIFBM.h"
 #include "xui_kindctrl.h"
 #include "xui_textbox.h"
 #include "cocos_propnodetextifbm.h"

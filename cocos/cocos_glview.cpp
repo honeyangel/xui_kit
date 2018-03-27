@@ -48,6 +48,8 @@ xui_method_explain(cocos_glview, moveCursorToEnd,		void			)( int pos )
 {}
 xui_method_explain(cocos_glview, ClearTextToNavtive,	void			)( void )
 {}
+xui_method_explain(cocos_glview, SetMultiTouchToNavtive,void			)( bool enable )
+{}
 xui_method_explain(cocos_glview, getWin32Window,		HWND			)( void )
 { 
 	return m_hwnd; 

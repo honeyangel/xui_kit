@@ -57,8 +57,8 @@ public:
 	//event
 	*/
 	void					on_textctrltextchanged	( xui_component* sender, xui_method_args&  args );
-	//void					on_textctrlmousewheel	( xui_component* sender, xui_method_mouse& args );
 	void					on_namectrlmousemove	( xui_component* sender, xui_method_mouse& args );
+	void					on_menuctrlgetfocus		( xui_component* sender, xui_method_args&  args );
 	void					on_menuitemclick		( xui_component* sender, xui_method_args&  args );
 
 protected:

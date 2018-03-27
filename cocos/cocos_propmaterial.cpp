@@ -443,10 +443,10 @@ xui_method_explain(cocos_propmaterial, on_namechanged,			void					)( xui_compone
 xui_method_explain(cocos_propmaterial, save_as,					void					)( const std::wstring& fullname, bool modify )
 {
 	m_modify = modify;
-	//TODO
 	FILE* file = fopen(xui_global::unicode_to_ascii(fullname).c_str(), "w");
 	if (file)
 	{
+		write_material(file);
 		fclose(file);
 	}
 }
@@ -688,6 +688,247 @@ xui_method_explain(cocos_propmaterial, parse_shader,			void					)( const std::st
 
 		fclose(file);
 	}
+}
+xui_method_explain(cocos_propmaterial, write_material,			void					)( FILE* file )
+{
+	write_title(file, 0, "material",  xui_global::unicode_to_ascii(m_name));
+	write_start(file, 0);
+	{
+		write_technique(file);
+	}
+	write_final(file, 0);
+}
+xui_method_explain(cocos_propmaterial, write_technique,			void					)( FILE* file )
+{
+	write_title(file, 4, "technique", xui_global::unicode_to_ascii(m_tech));
+	write_start(file, 4);
+	{
+		write_pass(file);
+	}
+	write_final(file, 4);
+}
+xui_method_explain(cocos_propmaterial, write_pass,				void					)( FILE* file )
+{
+	write_title(file, 8, "pass", "0");
+	write_start(file, 8);
+	{
+		write_shader		(file);
+		fwrite("\n", 1, 1,   file);
+		write_renderstate	(file);
+	}
+	write_final(file, 8);
+}
+xui_method_explain(cocos_propmaterial, write_shader,			void					)( FILE* file )
+{
+	write_title(file, 12, "shader", "");
+	write_start(file, 12);
+	{
+		write_string(file, 16, "vertexShader",	 m_pass.program.vertshaderfile);
+		write_string(file, 16, "fragmentShader", m_pass.program.fragshaderfile);
+		fwrite("\n", 1, 1, file);
+		for (u32 i = 0; i < m_pass.program.vertuniforms.size(); ++i)
+			write_uniform(file, m_pass.program.vertuniforms[i]);
+		for (u32 i = 0; i < m_pass.program.fraguniforms.size(); ++i)
+			write_uniform(file, m_pass.program.fraguniforms[i]);
+
+		for (u32 i = 0; i < m_pass.program.fragsamplers.size(); ++i)
+		{
+			fwrite("\n", 1, 1, file);
+			write_sampler(file, m_pass.program.fragsamplers[i]);
+		}
+	}
+	write_final(file, 12);
+}
+xui_method_explain(cocos_propmaterial, write_renderstate,		void					)( FILE* file )
+{
+	write_title(file, 12, "renderState", "");
+	write_start(file, 12);
+	{
+		write_bool	(file, 16, "blend",			m_pass.blend);
+		write_blend	(file, 16, "blendSrc",		m_pass.blendsrc);
+		write_blend	(file, 16, "blendDst",		m_pass.blenddst);
+		write_bool	(file, 16, "depthTest",		m_pass.depthtest);
+		write_bool	(file, 16, "depthWrite",	m_pass.depthwrite);
+		write_depth	(file, 16, "depthFunc",		m_pass.depthfunc);
+		write_bool	(file, 16, "cullFace",		m_pass.cullface);
+		write_cull	(file, 16, "cullFaceSide",	m_pass.cullfaceside);
+		write_front	(file, 16, "frontFace",		m_pass.frontface);
+	}
+	write_final(file, 12);
+}
+xui_method_explain(cocos_propmaterial, write_uniform,			void					)( FILE* file, const uniform& value )
+{
+	write_blank(file, 16);
+	std::stringstream text;
+	text << value.name.c_str();
+	text << " = ";
+	for (u32 i = 0; i < value.data.size(); ++i)
+	{
+		if (i > 0)
+			text << ",";
+
+		text << value.data[i];
+	}
+	text << "\n";
+
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_sampler,			void					)( FILE* file, const sampler& value )
+{
+	write_title(file, 16, "sampler", value.name);
+	write_start(file, 16);
+	{
+		if (value.texture)
+		{
+			std::wstring full = xui_global::ascii_to_unicode(value.texture->getPath());
+			std::wstring work = xui_global::get_workpath();
+			if (full.length() > work.length())
+				full.erase(0, work.length() + 1);
+
+			write_string(file, 20, "path",	xui_global::unicode_to_ascii(full));
+		}
+
+		write_bool	(file, 20, "mipmap",	value.mipmap);
+		write_filter(file, 20, "minFilter", value.minfilter);
+		write_filter(file, 20, "magFilter", value.magfilter);
+		write_wrap	(file, 20, "wrapS",		value.wraps);
+		write_wrap	(file, 20, "wrapT",		value.wrapt);
+	}
+	write_final(file, 16);
+}
+xui_method_explain(cocos_propmaterial, write_blank,				void					)( FILE* file, u32 blank )
+{
+	if (blank == 0)
+		return;
+
+	std::stringstream text;
+	for (u32 i = 0; i < blank; ++i)
+		text << " ";
+
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_title,				void					)( FILE* file, u32 blank, const std::string& title, const std::string& value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " ";
+	text << value.c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_start,				void					)( FILE* file, u32 blank )
+{
+	write_blank(file, blank);
+	fwrite("{\n", 1, 2, file);
+}
+xui_method_explain(cocos_propmaterial, write_final,				void					)( FILE* file, u32 blank )
+{
+	write_blank(file, blank);
+	fwrite("}\n", 1, 2, file);
+}
+xui_method_explain(cocos_propmaterial, write_string,			void					)( FILE* file, u32 blank, const std::string& title, const std::string& value )
+{
+	if (value.length() == 0)
+		return;
+
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	text << value.c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_bool,				void					)( FILE* file, u32 blank, const std::string& title, bool value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	text << (value ? "true" : "false");
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_filter,			void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	switch (value)
+	{
+	case GL_NEAREST:				text << "NEAREST";					break;
+	case GL_LINEAR:					text << "LINEAR";					break;
+	case GL_NEAREST_MIPMAP_NEAREST:	text << "NEAREST_MIPMAP_NEAREST";	break;
+	case GL_LINEAR_MIPMAP_NEAREST:	text << "LINEAR_MIPMAP_NEAREST";	break;
+	case GL_NEAREST_MIPMAP_LINEAR:	text << "NEAREST_MIPMAP_LINEAR";	break;
+	case GL_LINEAR_MIPMAP_LINEAR:	text << "LINEAR_MIPMAP_LINEAR";		break;
+	}
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_wrap,				void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	switch (value)
+	{
+	case GL_REPEAT:			text << "REPEAT";			break;
+	case GL_CLAMP_TO_EDGE:	text << "CLAMP_TO_EDGE";	break;
+	}
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_blend,				void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	std::map<s32, std::wstring>::const_iterator itor = text_blend.find(value);
+	if (itor != text_blend.end())
+		text << xui_global::unicode_to_ascii((*itor).second).c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_depth,				void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	std::map<s32, std::wstring>::const_iterator itor = text_depth.find(value);
+	if (itor != text_depth.end())
+		text << xui_global::unicode_to_ascii((*itor).second).c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_cull,				void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	std::map<s32, std::wstring>::const_iterator itor = text_cullfaceside.find(value);
+	if (itor != text_cullfaceside.end())
+		text << xui_global::unicode_to_ascii((*itor).second).c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
+}
+xui_method_explain(cocos_propmaterial, write_front,				void					)( FILE* file, u32 blank, const std::string& title, s32  value )
+{
+	write_blank(file, blank);
+	std::stringstream text;
+	text << title.c_str();
+	text << " = ";
+	std::map<s32, std::wstring>::const_iterator itor = text_frontface.find(value);
+	if (itor != text_frontface.end())
+		text << xui_global::unicode_to_ascii((*itor).second).c_str();
+	text << "\n";
+	fwrite(text.str().c_str(), 1, text.str().length(), file);
 }
 
 /*

@@ -54,7 +54,7 @@ xui_create_explain(onity_param)( NP2DSParam* param, bool reqfocus )
 	case DT_FLOAT:		text << param->GetValueFloat();	break;
 	}
 
-	m_numbctrl	= new xui_numbbox(xui_vector<s32>(52, 18), param->GetType() == DT_INT ? NT_INT : NT_FLOAT, 1);
+	m_numbctrl	= new xui_numbbox(xui_vector<s32>(52, 18), param->GetType() == DT_INT ? NT_INT : NT_FLOAT, 1, true);
 	xui_method_ptrcall(m_numbctrl,	xm_nonfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlnonfocus);
 	xui_method_ptrcall(m_numbctrl,	xm_getfocus		) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_editctrlgetfocus);
 	xui_method_ptrcall(m_numbctrl,	xm_textchanged	) += new xui_method_member<xui_method_args, onity_param>(this, &onity_param::on_numbctrltextchanged);

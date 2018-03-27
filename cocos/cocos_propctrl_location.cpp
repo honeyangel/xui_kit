@@ -23,13 +23,48 @@ xui_create_explain(cocos_propdata_location)( xui_propkind* kind, cocos_propnodeb
 /*
 //method
 */
-xui_method_explain(cocos_propdata_location, get_propnode,			cocos_propnodebase*	)( void )
-{
-	return m_propnode;
-}
 xui_method_explain(cocos_propdata_location, can_editsize,			bool				)( void )
 {
 	return m_editsize;
+}
+xui_method_explain(cocos_propdata_location, get_value,				cocos_value_location)( void )
+{
+	cocos_value_location value;
+	cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(m_propnode->get_node());
+
+	value.horzedge = (u08)component->getHorizontalEdge();
+	value.vertedge = (u08)component->getVerticalEdge();
+	value.horzfill = component->isStretchWidthEnabled();
+	value.vertfill = component->isStretchHeightEnabled();
+	value.horzgrap = xui_vector<f32>(component->getLeftMargin(), component->getRightMargin());
+	value.vertgrap = xui_vector<f32>(component->getTopMargin(), component->getBottomMargin());
+
+	return value;
+}
+xui_method_explain(cocos_propdata_location, set_value,				void				)( const cocos_value_location& value )
+{
+	cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(m_propnode->get_node());
+	component->setHorizontalEdge((cocos2d::ui::LayoutComponent::HorizontalEdge)value.horzedge);
+	component->setVerticalEdge((cocos2d::ui::LayoutComponent::VerticalEdge)value.vertedge);
+	component->setStretchWidthEnabled(value.horzfill);
+	component->setStretchHeightEnabled(value.vertfill);
+	component->setLeftMargin(value.horzgrap.x);
+	component->setRightMargin(value.horzgrap.y);
+	component->setTopMargin(value.vertgrap.x);
+	component->setBottomMargin(value.vertgrap.y);
+	component->refreshLayout();
+}
+
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_location, do_serialize,			u08*				)( void )
+{
+	return get_byte<cocos_value_location>(get_value());
+}
+xui_method_explain(cocos_propdata_location, un_serialize,			void				)( u08* byte )
+{
+	set_value(get_cast<cocos_value_location>(byte));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +85,7 @@ xui_create_explain(cocos_propctrl_location)( xui_propdata* propdata )
 	xui_method_ptrcall(m_lnumctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_lnumctrl, xm_nonfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlnonfocus);
 	xui_method_ptrcall(m_lnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlgetfocus);
+	xui_method_ptrcall(m_lnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
 	xui_method_ptrcall(m_lnumctrl, xm_textchanged	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrltextchanged);
 
 	m_rnumctrl	= new xui_numbbox(xui_vector<s32>(48, 18), NT_FLOAT, 1.0, false);
@@ -60,6 +96,7 @@ xui_create_explain(cocos_propctrl_location)( xui_propdata* propdata )
 	xui_method_ptrcall(m_rnumctrl, set_sidestyle	)(SIDESTYLE_S);
 	xui_method_ptrcall(m_rnumctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_rnumctrl, xm_nonfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlnonfocus);
+	xui_method_ptrcall(m_rnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlgetfocus);
 	xui_method_ptrcall(m_rnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlgetfocus);
 	xui_method_ptrcall(m_rnumctrl, xm_textchanged	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrltextchanged);
 
@@ -72,6 +109,7 @@ xui_create_explain(cocos_propctrl_location)( xui_propdata* propdata )
 	xui_method_ptrcall(m_tnumctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_tnumctrl, xm_nonfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlnonfocus);
 	xui_method_ptrcall(m_tnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlgetfocus);
+	xui_method_ptrcall(m_tnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
 	xui_method_ptrcall(m_tnumctrl, xm_textchanged	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrltextchanged);
 
 	m_bnumctrl	= new xui_numbbox(xui_vector<s32>(48, 18), NT_FLOAT, 1.0, false);
@@ -83,6 +121,7 @@ xui_create_explain(cocos_propctrl_location)( xui_propdata* propdata )
 	xui_method_ptrcall(m_bnumctrl, set_textalign	)(TEXTALIGN_LC);
 	xui_method_ptrcall(m_bnumctrl, xm_nonfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlnonfocus);
 	xui_method_ptrcall(m_bnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrlgetfocus);
+	xui_method_ptrcall(m_bnumctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
 	xui_method_ptrcall(m_bnumctrl, xm_textchanged	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_numbctrltextchanged);
 
 	m_ltogctrl	= new xui_toggle(xui_vector<s32>(18), TOGGLE_BUTTON);
@@ -101,6 +140,10 @@ xui_create_explain(cocos_propctrl_location)( xui_propdata* propdata )
 	xui_method_ptrcall(m_rtogctrl, set_iconalign	)(IMAGE_C);
 	xui_method_ptrcall(m_ttogctrl, set_iconalign	)(IMAGE_C);
 	xui_method_ptrcall(m_btogctrl, set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_ltogctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
+	xui_method_ptrcall(m_rtogctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
+	xui_method_ptrcall(m_ttogctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
+	xui_method_ptrcall(m_btogctrl, xm_getfocus		) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_editctrlgetfocus);
 	xui_method_ptrcall(m_ltogctrl, xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_toggctrlclick);
 	xui_method_ptrcall(m_rtogctrl, xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_toggctrlclick);
 	xui_method_ptrcall(m_ttogctrl, xm_toggleclick	) += new xui_method_member<xui_method_args, cocos_propctrl_location>(this, &cocos_propctrl_location::on_toggctrlclick);
@@ -211,29 +254,26 @@ xui_method_explain(cocos_propctrl_location, on_linkpropdata,		void				)( bool se
 	if (m_propdatavec.size() == 1)
 	{
 		cocos_propdata_location* datalocation = dynamic_cast<cocos_propdata_location*>(m_propdata);
-		cocos_propnodebase* prop = datalocation->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-		cocos2d::ui::LayoutComponent::HorizontalEdge horzedge = component->getHorizontalEdge();
-		cocos2d::ui::LayoutComponent::VerticalEdge   vertedge = component->getVerticalEdge();
-		xui_method_ptrcall(m_ltogctrl, ini_toggle)(horzedge == cocos2d::ui::LayoutComponent::HorizontalEdge::Left  || horzedge == cocos2d::ui::LayoutComponent::HorizontalEdge::Center);
-		xui_method_ptrcall(m_rtogctrl, ini_toggle)(horzedge == cocos2d::ui::LayoutComponent::HorizontalEdge::Right || horzedge == cocos2d::ui::LayoutComponent::HorizontalEdge::Center);
-		xui_method_ptrcall(m_ttogctrl, ini_toggle)(vertedge == cocos2d::ui::LayoutComponent::VerticalEdge::Top     || vertedge == cocos2d::ui::LayoutComponent::VerticalEdge::Center);
-		xui_method_ptrcall(m_btogctrl, ini_toggle)(vertedge == cocos2d::ui::LayoutComponent::VerticalEdge::Bottom  || vertedge == cocos2d::ui::LayoutComponent::VerticalEdge::Center);
-		xui_method_ptrcall(m_horzctrl, ini_toggle)(component->isStretchWidthEnabled());
-		xui_method_ptrcall(m_vertctrl, ini_toggle)(component->isStretchHeightEnabled());
+		cocos_value_location value = datalocation->get_value();
+		xui_method_ptrcall(m_ltogctrl, ini_toggle)(value.horzedge == (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Left  || value.horzedge == (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Center);
+		xui_method_ptrcall(m_rtogctrl, ini_toggle)(value.horzedge == (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Right || value.horzedge == (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Center);
+		xui_method_ptrcall(m_ttogctrl, ini_toggle)(value.vertedge == (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Top     || value.vertedge == (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Center);
+		xui_method_ptrcall(m_btogctrl, ini_toggle)(value.vertedge == (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Bottom  || value.vertedge == (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Center);
+		xui_method_ptrcall(m_horzctrl, ini_toggle)(value.horzfill);
+		xui_method_ptrcall(m_vertctrl, ini_toggle)(value.vertfill);
 		xui_method_ptrcall(m_lnumctrl, set_enable)(m_ltogctrl->was_push());
 		xui_method_ptrcall(m_rnumctrl, set_enable)(m_rtogctrl->was_push());
 		xui_method_ptrcall(m_tnumctrl, set_enable)(m_ttogctrl->was_push());
 		xui_method_ptrcall(m_bnumctrl, set_enable)(m_btogctrl->was_push());
 
 		char temp[32];
-		sprintf(temp, "%.2f", component->getLeftMargin());
+		sprintf(temp, "%.2f", value.horzgrap.x);
 		m_lnumctrl->ini_textbox(xui_global::ascii_to_unicode(temp));
-		sprintf(temp, "%.2f", component->getRightMargin());
+		sprintf(temp, "%.2f", value.horzgrap.y);
 		m_rnumctrl->ini_textbox(xui_global::ascii_to_unicode(temp));
-		sprintf(temp, "%.2f", component->getTopMargin());
+		sprintf(temp, "%.2f", value.vertgrap.x);
 		m_tnumctrl->ini_textbox(xui_global::ascii_to_unicode(temp));
-		sprintf(temp, "%.2f", component->getBottomMargin());
+		sprintf(temp, "%.2f", value.vertgrap.y);
 		m_bnumctrl->ini_textbox(xui_global::ascii_to_unicode(temp));
 	}
 }
@@ -310,6 +350,12 @@ xui_method_explain(cocos_propctrl_location, on_numbctrltextchanged, void				)( x
 
 	set_margin(sender, value);
 	on_editvalue(NULL);
+}
+xui_method_explain(cocos_propctrl_location, on_editctrlgetfocus,	void				)( xui_component* sender, xui_method_args& args )
+{
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->was_ancestor(this) == false)
+		on_readyundo();
 }
 xui_method_explain(cocos_propctrl_location, on_toggctrlclick,		void				)( xui_component* sender, xui_method_args& args )
 {
@@ -458,54 +504,49 @@ xui_method_explain(cocos_propctrl_location, on_vertctrlrenderself,	void				)( xu
 /*
 //method
 */
-xui_method_explain(cocos_propctrl_location, set_margin,				void				)( xui_component* sender, f64 value )
+xui_method_explain(cocos_propctrl_location, set_margin,				void				)( xui_component* sender, f64 grap )
 {
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_location* data = dynamic_cast<cocos_propdata_location*>(m_propdatavec[i]);
-		cocos_propnodebase* prop = data->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-
-		if		(sender == m_lnumctrl)component->setLeftMargin	(value);
-		else if (sender == m_rnumctrl)component->setRightMargin	(value);
-		else if (sender == m_tnumctrl)component->setTopMargin	(value);
-		else if (sender == m_bnumctrl)component->setBottomMargin(value);
-
-		component->refreshLayout();
+		cocos_value_location value = data->get_value();
+		if		(sender == m_lnumctrl) value.horzgrap.x = grap;
+		else if (sender == m_rnumctrl) value.horzgrap.y = grap;
+		else if (sender == m_tnumctrl) value.vertgrap.x = grap;
+		else if (sender == m_bnumctrl) value.vertgrap.y = grap;
+		data->set_value(value);
 	}
 }
 xui_method_explain(cocos_propctrl_location, set_horzalign,			void				)( void )
 {
-	cocos2d::ui::LayoutComponent::HorizontalEdge edge;
-	if		(m_ltogctrl->was_push() && m_rtogctrl->was_push())	edge = cocos2d::ui::LayoutComponent::HorizontalEdge::Center;
-	else if (m_ltogctrl->was_push())							edge = cocos2d::ui::LayoutComponent::HorizontalEdge::Left;
-	else if (m_rtogctrl->was_push())							edge = cocos2d::ui::LayoutComponent::HorizontalEdge::Right;
-	else														edge = cocos2d::ui::LayoutComponent::HorizontalEdge::None;
+	u08 edge;
+	if		(m_ltogctrl->was_push() && m_rtogctrl->was_push())	edge = (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Center;
+	else if (m_ltogctrl->was_push())							edge = (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Left;
+	else if (m_rtogctrl->was_push())							edge = (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::Right;
+	else														edge = (u08)cocos2d::ui::LayoutComponent::HorizontalEdge::None;
 
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_location* data = dynamic_cast<cocos_propdata_location*>(m_propdatavec[i]);
-		cocos_propnodebase* prop = data->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-		component->setHorizontalEdge(edge);
-		component->refreshLayout();
+		cocos_value_location value = data->get_value();
+		value.horzedge = edge;
+		data->set_value(value);
 	}
 }
 xui_method_explain(cocos_propctrl_location, set_vertalign,			void				)( void )
 {
-	cocos2d::ui::LayoutComponent::VerticalEdge edge;
-	if		(m_ttogctrl->was_push() && m_btogctrl->was_push())	edge = cocos2d::ui::LayoutComponent::VerticalEdge::Center;
-	else if (m_ttogctrl->was_push())							edge = cocos2d::ui::LayoutComponent::VerticalEdge::Top;
-	else if (m_btogctrl->was_push())							edge = cocos2d::ui::LayoutComponent::VerticalEdge::Bottom;
-	else														edge = cocos2d::ui::LayoutComponent::VerticalEdge::None;
+	u08 edge;
+	if		(m_ttogctrl->was_push() && m_btogctrl->was_push())	edge = (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Center;
+	else if (m_ttogctrl->was_push())							edge = (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Top;
+	else if (m_btogctrl->was_push())							edge = (u08)cocos2d::ui::LayoutComponent::VerticalEdge::Bottom;
+	else														edge = (u08)cocos2d::ui::LayoutComponent::VerticalEdge::None;
 
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_location* data = dynamic_cast<cocos_propdata_location*>(m_propdatavec[i]);
-		cocos_propnodebase* prop = data->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-		component->setVerticalEdge(edge);
-		component->refreshLayout();
+		cocos_value_location value = data->get_value();
+		value.vertedge = edge;
+		data->set_value(value);
 	}
 }
 xui_method_explain(cocos_propctrl_location, set_horzstretch,		void				)( void )
@@ -513,10 +554,9 @@ xui_method_explain(cocos_propctrl_location, set_horzstretch,		void				)( void )
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_location* data = dynamic_cast<cocos_propdata_location*>(m_propdatavec[i]);
-		cocos_propnodebase* prop = data->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-		component->setStretchWidthEnabled(m_horzctrl->was_push());
-		component->refreshLayout();
+		cocos_value_location value = data->get_value();
+		value.horzfill = m_horzctrl->was_push();
+		data->set_value(value);
 	}
 }
 xui_method_explain(cocos_propctrl_location, set_vertstretch,		void				)( void )
@@ -524,9 +564,8 @@ xui_method_explain(cocos_propctrl_location, set_vertstretch,		void				)( void )
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
 		cocos_propdata_location* data = dynamic_cast<cocos_propdata_location*>(m_propdatavec[i]);
-		cocos_propnodebase* prop = data->get_propnode();
-		cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(prop->get_node());
-		component->setStretchHeightEnabled(m_vertctrl->was_push());
-		component->refreshLayout();
+		cocos_value_location value = data->get_value();
+		value.vertfill = m_vertctrl->was_push();
+		data->set_value(value);
 	}
 }

@@ -284,8 +284,9 @@ xui_method_explain(cocos_hierarchy, del_propnode,			void						)( cocos_propnodeb
 		rootnode->del_leafnode(leafnode);
 	}
 
-	if (destroy)
-		delete propleaf;
+	//TODO
+	//if (destroy)
+	//	delete propleaf;
 
 	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
 	cocos_propcsd* propfile = scene->get_editprop();
@@ -432,6 +433,13 @@ xui_method_explain(cocos_hierarchy, on_treeselection,		void						)( xui_componen
 		cocos_inspector* inspector = cocos_mainform::get_ptr()->get_inspector();
 		if (inspector->get_propview()->get_proproot() != props)
 			inspector->get_propview()->set_proproot(props);
+
+		std::wstring path = cocos_propnodebase::get_path(0);
+		for (u32 i = 0; i < props.size(); ++i)
+		{
+			xui_propdata* data = props[i]->get_propdata(path);
+			data->backups();
+		}
 	}
 
 	if (nodes.size() > 0)

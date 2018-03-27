@@ -39,6 +39,7 @@ public:
 	/*
 	//static
 	*/
+	static std::wstring			get_path		( u08 type );
 	static std::wstring			get_type		( cocos2d::Node* node );
 	static cocos_propnodebase*	new_prop		( cocos_propcsd* file, cocos2d::Node* node );
 	static cocos_propnodebase*	new_prop		( cocos_propcsd* file, const std::wstring& rtti );
@@ -95,6 +96,34 @@ protected:
 	static void					set_userdata	( void* userptr, const std::wstring& value );
 
 	/*
+	//default
+	*/
+	static cocos2d::Node*		def_particle	( void );
+	static cocos2d::Node*		def_sprite		( void );
+	static cocos2d::Node*		def_node		( void );
+	static cocos2d::Node*		def_button		( void );
+	static cocos2d::Node*		def_checkbox	( void );
+	static cocos2d::Node*		def_imageview	( void );
+	static cocos2d::Node*		def_text		( void );
+	static cocos2d::Node*		def_textbmfont	( void );
+	static cocos2d::Node*		def_loadingbar	( void );
+	static cocos2d::Node*		def_slider		( void );
+	static cocos2d::Node*		def_textfield	( void );
+	static cocos2d::Node*		def_layout		( void );
+	static cocos2d::Node*		def_scrollview	( void );
+	static cocos2d::Node*		def_listview	( void );
+	static cocos2d::Node*		def_pageview	( void );
+	static cocos2d::Node*		def_layoutcenter( void );
+	static cocos2d::Node*		def_adapternode	( void );
+	static cocos2d::Node*		def_shaderrect	( void );
+	static cocos2d::Node*		def_textifbm	( void );
+	static cocos2d::Node*		def_weclabel	( void );
+	static cocos2d::Node*		def_spinenode	( void );
+	static cocos2d::Node*		def_spineblender( void );
+	static cocos2d::Node*		def_object3d	( void );
+	static cocos2d::Node*		def_node3dobject( void );
+
+	/*
 	//helper
 	*/
 	static void*				get_image		( cocos2d::Sprite* sprite );
@@ -113,10 +142,6 @@ protected:
 	cocos2d::Node*				m_node;
 	xui_proproot_vec			m_leafprop;
 	cocos_boundbox*				m_boundbox;
-	//xui_propkind*				m_title;
-	//xui_propkind*				m_location;
-	//xui_propkind*				m_base;
-	//xui_propkind*				m_advance;
 };
 
 #endif//__cocos_propnodebase_h__

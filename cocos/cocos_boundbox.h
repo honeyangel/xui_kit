@@ -63,6 +63,7 @@ public:
 	cocos_propnodebase*		get_linkprop	( void );
 	void					syn_bounding	( const xui_vector<s32>& trans, f64 ratio, s32 viewh );
 	void					add_operator	( u08 op );
+	void					set_ignoresz	( bool flag );
 	virtual u08				hit_operator	( const xui_vector<s32>& trans, f64 ratio, s32 viewh, const xui_vector<s32>& pt );
 	virtual bool			was_selected	( void );
 
@@ -81,6 +82,7 @@ protected:
 	xui_rect2d<s32>			m_bounding;
 	xui_vector<s32>			m_pivotbox;
 	u08						m_operator;
+	bool					m_ignoresz;
 };
 
 #endif//__cocos_boundbox_h__

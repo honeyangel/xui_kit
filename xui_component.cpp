@@ -111,6 +111,19 @@ xui_method_explain(xui_component, was_ancestor,			bool					)( xui_component* com
 
 	return (m_parent == component) || m_parent->was_ancestor(component);
 }
+xui_method_explain(xui_component, get_ancestor,			xui_component*			)( const xui_rtti* rtti )
+{
+	xui_component* parent = m_parent;
+	while (parent)
+	{
+		if (parent->issub(rtti))
+			return parent;
+
+		parent = parent->get_parent();
+	}
+
+	return NULL;
+}
 
 /*
 //window

@@ -5,6 +5,22 @@
 #include "xui_propctrl.h"
 #include "xui_propedit.h"
 
+class cocos_value_callback
+{
+public:
+	std::string		type;
+	std::string		name;
+
+	bool operator == ( const cocos_value_callback& other )
+	{
+		return type == other.type && name == other.name;
+	}
+	bool operator != ( const cocos_value_callback& other )
+	{
+		return type != other.type || name != other.name;
+	}
+};
+
 class cocos_propnodewidget;
 class cocos_propdata_callback : public xui_propdata
 {
@@ -17,9 +33,16 @@ public:
 	/*
 	//method
 	*/
-	cocos_propnodewidget*	get_propnode			( void );
+	cocos_value_callback	get_value				( void );
+	void					set_value				( const cocos_value_callback& value );
 
 protected:
+	/*
+	//override
+	*/
+	virtual u08*			do_serialize			( void );
+	virtual void			un_serialize			( u08* byte );
+
 	/*
 	//member
 	*/

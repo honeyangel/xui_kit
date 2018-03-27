@@ -68,6 +68,10 @@ xui_method_explain(xui_propedit_base,	on_editctrlgetfocus,	void				)( xui_compon
 	m_propctrl->on_linkpropdata();
 	m_namectrl->set_textcolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 	m_editctrl->set_sidecolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
+
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->get_ancestor(xui_propctrl::RTTIPTR()) != m_propctrl)
+		m_propctrl->on_readyundo();
 }
 xui_method_explain(xui_propedit_base,	on_namectrltextchanged,	void				)( xui_component* sender, xui_method_args&  args )
 {

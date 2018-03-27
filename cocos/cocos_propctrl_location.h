@@ -3,6 +3,17 @@
 
 #include "xui_propctrl.h"
 
+class cocos_value_location
+{
+public:
+	u08				horzedge;
+	u08				vertedge;
+	bool			horzfill;
+	bool			vertfill;
+	xui_vector<f32>	horzgrap;
+	xui_vector<f32>	vertgrap;
+};
+
 class cocos_propnodebase;
 class cocos_propdata_location : public xui_propdata
 {
@@ -15,10 +26,17 @@ public:
 	/*
 	//method
 	*/
-	cocos_propnodebase*		get_propnode			( void );
 	bool					can_editsize			( void );
+	cocos_value_location	get_value				( void );
+	void					set_value				( const cocos_value_location& value );
 
 protected:
+	/*
+	//override
+	*/
+	virtual u08*			do_serialize			( void );
+	virtual void			un_serialize			( u08* byte );
+
 	/*
 	//member
 	*/
@@ -66,6 +84,7 @@ protected:
 	void					on_numbctrlnonfocus		( xui_component* sender, xui_method_args& args );
 	void					on_numbctrlgetfocus		( xui_component* sender, xui_method_args& args );
 	void					on_numbctrltextchanged	( xui_component* sender, xui_method_args& args );
+	void					on_editctrlgetfocus		( xui_component* sender, xui_method_args& args );
 	void					on_toggctrlclick		( xui_component* sender, xui_method_args& args );
 	void					on_editpaneperform		( xui_component* sender, xui_method_args& args );
 	void					on_editpanerenderself	( xui_component* sender, xui_method_args& args );

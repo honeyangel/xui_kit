@@ -39,6 +39,7 @@
 #include "cocos_propfnt.h"
 #include "cocos_propspineatlas.h"
 #include "cocos_propspine.h"
+#include "cocos_propc3b.h"
 #include "cocos_propcsd.h"
 #include "cocos_framedata.h"
 #include "cocos_resource.h"
@@ -209,6 +210,7 @@ xui_create_explain(cocos_project)( void )
 	xui_method_ptrcall(m_filter,	add_item			)(L"FNT");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Spine Atlas");
 	xui_method_ptrcall(m_filter,	add_item			)(L"Spine");
+	xui_method_ptrcall(m_filter,	add_item			)(L"C3B");
 	xui_method_ptrcall(m_filter,	add_item			)(L"CSD");
 	xui_method_ptrcall(m_filter,	ini_dropbox			)(0);
 
@@ -353,6 +355,8 @@ xui_method_explain(cocos_project, get_pathfile,				void			)( s32 type, xui_propr
 			if (type == FILTER_SPINEATLAS	&& dynamic_cast<cocos_propspineatlas*	>(propfile))
 				filevec.push_back(propfile);
 			if (type == FILTER_SPINE		&& dynamic_cast<cocos_propspine*		>(propfile))
+				filevec.push_back(propfile);
+			if (type == FILTER_C3B			&& dynamic_cast<cocos_propc3b*			>(propfile))
 				filevec.push_back(propfile);
 			if (type == FILTER_CSD			&& dynamic_cast<cocos_propcsd*			>(propfile))
 				filevec.push_back(propfile);

@@ -752,7 +752,7 @@ xui_method_explain(onity_mainform, del_allview,			void				)( void )
 		{
 			xui_dockview* rootview = xui_dynamic_cast(xui_dockview, page->get_parent());
 			if (rootview)
-				rootview->del_dockpage(page);
+				rootview->del_dockpage(page, false);
 		}
 	}
 }

@@ -32,7 +32,7 @@ public:
 	/*
 	//destructor
 	*/
-	virtual ~xui_propdata( void ){};
+	virtual ~xui_propdata( void );
 
 	/*
 	//method
@@ -45,13 +45,20 @@ public:
 	void						set_edit		( bool flag );
 	bool						can_show		( void ) const;
 	void						set_show		( bool flag );
+	u08*						get_byte		( void );
+	bool						has_byte		( void ) const;
+	std::wstring				get_path		( void );
 	xui_propctrl*				get_ctrl		( void );
 	void						set_ctrl		( xui_propctrl* ctrl );
 	virtual void				non_ctrl		( void );
+	virtual xui_propdata*		get_data		( const std::wstring& name );
+	virtual std::wstring		get_path		( xui_propdata* prop );
 
 	/*
 	//refresh
 	*/
+	void						backups			( void );
+	void						restore			( u08* byte );
 	void						refresh			( void );
 
 protected:
@@ -59,6 +66,21 @@ protected:
 	//virtual
 	*/
 	virtual void				on_valuechanged	( void );
+	virtual u08*				do_serialize	( void );
+	virtual void				un_serialize	( u08* byte );
+
+	template<typename T>
+	u08*						get_byte		( const T& value )
+	{
+		u08* data = new u08[sizeof(T)];
+		memcpy(data, &value, sizeof(T));
+		return data;
+	}
+	template<typename T>
+	T							get_cast		( u08* data )
+	{
+		return *((T*)data);
+	}
 
 	/*
 	//member
@@ -69,6 +91,7 @@ protected:
 	xui_propctrl*				m_ctrl;
 	bool						m_edit;
 	bool						m_show;
+	u08*						m_byte;
 };
 
 /*
@@ -92,6 +115,12 @@ public:
 	virtual void				set_value		( bool value );
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void );
+	virtual void				un_serialize	( u08* byte );
+
 	/*
 	//member
 	*/
@@ -121,6 +150,12 @@ public:
 	virtual void				set_value		( const std::wstring& value );
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void );
+	virtual void				un_serialize	( u08* byte );
+
 	/*
 	//member
 	*/
@@ -179,6 +214,12 @@ public:
 
 protected:
 	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void );
+	virtual void				un_serialize	( u08* byte );
+
+	/*
 	//member
 	*/
 	get_func					m_userget;
@@ -215,6 +256,18 @@ public:
 	}
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void )
+	{
+		return get_byte<f64>(get_value());
+	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		(*m_ptr) = (T)get_cast<f64>(byte);
+	}
+
 	/*
 	//member
 	*/
@@ -268,6 +321,12 @@ public:
 
 protected:
 	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void );
+	virtual void				un_serialize	( u08* byte );
+
+	/*
 	//member
 	*/
 	get_func					m_userget;
@@ -315,6 +374,20 @@ public:
 	}
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void )
+	{
+		return get_byte<u32>(get_value());
+	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		xui_propenum_map::iterator itor = m_textmap.begin();
+		std::advance(itor, get_cast<u32>(byte));
+		(*m_ptr) = (T)(*itor).first;
+	}
+
 	/*
 	//member
 	*/
@@ -452,6 +525,8 @@ public:
 	//override
 	*/
 	virtual void				non_ctrl		( void );
+	virtual xui_propdata*		get_data		( const std::wstring& name );
+	virtual std::wstring		get_path		( xui_propdata* prop );
 };
 class xui_propdata_expand_number : public xui_propdata_number_func, public xui_expandbase
 {
@@ -548,6 +623,11 @@ protected:
 		syn_subprop();
 		xui_propdata_bool::on_valuechanged();
 	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		xui_propdata_bool::un_serialize(byte);
+		syn_subprop();
+	}
 };
 class xui_propdata_expand_enum_func : public xui_propdata_enum_func, public xui_expandvary
 {
@@ -597,6 +677,11 @@ protected:
 		syn_subprop();
 		xui_propdata_enum_func::on_valuechanged();
 	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		xui_propdata_enum_func::un_serialize(byte);
+		syn_subprop();
+	}
 };
 template<typename T>
 class xui_propdata_expand_enum_impl : public xui_propdata_enum_impl<T>, public xui_expandvary
@@ -645,6 +730,11 @@ protected:
 		syn_subprop();
 		xui_propdata_enum_impl<T>::on_valuechanged();
 	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		xui_propdata_enum_impl<T>::un_serialize(byte);
+		syn_subprop();
+	}
 };
 
 /*
@@ -679,6 +769,8 @@ public:
 	//override
 	*/
 	virtual void				non_ctrl		( void );
+	virtual xui_propdata*		get_data		( const std::wstring& name );
+	virtual std::wstring		get_path		( xui_propdata* prop );
 
 protected:
 	/*
@@ -789,6 +881,7 @@ public:
 			}
 
 			realloc();
+			on_valuechanged();
 		}
 		else
 		if (vec.size() > value)
@@ -808,6 +901,7 @@ public:
 			}
 
 			realloc();
+			on_valuechanged();
 		}
 	}
 	virtual void				set_index		( u32 oldindex, u32 newindex )
@@ -825,9 +919,41 @@ public:
 		vec.erase (vec.begin()+oldindex);
 
 		realloc();
+		on_valuechanged();
 	}
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void )
+	{
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		u08* data = new u08[sizeof(u32) + sizeof(T)*vec.size()];
+		*((u32*)data) = vec.size();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			u32 offset = sizeof(u32) + i * sizeof(T);
+			memcpy(data+offset, &vec[i], sizeof(T));
+		}
+
+		return data;
+	}
+	virtual void				un_serialize	( u08* byte )
+	{
+		std::vector<T>& vec = (*m_userget)(m_userptr);
+		vec.clear();
+
+		u32 count = get_cast<u32>(byte);
+		for (u32 i = 0; i < count; ++i)
+		{
+			u32 offset = sizeof(u32) + i * sizeof(T);
+			vec.push_back(get_cast<T>(byte+offset));
+		}
+
+		realloc();
+	}
+
 	/*
 	//member
 	*/
@@ -905,6 +1031,7 @@ public:
 			}
 
 			realloc();
+			on_valuechanged();
 		}
 		else
 		if (lst.size() > value)
@@ -923,6 +1050,7 @@ public:
 			}
 
 			realloc();
+			on_valuechanged();
 		}
 	}
 	virtual void				set_index		( u32 oldindex, u32 newindex )
@@ -948,9 +1076,42 @@ public:
 		lst.erase (itor);
 
 		realloc();
+		on_valuechanged();
 	}
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize	( void )
+	{
+		std::list<T>& lst = (*m_userget)(m_userptr);
+		u08* data = new u08[sizeof(u32) + sizeof(T)*lst.size()];
+		*((u32*)data) = lst.size();
+		u32 offset = sizeof(u32);
+		for (std::list<T>::iterator itor = lst.begin(); itor != lst.end(); ++itor)
+		{
+			memcpy(data+offset, &(*itor), sizeof(T));
+			u32 offset += sizeof(T);
+		}
+
+		return data;
+	}
+	virtual void				un_serialize	( u08* data )
+	{
+		std::list<T>& vec = (*m_userget)(m_userptr);
+		vec.clear();
+
+		u32 count = get_cast<u32>(byte);
+		for (u32 i = 0; i < count; ++i)
+		{
+			u32 offset = sizeof(u32)+i * sizeof(T);
+			vec.push_back(get_cast<T>(byte+offset));
+		}
+
+		realloc();
+	}
+
 	/*
 	//member
 	*/
@@ -982,6 +1143,12 @@ public:
 	virtual void				set_value	( const xui_vector<f64>& value );
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize( void );
+	virtual void				un_serialize( u08* byte );
+
 	/*
 	//member
 	*/
@@ -1017,6 +1184,12 @@ public:
 
 protected:
 	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize( void );
+	virtual void				un_serialize( u08* byte );
+
+	/*
 	//member
 	*/
 	get_func					m_userget;
@@ -1043,10 +1216,16 @@ public:
 	/*
 	//virtual
 	*/
-	virtual xui_colour			get_value		( void ) const;
-	virtual void				set_value		( const xui_colour& value );
+	virtual xui_colour			get_value	( void ) const;
+	virtual void				set_value	( const xui_colour& value );
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize( void );
+	virtual void				un_serialize( u08* byte );
+
 	/*
 	//member
 	*/
@@ -1136,6 +1315,12 @@ public:
 
 protected:
 	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize( void );
+	virtual void				un_serialize( u08* byte );
+
+	/*
 	//member
 	*/
 	get_func					m_userget;
@@ -1176,11 +1361,23 @@ public:
 		{
 			m_oldvalue = (void*)(*m_ptr);
 			(*m_ptr) = (T)value;
-			on_valuechanged();
 		}
 	}
 
 protected:
+	/*
+	//serialize
+	*/
+	virtual u08*				do_serialize( void )
+	{
+		return get_byte<void*>(get_value());
+	}
+	virtual void				un_serialize( u08* byte )
+	{
+		(*m_ptr) = (T)get_cast<void*>(byte);
+		m_oldvalue = (void*)(*m_ptr);
+	}
+
 	/*
 	//member
 	*/

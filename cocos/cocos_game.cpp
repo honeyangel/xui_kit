@@ -85,7 +85,7 @@ xui_create_explain(cocos_game)( void )
 */
 xui_delete_explain(cocos_game)( void )
 {
-	m_rootnode->removeAllChildren();
+	m_rootnode->removeAllChildrenWithCleanup(false);
 	m_drawview->get_2droot()->removeChild(m_rootnode);
 	delete m_rootnode;
 	delete m_propsize;
@@ -100,12 +100,7 @@ xui_method_explain(cocos_game, get_viewprop,			cocos_propcsd*	)( void )
 }
 xui_method_explain(cocos_game, set_viewprop,			void			)( cocos_propcsd* prop )
 {
-	//m_rootnode->removeAllChildren();
 	m_viewprop = prop;
-	if (m_viewprop)
-	{
-		//m_rootnode->addChild(m_viewprop->get_node());
-	}
 }
 xui_method_explain(cocos_game, get_sizedata,			cocos_sizedata&	)( void )
 {
@@ -276,9 +271,9 @@ xui_method_explain(cocos_game, on_drawviewrenderself,	void			)( xui_component* s
 		m_rootnode->addChild(node);
 		cocos2d::GLView* glview = cocos2d::Director::getInstance()->getOpenGLView();
 		glview->setDesignResolutionSize(640.0f, 852.0f, ResolutionPolicy::FIXED_WIDTH);
-		cocos2d::WeCCharFontManager::getInstance()->forceClearMemory();
+		//cocos2d::WeCCharFontManager::getInstance()->forceClearMemory();
 		cocos2d::Director::getInstance()->drawScene();
-		m_rootnode->removeAllChildren();
+		m_rootnode->removeAllChildrenWithCleanup(false);
 	}
 }
 xui_method_explain(cocos_game, on_drawviewrenderelse,	void			)( xui_component* sender, xui_method_args&		args )

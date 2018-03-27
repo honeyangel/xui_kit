@@ -26,7 +26,6 @@ xui_create_explain(cocos_propedit_unit)( xui_propctrl* propctrl )
 	xui_method_ptrcall(textctrl,	xm_nonfocus		) += new xui_method_member<xui_method_args,  cocos_propedit_unit>(this, &cocos_propedit_unit::on_editctrlnonfocus);
 	xui_method_ptrcall(textctrl,	xm_getfocus		) += new xui_method_member<xui_method_args,  cocos_propedit_unit>(this, &cocos_propedit_unit::on_editctrlgetfocus);
 	xui_method_ptrcall(textctrl,	xm_textchanged	) += new xui_method_member<xui_method_args,  cocos_propedit_unit>(this, &cocos_propedit_unit::on_textctrltextchanged);
-	//xui_method_ptrcall(textctrl,	xm_mousewheel	) += new xui_method_member<xui_method_mouse, cocos_propedit_unit>(this, &cocos_propedit_unit::on_textctrlmousewheel);
 
 	m_editctrl = textctrl;
 
@@ -39,6 +38,7 @@ xui_create_explain(cocos_propedit_unit)( xui_propctrl* propctrl )
 	m_menuctrl = new xui_toggle(xui_vector<s32>(40, 18), TOGGLE_BUTTON);
 	xui_method_ptrcall(m_menuctrl,	set_borderrt	)(xui_rect2d<s32>(0, 2, 4, 2));
 	xui_method_ptrcall(m_menuctrl,	set_menu		)(menu);
+	xui_method_ptrcall(m_menuctrl,	xm_getfocus		) += new xui_method_member<xui_method_args,	 cocos_propedit_unit>(this, &cocos_propedit_unit::on_menuctrlgetfocus);
 }
 
 /*
@@ -141,4 +141,10 @@ xui_method_explain(cocos_propedit_unit, on_menuitemclick,		void			)( xui_compone
 	value.useper = (sender == m_percheck);
 	set_value(value);
 	m_propctrl->on_editvalue(this);
+}
+xui_method_explain(cocos_propedit_unit, on_menuctrlgetfocus,	void			)( xui_component* sender, xui_method_args&  args )
+{
+	xui_component* last = (xui_component*)args.wparam;
+	if (last == NULL || last->get_ancestor(xui_propctrl::RTTIPTR()) != m_propctrl)
+		m_propctrl->on_readyundo();
 }

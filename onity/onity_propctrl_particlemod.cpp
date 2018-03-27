@@ -1098,7 +1098,7 @@ xui_create_explain(onity_propctrl_curve)( void )
 	xui_method_ptrcall(m_namectrl, set_parent		)(this);
 	xui_method_ptrcall(m_namectrl, set_textalign	)(TEXTALIGN_LC);
 
-	m_timectrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1);
+	m_timectrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1, true);
 	xui_method_ptrcall(m_timectrl, set_parent		)(this);
 	xui_method_ptrcall(m_timectrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_timectrl, set_drawcolor	)(true);
@@ -1120,7 +1120,7 @@ xui_create_explain(onity_propctrl_curve)( void )
 	xui_method_ptrcall(m_enumctrl, add_item			)(L"Break" );
 	xui_method_ptrcall(m_enumctrl, xm_selection		) += new xui_method_member<xui_method_args, onity_propctrl_curve>(this, &onity_propctrl_curve::on_enumctrlselection);
 
-	m_numbctrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1);
+	m_numbctrl = new xui_numbbox(xui_vector<s32>(32, 18), NT_FLOAT, 1, true);
 	xui_method_ptrcall(m_numbctrl, set_parent		)(this);
 	xui_method_ptrcall(m_numbctrl, set_backcolor	)(xui_colour::darkgray);
 	xui_method_ptrcall(m_numbctrl, set_drawcolor	)(true);

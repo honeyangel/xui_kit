@@ -1,5 +1,6 @@
 #include "2d/CCParticleSystemQuad.h"
 #include "renderer/CCTextureCache.h"
+#include "platform/CCFileUtils.h"
 
 #include "xui_global.h"
 #include "xui_toggle.h"
@@ -512,12 +513,138 @@ xui_method_explain(cocos_propparticle, load,					void						)( void )
 xui_method_explain(cocos_propparticle, save_as,					void						)( const std::wstring& fullname, bool modify )
 {
 	m_modify = modify;
-	//TODO
 	FILE* file = fopen(xui_global::unicode_to_ascii(fullname).c_str(), "w");
 	if (file)
 	{
+		write_head(file);
+		write_prop(file, "angle",						m_particle->getAngle());
+		write_prop(file, "angleVariance",				m_particle->getAngleVar());
+		write_prop(file, "blendFuncDestination",		(s32)m_particle->getBlendFunc().dst);
+		write_prop(file, "blendFuncSource",				(s32)m_particle->getBlendFunc().src);
+		write_prop(file, "duration",					m_particle->getDuration());
+		write_prop(file, "emitterType",					(s32)m_particle->getEmitterMode());
+		write_prop(file, "emissionRate",				m_particle->getEmissionRate());
+		write_prop(file, "finishColorAlpha",			m_particle->getEndColor().a);
+		write_prop(file, "finishColorBlue",				m_particle->getEndColor().b);
+		write_prop(file, "finishColorGreen",			m_particle->getEndColor().g);
+		write_prop(file, "finishColorRed",				m_particle->getEndColor().r);
+		write_prop(file, "finishColorVarianceAlpha",	m_particle->getEndColorVar().a);
+		write_prop(file, "finishColorVarianceBlue",		m_particle->getEndColorVar().b);
+		write_prop(file, "finishColorVarianceGreen",	m_particle->getEndColorVar().g);
+		write_prop(file, "finishColorVarianceRed",		m_particle->getEndColorVar().r);
+		write_prop(file, "rotationStart",				m_particle->getStartSpin());
+		write_prop(file, "rotationStartVariance",		m_particle->getStartSpinVar());
+		write_prop(file, "rotationEnd",					m_particle->getEndSpin());
+		write_prop(file, "rotationEndVariance",			m_particle->getEndSpinVar());
+		write_prop(file, "finishParticleSize",			m_particle->getEndSize());
+		write_prop(file, "finishParticleSizeVariance",	m_particle->getEndSizeVar());
+		write_prop(file, "gravityx",					m_particle->getGravity().x);
+		write_prop(file, "gravityy",					m_particle->getGravity().y);
+		write_prop(file, "maxParticles",				(f32)m_particle->getTotalParticles());
+		write_prop(file, "maxRadius",					m_particle->getStartRadius());
+		write_prop(file, "maxRadiusVariance",			m_particle->getStartRadiusVar());
+		write_prop(file, "minRadius",					m_particle->getEndRadius());
+		write_prop(file, "minRadiusVariance",			m_particle->getEndRadiusVar());
+		write_prop(file, "particleLifespan",			m_particle->getLife());
+		write_prop(file, "particleLifespanVariance",	m_particle->getLifeVar());
+		write_prop(file, "radialAcceleration",			m_particle->getRadialAccel());
+		write_prop(file, "radialAccelVariance",			m_particle->getRadialAccelVar());
+		write_prop(file, "rotatePerSecond",				m_particle->getRotatePerSecond());
+		write_prop(file, "rotatePerSecondVariance",		m_particle->getRotatePerSecondVar());
+		write_prop(file, "sourcePositionVariancex",		m_particle->getPosVar().x);
+		write_prop(file, "sourcePositionVariancey",		m_particle->getPosVar().y);
+		write_prop(file, "speed",						m_particle->getSpeed());
+		write_prop(file, "speedVariance",				m_particle->getSpeedVar());
+		write_prop(file, "startColorAlpha",				m_particle->getStartColor().a);
+		write_prop(file, "startColorBlue",				m_particle->getStartColor().b);
+		write_prop(file, "startColorGreen",				m_particle->getStartColor().g);
+		write_prop(file, "startColorRed",				m_particle->getStartColor().r);
+		write_prop(file, "startColorVarianceAlpha",		m_particle->getStartColorVar().a);
+		write_prop(file, "startColorVarianceBlue",		m_particle->getStartColorVar().b);
+		write_prop(file, "startColorVarianceGreen",		m_particle->getStartColorVar().g);
+		write_prop(file, "startColorVarianceRed",		m_particle->getStartColorVar().r);
+		write_prop(file, "startParticleSize",			m_particle->getStartSize());
+		write_prop(file, "startParticleSizeVariance",	m_particle->getStartSizeVar());
+		write_prop(file, "tangentialAcceleration",		m_particle->getTangentialAccel());
+		write_prop(file, "tangentialAccelVariance",		m_particle->getTangentialAccelVar());
+
+		cocos2d::Texture2D* texture = m_particle->getTexture();
+		if (texture)
+		{
+			std::wstring full = xui_global::ascii_to_unicode(texture->getPath());
+			std::wstring work = xui_global::get_workpath();
+			if (full.length() > work.length())
+				full.erase(0, work.length() + 1);
+
+			write_prop(file, "textureFileName",	xui_global::unicode_to_ascii(full));
+		}
+
+		write_tail(file);
 		fclose(file);
 	}
+}
+xui_method_explain(cocos_propparticle, write_head,				void						)( FILE* file )
+{
+	const char* head1 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+	const char* head2 =	"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n";
+	const char* head3 = "<plist version=\"1.0\">\n";
+	const char* head4 =	"  <dict>\n";
+	fwrite(head1, 1, strlen(head1), file);
+	fwrite(head2, 1, strlen(head2), file);
+	fwrite(head3, 1, strlen(head3), file);
+	fwrite(head4, 1, strlen(head4), file);
+}
+xui_method_explain(cocos_propparticle, write_tail,				void						)( FILE* file )
+{
+	const char* tail1 =	"  </dict>\n";
+	const char* tail2 = "</plist>";
+	fwrite(tail1, 1, strlen(tail1), file);
+	fwrite(tail2, 1, strlen(tail2), file);
+}
+xui_method_explain(cocos_propparticle, write_prop,				void						)( FILE* file, const char* title, s32 value )
+{
+	std::stringstream key;
+	std::stringstream val;
+	key << "    ";
+	key << "<key>";
+	key << title;
+	key << "</key>\n";
+	fwrite(key.str().c_str(), 1, key.str().length(), file);
+	val << "    ";
+	val << "<integer>";
+	val << value;
+	val << "</integer>\n";
+	fwrite(val.str().c_str(), 1, val.str().length(), file);
+}
+xui_method_explain(cocos_propparticle, write_prop,				void						)( FILE* file, const char* title, f32 value )
+{
+	std::stringstream key;
+	std::stringstream val;
+	key << "    ";
+	key << "<key>";
+	key << title;
+	key << "</key>\n";
+	fwrite(key.str().c_str(), 1, key.str().length(), file);
+	val << "    ";
+	val << "<real>";
+	val << value;
+	val << "</real>\n";
+	fwrite(val.str().c_str(), 1, val.str().length(), file);
+}
+xui_method_explain(cocos_propparticle, write_prop,				void						)( FILE* file, const char* title, const std::string& value )
+{
+	std::stringstream key;
+	std::stringstream val;
+	key << "    ";
+	key << "<key>";
+	key << title;
+	key << "</key>\n";
+	fwrite(key.str().c_str(), 1, key.str().length(), file);
+	val << "    ";
+	val << "<string>";
+	val << value.c_str();
+	val << "</string>\n";
+	fwrite(val.str().c_str(), 1, val.str().length(), file);
 }
 
 /*

@@ -26,6 +26,9 @@
 #include "cocos_snaptool.h"
 #include "cocos_alignbox.h"
 #include "cocos_blankbox.h"
+#include "cocos_scenecmd.h"
+#include "cocos_scenecmd_prop.h"
+#include "cocos_scenecmd_list.h"
 #include "cocos_scene.h"
 
 xui_implement_rtti(cocos_scene, xui_dockpage);
@@ -41,6 +44,8 @@ xui_create_explain(cocos_scene)( cocos_propcsd* prop )
 , m_dragview(false)
 , m_operator(0)
 , m_editprop(prop)
+, m_cmdindex(0)
+, m_cmdcache(NULL)
 {
 	ini_namectrl(cocos_resource::icon_scene, cocos_filedata::get_safe(m_editprop->get_fullname()));
 	set_autofree(true);
@@ -67,11 +72,33 @@ xui_create_explain(cocos_scene)( cocos_propcsd* prop )
 
 	m_linetool	= new xui_toolbar(xui_vector<s32>(0, 20));
 	xui_method_ptrcall(m_linetool,	ini_component	)(ALIGNHORZ_L, ALIGNVERT_C, 0);
+
+	m_undoctrl	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_undoctrl,	ini_drawer		)(cocos_resource::icon_undo);
+	xui_method_ptrcall(m_undoctrl,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_undoctrl,	set_enable		)(false);
+	xui_method_ptrcall(m_undoctrl,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_undoctrl,	xm_buttonclick	) += new xui_method_member<xui_method_args,		cocos_scene>(this, &cocos_scene::on_buttonclick);
+	m_redoctrl	= new xui_button(xui_vector<s32>(20));
+	xui_method_ptrcall(m_redoctrl,	ini_drawer		)(cocos_resource::icon_redo);
+	xui_method_ptrcall(m_redoctrl,	set_drawcolor	)(true);
+	xui_method_ptrcall(m_redoctrl,	set_enable		)(false);
+	xui_method_ptrcall(m_redoctrl,	set_iconalign	)(IMAGE_C);
+	xui_method_ptrcall(m_redoctrl,	xm_buttonclick	) += new xui_method_member<xui_method_args,		cocos_scene>(this, &cocos_scene::on_buttonclick);
+
+	xui_linebox* undoredo = new xui_linebox(xui_vector<s32>(20));
+	xui_method_ptrcall(undoredo,	set_corner		)(3);
+	xui_method_ptrcall(undoredo,	add_linectrl	)(m_undoctrl);
+	xui_method_ptrcall(undoredo,	add_linectrl	)(m_redoctrl);
+	xui_method_ptrcall(undoredo,	refresh			)();
+
 	m_snaptool = new cocos_snaptool(m_drawview);
 	m_alignbox = new cocos_alignbox(xui_vector<s32>(20), get_selectedvec);
 	m_blankbox = new cocos_blankbox(xui_vector<s32>(20), get_selectedvec);
 	xui_method_ptrcall(m_linetool, add_item			)(m_showbbox);
 	xui_method_ptrcall(m_linetool, add_item			)(m_snaptool->get_snapctrl());
+	xui_method_ptrcall(m_linetool, add_separate		)();
+	xui_method_ptrcall(m_linetool, add_item			)(undoredo);
 	xui_method_ptrcall(m_linetool, add_separate		)();
 	xui_method_ptrcall(m_linetool, add_item			)(m_alignbox->get_horzline());
 	xui_method_ptrcall(m_linetool, add_separate		)();
@@ -174,13 +201,14 @@ xui_create_explain(cocos_scene)( cocos_propcsd* prop )
 */
 xui_delete_explain(cocos_scene)( void )
 {
-	m_rootnode->removeAllChildren();
+	m_rootnode->removeAllChildrenWithCleanup(false);
 	m_drawview->get_2droot()->removeChild(m_rootnode);
 	delete m_rootnode;
 	delete m_animctrl;
 	delete m_lockctrl;
 	delete m_alignbox;
 	delete m_blankbox;
+	del_scenecmd();
 }
 
 /*
@@ -197,10 +225,18 @@ xui_method_explain(cocos_scene, get_selectedvec,			cocos_boundbox_vec		)( void )
 xui_method_explain(cocos_scene, set_editprop,				void					)( cocos_propcsd* prop )
 {
 	m_editprop = prop;
+	del_scenecmd();
 }
 xui_method_explain(cocos_scene, get_editprop,				cocos_propcsd*			)( void )
 {
 	return m_editprop;
+}
+xui_method_explain(cocos_scene, add_cmdcache,				void					)( cocos_scenecmd* cmd )
+{
+	if (m_cmdcache == NULL)
+		m_cmdcache = new cocos_scenecmd_list;
+
+	m_cmdcache->push(cmd);
 }
 xui_method_explain(cocos_scene, set_rootvisible,			void					)( void )
 {
@@ -263,6 +299,8 @@ xui_method_explain(cocos_scene, set_toolupdate,				void					)( void )
 {
 	m_alignbox->set_lineupdate();
 	m_blankbox->set_lineupdate();
+	m_undoctrl->set_enable(m_scenecmd.size() > 0 && m_cmdindex != 0);
+	m_redoctrl->set_enable(m_scenecmd.size() > 0 && m_cmdindex != m_scenecmd.size());
 }
 xui_method_explain(cocos_scene, hit_propvisible,			cocos_boundbox*			)( const xui_vector<s32>& pt )
 {
@@ -347,6 +385,16 @@ xui_method_explain(cocos_scene, on_buttonclick,				void					)( xui_component* se
 		m_horzgrad->del_lines();
 		m_vertgrad->del_lines();
 	}
+	else
+	if (sender == m_undoctrl)
+	{
+		undo_operator();
+	}
+	else
+	if (sender == m_redoctrl)
+	{
+		redo_operator();
+	}
 
 	m_drawview->req_focus();
 }
@@ -423,6 +471,25 @@ xui_method_explain(cocos_scene, on_drawviewupdateself,		void					)( xui_componen
 	{
 		cocos2d::Node* node = m_editprop->get_node();
 		node->update(args.delta);
+
+		if (m_cmdcache)
+		{
+			if (m_cmdindex != m_scenecmd.size())
+			{
+				u32 count = m_scenecmd.size() - m_cmdindex;
+				for (u32 i = 0; i < count; ++i)
+				{
+					cocos_scenecmd* cmd = m_scenecmd.back();
+					delete cmd;
+					m_scenecmd.pop_back();
+				}
+			}
+
+			m_scenecmd.push_back(m_cmdcache);
+			m_cmdindex = m_scenecmd.size();
+			m_cmdcache = NULL;
+			set_toolupdate();
+		}
 	}
 }
 xui_method_explain(cocos_scene, on_drawviewrenderself,		void					)( xui_component* sender, xui_method_args&		args )
@@ -444,9 +511,9 @@ xui_method_explain(cocos_scene, on_drawviewrenderself,		void					)( xui_componen
 		}
 
 		m_rootnode->addChild(node);
-		cocos2d::WeCCharFontManager::getInstance()->forceClearMemory();
+		//cocos2d::WeCCharFontManager::getInstance()->forceClearMemory();
 		cocos2d::Director::getInstance()->drawScene();
-		m_rootnode->removeAllChildren();
+		m_rootnode->removeAllChildrenWithCleanup(false);
 	}
 }
 xui_method_explain(cocos_scene, on_drawviewrenderelse,		void					)( xui_component* sender, xui_method_args&		args )
@@ -594,7 +661,17 @@ xui_method_explain(cocos_scene, on_drawviewmousedown,		void					)( xui_component
 				s32 viewh  = m_drawview->get_renderh();
 				cocos_boundbox_vec  vec = get_selectedboundbox();
 				for (u32 i = 0; i < vec.size(); ++i)
+				{
 					vec[i]->syn_bounding(m_trans, m_ratio, viewh);
+				}
+
+				std::wstring path = cocos_propnodebase::get_path(0);
+				for (u32 i = 0; i < vec.size(); ++i)
+				{
+					cocos_proproot* prop = vec[i]->get_linkprop();
+					xui_propdata* data = prop->get_propdata(path);
+					data->backups();
+				}
 			}
 		}
 		else
@@ -783,6 +860,16 @@ xui_method_explain(cocos_scene, get_decratio,				f64						)( void )
 
 	return xui_max(ratio, 0.1);
 }
+xui_method_explain(cocos_scene, del_scenecmd,				void					)( void )
+{
+	for (u32 i = 0; i < m_scenecmd.size(); ++i)
+		delete m_scenecmd[i];
+
+	delete m_cmdcache;
+	m_cmdcache = NULL;
+	m_cmdindex = 0;
+	m_scenecmd.clear();
+}
 xui_method_explain(cocos_scene, hit_propvisible,			cocos_boundbox*			)( const xui_vector<s32>& pt, xui_treenode* root )
 {
 	std::vector<xui_treenode*> nodevec = root->get_leafnodearray();
@@ -808,10 +895,20 @@ xui_method_explain(cocos_scene, hit_propvisible,			cocos_boundbox*			)( const xu
 */
 xui_method_explain(cocos_scene, on_keybdmoveimpl,			void					)( const xui_vector<s32>& delta )
 {
-	cocos_boundbox_vec  vec = get_selectedboundbox();
-	for (u32 i = 0; i < vec.size(); ++i)
+	cocos_boundbox_vec vec = get_selectedboundbox();
+	if (vec.size() > 0)
 	{
-		vec[i]->set_position(vec[i]->ori_position()+delta);
+		std::wstring path = cocos_propnodebase::get_path(0);
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			cocos_boundbox* box = vec[i];
+			box->set_position(box->ori_position()+delta);
+
+			cocos_proproot* prop = box->get_linkprop();
+			xui_propdata* data = prop->get_propdata(path);
+			if (data->has_byte())
+				add_cmdcache(new cocos_scenecmd_prop(prop, data));
+		}
 	}
 }
 xui_method_explain(cocos_scene, on_mousepickimpl,			void					)( cocos_boundbox* pick, bool alt, bool ctrl, bool shift, u08 op )
@@ -864,16 +961,26 @@ xui_method_explain(cocos_scene, on_mousepickimpl,			void					)( cocos_boundbox* 
 }
 xui_method_explain(cocos_scene, on_mousedragimpl,			void					)( const xui_vector<s32>& delta )
 {
-	s32 viewh = m_drawview->get_renderh();
-	cocos_boundbox_vec  vec = get_selectedboundbox();
-	for (u32 i = 0; i < vec.size(); ++i)
+	cocos_boundbox_vec vec = get_selectedboundbox();
+	if (vec.size() > 0)
 	{
-		vec[i]->opt_bounding(
-			m_trans, 
-			m_ratio, 
-			viewh, 
-			delta, 
-			m_operator);
+		std::wstring path = cocos_propnodebase::get_path(0);
+		s32 viewh = m_drawview->get_renderh();
+		for (u32 i = 0; i < vec.size(); ++i)
+		{
+			cocos_boundbox* box = vec[i];
+			box->opt_bounding(
+				m_trans, 
+				m_ratio, 
+				viewh, 
+				delta, 
+				m_operator);
+
+			cocos_proproot* prop = box->get_linkprop();
+			xui_propdata* data = prop->get_propdata(path);
+			if (data->has_byte())
+				add_cmdcache(new cocos_scenecmd_prop(prop, data));
+		}
 	}
 }
 xui_method_explain(cocos_scene, on_mulselectimpl,			void					)( const xui_rect2d<s32>& rt, bool ctrl )
@@ -937,6 +1044,34 @@ xui_method_explain(cocos_scene, draw_locknode,				void					)( void )
 			xui_convas::get_ins()->draw_round(drawrt, xui_colour(sa, 1.0f, 0.0f, 0.0f), xui_rect2d<s32>(3), 3);
 		}
 	}
+}
+xui_method_explain(cocos_scene, undo_operator,				void					)( void )
+{
+	if (m_cmdindex == 0)
+		return;
+
+	--m_cmdindex;
+	m_scenecmd[m_cmdindex]->undo();
+	set_toolupdate();
+	// redraw
+	//EditPane editPane = EditPane;
+	//editPane.UpdateBounding();
+	//editPane.UpdatePropGrid();
+	//editPane.Redraw();
+}
+xui_method_explain(cocos_scene, redo_operator,				void					)( void )
+{
+	if (m_cmdindex == m_scenecmd.size())
+		return;
+
+	m_scenecmd[m_cmdindex]->redo();
+	++m_cmdindex;
+	set_toolupdate();
+	// redraw
+	//EditPane editPane = EditPane;
+	//editPane.UpdateBounding();
+	//editPane.UpdatePropGrid();
+	//editPane.Redraw();
 }
 //xui_method_explain(cocos_scene, draw_multisel,				void					)( void )
 //{

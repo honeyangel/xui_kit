@@ -1,3 +1,4 @@
+#include "xui_global.h"
 #include "xui_propview.h"
 #include "xui_proproot.h"
 
@@ -77,6 +78,32 @@ xui_method_explain(xui_proproot, del_propkind,	void					)( xui_propkind* propkin
 			break;
 		}
 	}
+}
+xui_method_explain(xui_proproot, get_propdata,	xui_propdata*			)( const std::wstring& path )
+{
+	std::vector<std::wstring> vec = xui_global::get_split(path, L'/');
+	if (vec.size() >= 2)
+	{
+		std::string type = xui_global::unicode_to_ascii(vec.front());
+		xui_propkind* kind = get_propkind(type);
+		vec.erase(vec.begin());
+
+		if (kind)
+		{
+			xui_propdata* data = kind->get_propdata(vec.front());
+			vec.erase(vec.begin());
+
+			while (data && vec.size() > 0)
+			{
+				data = data->get_data(vec.front());
+				vec.erase(vec.begin());
+			}
+
+			return data;
+		}
+	}
+
+	return NULL;
 }
 xui_method_explain(xui_proproot, non_ctrl,		void					)( void )
 {

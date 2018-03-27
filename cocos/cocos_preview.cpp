@@ -5,7 +5,7 @@
 #include "2d/CCSpriteFrameCache.h"
 #include "2d/CCParticleSystem.h"
 #include "ui/UITextBMFont.h"
-#include "external/SpineNode.h"
+#include "SpineNode.h"
 #include "spine/SkeletonAnimation.h"
 #include "base/CCDirector.h"
 #include "xui_global.h"

@@ -127,6 +127,26 @@ protected:
 	s32								parse_textmap		( const std::string& value, const std::map<s32, std::wstring>& textmap );
 	void							parse_shader		( const std::string& fullname, std::vector<cocos_propmaterial::uniform>* uniform_vec, std::vector<cocos_propmaterial::sampler>* sampler_vec );
 
+	void							write_material		( FILE* file );
+	void							write_technique		( FILE* file );
+	void							write_pass			( FILE* file );
+	void							write_shader		( FILE* file );
+	void							write_renderstate	( FILE* file );
+	void							write_uniform		( FILE* file, const uniform& value );
+	void							write_sampler		( FILE* file, const sampler& value );
+	void							write_blank			( FILE* file, u32 blank );
+	void							write_start			( FILE* file, u32 blank );
+	void							write_final			( FILE* file, u32 blank );
+	void							write_title			( FILE* file, u32 blank, const std::string& title, const std::string& value );
+	void							write_string		( FILE* file, u32 blank, const std::string& title, const std::string& value );
+	void							write_bool			( FILE* file, u32 blank, const std::string& title, bool value );
+	void							write_filter		( FILE* file, u32 blank, const std::string& title, s32  value );
+	void							write_wrap			( FILE* file, u32 blank, const std::string& title, s32  value );
+	void							write_blend			( FILE* file, u32 blank, const std::string& title, s32  value );
+	void							write_depth			( FILE* file, u32 blank, const std::string& title, s32  value );
+	void							write_cull			( FILE* file, u32 blank, const std::string& title, s32  value );
+	void							write_front			( FILE* file, u32 blank, const std::string& title, s32  value );
+
 	/*
 	//static
 	*/

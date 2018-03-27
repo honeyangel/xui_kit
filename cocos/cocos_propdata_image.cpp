@@ -43,7 +43,7 @@ xui_method_explain(cocos_propdata_image, on_doubleclick,	void		)( xui_component*
 	if (texture)
 	{
 		std::wstring work = xui_global::get_workpath();
-		full = xui_global::ascii_to_unicode(texture->getFileName());
+		full = xui_global::ascii_to_unicode(texture->getPath());
 		if (full == L"dummy" || full.length() <= work.length())
 			return;
 
@@ -76,7 +76,7 @@ xui_method_explain(cocos_propdata_image, get_icon,			xui_bitmap*	)( xui_propdata
 
 	cocos2d::Ref*			value	= (cocos2d::Ref*)dataobject->get_value();
 	cocos2d::Texture2D*		texture = dynamic_cast<cocos2d::Texture2D*>(value);
-	if (texture && texture->getFileName() != "dummy")
+	if (texture && texture->getPath() != "dummy")
 		return cocos_resource::icon_texture;
 
 	return cocos_resource::icon_module;
@@ -90,7 +90,7 @@ xui_method_explain(cocos_propdata_image, get_name,			std::wstring)( xui_propdata
 	cocos2d::SpriteFrame*	frame	= dynamic_cast<cocos2d::SpriteFrame*>(value);
 	if (texture)
 	{
-		std::wstring full = xui_global::ascii_to_unicode(texture->getFileName());
+		std::wstring full = xui_global::ascii_to_unicode(texture->getPath());
 		return cocos_filedata::get_file(full);
 	}
 	if (frame)

@@ -11,6 +11,7 @@
 #include "cocos_propfnt.h"
 #include "cocos_propspineatlas.h"
 #include "cocos_propspine.h"
+#include "cocos_propc3b.h"
 #include "cocos_propcsd.h"
 #include "cocos_pathdata.h"
 #include "cocos_filedata.h"
@@ -213,6 +214,7 @@ xui_method_explain(cocos_proppath, new_fileprop,	cocos_propfile*			)( const std:
 		else if (suff == L".fnt")			propfile = new cocos_propfnt		(full);
 		else if (suff == L".atlas")			propfile = new cocos_propspineatlas	(full);
 		else if (suff == L".json")			propfile = new cocos_propspine		(full);
+		else if (suff == L".c3b")			propfile = new cocos_propc3b		(full);
 		else if (suff == L".csd")			propfile = new cocos_propcsd		(full);
 	}
 	//else if (suff == L".npSprite")		propfile = new cocos_propsprite		(full);

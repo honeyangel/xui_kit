@@ -401,6 +401,8 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 		component->on_mousedown(           args);
 		component->xm_mousedown(component, args);
 	}
+
+	xui_global::set_cursor(m_catchctrl == NULL ? CURSOR_DEFAULT : m_catchctrl->get_cursor());
 }
 xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args )
 {
@@ -523,6 +525,11 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	if (m_catchctrl && m_catchdata)
 	{
 		xui_global::set_cursor((m_catchctrl == m_hoverctrl || m_allowdrag) ? CURSOR_DRAG : CURSOR_FORBID);
+	}
+	else
+	if (m_catchctrl)
+	{
+		xui_global::set_cursor(m_catchctrl->get_cursor());
 	}
 	else
 	{

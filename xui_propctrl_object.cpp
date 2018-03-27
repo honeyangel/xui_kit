@@ -189,6 +189,8 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->has_droptype(args.type))
 	{
+		on_readyundo();
+
 		xui_control* textctrl = m_propedit->get_editctrl();
 		textctrl->set_backcolor(xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f));
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)

@@ -1,3 +1,4 @@
+#include "xui_global.h"
 #include "xui_propkind.h"
 
 /*
@@ -106,6 +107,19 @@ xui_method_explain(xui_propkind, get_propdata,	xui_propdata*			)( const std::wst
 xui_method_explain(xui_propkind, add_propdata,	void					)( xui_propdata* propdata )
 {
 	m_propdata.push_back(propdata);
+}
+xui_method_explain(xui_propkind, get_proppath,	std::wstring			)( xui_propdata* propdata )
+{
+	for (u32 i = 0; i < m_propdata.size(); ++i)
+	{
+		std::wstring temp = m_propdata[i]->get_path(propdata);
+		if (temp.length() > 0)
+		{
+			return xui_global::ascii_to_unicode(m_type)+temp;
+		}
+	}
+
+	return L"";
 }
 
 xui_method_explain(xui_propkind, get_ctrl,		xui_kindctrl*			)( void ) const

@@ -4,6 +4,13 @@
 #include "xui_propctrl.h"
 #include "xui_propdata.h"
 
+class cocos_value_flip
+{
+public:
+	bool	horzflip;
+	bool	vertflip;
+};
+
 class cocos_propnodebase;
 class cocos_propdata_flip : public xui_propdata
 {
@@ -16,9 +23,16 @@ public:
 	/*
 	//method
 	*/
-	cocos_propnodebase*		get_propnode	( void );
+	cocos_value_flip		get_value		( void );
+	void					set_value		( cocos_value_flip& value );
 
 protected:
+	/*
+	//override
+	*/
+	virtual u08*			do_serialize	( void );
+	virtual void			un_serialize	( u08* byte );
+
 	/*
 	//member
 	*/

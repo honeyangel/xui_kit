@@ -66,7 +66,7 @@ xui_method_explain(cocos_filedata, set_text,		void				)( u32 index, const std::w
 	std::wstring suff = get_suff();
 	std::wstring curr = get_path()+get_safe(text)+suff;
 	std::wstring last = m_text;
-	if (xui_global::rna_file(last, curr))
+	if (xui_global::has_file(curr) == false && xui_global::rna_file(last, curr))
 	{
 		ntf_rename(last, curr);
 		cocos_project* project = cocos_mainform::get_ptr()->get_project();

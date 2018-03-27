@@ -1,4 +1,4 @@
-#include "external/ShaderRect.h"
+#include "ShaderRect.h"
 
 #include "xui_global.h"
 #include "xui_kindctrl.h"

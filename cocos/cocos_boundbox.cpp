@@ -1,5 +1,6 @@
 #include "2d/CCNode.h"
 #include "ui/UILayoutComponent.h"
+#include "math/CCAffineTransform.h"
 
 #include "xui_convas.h"
 #include "xui_treenode.h"
@@ -18,6 +19,7 @@ extern s32 xui_round( f64 value );
 xui_create_explain(cocos_boundbox)( cocos_propnodebase* prop )
 : m_linkprop(prop)
 , m_operator(OP_NONE)
+, m_ignoresz(false)
 , m_bounding(xui_rect2d<s32>(0))
 , m_pivotbox(xui_vector<s32>(0))
 {}
@@ -27,7 +29,7 @@ xui_create_explain(cocos_boundbox)( cocos_propnodebase* prop )
 */
 xui_method_explain(cocos_boundbox, get_pivotbox,	xui_vector<s32>		)( const xui_vector<s32>& trans, f64 ratio, s32 viewh )
 {
-	cocos2d::Vec2 anchor = m_linkprop->get_node()->getAnchorPoint();
+	cocos2d::Vec2 anchor = m_ignoresz ? cocos2d::Vec2(0.5f, 0.5f) : m_linkprop->get_node()->getAnchorPoint();
 	xui_rect2d<s32> rt = get_bounding(trans, ratio, viewh);
 	xui_vector<s32> pt;
 	pt.x = rt.ax + rt.get_w()*anchor.x;
@@ -49,7 +51,12 @@ xui_method_explain(cocos_boundbox, ori_position,	xui_vector<s32>		)( void )
 }
 xui_method_explain(cocos_boundbox, set_position,	void				)( const xui_vector<s32>& pos )
 {
-	m_linkprop->get_node()->setPosition(pos.x, pos.y);
+	//cocos_propnodebase* prop = (cocos_propnodebase*)userptr;
+	cocos2d::ui::LayoutComponent* component = cocos2d::ui::LayoutComponent::bindLayoutComponent(m_linkprop->get_node());
+	component->setPosition(cocos2d::Point(pos.x, pos.y));
+	component->refreshLayout();
+
+	//m_linkprop->get_node()->setPosition(pos.x, pos.y);
 	m_linkprop->get_file()->set_modify(true);
 }
 
@@ -68,7 +75,10 @@ xui_method_explain(cocos_boundbox, get_bounding,	xui_rect2d<s32>		)( const xui_v
 }
 xui_method_explain(cocos_boundbox, ori_bounding,	xui_rect2d<s32>		)( void )
 {
-	cocos2d::Rect rt = m_linkprop->get_node()->getBoundingBox();
+	cocos2d::Rect rt = m_ignoresz 
+		? cocos2d::RectApplyAffineTransform(cocos2d::Rect(-25.0f, -25.0f, 50.0f, 50.0f), m_linkprop->get_node()->getNodeToParentAffineTransform(NULL))
+		: m_linkprop->get_node()->screenBoundingBox();
+
 	return xui_rect2d<s32>(rt.getMinX(), rt.getMinY(), rt.getMaxX(), rt.getMaxY());
 }
 xui_method_explain(cocos_boundbox, opt_bounding,	void				)( const xui_vector<s32>& trans, f64 ratio, s32 viewh, const xui_vector<s32>& delta, u08 op )
@@ -142,33 +152,38 @@ xui_method_explain(cocos_boundbox, set_bounding,	void				)( const xui_rect2d<s32
 	{
 		xui_vector<s32> delta = rt.get_pt() - ori_bounding().get_pt();
 		xui_vector<s32> pt = ori_position();
+		cocos2d::AffineTransform transform = cocos2d::AffineTransformMakeIdentity();
+		if (m_linkprop->get_node()->getParent())
+			transform = m_linkprop->get_node()->getParent()->getNodeToParentAffineTransform(NULL);
+
+		delta.x = (s32)(delta.x / transform.a);
+		delta.y = (s32)(delta.y / transform.d);
 		set_position(pt+delta);
 	}
 	else
 	{
-
 		f32 x = m_linkprop->get_node()->getScaleX();
 		f32 y = m_linkprop->get_node()->getScaleY();
 
 		m_linkprop->get_node()->setScaleX(1.0f);
 		m_linkprop->get_node()->setScaleY(1.0f);
-		cocos2d::Size   size  = m_linkprop->get_node()->getContentSize();
-		cocos2d::Vec2   pixel = m_linkprop->get_node()->getAnchorPointInPoints();
 		xui_rect2d<s32> orirt = ori_bounding();
-		xui_vector<s32> oript(orirt.ax+pixel.x, orirt.ay+pixel.y);
+		cocos2d::Vec2   pivot = m_ignoresz ? cocos2d::Vec2(0.5f, 0.5f) : m_linkprop->get_node()->getAnchorPoint(); 
+		pivot.x = (s32)(pivot.x * orirt.get_w()) + orirt.ax;
+		pivot.y = (s32)(pivot.y * orirt.get_h()) + orirt.ay;
 		switch (op)
 		{
 		case BO_SIZE_L:
 		case BO_SIZE_LT:
 		case BO_SIZE_LB:
-			if (pixel.x > 0.0f)
-				x = (oript.x - rt.ax) / pixel.x;
+			if (pivot.x > rt.ax)
+				x = (pivot.x - rt.ax) / (pivot.x - orirt.ax);
 			break;
 		case BO_SIZE_R:
 		case BO_SIZE_RT:
 		case BO_SIZE_RB:
-			if (pixel.x < size.width)
-				x = (rt.bx - oript.x) / (size.width -  pixel.x);
+			if (pivot.x < rt.bx)
+				x = (rt.bx - pivot.x) / (orirt.bx - pivot.x);
 			break;
 		}
 
@@ -177,14 +192,14 @@ xui_method_explain(cocos_boundbox, set_bounding,	void				)( const xui_rect2d<s32
 		case BO_SIZE_T:
 		case BO_SIZE_LT:
 		case BO_SIZE_RT:
-			if (pixel.y < size.height)
-				y = (rt.by - oript.y) / (size.height - pixel.y);
+			if (pivot.y < rt.by)
+				y = (rt.by - pivot.y) / (orirt.by - pivot.y);
 			break;
 		case BO_SIZE_B:
 		case BO_SIZE_LB:
 		case BO_SIZE_RB:
-			if (pixel.y > 0.0f)
-				y = (oript.y - rt.ay) / pixel.y;
+			if (pivot.y > rt.ay)
+				y = (pivot.y - rt.ay) / (pivot.y - orirt.ay);
 			break;
 		}
 
@@ -199,6 +214,10 @@ xui_method_explain(cocos_boundbox, set_bounding,	void				)( const xui_rect2d<s32
 xui_method_explain(cocos_boundbox, add_operator,	void				)( u08 op )
 {
 	m_operator |= op;
+}
+xui_method_explain(cocos_boundbox, set_ignoresz,	void				)( bool flag )
+{
+	m_ignoresz = flag;
 }
 xui_method_explain(cocos_boundbox, get_linkprop,	cocos_propnodebase*	)( void )
 {
@@ -348,7 +367,7 @@ xui_method_explain(cocos_boundbox, draw_operator,	void				)( const xui_rect2d<s3
 		xui_convas::get_ins()->draw_rectangle(op_rb, xui_colour::white);
 	}
 
-	if ((m_operator&OP_PIVOT) != 0)
+	if ((m_operator&OP_PIVOT) != 0 || m_ignoresz)
 	{
 		xui_convas::get_ins()->fill_triangle(xui_vector<s32>(pivot.x, pivot.y-3), 3, TRIANGLE_UP,   xui_colour::white);
 		xui_convas::get_ins()->fill_triangle(xui_vector<s32>(pivot.x, pivot.y+3), 3, TRIANGLE_DOWN, xui_colour::white);

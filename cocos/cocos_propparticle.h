@@ -49,6 +49,11 @@ protected:
 	//override
 	*/
 	virtual void				save_as				( const std::wstring& fullname, bool modify );
+	void						write_head			( FILE* file );
+	void						write_tail			( FILE* file );
+	void						write_prop			( FILE* file, const char* title, s32 value );
+	void						write_prop			( FILE* file, const char* title, f32 value );
+	void						write_prop			( FILE* file, const char* title, const std::string& value );
 
 	/*
 	//static
@@ -128,12 +133,6 @@ protected:
 
 	static cocos_blend_value	get_blendfunc		( void* userptr );
 	static void					set_blendfunc		( void* userptr, const cocos_blend_value& value );
-	//static s32					get_blendfunction	( void* userptr );
-	//static void					set_blendfunction	( void* userptr, s32 value );
-	//static s32					get_blendsrc		( void* userptr );
-	//static void					set_blendsrc		( void* userptr, s32 value );
-	//static s32					get_blenddst		( void* userptr );
-	//static void					set_blenddst		( void* userptr, s32 value );
 
 	/*
 	//member

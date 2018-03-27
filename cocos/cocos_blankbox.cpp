@@ -1,5 +1,9 @@
 #include "xui_linebox.h"
 #include "xui_button.h"
+#include "cocos_mainform.h"
+#include "cocos_scene.h"
+#include "cocos_propnodebase.h"
+#include "cocos_scenecmd_prop.h"
 #include "cocos_resource.h"
 #include "cocos_boundbox.h"
 #include "cocos_blankbox.h"
@@ -108,6 +112,9 @@ xui_method_explain(cocos_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 	std::vector<cocos_boundbox*> vec = (*m_func)();
 	if (vec.size() > 2)
 	{
+		cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+		std::wstring path  = cocos_propnodebase::get_path(0);
+
 		std::vector<s32>	steparray;
 		s32					stepequal	= 0;
 
@@ -145,7 +152,15 @@ xui_method_explain(cocos_blankbox, on_horzbuttonclick,	void		)( xui_component* s
 			else
 				delta  =  prevrect.bx - nextrect.ax + stepequal;
 
-			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(delta, 0));
+			if (delta != 0)
+			{
+				vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(delta, 0));
+
+				cocos_proproot* prop = vec[i]->get_linkprop();
+				xui_propdata* data = prop->get_propdata(path);
+				if (data->has_byte())
+					scene->add_cmdcache(new cocos_scenecmd_prop(prop, data));
+			}
 		}
 	}
 }
@@ -154,6 +169,9 @@ xui_method_explain(cocos_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 	std::vector<cocos_boundbox*> vec = (*m_func)();
 	if (vec.size() > 2)
 	{
+		cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+		std::wstring path  = cocos_propnodebase::get_path(0);
+
 		std::vector<s32>	steparray;
 		s32					stepequal	= 0;
 
@@ -191,7 +209,15 @@ xui_method_explain(cocos_blankbox, on_vertbuttonclick,	void		)( xui_component* s
 			else
 				delta  =  prevrect.ay - nextrect.by + stepequal;
 
-			vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
+			if (delta != 0)
+			{
+				vec[i]->set_position(vec[i]->ori_position()+xui_vector<s32>(0, delta));
+
+				cocos_proproot* prop = vec[i]->get_linkprop();
+				xui_propdata* data = prop->get_propdata(path);
+				if (data->has_byte())
+					scene->add_cmdcache(new cocos_scenecmd_prop(prop, data));
+			}
 		}
 	}
 }

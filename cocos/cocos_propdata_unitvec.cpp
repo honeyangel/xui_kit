@@ -45,6 +45,18 @@ xui_method_explain(cocos_propdata_unitvec,		def_value,			void				)( void )
 	}
 }
 
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_unitvec,		do_serialize,		u08*				)( void )
+{
+	return get_byte<cocos_value_unitvec>(get_value());
+}
+xui_method_explain(cocos_propdata_unitvec,		un_serialize,		void				)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast<cocos_value_unitvec>(byte));
+}
+
 //////////////////////////////////////////////////////////////////////////
 xui_implement_rtti(cocos_propctrl_unitvec, xui_propctrl);
 

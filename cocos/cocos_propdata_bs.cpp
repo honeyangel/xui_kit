@@ -37,6 +37,26 @@ xui_method_explain(cocos_propdata_bs, set_value,		void			)( const cocos_value_bs
 	}
 }
 
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_bs, do_serialize,		u08*			)( void )
+{
+	cocos_value_bs value = get_value();
+	wchar_t* byte = new wchar_t[value.text.length()+2];
+	memset(byte, 0, sizeof(wchar_t)*(value.text.length()+2));
+	memcpy(byte, &value.flag, sizeof(bool));
+	memcpy(byte+1, value.text.c_str(), value.text.length());
+	return (u08*)byte;
+}
+xui_method_explain(cocos_propdata_bs, un_serialize,		void			)( u08* byte )
+{
+	cocos_value_bs value;
+	value.flag = get_cast<bool>(byte);
+	value.text = (wchar_t*)(byte+1);
+	(*m_userset)(m_userptr, value);
+}
+
 //////////////////////////////////////////////////////////////////////////
 xui_implement_rtti(cocos_propctrl_bs, xui_propctrl);
 

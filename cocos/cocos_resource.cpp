@@ -102,6 +102,8 @@ xui_bitmap* cocos_resource::icon_anchorl	= NULL;
 xui_bitmap* cocos_resource::icon_anchorr	= NULL;
 xui_bitmap* cocos_resource::icon_anchort	= NULL;
 xui_bitmap* cocos_resource::icon_anchorb	= NULL;
+xui_bitmap* cocos_resource::icon_undo		= NULL;
+xui_bitmap* cocos_resource::icon_redo		= NULL;
 
 xui_method_explain(cocos_resource, init, void)( void )
 {
@@ -205,6 +207,8 @@ xui_method_explain(cocos_resource, init, void)( void )
 	icon_anchorr	= xui_bitmap::create("icon/anchorr.png");
 	icon_anchort	= xui_bitmap::create("icon/anchort.png");
 	icon_anchorb	= xui_bitmap::create("icon/anchorb.png");
+	icon_undo		= xui_bitmap::create("icon/undo.png");
+	icon_redo		= xui_bitmap::create("icon/redo.png");
 
 	xui_global::add_cursor(CURSOR_DRAG,		L"icon/arrowdrag.cur");
 	xui_global::add_cursor(CURSOR_FORBID,	L"icon/forbid.cur");

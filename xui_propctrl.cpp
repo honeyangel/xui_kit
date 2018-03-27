@@ -108,6 +108,14 @@ xui_method_explain(xui_propctrl,		on_updateself,		void					)( xui_method_update&
 		on_linkpropdata(true);
 	}
 }
+xui_method_explain(xui_propctrl,		on_readyundo,		void					)( void )
+{
+	for (u32 i = 0; i < m_propdatavec.size(); ++i)
+	{
+		xui_propdata* data = m_propdatavec[i];
+		data->backups();
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propctrl_base

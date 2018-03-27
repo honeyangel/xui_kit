@@ -26,6 +26,7 @@ public:
 	void					del_propdata	( void );
 	virtual void			on_linkpropdata	( bool selfupdate = false ) = 0;
 	virtual void			on_editvalue	( xui_propedit* sender ) = 0;
+	virtual void			on_readyundo	( void );
 
 	/*
 	//method

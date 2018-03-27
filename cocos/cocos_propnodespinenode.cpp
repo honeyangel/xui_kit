@@ -1,4 +1,4 @@
-#include "external/SpineNode.h"
+#include "SpineNode.h"
 #include "spine/SkeletonAnimation.h"
 
 #include "xui_kindctrl.h"

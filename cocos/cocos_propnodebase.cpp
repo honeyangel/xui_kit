@@ -17,12 +17,14 @@
 #include "ui/UIListView.h"
 #include "ui/UIScrollView.h"
 #include "cocostudio/CCComExtensionData.h"
-#include "external/LayoutCenter.h"
-#include "external/AdapterNode.h"
-#include "external/ShaderRect.h"
-#include "external/TextIFBM.h"
-#include "external/SpineNode.h"
-#include "external/SpineBlender.h"
+#include "LayoutCenter.h"
+#include "AdapterNode.h"
+#include "ShaderRect.h"
+#include "TextIFBM.h"
+#include "SpineNode.h"
+#include "SpineBlender.h"
+#include "Object3D.h"
+#include "Node3DObject.h"
 #include "2d/WeCLabel.h"
 
 #include "xui_global.h"
@@ -38,6 +40,7 @@
 #include "cocos_boundbox.h"
 #include "cocos_mainform.h"
 #include "cocos_hierarchy.h"
+#include "cocos_scene.h"
 #include "cocos_propcsd.h"
 #include "cocos_propnodelayer.h"
 #include "cocos_propnodeparticle.h"
@@ -62,10 +65,13 @@
 #include "cocos_propnodeweclabel.h"
 #include "cocos_propnodespinenode.h"
 #include "cocos_propnodespineblender.h"
+#include "cocos_propnodeobject3d.h"
+#include "cocos_propnodenode3dobject.h"
 #include "cocos_propctrl_flip.h"
 #include "cocos_nodedata.h"
 #include "cocos_resource.h"
 #include "cocos_propctrl_location.h"
+#include "cocos_scenecmd_prop.h"
 #include "cocos_propnodebase.h"
 
 /*
@@ -78,10 +84,14 @@ xui_create_explain(cocos_propnodebase)( xui_bitmap* icon, cocos_propcsd* file, c
 , m_node(node)
 {
 	m_boundbox = new cocos_boundbox(this);
-	cocos2d::Vector<cocos2d::Node*> children = node->getChildren();
-	for (s32 i = 0; i < children.size(); ++i)
+	if (dynamic_cast<cocos2d::ui::Object3D*		>(node) == NULL &&
+		dynamic_cast<cocos2d::ui::Node3DObject*	>(node) == NULL)
 	{
-		m_leafprop.push_back(new_prop(file, children.at(i)));
+		cocos2d::Vector<cocos2d::Node*> children = node->getChildren();
+		for (s32 i = 0; i < children.size(); ++i)
+		{
+			m_leafprop.push_back(new_prop(file, children.at(i)));
+		}
 	}
 
 	add_title();
@@ -151,11 +161,20 @@ xui_method_explain(cocos_propnodebase, add_propnode,	void					)( cocos_propnodeb
 xui_method_explain(cocos_propnodebase, on_propchanged,	void					)( xui_component* sender, xui_method_propdata& args )
 {
 	m_file->set_modify(true);
+	cocos_scene* scene = cocos_mainform::get_ptr()->get_scene();
+	if (scene && args.propdata->has_byte())
+	{
+		scene->add_cmdcache(new cocos_scenecmd_prop(this, args.propdata));
+	}
 }
 
 /*
 //static
 */
+xui_method_explain(cocos_propnodebase, get_path,		std::wstring			)( u08 type )
+{
+	return L"NodePosition/Position";
+}
 xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Node* node )
 {
 	if		(dynamic_cast<cocos2d::ParticleSystemQuad*>(node))	return L"Particle";
@@ -179,12 +198,16 @@ xui_method_explain(cocos_propnodebase, get_type,		std::wstring			)( cocos2d::Nod
 	else if (dynamic_cast<cocos2d::ui::WeCLabel*>(node))		return L"WeCLabel";
 	else if (dynamic_cast<cocos2d::ui::SpineNode*>(node))		return L"SpineNode";
 	else if (dynamic_cast<cocos2d::ui::SpineBlender*>(node))	return L"SpineBlender";
+	else if (dynamic_cast<cocos2d::ui::Object3D*>(node))		return L"Object3D";
+	else if (dynamic_cast<cocos2d::ui::Node3DObject*>(node))	return L"Node3DObject";
 	else
 	{
-		if (node->getParent() == NULL)
-			return L"Layer";
-		else
+		cocos2d::Size size = node->getContentSize();
+		if (size.width  == 0.0f &&
+			size.height == 0.0f)
 			return L"Node";
+		else
+			return L"Layer";
 	}
 }
 xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_propcsd* file, cocos2d::Node* node )
@@ -213,6 +236,8 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 	else if (rtti == L"WeCLabel")		return new cocos_propnodeweclabel		(file, node);
 	else if (rtti == L"SpineNode")		return new cocos_propnodespinenode		(file, node);
 	else if (rtti == L"SpineBlender")	return new cocos_propnodespineblender	(file, node);
+	else if (rtti == L"Object3D")		return new cocos_propnodeobject3d		(file, node);
+	else if (rtti == L"Node3DObject")	return new cocos_propnodenode3dobject	(file, node);
 	else
 	{
 		return NULL;
@@ -221,35 +246,36 @@ xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_
 xui_method_explain(cocos_propnodebase, new_prop,		cocos_propnodebase*		)( cocos_propcsd* file, const std::wstring& rtti )
 {
 	cocos2d::Node* node = NULL;
-	if		(rtti == L"Particle")		node = cocos2d::ParticleSystemQuad::create();
-	else if (rtti == L"Sprite")			node = cocos2d::Sprite::create();
-	else if (rtti == L"Node")			node = cocos2d::Node::create();
-	else if (rtti == L"Button")			node = cocos2d::ui::Button::create();
-	else if (rtti == L"CheckBox")		node = cocos2d::ui::CheckBox::create();
-	else if (rtti == L"ImageView")		node = cocos2d::ui::ImageView::create();
-	else if (rtti == L"Text")			node = cocos2d::ui::Text::create();
-	else if (rtti == L"TextBMFont")		node = cocos2d::ui::TextBMFont::create();
-	else if (rtti == L"LoadingBar")		node = cocos2d::ui::LoadingBar::create();
-	else if (rtti == L"Slider")			node = cocos2d::ui::Slider::create();
-	else if (rtti == L"TextField")		node = cocos2d::ui::TextField::create();
-	else if (rtti == L"Layout")			node = cocos2d::ui::Layout::create();
-	else if (rtti == L"ScrollView")		node = cocos2d::ui::ScrollView::create();
-	else if (rtti == L"ListView")		node = cocos2d::ui::ListView::create();
-	else if (rtti == L"PageView")		node = cocos2d::ui::PageView::create();
-	else if (rtti == L"LayoutCenter")	node = cocos2d::ui::LayoutCenter::create();
-	else if (rtti == L"AdapterNode")	node = cocos2d::ui::AdapterNode::create();
-	else if (rtti == L"ShaderRect")		node = cocos2d::ui::ShaderRect::create();
-	else if (rtti == L"TextIFBM")		node = cocos2d::ui::TextIFBM::create();
-	else if (rtti == L"WeCLabel")		node = cocos2d::ui::WeCLabel::create();
-	else if (rtti == L"SpineNode")		node = cocos2d::ui::SpineNode::create();
-	else if (rtti == L"SpineBlender")	node = cocos2d::ui::SpineBlender::create();
+	if		(rtti == L"Particle")		node = def_particle();
+	else if (rtti == L"Sprite")			node = def_sprite();
+	else if (rtti == L"Node")			node = def_node();
+	else if (rtti == L"Button")			node = def_button();
+	else if (rtti == L"CheckBox")		node = def_checkbox();
+	else if (rtti == L"ImageView")		node = def_imageview();
+	else if (rtti == L"Text")			node = def_text();
+	else if (rtti == L"TextBMFont")		node = def_textbmfont();
+	else if (rtti == L"LoadingBar")		node = def_loadingbar();
+	else if (rtti == L"Slider")			node = def_slider();
+	else if (rtti == L"TextField")		node = def_textfield();
+	else if (rtti == L"Layout")			node = def_layout();
+	else if (rtti == L"ScrollView")		node = def_scrollview();
+	else if (rtti == L"ListView")		node = def_listview();
+	else if (rtti == L"PageView")		node = def_pageview();
+	else if (rtti == L"LayoutCenter")	node = def_layoutcenter();
+	else if (rtti == L"AdapterNode")	node = def_adapternode();
+	else if (rtti == L"ShaderRect")		node = def_shaderrect();
+	else if (rtti == L"TextIFBM")		node = def_textifbm();
+	else if (rtti == L"WeCLabel")		node = def_weclabel();
+	else if (rtti == L"SpineNode")		node = def_spinenode();
+	else if (rtti == L"SpineBlender")	node = def_spineblender();
+	else if (rtti == L"Object3D")		node = def_object3d();
+	else if (rtti == L"Node3DObject")	node = def_node3dobject();
 	else
 	{
 		return NULL;
 	}
 
 	node->setName(xui_global::unicode_to_ascii(rtti));
-	node->setContentSize(cocos2d::Size(100, 100));
 	return new_prop(file, node);
 }
 
@@ -685,6 +711,197 @@ xui_method_explain(cocos_propnodebase, set_userdata,	void					)( void* userptr, 
 	}
 
 	extensionData->setCustomProperty(xui_global::unicode_to_ascii(value));
+}
+
+/*
+//default
+*/
+xui_method_explain(cocos_propnodebase, def_particle,	cocos2d::Node*			)( void )
+{
+	cocos2d::ParticleSystem* particle = cocos2d::ParticleSystemQuad::create("Default/defaultParticle.plist");
+	return particle;
+}
+xui_method_explain(cocos_propnodebase, def_sprite,		cocos2d::Node*			)( void )
+{
+	cocos2d::Sprite* sprite = cocos2d::Sprite::create("Default/Sprite.png");
+	return sprite;
+}
+xui_method_explain(cocos_propnodebase, def_node,		cocos2d::Node*			)( void )
+{
+	cocos2d::Node* node = cocos2d::Node::create();
+	return node;
+}
+xui_method_explain(cocos_propnodebase, def_button,		cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Button* button = cocos2d::ui::Button::create();
+	button->loadTextureNormal("Default/Button_Normal.png");
+	button->loadTexturePressed("Default/Button_Press.png");
+	button->loadTextureDisabled("Default/Button_Disable.png");
+	button->setScale9Enabled(true);
+	button->setCapInsets(cocos2d::Rect(15, 11, 16, 14));
+	button->setTitleFontName("cocos_editor/Default/arial.ttf");
+	button->setTitleFontSize(14);
+	button->setTitleColor(cocos2d::Color3B(127, 127, 127));
+	button->setTitleText("Button");
+	return button;
+}
+xui_method_explain(cocos_propnodebase, def_checkbox,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::CheckBox* checkbox = cocos2d::ui::CheckBox::create();
+	checkbox->loadTextureBackGround("Default/CheckBox_Normal.png");
+	checkbox->loadTextureBackGroundSelected("Default/CheckBox_Press.png");
+	checkbox->loadTextureBackGroundDisabled("Default/CheckBox_Disable.png");
+	checkbox->loadTextureFrontCross("Default/CheckBoxNode_Normal.png");
+	checkbox->loadTextureFrontCrossDisabled("Default/CheckBoxNode_Disable.png");
+	checkbox->setSelectedState(true);
+	return checkbox;
+}
+xui_method_explain(cocos_propnodebase, def_imageview,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::ImageView* imageview = cocos2d::ui::ImageView::create();
+	imageview->loadTexture("Default/ImageFile.png");
+	imageview->setScale9Enabled(false);
+	return imageview;
+}
+xui_method_explain(cocos_propnodebase, def_text,		cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Text* text = cocos2d::ui::Text::create();
+	text->setFontName("cocos_editor/Default/arial.ttf");
+	text->setFontSize(20);
+	text->setTextColor(cocos2d::Color4B(255, 255, 255, 255));
+	text->setText("Text Label");
+	return text;
+}
+xui_method_explain(cocos_propnodebase, def_textbmfont,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::TextBMFont* textbmfont = cocos2d::ui::TextBMFont::create();
+	textbmfont->setFntFile("cocos_editor/Default/defaultBMFont.fnt");
+	textbmfont->setText("Fnt Text Label");
+	return textbmfont;
+}
+xui_method_explain(cocos_propnodebase, def_loadingbar,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::LoadingBar* loadingbar = cocos2d::ui::LoadingBar::create();
+	loadingbar->loadTexture("LoadingBarFile.png");
+	loadingbar->setPercent(80.0f);
+	return loadingbar;
+}
+xui_method_explain(cocos_propnodebase, def_slider,		cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Slider* slider = cocos2d::ui::Slider::create();
+	slider->loadBarTexture("Default/Slider_Back.png");
+	slider->loadProgressBarTexture("Default/Slider_PressBar.png");
+	slider->loadSlidBallTextureNormal("Default/SliderNode_Normal.png");
+	slider->loadSlidBallTexturePressed("Default/SliderNode_Press.png");
+	slider->loadSlidBallTextureDisabled("Default/SliderNode_Disable.png");
+	slider->setPercent(50.0f);
+	return slider;
+}
+xui_method_explain(cocos_propnodebase, def_textfield,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::TextField* textfield = cocos2d::ui::TextField::create();
+	textfield->setFontName("cocos_editor/Default/arial.ttf");
+	textfield->setFontSize(20);
+	textfield->setTextColor(cocos2d::Color4B(255, 255, 255, 255));
+	textfield->setText("Text Field");
+	return textfield;
+}
+xui_method_explain(cocos_propnodebase, def_layout,		cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Layout* layout = cocos2d::ui::Layout::create();
+	layout->setContentSize(cocos2d::Size(200.0f, 200.0f));
+	layout->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
+	layout->setBackGroundColor(cocos2d::Color3B(127, 180, 255));
+	layout->setBackGroundColorOpacity(100);
+	return layout;
+}
+xui_method_explain(cocos_propnodebase, def_listview,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::ListView* listview = cocos2d::ui::ListView::create();
+	listview->setContentSize(cocos2d::Size(200.0f, 200.0f));
+	listview->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
+	listview->setBackGroundColor(cocos2d::Color3B(127, 180, 255));
+	listview->setBackGroundColorOpacity(100);
+	return listview;
+}
+xui_method_explain(cocos_propnodebase, def_pageview,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::PageView* pageview = cocos2d::ui::PageView::create();
+	pageview->setContentSize(cocos2d::Size(200.0f, 200.0f));
+	pageview->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
+	pageview->setBackGroundColor(cocos2d::Color3B(127, 127, 80));
+	pageview->setBackGroundColorOpacity(100);
+	return pageview;
+}
+xui_method_explain(cocos_propnodebase, def_scrollview,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::ScrollView* scrollview = cocos2d::ui::ScrollView::create();
+	scrollview->setContentSize(cocos2d::Size(200.0f, 200.0f));
+	scrollview->setInnerContainerSize(cocos2d::Size(200.0f, 300.0f));
+	scrollview->setDirection(cocos2d::ui::ScrollView::Direction::VERTICAL);
+	scrollview->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
+	scrollview->setBackGroundColor(cocos2d::Color3B(255, 127, 80));
+	scrollview->setBackGroundColorOpacity(100);
+	return scrollview;
+}
+xui_method_explain(cocos_propnodebase, def_layoutcenter,cocos2d::Node*			)( void )
+{
+	cocos2d::ui::LayoutCenter* layoutcenter = cocos2d::ui::LayoutCenter::create();
+	layoutcenter->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return layoutcenter;
+}
+xui_method_explain(cocos_propnodebase, def_adapternode,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::AdapterNode* adapternode = cocos2d::ui::AdapterNode::create();
+	adapternode->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return adapternode;
+}
+xui_method_explain(cocos_propnodebase, def_shaderrect,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::ShaderRect* shaderrect = cocos2d::ui::ShaderRect::create();
+	shaderrect->setContentSize(cocos2d::Size(100.0f, 100.0f));
+	return shaderrect;
+}
+xui_method_explain(cocos_propnodebase, def_textifbm,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::TextIFBM* textifbm = cocos2d::ui::TextIFBM::create();
+	textifbm->setFntFile("cocos_editor/Default/defaultBMFont.fnt");
+	textifbm->setText("TextIFBM");
+	return textifbm;
+}
+xui_method_explain(cocos_propnodebase, def_weclabel,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::WeCLabel* weclabel = cocos2d::ui::WeCLabel::create();
+	weclabel->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	weclabel->setFontName("cocos_editor/Default/arial.ttf");
+	weclabel->setFontSize(20);
+	weclabel->setFontColor(cocos2d::Color3B(255, 255, 255));
+	weclabel->setText("WeCLabel");
+	return weclabel;
+}
+xui_method_explain(cocos_propnodebase, def_spinenode,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::SpineNode* spinenode = cocos2d::ui::SpineNode::create();
+	spinenode->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return spinenode;
+}
+xui_method_explain(cocos_propnodebase, def_spineblender,cocos2d::Node*			)( void )
+{
+	cocos2d::ui::SpineBlender* spineblender = cocos2d::ui::SpineBlender::create();
+	spineblender->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return spineblender;
+}
+xui_method_explain(cocos_propnodebase, def_object3d,	cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Object3D* object3d = cocos2d::ui::Object3D::create();
+	object3d->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return object3d;
+}
+xui_method_explain(cocos_propnodebase, def_node3dobject,cocos2d::Node*			)( void )
+{
+	cocos2d::ui::Node3DObject* node3dobject = cocos2d::ui::Node3DObject::create();
+	node3dobject->setContentSize(cocos2d::Size(100.0f, 50.0f));
+	return node3dobject;
 }
 
 /*

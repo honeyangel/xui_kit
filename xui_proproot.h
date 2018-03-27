@@ -24,6 +24,7 @@ public:
 	bool					has_propkind	( xui_propkind* propkind ) const;
 	void					add_propkind	( xui_propkind* propkind );
 	void					del_propkind	( xui_propkind* propkind );
+	xui_propdata*			get_propdata	( const std::wstring& path );
 	void					non_ctrl		( void );
 	xui_propview*			get_ctrl		( void );
 	void					set_ctrl		( xui_propview* propview );

@@ -483,6 +483,7 @@ xui_method_explain(cocos_selector, convert_droptype,		s32					)( const std::stri
 	else if (droptype == "FNT")				return FILTER_FNT;
 	else if (droptype == "SpineAtlas")		return FILTER_SPINEATLAS;
 	else if (droptype == "Spine")			return FILTER_SPINE;
+	else if (droptype == "C3B")				return FILTER_C3B;
 	else if (droptype == "CSD")				return FILTER_CSD;
 	else									return FILTER_NONE;
 }

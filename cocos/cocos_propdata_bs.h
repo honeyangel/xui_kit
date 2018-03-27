@@ -52,6 +52,12 @@ public:
 
 protected:
 	/*
+	//override
+	*/
+	virtual u08*			do_serialize			( void );
+	virtual void			un_serialize			( u08* byte );
+
+	/*
 	//member
 	*/
 	get_func				m_userget;

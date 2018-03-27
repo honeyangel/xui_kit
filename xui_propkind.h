@@ -34,6 +34,7 @@ public:
 	const xui_propdata_vec&			get_propdata( void ) const;
 	xui_propdata*					get_propdata( const std::wstring& name );
 	void							add_propdata( xui_propdata* propdata );
+	std::wstring					get_proppath( xui_propdata* propdata );
 
 	const std::wstring&				get_name	( void ) const;
 	void							set_name	( const std::wstring& name );

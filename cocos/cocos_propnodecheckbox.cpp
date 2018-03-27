@@ -98,12 +98,11 @@ xui_method_explain(cocos_propnodecheckbox, def_size,			cocos_value_unitvec		)( v
 
 	cocos_propnodecheckbox* prop = (cocos_propnodecheckbox*)userptr;
 	cocos2d::Sprite* sprite = prop->get_checkbox()->getRendererBackground();
-	cocos2d::SpriteFrame* frame = sprite->getSpriteFrame();
-	if (frame)
+	if (sprite)
 	{
-		cocos2d::Size size =  frame->getOriginalSize();
-		value.w.pix = size.width;
-		value.h.pix = size.height;
+		cocos2d::Rect rect = sprite->getTextureRect();
+		value.w.pix = rect.size.width;
+		value.h.pix = rect.size.height;
 	}
 
 	return value;

@@ -1,5 +1,6 @@
 #include "xui_propctrl.h"
 #include "xui_propkind.h"
+#include "xui_proproot.h"
 #include "xui_propdata.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,15 @@ xui_create_explain(xui_propdata)( xui_propkind* kind, const std::wstring& name, 
 	m_ctrl = NULL;
 	m_show = true;
 	m_edit = true;
+	m_byte = NULL;
+}
+
+/*
+//destructor
+*/
+xui_delete_explain(xui_propdata)( void )
+{
+	delete [] m_byte;
 }
 
 /*
@@ -45,6 +55,16 @@ xui_method_explain(xui_propdata,				set_ctrl,			void					)( xui_propctrl* ctrl )
 {
 	m_ctrl = ctrl;
 }
+xui_method_explain(xui_propdata,				get_byte,			u08*					)( void )
+{
+	u08* temp = m_byte;
+	m_byte = NULL;
+	return temp;
+}
+xui_method_explain(xui_propdata,				has_byte,			bool					)( void ) const
+{
+	return (m_byte != NULL);
+}
 xui_method_explain(xui_propdata,				non_ctrl,			void					)( void )
 {
 	if (m_ctrl)
@@ -52,6 +72,18 @@ xui_method_explain(xui_propdata,				non_ctrl,			void					)( void )
 		m_ctrl->del_propdata();
 		m_ctrl = NULL;
 	}
+}
+xui_method_explain(xui_propdata,				get_data,			xui_propdata*			)( const std::wstring& name )
+{
+	return NULL;
+}
+xui_method_explain(xui_propdata,				get_path,			std::wstring			)( void )
+{
+	return m_kind->get_proppath(this);
+}
+xui_method_explain(xui_propdata,				get_path,			std::wstring			)( xui_propdata* prop )
+{
+	return (prop == this) ? (L"/"+m_name) : (L"");
 }
 xui_method_explain(xui_propdata,				can_edit,			bool					)( void ) const
 {
@@ -73,6 +105,18 @@ xui_method_explain(xui_propdata,				set_show,			void					)( bool flag )
 /*
 //refresh
 */
+xui_method_explain(xui_propdata,				backups,			void					)( void )
+{
+	delete [] m_byte;
+	m_byte = do_serialize();
+}
+xui_method_explain(xui_propdata,				restore,			void					)( u08* byte )
+{
+	delete [] m_byte;
+	m_byte = NULL;
+	un_serialize(byte);
+	refresh();
+}
 xui_method_explain(xui_propdata,				refresh,			void					)( void )
 {
 	if (m_ctrl && m_ctrl->has_propdata(this))
@@ -94,6 +138,12 @@ xui_method_explain(xui_propdata,				on_valuechanged,	void					)( void )
 		m_kind->xm_propchanged(m_ctrl, args);
 	}
 }
+xui_method_explain(xui_propdata,				do_serialize,		u08*					)( void )
+{
+	return NULL;
+}
+xui_method_explain(xui_propdata,				un_serialize,		void					)( u08* byte )
+{}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_bool
@@ -142,6 +192,22 @@ xui_method_explain(xui_propdata_bool,			set_value,			void					)( bool value )
 		on_valuechanged();
 	}
 }
+xui_method_explain(xui_propdata_bool,			do_serialize,		u08*					)( void )
+{
+	return get_byte<bool>(get_value());
+}
+xui_method_explain(xui_propdata_bool,			un_serialize,		void					)( u08* byte )
+{
+	if (m_userset)
+	{
+		(*m_userset)(m_userptr, get_cast<bool>(byte));
+	}
+	else
+	{
+		bool* ptr = (bool*)m_userptr;
+		(*ptr) = get_cast<bool>(byte);
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_stdstring
@@ -188,6 +254,27 @@ xui_method_explain(xui_propdata_string,			set_value,			void					)( const std::ws
 		}
 
 		on_valuechanged();
+	}
+}
+xui_method_explain(xui_propdata_string,			do_serialize,		u08*					)( void )
+{
+	std::wstring value = get_value();
+	wchar_t* byte = new wchar_t[value.length()+1];
+	memset(byte, 0, sizeof(wchar_t)*(value.length()+1));
+	memcpy(byte, value.c_str(), sizeof(wchar_t)*value.length());
+	return (u08*)byte;
+}
+xui_method_explain(xui_propdata_string,			un_serialize,		void					)( u08* byte )
+{
+	std::wstring value = (wchar_t*)byte;
+	if (m_userset)
+	{
+		(*m_userset)(m_userptr, value);
+	}
+	else
+	{
+		std::wstring* ptr = (std::wstring*)m_userptr;
+		(*ptr) = value;
 	}
 }
 
@@ -253,6 +340,14 @@ xui_method_explain(xui_propdata_number_func,	set_value,			void					)( f64 value 
 		on_valuechanged();
 	}
 }
+xui_method_explain(xui_propdata_number_func,	do_serialize,		u08*					)( void )
+{
+	return get_byte<f64>(get_value());
+}
+xui_method_explain(xui_propdata_number_func,	un_serialize,		void					)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast<f64>(byte));
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_enum
@@ -313,6 +408,16 @@ xui_method_explain(xui_propdata_enum_func,		set_value,			void					)( u32 index )
 		on_valuechanged();
 	}
 }
+xui_method_explain(xui_propdata_enum_func,		do_serialize,		u08*					)( void )
+{
+	return get_byte<u32>(get_value());
+}
+xui_method_explain(xui_propdata_enum_func,		un_serialize,		void					)( u08* byte )
+{
+	xui_propenum_map::iterator itor = m_textmap.begin();
+	std::advance(itor, get_cast<u32>(byte));
+	(*m_userset)(m_userptr, (*itor).first);
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_expand
@@ -330,6 +435,29 @@ xui_method_explain(xui_propdata_expand,			non_ctrl,			void					)( void )
 	xui_propdata::non_ctrl();
 	for (u32 i = 0; i < m_subprop.size(); ++i)
 		m_subprop[i]->non_ctrl();
+}
+xui_method_explain(xui_propdata_expand,			get_data,			xui_propdata*			)( const std::wstring& name )
+{
+	for (u32 i = 0; i < m_subprop.size(); ++i)
+	{
+		if (m_subprop[i]->get_name() == name)
+			return m_subprop[i];
+	}
+
+	return NULL;
+}
+xui_method_explain(xui_propdata_expand,			get_path,			std::wstring			)( xui_propdata* prop )
+{
+	for (u32 i = 0; i < m_subprop.size(); ++i)
+	{
+		std::wstring temp = m_subprop[i]->get_path(prop);
+		if (temp.length() > 0)
+		{
+			return L"/"+m_name+temp;
+		}
+	}
+
+	return L"";
 }
 
 /*
@@ -409,6 +537,34 @@ xui_method_explain(xui_propdata_stdvec,			non_ctrl,			void					)( void )
 	xui_propdata::non_ctrl();
 	for (u32 i = 0; i < m_propvec.size(); ++i)
 		m_propvec[i]->non_ctrl();
+}
+xui_method_explain(xui_propdata_stdvec,			get_data,			xui_propdata*			)( const std::wstring& name )
+{
+	int pos = name.find(L"_");
+	if (pos != -1)
+	{
+		std::wstring text = name.substr(pos+1);
+		std::wstringstream temp(text.c_str());
+		u32 index = -1;
+		temp >> index;
+		if (index < m_propvec.size())
+			return m_propvec[index];
+	}
+
+	return NULL;
+}
+xui_method_explain(xui_propdata_stdvec,			get_path,			std::wstring			)( xui_propdata* prop )
+{
+	for (u32 i = 0; i < m_propvec.size(); ++i)
+	{
+		std::wstring temp = m_propvec[i]->get_path(prop);
+		if (temp.length() > 0)
+		{
+			return L"/"+m_name+temp;
+		}
+	}
+
+	return L"";
 }
 
 /*
@@ -499,6 +655,14 @@ xui_method_explain(xui_propdata_vector,			set_value,			void					)( const xui_vec
 		on_valuechanged();
 	}
 }
+xui_method_explain(xui_propdata_vector,			do_serialize,		u08*					)( void )
+{
+	return get_byte< xui_vector<f64> >(get_value());
+}
+xui_method_explain(xui_propdata_vector,			un_serialize,		void					)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast< xui_vector<f64> >(byte));
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_rect2d
@@ -540,6 +704,14 @@ xui_method_explain(xui_propdata_rect2d,			set_value,			void					)( const xui_rec
 		on_valuechanged();
 	}
 }
+xui_method_explain(xui_propdata_rect2d,			do_serialize,		u08*					)( void )
+{
+	return get_byte< xui_rect2d<f64> >(get_value());
+}
+xui_method_explain(xui_propdata_rect2d,			un_serialize,		void					)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast< xui_rect2d<f64> >(byte));
+}
 
 //////////////////////////////////////////////////////////////////////////
 //propdata_colour
@@ -570,6 +742,14 @@ xui_method_explain(xui_propdata_colour,			set_value,			void					)( const xui_col
 		(*m_userset)(m_userptr, value);
 		on_valuechanged();
 	}
+}
+xui_method_explain(xui_propdata_colour,			do_serialize,		u08*					)( void )
+{
+	return get_byte<xui_colour>(get_value());
+}
+xui_method_explain(xui_propdata_colour,			un_serialize,		void					)( u08* byte )
+{
+	(*m_userset)(m_userptr, get_cast<xui_colour>(byte));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -634,7 +814,11 @@ xui_method_explain(xui_propdata_object,			old_value,			void					)( void )
 }
 xui_method_explain(xui_propdata_object,			syn_value,			void					)( void )
 {
-	m_oldvalue = get_value();
+	if (m_oldvalue != get_value())
+	{
+		m_oldvalue  = get_value();
+		on_valuechanged();
+	}
 }
 
 /*
@@ -673,6 +857,15 @@ xui_method_explain(xui_propdata_object_func,	set_value,			void					)( void* valu
 	{
 		m_oldvalue = tempvalue;
 		(*m_userset)(m_userptr, value);
-		on_valuechanged();
 	}
+}
+xui_method_explain(xui_propdata_object_func,	do_serialize,		u08*					)( void )
+{
+	return get_byte<void*>(get_value());
+}
+xui_method_explain(xui_propdata_object_func,	un_serialize,		void					)( u08* byte )
+{
+	void* value = get_cast<void*>(byte);
+	(*m_userset)(m_userptr, value);
+	m_oldvalue = value;
 }

@@ -29,6 +29,7 @@ protected:
 	*/
 	void						on_editctrlrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlnonfocus		( xui_component* sender, xui_method_args&  args );
+	void						on_pickctrlgetfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_editctrlclick		( xui_component* sender, xui_method_mouse& args );
 	void						on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
 	void						on_pickctrlkeybddown	( xui_component* sender, xui_method_keybd& args );

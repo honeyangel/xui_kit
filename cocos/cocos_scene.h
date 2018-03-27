@@ -4,6 +4,7 @@
 #include "xui_dockpage.h"
 
 class cocos_proproot;
+class cocos_scenecmd;
 class cocos_gradpane;
 class cocos_boundbox;
 class cocos_alignbox;
@@ -11,7 +12,10 @@ class cocos_blankbox;
 class cocos_snaptool;
 class cocos_renderview;
 class cocos_propcsd;
+class cocos_scenecmd;
+class cocos_scenecmd_list;
 typedef std::vector<cocos_boundbox*> cocos_boundbox_vec;
+typedef std::vector<cocos_scenecmd*> cocos_scenecmd_vec;
 
 namespace cocos2d
 {
@@ -20,6 +24,7 @@ namespace cocos2d
 
 class cocos_scene : public xui_dockpage
 {
+	friend class cocos_mainform;
 	xui_declare_rtti
 
 public:
@@ -43,6 +48,8 @@ public:
 	*/
 	cocos_propcsd*				get_editprop				( void );
 	void						set_editprop				( cocos_propcsd* prop );
+	void						add_cmdcache				( cocos_scenecmd* cmd );
+	void						del_cmdafter				( void );
 	const xui_vector<s32>&		get_trans					( void ) const;
 	f64							get_ratio					( void ) const;
 	void						set_trans					( const xui_vector<s32>& trans );
@@ -60,6 +67,7 @@ protected:
 	*/
 	f64							get_incratio				( void );
 	f64							get_decratio				( void );
+	void						del_scenecmd				( void );
 	cocos_boundbox*				hit_propvisible				( const xui_vector<s32>& pt, xui_treenode* root );
 
 	/*
@@ -93,7 +101,9 @@ protected:
 	/*
 	//draw
 	*/
-	void						draw_locknode				( void );				
+	void						draw_locknode				( void );
+	void						undo_operator				( void );
+	void						redo_operator				( void );
 
 	/*
 	//member
@@ -107,6 +117,8 @@ protected:
 	xui_panel*					m_cubepane;
 	xui_panel*					m_headpane;
 	xui_toolbar*				m_linetool;
+	xui_button*					m_undoctrl;
+	xui_button*					m_redoctrl;
 	xui_panel*					m_fillpane;
 	xui_panel*					m_drawpane;
 	xui_toggle*					m_showbbox;
@@ -123,6 +135,9 @@ protected:
 	u08							m_operator;
 	cocos_propcsd*				m_editprop;
 	cocos2d::Node*				m_rootnode;
+	cocos_scenecmd_vec			m_scenecmd;
+	u32							m_cmdindex;
+	cocos_scenecmd_list*		m_cmdcache;
 };
 
 #endif//__cocos_scene_h__

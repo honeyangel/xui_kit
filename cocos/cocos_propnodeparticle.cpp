@@ -7,6 +7,7 @@
 #include "cocos_mainform.h"
 #include "cocos_propparticle.h"
 #include "cocos_project.h"
+#include "cocos_boundbox.h"
 #include "cocos_propdata_particle.h"
 #include "cocos_propctrl_particlectrl.h"
 #include "cocos_propnodeparticle.h"
@@ -27,6 +28,9 @@ xui_create_explain(cocos_propnodeparticle)( cocos_propcsd* file, cocos2d::Node* 
 	add_particle	();
 	add_advance		();
 	add_userdata	();
+
+	m_boundbox->add_operator(OP_SCALE);
+	m_boundbox->set_ignoresz(true);
 }
 
 /*

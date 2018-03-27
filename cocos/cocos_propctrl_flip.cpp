@@ -21,9 +21,51 @@ xui_create_explain(cocos_propdata_flip)( xui_propkind* kind, cocos_propnodebase*
 /*
 //method
 */
-xui_method_explain(cocos_propdata_flip, get_propnode,		cocos_propnodebase*	)( void )
+xui_method_explain(cocos_propdata_flip, get_value,			cocos_value_flip	)( void )
 {
-	return m_propnode;
+	cocos_value_flip value;
+
+	cocos2d::Sprite*	 sprite	= dynamic_cast<cocos2d::Sprite*>(m_propnode->get_node());
+	cocos2d::ui::Widget* widget	= dynamic_cast<cocos2d::ui::Widget*>(m_propnode->get_node());
+	if (sprite)
+	{
+		value.horzflip = sprite->isFlippedX();
+		value.vertflip = sprite->isFlippedY();
+	}
+	if (widget)
+	{
+		value.horzflip = widget->isFlippedX();
+		value.vertflip = widget->isFlippedY();
+	}
+
+	return value;
+}
+xui_method_explain(cocos_propdata_flip, set_value,			void				)( cocos_value_flip& value )
+{
+	cocos2d::Sprite*	 sprite = dynamic_cast<cocos2d::Sprite*>(m_propnode->get_node());
+	cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(m_propnode->get_node());
+	if (sprite)
+	{
+		sprite->setFlippedX(value.horzflip);
+		sprite->setFlippedY(value.vertflip);
+	}
+	if (widget)
+	{
+		widget->setFlippedX(value.horzflip);
+		widget->setFlippedY(value.vertflip);
+	}
+}
+
+/*
+//override
+*/
+xui_method_explain(cocos_propdata_flip, do_serialize,		u08*				)( void )
+{
+	return get_byte<cocos_value_flip>(get_value());
+}
+xui_method_explain(cocos_propdata_flip, un_serialize,		void				)( u08* byte )
+{
+	set_value(get_cast<cocos_value_flip>(byte));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,20 +129,10 @@ xui_method_explain(cocos_propctrl_flip, on_linkpropdata,	void				)( bool selfupd
 
 	if (m_propdatavec.size() == 1)
 	{
-		cocos_propdata_flip* dataflip	= dynamic_cast<cocos_propdata_flip*>(m_propdata);
-		cocos_propnodebase*  propnode	= dataflip->get_propnode();
-		cocos2d::Sprite*	 sprite		= dynamic_cast<cocos2d::Sprite*>(propnode->get_node());
-		cocos2d::ui::Widget* widget		= dynamic_cast<cocos2d::ui::Widget*>(propnode->get_node());
-		if (sprite)
-		{
-			m_horzctrl->ini_toggle(sprite->isFlippedX());
-			m_vertctrl->ini_toggle(sprite->isFlippedY());
-		}
-		if (widget)
-		{
-			m_horzctrl->ini_toggle(widget->isFlippedX());
-			m_vertctrl->ini_toggle(widget->isFlippedY());
-		}
+		cocos_propdata_flip* dataflip = dynamic_cast<cocos_propdata_flip*>(m_propdata);
+		cocos_value_flip value = dataflip->get_value();
+		m_horzctrl->ini_toggle(value.horzflip);
+		m_vertctrl->ini_toggle(value.vertflip);
 	}
 }
 xui_method_explain(cocos_propctrl_flip, on_editvalue,		void				)( xui_propedit* sender )
@@ -150,27 +182,15 @@ xui_method_explain(cocos_propctrl_flip, on_perform,			void				)( xui_method_args
 */
 xui_method_explain(cocos_propctrl_flip, on_toggleclick,		void				)( xui_component* sender, xui_method_args& args )
 {
+	on_readyundo();
+
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
-		cocos_propdata_flip* data	= dynamic_cast<cocos_propdata_flip*>(m_propdatavec[i]);
-		cocos_propnodebase*  prop	= dynamic_cast<cocos_propnodebase*>(data->get_propnode());
-		cocos2d::Sprite*	 sprite = dynamic_cast<cocos2d::Sprite*>(prop->get_node());
-		cocos2d::ui::Widget* widget = dynamic_cast<cocos2d::ui::Widget*>(prop->get_node());
-		if (sender == m_horzctrl)
-		{
-			if (sprite)
-				sprite->setFlippedX(m_horzctrl->was_push());
-			if (widget)
-				widget->setFlippedX(m_horzctrl->was_push());
-		}
-		else
-		if (sender == m_vertctrl)
-		{
-			if (sprite)
-				sprite->setFlippedY(m_vertctrl->was_push());
-			if (widget)
-				widget->setFlippedY(m_vertctrl->was_push());
-		}
+		cocos_propdata_flip* data = dynamic_cast<cocos_propdata_flip*>(m_propdatavec[i]);
+		cocos_value_flip value = data->get_value();
+		if (sender == m_horzctrl) value.horzflip = m_horzctrl->was_push();
+		if (sender == m_vertctrl) value.vertflip = m_vertctrl->was_push();
+		data->set_value(value);
 	}
 
 	on_editvalue(NULL);

@@ -57,6 +57,7 @@ xui_method_explain(xui_propedit_object, reset,					void		)( void )
 */
 xui_method_explain(xui_propedit_object, on_pickctrlclick,		void		)( xui_component* sender, xui_method_mouse& args )
 {
+	m_propctrl->on_readyundo();
 	m_propctrl->on_editvalue(this);
 }
 //xui_method_explain(xui_propedit_object, on_pickctrlrenderself,	void		)( xui_component* sender, xui_method_args&  args )

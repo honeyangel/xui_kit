@@ -48,15 +48,11 @@ public:
 	void						set_value			( const cocos_blend_value& value );
 
 protected:
-	///*
-	////static
-	//*/
-	//static s32			get_blendfunction	( void* userptr );
-	//static void			set_blendfunction	( void* userptr, s32 value );
-	//static s32			get_blendsrc		( void* userptr );
-	//static void			set_blendsrc		( void* userptr, s32 value );
-	//static s32			get_blenddst		( void* userptr);
-	//static void			set_blenddst		( void* userptr, s32 value );
+	/*
+	//override
+	*/
+	virtual u08*				do_serialize		( void );
+	virtual void				un_serialize		( u08* byte );
 
 	/*
 	//member
