@@ -7,9 +7,6 @@ template<typename T>
 class xui_rect2d
 {
 public:
-	/*
-	// member
-	*/
 	union
 	{
 		T value[4];
@@ -23,9 +20,6 @@ public:
 		};
 	};
 
-	/*
-	// constructor
-	*/
 	xui_rect2d( void )
 	{
 		memset(value, 0, sizeof(T) * 4);
@@ -52,9 +46,6 @@ public:
 		memcpy(value, other.value, sizeof(T) * 4);
 	}
 
-	/*
-	// operator
-	*/
 	xui_rect2d<T>  operator + ( const xui_vector<T>& offset ) const
 	{
 		return xui_rect2d<T>(get_pt()+offset, get_sz());
@@ -64,9 +55,6 @@ public:
 		return xui_rect2d<T>(get_pt()-offset, get_sz());
 	}
 
-	/*
-	// operator
-	*/
 	xui_rect2d<T>& operator = ( const xui_rect2d<T>& other  )
 	{
 		memcpy(value, other.value, sizeof(T) * 4);
@@ -83,9 +71,6 @@ public:
 		return (*this);
 	}
 
-	/*
-	// operator
-	*/
 	bool operator ==( const xui_rect2d<T>& other ) const
 	{
 		return (ax == other.ax && 
@@ -101,9 +86,6 @@ public:
 				by != other.by);
 	}
 
-	/*
-	// method
-	*/
 	bool was_valid	( void ) const
 	{
 		return (bx > ax && by > ay);
@@ -131,10 +113,6 @@ public:
 		by = xui_max(by, v.y);
 	}
 
-	/*
-	// position
-	// size
-	*/
 	xui_vector<T> get_pt( void ) const
 	{
 		return xui_vector<T>(ax, ay);
@@ -205,9 +183,6 @@ public:
 		set_h(sz.h);
 	}
 
-	/*
-	// method
-	*/
 	xui_rect2d<T> get_inter( const xui_rect2d<T>& other ) const
 	{
 		xui_rect2d<T> temp;
@@ -232,10 +207,6 @@ public:
 		return temp;
 	}
 
-
-	/*
-	// convert
-	*/
 	template<typename C>
 	xui_rect2d<C> to( void ) const
 	{

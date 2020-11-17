@@ -6,36 +6,15 @@
 class xui_propedit_slider : public xui_propedit
 {
 public:
-	/*
-	//constructor
-	*/
 	xui_propedit_slider( xui_propctrl* propctrl, u08 numbtype, f64 interval, f64 minvalue, f64 maxvalue );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_propedit_slider( void );
 
-	/*
-	//method
-	*/
 	xui_propedit_number*	get_editnumb			( void ) const;
 	xui_slider*				get_spinctrl			( void ) const;
-
-	/*
-	//value
-	*/
 	f64						get_value				( void ) const;
 	void					set_value				( f64 value );
 
-	/*
-	//virtual
-	*/
 	virtual void			reset					( void );
-
-	/*
-	//event
-	*/
 	void					on_spinctrlgetfocus		( xui_component* sender, xui_method_args& args );
 	void					on_spinctrlnonfocus		( xui_component* sender, xui_method_args& args );
 	void					on_namectrlmouserise	( xui_component* sender, xui_method_mouse& args );
@@ -44,14 +23,8 @@ public:
 	void					on_spinctrlscroll		( xui_component* sender, xui_method_args& args );
 
 protected:
-	/*
-	//method
-	*/
 	void					check_value				( void );
 
-	/*
-	//member
-	*/
 	f64						m_minvalue;
 	f64						m_maxvalue;
 	xui_propedit_number*	m_editnumb;

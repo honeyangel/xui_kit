@@ -1,29 +1,29 @@
 #include "xui_treedata.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_treedata)( void )
+xui_treedata::xui_treedata( void )
 {
 	m_node = NULL;
 	m_icon = NULL;
 	m_flag = false;
 }
-xui_create_explain(xui_treedata)( const std::wstring& text )
+
+xui_treedata::xui_treedata( const std::wstring& text )
 {
 	m_node = NULL;
 	m_icon = NULL;
 	m_text = text;
 	m_flag = false;
 }
-xui_create_explain(xui_treedata)( const std::wstring& text, xui_bitmap* icon )
+
+xui_treedata::xui_treedata( const std::wstring& text, xui_bitmap* icon )
 {
 	m_node = NULL;
 	m_icon = icon;
 	m_text = text;
 	m_flag = false;
 }
-xui_create_explain(xui_treedata)( const std::wstring& text, xui_bitmap* icon, bool flag )
+
+xui_treedata::xui_treedata( const std::wstring& text, xui_bitmap* icon, bool flag )
 {
 	m_node = NULL;
 	m_icon = icon;
@@ -31,46 +31,47 @@ xui_create_explain(xui_treedata)( const std::wstring& text, xui_bitmap* icon, bo
 	m_flag = flag;
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_treedata, get_node,		xui_treenode*	)( void )
+xui_treenode* xui_treedata::get_node( void )
 {
 	return m_node;
 }
-xui_method_explain(xui_treedata, set_node,		void			)( xui_treenode* node )
+
+void xui_treedata::set_node( xui_treenode* node )
 {
 	m_node = node;
 }
 
-/*
-//interface
-*/
-xui_method_explain(xui_treedata, get_flag,		bool			)( u32 index )
+bool xui_treedata::get_flag( u32 index )
 {
 	return m_flag;
 }
-xui_method_explain(xui_treedata, get_icon,		xui_bitmap*		)( u32 index )
+
+xui_bitmap* xui_treedata::get_icon( u32 index )
 {
 	return m_icon;
 }
-xui_method_explain(xui_treedata, get_text,		std::wstring	)( u32 index )
+
+std::wstring xui_treedata::get_text( u32 index )
 {
 	return m_text;
 }
-xui_method_explain(xui_treedata, get_textfont,	xui_family		)( u32 index )
+
+xui_family xui_treedata::get_textfont( u32 index )
 {
-	return xui_family();
+	return xui_family::k_default;
 }
-xui_method_explain(xui_treedata, get_textdraw, xui_family_render)( u32 index )
+
+xui_family_render xui_treedata::get_textdraw( u32 index )
 {
-	return xui_family_render();
+	return xui_family_render::k_default;
 }
-xui_method_explain(xui_treedata, set_text,		void			)( u32 index, const std::wstring& text )
+
+void xui_treedata::set_text( u32 index, const std::wstring& text )
 {
 	m_text = text;
 }
-xui_method_explain(xui_treedata, set_flag,		void			)( u32 index, bool flag )
+
+void xui_treedata::set_flag( u32 index, bool flag )
 {
 	m_flag = flag;
 }

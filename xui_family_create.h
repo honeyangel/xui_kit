@@ -9,10 +9,8 @@
 
 class xui_family_create
 {
-	//xui_declare_instance(xui_family_create)
-
 public:
-	struct FT_Info
+	struct ft_info
 	{
 	public:
 		s32				height;
@@ -25,38 +23,20 @@ public:
 		s32				advance;
 	};
 
-	/*
-	//constructor
-	*/
 	xui_family_create( void );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_family_create( void );
 
-	/*
-	//method
-	*/
 	s32						get_height			( const xui_family& family );
 	s32						get_ascender		( const xui_family& family );
-
-	/*
-	//override
-	*/
 	void					add_font			( const xui_family& family );
-	FT_Info*				get_info			( const xui_family& family, u16 wc );
+	ft_info*			    get_info			( const xui_family& family, u16 wc );
+    
+    void                    release             ( void );
 
 protected:
-	/*
-	//method
-	*/
-	FT_Info*				create_char_normal	( const xui_family& family, u16 wc );
-	FT_Info*				create_char_stroke	( const xui_family& family, u16 wc );
+	ft_info*			    create_char_normal	( const xui_family& family, u16 wc );
+	ft_info*			    create_char_stroke	( const xui_family& family, u16 wc );
 
-	/*
-	//struct
-	*/
 	struct span
 	{
 	public:
@@ -74,28 +54,19 @@ protected:
 		u08 c;
 	};
 
-	/*
-	//typedef
-	*/
 	typedef std::vector<span> 
 		spanvec;
-	typedef std::map<s32, FT_Info*>
-		FT_InfoMap;
+	typedef std::map<s32, ft_info*>
+		infomap;
 	typedef std::map<s32, FT_Face >
-		FT_FaceMap;
+		facemap;
 
-	/*
-	//static method
-	*/
-	static void			raster				( int y, int count, const FT_Span* spans, void* user );
-	static void			render_spans		( FT_Library& library, FT_Outline* outline, spanvec* vec );
+	static void			raster				    ( s32 y, s32 count, const FT_Span* spans, void* user );
+	static void			render_spans		    ( FT_Library& library, FT_Outline* outline, spanvec* vec );
 
-	/*
-	//member
-	*/
-	FT_Library			m_FTLibrary;
-	FT_InfoMap			m_FTInfoMap;
-	FT_FaceMap			m_FTFaceMap;
+	FT_Library			m_library;
+	infomap			    m_infomap;
+	facemap			    m_facemap;
 };
 
 #endif//__xui_family_create_h__

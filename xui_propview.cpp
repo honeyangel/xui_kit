@@ -1,39 +1,30 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_scroll.h"
 #include "xui_propdata.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
 
-xui_implement_rtti(xui_propview, xui_container);
+xui_implement_rtti(xui_propview, xui_container)
 
-/*
-//static
-*/
-const s32 xui_propview::default_nodeindent = 16;
-const s32 xui_propview::default_lineheight = 20;
+const s32 xui_propview::k_default_nodeindent = 16;
+const s32 xui_propview::k_default_lineheight = 20;
 
-xui_method_explain(xui_propview, create,			xui_propview*			)( void )
+xui_propview* xui_propview::create( void )
 {
 	xui_propview* propview = new xui_propview(xui_vector<s32>(480, 380));
-	xui_method_ptrcall(propview, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(propview, set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(propview, set_corner		)(3);
+	propview->set_sidestyle(k_sidestyle_s);
+	propview->set_borderrt(xui_rect2d<s32>(4));
+	propview->set_corner(3);
 	return propview;
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propview)( const xui_vector<s32>& size )
+xui_propview::xui_propview( const xui_vector<s32>& size )
 : xui_container(size)
 {
 	m_proproot = NULL;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propview)( void )
+xui_propview::~xui_propview( void )
 {
 	for (xui_kindctrl_map::iterator itor = m_kindctrlmap.begin(); itor != m_kindctrlmap.end(); ++itor)
 	{
@@ -49,14 +40,12 @@ xui_delete_explain(xui_propview)( void )
 	}
 }
 
-/*
-//property
-*/
-xui_method_explain(xui_propview, get_proproot,		const xui_proproot_vec&	)( void ) const
+const xui_proproot_vec& xui_propview::get_proproot( void ) const
 {
 	return m_proprootvec;
 }
-xui_method_explain(xui_propview, set_proproot,		void					)( xui_proproot* proproot )
+
+void xui_propview::set_proproot( xui_proproot* proproot )
 {
 	//detach
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
@@ -86,16 +75,17 @@ xui_method_explain(xui_propview, set_proproot,		void					)( xui_proproot* propro
 			xui_kindctrl* kindctrl = get_kindctrl(propkind);
 			if (kindctrl)
 			{
-				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
-				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
-				xui_method_ptrcall(kindctrl, refresh	 )();
+				propkind->set_ctrl(kindctrl);
+				kindctrl->set_propkind(propkind);
+				kindctrl->refresh();
 			}
 		}
 	}
 
 	refresh();
 }
-xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_vec& proproot )
+
+void xui_propview::set_proproot( const xui_proproot_vec& proproot )
 {
 	if		(proproot.size() == 0)	set_proproot(NULL);
 	else if (proproot.size() == 1)	set_proproot(proproot.front());
@@ -140,7 +130,8 @@ xui_method_explain(xui_propview, set_proproot,		void					)( const xui_proproot_v
 		refresh();
 	}
 }
-xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_vec& lastroot, xui_proproot* propelse )
+
+void xui_propview::add_propelse( const xui_proproot_vec& lastroot, xui_proproot* propelse )
 {
 	u32 repidx = -1;
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
@@ -186,15 +177,16 @@ xui_method_explain(xui_propview, add_propelse,		void					)( const xui_proproot_v
 			xui_kindctrl* kindctrl = get_kindctrl(propkind);
 			if (kindctrl)
 			{
-				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
-				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
+				propkind->set_ctrl(kindctrl);
+				kindctrl->set_propkind(propkind);
 			}
 		}
 	}
 
 	refresh();
 }
-xui_method_explain(xui_propview, del_propelse,		void					)( const xui_proproot_vec& lastroot )
+
+void xui_propview::del_propelse( const xui_proproot_vec& lastroot )
 {
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
 	{
@@ -212,7 +204,8 @@ xui_method_explain(xui_propview, del_propelse,		void					)( const xui_proproot_v
 		}
 	}
 }
-xui_method_explain(xui_propview, del_proproot,		void					)( xui_proproot* proproot )
+
+void xui_propview::del_proproot( xui_proproot* proproot )
 {
 	xui_proproot_vec::iterator itor = std::find(
 		m_proprootvec.begin(),
@@ -237,18 +230,17 @@ xui_method_explain(xui_propview, del_proproot,		void					)( xui_proproot* propro
 	}
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_propview, get_kindctrlcount,	u32						)( void ) const
+u32 xui_propview::get_kindctrlcount( void ) const
 {
 	return m_ascrollitem.size();
 }
-xui_method_explain(xui_propview, get_kindctrl,		xui_control*			)( u32 index )
+
+xui_control* xui_propview::get_kindctrl( u32 index )
 {
 	return m_ascrollitem[index];
 }
-xui_method_explain(xui_propview, reset,				void					)( void )
+
+void xui_propview::reset( void )
 {
 	//detach
 	for (u32 i = 0; i < m_propelsevec.size(); ++i)
@@ -272,8 +264,8 @@ xui_method_explain(xui_propview, reset,				void					)( void )
 			xui_kindctrl* kindctrl = get_kindctrl(propkind);
 			if (kindctrl)
 			{
-				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
-				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
+				propkind->set_ctrl(kindctrl);
+				kindctrl->set_propkind(propkind);
 			}
 		}
 	}
@@ -307,8 +299,8 @@ xui_method_explain(xui_propview, reset,				void					)( void )
 			xui_kindctrl* kindctrl = get_kindctrl(propkind);
 			if (kindctrl)
 			{
-				xui_method_ptrcall(propkind, set_ctrl	 )(kindctrl);
-				xui_method_ptrcall(kindctrl, set_propkind)(propkind);
+				propkind->set_ctrl(kindctrl);
+				kindctrl->set_propkind(propkind);
 			}
 		}
 	}
@@ -316,17 +308,14 @@ xui_method_explain(xui_propview, reset,				void					)( void )
 	refresh();
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_propview, render_else,		void					)( void )
+void xui_propview::render_else( void )
 {
 	xui_colour vertexcolor = get_vertexcolor();
 	xui_rect2d<s32>     rt = get_renderrtabs();
 	rt.ay += m_corner;
 	rt.by -= m_corner;
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(rt));
+	xui_rect2d<s32> cliprect = xui_canvas::get_ins()->get_cliprect();
+	xui_canvas::get_ins()->set_cliprect(cliprect.get_inter(rt));
 	if (m_ascrollitem.size() > 1)
 	{
 		s32 bx = (m_vscroll == NULL) ? rt.bx : get_renderrtins().bx;
@@ -343,18 +332,15 @@ xui_method_explain(xui_propview, render_else,		void					)( void )
 
 			p1.y = kindctrl->get_renderrtabs().ay;
 			p2.y = kindctrl->get_renderrtabs().ay;
-			xui_convas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
+			xui_canvas::get_ins()->draw_line(p1, p2, m_sidecolor*vertexcolor);
 		}
 	}
-	xui_convas::get_ins()->set_cliprect(cliprect);
+	xui_canvas::get_ins()->set_cliprect(cliprect);
 
 	xui_container::render_else();
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args )
+void xui_propview::on_invalid( xui_method_args& args )
 {
 	xui_rect2d<s32> rt = get_renderrtins();
 	xui_vector<s32> sz(0);
@@ -363,8 +349,8 @@ xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args 
 	{
 		xui_kindctrl* kindctrl = xui_dynamic_cast(xui_kindctrl, m_ascrollitem[i]);
 		xui_propkind* propkind = kindctrl->get_propkind();
-		xui_method_ptrcall(kindctrl, set_enable )(propkind->can_edit());
-		xui_method_ptrcall(kindctrl, set_visible)(propkind->can_show());
+		kindctrl->set_enable (propkind->can_edit());
+		kindctrl->set_visible(propkind->can_show());
 		if (propkind->can_show() == false)
 			continue;
 
@@ -383,7 +369,8 @@ xui_method_explain(xui_propview, on_invalid,		void					)( xui_method_args& args 
 		perform();
 	}
 }
-xui_method_explain(xui_propview, on_perform,		void					)( xui_method_args& args )
+
+void xui_propview::on_perform( xui_method_args& args )
 {
 	xui_container::on_perform(args);
 	xui_rect2d<s32> rt = get_renderrtins();
@@ -403,17 +390,15 @@ xui_method_explain(xui_propview, on_perform,		void					)( xui_method_args& args 
 	}
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_propview, del_kindctrlall,	void					)( void )
+void xui_propview::del_kindctrlall( void )
 {
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
 		m_ascrollitem[i]->set_parent(NULL);
 
 	m_ascrollitem.clear();
 }
-xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_proproot* proproot )
+
+void xui_propview::del_kindctrl( xui_proproot* proproot )
 {
 	const xui_propkind_vec& vec = proproot->get_propkind();
 	for (u32 i = 0; i < vec.size(); ++i)
@@ -421,7 +406,8 @@ xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_proproot* propro
 
 	proproot->non_ctrl();
 }
-xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_propkind* propkind )
+
+void xui_propview::del_kindctrl( xui_propkind* propkind )
 {
 	std::vector<xui_control*>::iterator itor = std::find(
 		m_ascrollitem.begin(),
@@ -434,7 +420,8 @@ xui_method_explain(xui_propview, del_kindctrl,		void					)( xui_propkind* propki
 		m_ascrollitem.erase(itor);
 	}
 }
-xui_method_explain(xui_propview, get_kindctrl,		xui_kindctrl*			)( xui_propkind* propkind )
+
+xui_kindctrl* xui_propview::get_kindctrl( xui_propkind* propkind )
 {
 	xui_kindctrl* kindctrl = NULL;
 	xui_kindctrl_map::iterator itor = m_kindctrlmap.find(propkind->get_type());
@@ -456,21 +443,22 @@ xui_method_explain(xui_propview, get_kindctrl,		xui_kindctrl*			)( xui_propkind*
 		std::string      type = propkind->get_type();
 		xui_kind_newctrl func = propkind->get_func();
 		kindctrl  = (*func)(propkind);
-		xui_method_ptrcall(kindctrl, set_name)(type);
-		xui_method_ptrcall(kindctrl, refresh )();
+		kindctrl->set_name(type);
+		kindctrl->refresh();
 		m_kindctrlmap[type].push_back(kindctrl);
 	}
 
 	xui_vector<s32> pt;
 	pt.x = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 	pt.y = (m_vscroll == NULL) ? 0 : m_vscroll->get_value();
-	xui_method_ptrcall(kindctrl, set_parent	 )(this);
-	xui_method_ptrcall(kindctrl, set_scrollpt)(pt);
+	kindctrl->set_parent(this);
+	kindctrl->set_scrollpt(pt);
 	m_ascrollitem.push_back(kindctrl);
 
 	return kindctrl;
 }
-xui_method_explain(xui_propview, get_samekind,		xui_propkind_vec		)( void )
+
+xui_propkind_vec xui_propview::get_samekind( void )
 {
 	xui_propkind_vec result;
 	if (m_proprootvec.size() == 1)
@@ -515,7 +503,8 @@ xui_method_explain(xui_propview, get_samekind,		xui_propkind_vec		)( void )
 
 	return result;
 }
-xui_method_explain(xui_propview, get_propkindall,	xui_propkind_vec		)( xui_propkind* propkind )
+
+xui_propkind_vec xui_propview::get_propkindall( xui_propkind* propkind )
 {
 	xui_propkind_vec result;
 	for (xui_proproot_vec::iterator itor = m_proprootvec.begin(); itor != m_proprootvec.end(); ++itor)

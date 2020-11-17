@@ -11,55 +11,29 @@ class xui_propview : public xui_container
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
-	static const s32		default_lineheight;
-	static const s32		default_nodeindent;
+	static const s32		k_default_lineheight;
+	static const s32		k_default_nodeindent;
 	static xui_propview*	create			( void );
 
-	/*
-	//constructor
-	*/
 	xui_propview( const xui_vector<s32>& size );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_propview( void );
 
-	/*
-	//property
-	*/
 	const xui_proproot_vec&	get_proproot		( void ) const;
 	void					set_proproot		( xui_proproot* proproot );
 	void					set_proproot		( const xui_proproot_vec& proproot );
 	void					add_propelse		( const xui_proproot_vec& lastroot, xui_proproot* propelse );
 	void					del_propelse		( const xui_proproot_vec& lastroot );
 	void					del_proproot		( xui_proproot* proproot );
+    u32						get_kindctrlcount   ( void ) const;
+    xui_control*			get_kindctrl        ( u32 index );
+    void					reset               ( void );
 
-	/*
-	//virtual
-	*/
 	virtual void			render_else			( void );
 
-	/*
-	//method
-	*/
-	u32						get_kindctrlcount	( void ) const;
-	xui_control*			get_kindctrl		( u32 index );
-	void					reset				( void );
-
 protected:
-	/*
-	//override
-	*/
 	virtual void			on_invalid			( xui_method_args& args );
 	virtual void			on_perform			( xui_method_args& args );
 
-	/*
-	//method
-	*/
 	void					del_kindctrl		( xui_proproot* proproot );
 	void					del_kindctrl		( xui_propkind* propkind );
 	void					del_kindctrlall		( void );
@@ -67,15 +41,9 @@ protected:
 	xui_propkind_vec		get_samekind		( void );
 	xui_propkind_vec		get_propkindall		( xui_propkind* propkind );
 
-	/*
-	//def
-	*/
 	typedef std::map< std::string, std::vector<xui_kindctrl*> >
 		xui_kindctrl_map;
 
-	/*
-	//member
-	*/
 	xui_proproot*			m_proproot;
 	xui_proproot_vec		m_proprootvec;
 	xui_proproot_vec		m_propelsevec;

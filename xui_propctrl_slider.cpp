@@ -4,20 +4,14 @@
 #include "xui_propview.h"
 #include "xui_propctrl_slider.h"
 
-xui_implement_rtti(xui_propctrl_slider, xui_propctrl);
+xui_implement_rtti(xui_propctrl_slider, xui_propctrl)
 
-/*
-//create
-*/
-xui_method_explain(xui_propctrl_slider, create, xui_propctrl*)( xui_propdata* propdata )
+xui_propctrl* xui_propctrl_slider::create( xui_propdata* propdata )
 {
 	return new xui_propctrl_slider(propdata);
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_slider)( xui_propdata* propdata )
+xui_propctrl_slider::xui_propctrl_slider( xui_propdata* propdata )
 : xui_propctrl()
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
@@ -36,18 +30,12 @@ xui_create_explain(xui_propctrl_slider)( xui_propdata* propdata )
 	m_propedit = editslider;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propctrl_slider)( void )
+xui_propctrl_slider::~xui_propctrl_slider( void )
 {
 	delete m_propedit;
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_slider, on_linkpropdata,	void			)( bool selfupdate )
+void xui_propctrl_slider::on_linkpropdata( bool selfupdate )
 {
 	if (selfupdate == false)
 	{
@@ -74,7 +62,8 @@ xui_method_explain(xui_propctrl_slider, on_linkpropdata,	void			)( bool selfupda
 		m_propedit->set_value(value);
 	}
 }
-xui_method_explain(xui_propctrl_slider, on_perform,			void			)( xui_method_args& args )
+
+void xui_propctrl_slider::on_perform( xui_method_args& args )
 {
 	xui_propctrl::on_perform(args);
 
@@ -99,10 +88,7 @@ xui_method_explain(xui_propctrl_slider, on_perform,			void			)( xui_method_args&
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_propctrl_slider, on_editvalue,		void			)( xui_propedit* sender )
+void xui_propctrl_slider::on_editvalue( xui_propedit* sender )
 {
 	f64 value = m_propedit->get_value();
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)

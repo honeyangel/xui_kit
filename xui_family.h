@@ -5,34 +5,28 @@
 
 enum
 {
-	TEXTALIGN_LT,
-	TEXTALIGN_LC,
-	TEXTALIGN_LB,
-	TEXTALIGN_CT,
-	TEXTALIGN_CC,
-	TEXTALIGN_CB,
-	TEXTALIGN_RT,
-	TEXTALIGN_RC,
-	TEXTALIGN_RB,
+	k_textalign_lt,
+	k_textalign_lc,
+	k_textalign_lb,
+	k_textalign_ct,
+	k_textalign_cc,
+	k_textalign_cb,
+	k_textalign_rt,
+	k_textalign_rc,
+	k_textalign_rb,
 };
 
 class xui_family
 {
 public:
-	static const xui_family default;
+    static const xui_family k_default;
 
-	/*
-	//member
-	*/
 	s32			face;
 	s32			size;
 	s32			bold;
 	s32			horz;
 	s32			vert;
 
-	/*
-	//constructor
-	*/
 	xui_family( void )
 	{
 		face = 0;
@@ -66,9 +60,6 @@ public:
 		vert = other.vert;
 	}
 
-	/*
-	//operator
-	*/
 	bool operator == ( const xui_family& other ) const
 	{
 		return (face == other.face &&
@@ -86,9 +77,6 @@ public:
 				vert != other.vert);
 	}
 
-	/*
-	//method
-	*/
 	s32	to_key( void ) const
 	{
 		return  (face << 28) |

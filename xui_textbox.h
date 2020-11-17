@@ -4,12 +4,12 @@
 #include "xui_drawer.h"
 #include "xui_caretdrawer.h"
 
-enum NumberType
+enum
 {
-	NT_NONE,
-	NT_INT,
-	NT_UNSIGNEDINT,
-	NT_FLOAT,
+	k_nt_none,
+	k_nt_int,
+	k_nt_unsignedint,
+	k_nt_float,
 };
 
 class xui_textbox : public xui_drawer
@@ -17,75 +17,37 @@ class xui_textbox : public xui_drawer
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
-	static const xui_colour		default_selectedcolor;
+	static const xui_colour		k_default_selectedcolor;
 	static xui_textbox*			create				( s32 width );
 
-	/*
-	//constructor
-	*/
 	xui_textbox( const xui_vector<s32>& size );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_textbox( void );
 
-	/*
-	//init
-	*/
 	void						ini_textbox			( const std::wstring& text );
-
-	/*
-	//hint text
-	*/
 	const std::wstring&			get_hinttext		( void ) const;
 	void						set_hinttext		( const std::wstring& hint );
 	const xui_family_render&	get_hintdraw		( void ) const;
 	void						set_hintdraw		( const xui_family_render& hintdraw );
-
-	/*
-	//property
-	*/
 	bool						was_password		( void ) const;
 	void						set_password		( bool flag );
 	u08							get_numbtype		( void ) const;
 	void						set_numbtype		( u08  type );
 	bool						was_readonly		( void ) const;
 	void						set_readonly		( bool flag );
-
-	/*
-	//caret
-	*/
 	u32							get_caretindex		( void ) const;
 	u32							hit_caretindex		( const xui_vector<s32>& pt ) const;
 	void						set_caretindex		( u32 index, bool force = false );
 	void						set_caretvisible	( void );
-
-	/*
-	//select
-	*/
 	u32							get_selectstart		( void ) const;
 	u32							get_selectfinal		( void ) const;
 	u32							get_selectcount		( void ) const;
 	void						set_selecttext		( u32 start, u32 final );
 
-	/*
-	//update&render
-	*/
 	virtual void				update				( f32 delta );
 
-	/*
-	//method
-	*/
 	xui_method<xui_method_args>	xm_textenter;
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void				on_keybddown		( xui_method_keybd& args );
 	virtual void				on_keybdchar		( xui_method_keybd& args );
 	virtual void				on_mousedown		( xui_method_mouse& args );
@@ -98,16 +60,10 @@ protected:
 	virtual void				on_setrendersz		( xui_method_args&  args );
 	virtual void				on_setborderrt		( xui_method_args&  args );
 
-	/*
-	//virtual
-	*/
 	virtual std::wstring		get_rendertext		( void ) const;
 	virtual xui_vector<s32>		get_rendericonpt	( void ) const;
 	virtual xui_rect2d<s32>		get_rendertextrt	( void ) const;
 
-	/*
-	//keyboard
-	*/
 	void						do_larrow			( bool shift );
 	void						do_rarrow			( bool shift );
 	void						do_home				( bool shift );
@@ -120,25 +76,15 @@ protected:
 	void						do_cut				( void );
 	void						do_paste			( void );
 
-	/*
-	//selection
-	*/
 	void						del_selecttext		( void );
 	void						non_selecttext		( void );
 	std::wstring				get_selecttext		( void ) const;
-
-	/*
-	//method
-	*/
 	void						set_caretrect		( void );
 	u32							get_textwidth		( const std::wstring& text ) const;
 	u32							get_charindex		( const std::wstring& text, s32 x ) const;
 	u32							get_showcount		( void ) const;
 
 protected:
-	/*
-	//member
-	*/
 	xui_family_render			m_hintdraw;
 	std::wstring				m_hinttext;
 	bool						m_password;

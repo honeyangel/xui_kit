@@ -7,9 +7,6 @@ template<typename T>
 class xui_vector
 {
 public:
-	/*
-	// member
-	*/
 	union
 	{
 		T value[2];
@@ -26,9 +23,6 @@ public:
 		};
 	};
 
-	/*
-	// constructor
-	*/
 	xui_vector( void )
 	{
 		memset(value, 0, sizeof(T) * 2);
@@ -48,9 +42,6 @@ public:
 		memcpy(value, other.value, sizeof(T) * 2 );
 	}
 
-	/*
-	// operator
-	*/
 	xui_vector<T>  operator - ( void ) const
 	{
 		return xui_vector<T>(-x, -y);
@@ -80,9 +71,6 @@ public:
 		return xui_vector<T>(x/s, y/s);
 	}
 
-	/*
-	// operator
-	*/
 	xui_vector<T>& operator = ( const xui_vector<T>& other )
 	{
 		memcpy(value, other.value, sizeof(T) * 2);
@@ -125,9 +113,6 @@ public:
 		return (*this);
 	}
 
-	/*
-	// operator
-	*/
 	bool operator ==( const xui_vector<T>& other ) const
 	{
 		return (x == other.x && y == other.y);
@@ -137,9 +122,6 @@ public:
 		return (x != other.x || y != other.y);
 	}
 
-	/*
-	// convert
-	*/
 	template<typename C>
 	xui_vector<C> to( void ) const
 	{

@@ -1,5 +1,5 @@
-#ifndef __xui_convas_h__
-#define __xui_convas_h__
+#ifndef __xui_canvas_h__
+#define __xui_canvas_h__
 
 #include "xui_rect2d.h"
 #include "xui_colour.h"
@@ -8,54 +8,32 @@
 
 enum
 {
-	TRIANGLE_UP,
-	TRIANGLE_DOWN,
-	TRIANGLE_LEFT,
-	TRIANGLE_RIGHT
+	k_triangle_up,
+	k_triangle_down,
+	k_triangle_left,
+	k_triangle_right
 };
 
-class xui_convas
+class xui_canvas
 {
-	xui_declare_instance(xui_convas)
+	xui_declare_instance(xui_canvas)
 
 public:
-	/*
-	//constructor
-	*/
-	xui_convas( void );
+	xui_canvas( void );
+	virtual ~xui_canvas( void );
 
-	/*
-	//destructor
-	*/
-	virtual ~xui_convas( void );
-
-	/*
-	//begin
-	//clear
-	*/
 	void					begin				( void );
 	void					clear				( const xui_colour& color );
 	void					present				( void );
 
-	/*
-	//transform
-	*/
 	void					set_transform		( f32 angle, const xui_vector<f32>& scale, const xui_vector<f32>& translate );
 	void					non_transform		( void );
 
-	/*
-	//cliprect
-	//viewport
-	*/
 	const xui_rect2d<s32>&	get_viewport		( void ) const;
 	void					set_viewport		( const xui_rect2d<s32>&	rt );
 	const xui_rect2d<s32>&	get_cliprect		( void ) const;
 	void					set_cliprect		( const xui_rect2d<s32>&	rt );
 
-
-	/*
-	//image
-	*/
 	void					draw_image			( xui_bitmap*				image,
 												  const xui_vector<s32>&	pt,
 												  const xui_colour&			color );
@@ -69,9 +47,6 @@ public:
 												  const xui_rect2d<s32>&	dst,
 												  const xui_colour&			color );
 
-	/*
-	//text
-	*/
 	std::wstring			trim_text			( const std::wstring&		text, 
 												  const xui_family&			textfont, 
 												  s32						maxwidth );
@@ -113,16 +88,10 @@ public:
 												  const xui_vector<s32>&	screenpt,
 												  const xui_family_render&	textdraw );
 
-	/*
-	//line
-	*/
 	void					draw_line			( const xui_vector<s32>&	p1, 
 												  const xui_vector<s32>&	p2,
 												  const xui_colour&			color );
 
-	/*
-	//path
-	*/
 	void					draw_path			( xui_vector<s32>*			pt,
 												  u32						count,
 												  const xui_colour&			color );
@@ -131,9 +100,6 @@ public:
 												  u32						count,
 												  const xui_colour&			color );
 
-	/*
-	//triangle
-	*/
 	void					draw_triangle		( const xui_vector<s32>&	center,
 												  s32						half,
 												  u08						direction,
@@ -144,9 +110,6 @@ public:
 												  u08						direction,
 												  const xui_colour&			color );
 
-	/*
-	//rectangle
-	*/
 	void					draw_rectangle		( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color,
 												  s32						thick = 1 );
@@ -158,9 +121,6 @@ public:
 	void					fill_rectangle		( const xui_rect2d<s32>&	rt, 
 												  xui_colour*				colors );
 
-	/*
-	//round
-	*/
 	void					draw_round			( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color,
 												  s32						corner );
@@ -190,9 +150,6 @@ public:
 												  s32						start,
 												  s32						sweep );
 
-	/*
-	//arc
-	*/
 	void					draw_arc			( const xui_rect2d<s32>&	rt,
 												  const xui_colour&			color,
 												  s32						start, 
@@ -206,32 +163,21 @@ public:
 												  s32						sweep,
 												  s32						precision );
 
-	/*
-	//flag
-	*/
 	void					draw_tick			( const xui_vector<s32>&	center,
 												  s32						half,
 												  const xui_colour&			color );
-	/*
-	//method
-	*/
+
 	xui_family_create*		get_family_create	( void );
 	xui_family_member*		get_family_member	( const xui_family& family, u16 wc );
 
 protected:
-	/*
-	//typedef
-	*/
 	typedef std::vector<xui_family_bitmap*>
 		family_bitmapvec;
 
-	/*
-	//member
-	*/
 	xui_rect2d<s32>			m_viewport;
 	xui_rect2d<s32>			m_cliprect;
 	xui_family_create*		m_familycreate;
 	family_bitmapvec		m_familybitmapvec;
 };
 
-#endif//__xui_convas_h__
+#endif//__xui_canvas_h__

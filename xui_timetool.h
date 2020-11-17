@@ -8,34 +8,18 @@ class xui_timetool : public xui_toolbar
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_timetool( xui_timeview* timeview );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_timetool( void );
 
-	/*
-	//method
-	*/
 	xui_timer*		get_playtimer		( void );
 
 protected:
-	/*
-	//event
-	*/
 	void			on_buttonclick		( xui_component* sender, xui_method_args& args );
 	void			on_toggleclick		( xui_component* sender, xui_method_args& args );
 	void			on_buttonrenderself	( xui_component* sender, xui_method_args& args );
 	void			on_togglerenderself	( xui_component* sender, xui_method_args& args );
 	void			on_timertick		( xui_component* sender, xui_method_args& args );
 
-	/*
-	//member
-	*/
 	xui_button*		m_plus;
 	xui_button*		m_head;
 	xui_button*		m_prev;

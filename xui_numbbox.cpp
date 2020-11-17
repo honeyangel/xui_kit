@@ -1,14 +1,11 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_global.h"
 #include "xui_button.h"
 #include "xui_numbbox.h"
 
-xui_implement_rtti(xui_numbbox, xui_textbox);
+xui_implement_rtti(xui_numbbox, xui_textbox)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, f64 interval, bool showarrow ) 
+xui_numbbox::xui_numbbox(const xui_vector<s32>& size, u08 numbtype, f64 interval, bool showarrow ) 
 : xui_textbox(size)
 {
 	m_numbtype = numbtype;
@@ -35,10 +32,7 @@ xui_create_explain(xui_numbbox)(const xui_vector<s32>& size, u08 numbtype, f64 i
 	}
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_numbbox, get_renderrtins,	xui_rect2d<s32>	)( void ) const
+xui_rect2d<s32> xui_numbbox::get_renderrtins( void ) const
 {
 	xui_rect2d<s32> rt = xui_textbox::get_renderrtins();
 	if (m_incarrow)
@@ -47,10 +41,7 @@ xui_method_explain(xui_numbbox, get_renderrtins,	xui_rect2d<s32>	)( void ) const
 	return rt;
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args&  args )
+void xui_numbbox::on_perform( xui_method_args&  args )
 {
 	xui_textbox::on_perform(args);
 	if (m_incarrow && m_decarrow)
@@ -61,18 +52,19 @@ xui_method_explain(xui_numbbox, on_perform,			void			)( xui_method_args&  args )
 		m_decarrow->on_perform_pt(pt.x, pt.y);
 	}
 }
-xui_method_explain(xui_numbbox, on_mousewheel,		void			)( xui_method_mouse& args )
+
+void xui_numbbox::on_mousewheel( xui_method_mouse& args )
 {
 	xui_textbox::on_mousewheel(args);
-
-	f64 value = _wtof(m_text.c_str()) + (args.wheel > 0 ? m_interval : -m_interval);
-	if (value < 0.0 && m_numbtype == NT_UNSIGNEDINT)
+    std::string text = xui_global::unicode_to_utf8(m_text);
+	f64 value = atof(text.c_str()) + (args.wheel > 0 ? m_interval : -m_interval);
+	if (value < 0.0 && m_numbtype == k_nt_unsignedint)
 		value = 0.0;
 
 	char temp[32];
-	if (m_numbtype == NT_FLOAT) sprintf(temp, "%.2f", (f32)value);
-	else						sprintf(temp, "%d",   (s32)value);
-	set_text(xui_global::ascii_to_unicode(temp));
+	if (m_numbtype == k_nt_float)   sprintf(temp, "%.2f", (f32)value);
+	else						    sprintf(temp, "%d",   (s32)value);
+	set_text(xui_global::utf8_to_unicode(temp));
 
 	xui_method_args    enter_args;
 	xm_textenter(this, enter_args);
@@ -80,10 +72,7 @@ xui_method_explain(xui_numbbox, on_mousewheel,		void			)( xui_method_mouse& args
 	args.handle = true;
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_numbbox, on_arrowupdateself, void			)( xui_component* sender, xui_method_update& args )
+void xui_numbbox::on_arrowupdateself( xui_component* sender, xui_method_update& args )
 {
 	if (m_incarrow->has_catch() ||
 		m_decarrow->has_catch())
@@ -101,31 +90,34 @@ xui_method_explain(xui_numbbox, on_arrowupdateself, void			)( xui_component* sen
 		m_holdtime  = 0.0f;
 	}
 }
-xui_method_explain(xui_numbbox, on_arrowrenderself, void			)( xui_component* sender, xui_method_args& args )
+
+void xui_numbbox::on_arrowrenderself( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt    = sender->get_renderrtabs();
 	xui_colour      color = sender->get_rendercolor();
 	xui_vector<s32> center(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
 	if (sender == m_incarrow)
-		xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_UP,   color);
+		xui_canvas::get_ins()->fill_triangle(center, 3, k_triangle_up,   color);
 	if (sender == m_decarrow)
-		xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN, color);
+		xui_canvas::get_ins()->fill_triangle(center, 3, k_triangle_down, color);
 }
-xui_method_explain(xui_numbbox, on_arrowclick,		void			)( xui_component* sender, xui_method_args& args )
+
+void xui_numbbox::on_arrowclick( xui_component* sender, xui_method_args& args )
 {
-	f64 value = _wtof(m_text.c_str());
+    std::string text = xui_global::unicode_to_utf8(m_text);
+	f64 value = atof(text.c_str());
 	if (sender == m_incarrow)
 		value  += m_interval;
 	if (sender == m_decarrow)
 		value  -= m_interval;
 
-	if (value  < 0.0 && m_numbtype == NT_UNSIGNEDINT)
+	if (value  < 0.0 && m_numbtype == k_nt_unsignedint)
 		value  = 0.0;
 
 	char temp[32];
-	if (m_numbtype == NT_FLOAT) sprintf(temp, "%.2f", (f32)value);
-	else						sprintf(temp, "%d",   (s32)value);
-	set_text(xui_global::ascii_to_unicode(temp));
+	if (m_numbtype == k_nt_float)   sprintf(temp, "%.2f", (f32)value);
+	else						    sprintf(temp, "%d",   (s32)value);
+	set_text(xui_global::utf8_to_unicode(temp));
 
 	xui_method_args    enter_args;
 	xm_textenter(this, enter_args);

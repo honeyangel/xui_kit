@@ -6,29 +6,14 @@
 class xui_render_window
 {
 public:
-	/*
-	//constructor
-	*/
-	xui_render_window( HWND hwnd );
+	xui_render_window( xui_native_window* hwnd );
 
-	/*
-	//static
-	*/
-	static void		init		( HWND hwnd );
-
-	/*
-	//method
-	*/
-	HWND			get_hwnd	( void );
-	void			current		( void );
-	void			present		( void );
+    xui_native_window*  get_hwnd	( void );
+	void			    current		( void );
+	void			    present		( void );
 
 protected:
-	/*
-	//member
-	*/
-	HWND			m_hwnd;
-	HDC				m_hdc;
+    xui_native_window*	m_hwnd;
 };
 
 #endif//__xui_render_window_h__

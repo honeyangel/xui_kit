@@ -10,19 +10,9 @@ typedef std::vector<xui_propkind*> xui_propkind_vec;
 class xui_propkind
 {
 public:
-	/*
-	//constructor
-	*/
-	xui_propkind( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow = true, bool tail = false, bool plusshow = false, const xui_family& textfont = xui_family(12), const xui_family_render& textdraw = xui_family_render::default);
-
-	/*
-	//destructor
-	*/
+	xui_propkind( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow = true, bool tail = false, bool plusshow = false, const xui_family& textfont = xui_family(12), const xui_family_render& textdraw = xui_family_render::k_default);
 	virtual ~xui_propkind( void );
 
-	/*
-	//method
-	*/
 	xui_proproot*					get_root	( void ) const;
 	xui_kind_newctrl				get_func	( void ) const;
 	const std::string&				get_type	( void ) const;
@@ -35,7 +25,6 @@ public:
 	xui_propdata*					get_propdata( const std::wstring& name );
 	void							add_propdata( xui_propdata* propdata );
 	std::wstring					get_proppath( xui_propdata* propdata );
-
 	const std::wstring&				get_name	( void ) const;
 	void							set_name	( const std::wstring& name );
 	xui_bitmap*						get_icon	( void ) const;
@@ -50,17 +39,11 @@ public:
 	bool							can_edit	( void ) const;
 	void							set_edit	( bool flag );
 
-	/*
-	//method
-	*/
 	xui_method<xui_method_propdata>	xm_propchanged;
 	xui_method<xui_method_args>		xm_namechanged;
 	xui_method<xui_method_args>		xm_flagchanged;
 
 protected:
-	/*
-	//member
-	*/
 	xui_proproot*					m_root;
 	xui_kind_newctrl				m_func;
 	std::string						m_type;

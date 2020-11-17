@@ -10,27 +10,14 @@ class xui_treedata
 	friend class xui_treenode;
 
 public:
-	/*
-	//constructor
-	*/
 	xui_treedata( void );
 	xui_treedata( const std::wstring& text );
 	xui_treedata( const std::wstring& text, xui_bitmap* icon );
 	xui_treedata( const std::wstring& text, xui_bitmap* icon, bool flag );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_treedata( void ){};
 
-	/*
-	//method
-	*/
 	xui_treenode*				get_node		( void );
 
-	/*
-	//interface
-	*/
 	virtual bool				get_flag		( u32 index );
 	virtual xui_bitmap*			get_icon		( u32 index );
 	virtual std::wstring		get_text		( u32 index );
@@ -40,14 +27,8 @@ public:
 	virtual void				set_flag		( u32 index, bool flag );
 
 protected:
-	/*
-	//method
-	*/
 	void						set_node		( xui_treenode* node );
 
-	/*
-	//member
-	*/
 	xui_treenode*				m_node;
 	xui_bitmap*					m_icon;
 	std::wstring				m_text;

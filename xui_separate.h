@@ -8,20 +8,11 @@ class xui_separate : public xui_component
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_separate( const xui_vector<s32>& size, u08 flow );
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void	on_renderback	( xui_method_args& args );
 
-	/*
-	//member
-	*/
 	u08				m_flow;
 };
 

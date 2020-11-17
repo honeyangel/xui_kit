@@ -13,7 +13,7 @@
 #include "xui_treenode.h"
 #include "xui_timeview.h"
 
-const s32 GRAD_LAYOUT[7][3] = 
+const s32 k_grad_layout[7][3] = 
 {
 	{65,   1, 1},
 	{30,   2, 2},
@@ -24,23 +24,17 @@ const s32 GRAD_LAYOUT[7][3] =
 	{ 1, 100, 5}
 };
 
-xui_implement_rtti(xui_timeview, xui_container);
+xui_implement_rtti(xui_timeview, xui_container)
 
-/*
-//static
-*/
-xui_method_explain(xui_timeview, create, xui_timeview*)( s32 width, const std::vector<xui_treecolumn>& columninfo )
+xui_timeview* xui_timeview::create( s32 width, const std::vector<xui_treecolumn>& columninfo )
 {
 	xui_timeview* timeview = new xui_timeview(xui_vector<s32>(width, 300), columninfo);
-	xui_method_ptrcall(timeview, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(timeview, set_borderrt	)(xui_rect2d<s32>(4));
+	timeview->set_sidestyle(k_sidestyle_s);
+	timeview->set_borderrt(xui_rect2d<s32>(4));
 	return timeview;
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight )
+xui_timeview::xui_timeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight )
 : xui_container(size)
 {
 	m_hscrollshow	= true;
@@ -54,29 +48,29 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 
 	m_timetool = new xui_timetool(this);
 	m_timegrad = new xui_timegrad(this);
-	xui_method_ptrcall(m_timegrad,	xm_updateself	) += new xui_method_member<xui_method_update,			xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
+	m_timegrad->xm_updateself	 += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
 	m_widgetvec.push_back(m_timetool);
 	m_widgetvec.push_back(m_timegrad);
 
-	m_ksslider = new xui_slider(xui_vector<s32>(100, 16), FLOWSTYLE_H, ARROWDRAW_PLUSANDMINUS);
-	xui_method_ptrcall(m_ksslider,	xm_scroll		) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_kssliderscroll);
-	xui_method_ptrcall(m_ksslider,	set_parent		)(this);
-	xui_method_ptrcall(m_ksslider,	set_backcolor	)(xui_colour::darkgray);
-	xui_method_ptrcall(m_ksslider,	set_corner		)(3);
-	xui_method_ptrcall(m_ksslider,	set_borderrt	)(xui_rect2d<s32>(2));
-	xui_method_ptrcall(m_ksslider,	ini_scroll		)(100, 15);
+	m_ksslider = new xui_slider(xui_vector<s32>(100, 16), k_flowstyle_h, k_arrowdraw_plusandminus);
+	m_ksslider->xm_scroll		 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_kssliderscroll);
+	m_ksslider->set_parent(this);
+	m_ksslider->set_backcolor(xui_colour::k_darkgray);
+	m_ksslider->set_corner(3);
+	m_ksslider->set_borderrt(xui_rect2d<s32>(2));
+	m_ksslider->ini_scroll(100, 15);
 	m_widgetvec.push_back(m_ksslider);
 
 	m_fpstring = new xui_drawer(xui_vector<s32>(32, 16));
-	xui_method_ptrcall(m_fpstring,	set_parent		)(this);
-	xui_method_ptrcall(m_fpstring,	ini_drawer		)(L"fps:");
+	m_fpstring->set_parent(this);
+	m_fpstring->ini_drawer(L"fps:");
 	m_fpnumber = new xui_drawer(xui_vector<s32>(24, 16));
-	xui_method_ptrcall(m_fpnumber,	xm_mousemove	) += new xui_method_member<xui_method_mouse,			xui_timeview>(this, &xui_timeview::on_fpnumbermousemove);
-	xui_method_ptrcall(m_fpnumber,	xm_renderself	) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_fpnumberrenderself);
-	xui_method_ptrcall(m_fpnumber,	set_parent		)(this);
-	xui_method_ptrcall(m_fpnumber,	set_cursor		)(CURSOR_WE);
-	xui_method_ptrcall(m_fpnumber,	set_textalign	)(TEXTALIGN_CC);
-	xui_method_ptrcall(m_fpnumber,	ini_drawer		)(L"30");
+	m_fpnumber->xm_mousemove	 += new xui_method_member<xui_method_mouse,			xui_timeview>(this, &xui_timeview::on_fpnumbermousemove);
+	m_fpnumber->xm_renderself	 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_fpnumberrenderself);
+	m_fpnumber->set_parent(this);
+	m_fpnumber->set_cursor(k_cursor_we);
+	m_fpnumber->set_textalign(k_textalign_cc);
+	m_fpnumber->ini_drawer(L"30");
 	m_widgetvec.push_back(m_fpstring);
 	m_widgetvec.push_back(m_fpnumber);
 
@@ -86,101 +80,100 @@ xui_create_explain(xui_timeview)( const xui_vector<s32>& size, const std::vector
 	for (u32 i = 0; i < columninfo.size(); ++i)
 		treesize += columninfo[i].size;
 
-	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, PLUSRENDER_SYMBOL, false, true, false);
-	xui_method_ptrcall(m_timetree,	set_parent		)(this);
-	xui_method_ptrcall(m_timetree,	set_drawcolor	)(false);
-	xui_method_ptrcall(m_timetree,	set_borderrt	)(xui_rect2d<s32>(4, 0, 32, 0));
-	xui_method_ptrcall(m_timetree,	xm_nonfocus		) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreenonfocus);
-	xui_method_ptrcall(m_timetree,	xm_mouseclick	) += new xui_method_member<xui_method_mouse,		xui_timeview>(this, &xui_timeview::on_timetreemouseclick);
-	xui_method_ptrcall(m_timetree,	xm_setclientsz	) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
-	xui_method_ptrcall(m_timetree,	xm_invalid		) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
-	xui_method_ptrcall(m_timetree,	xm_updateself	) += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timetreeupdateself);
-	xui_method_ptrcall(m_timetree,	xm_treedragover	) += new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
-	xui_method_ptrcall(m_timetree,	xm_treedragdrop	) += new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
+	m_timetree = new xui_treeview(xui_vector<s32>(treesize, 0), columninfo, lineheight, k_plusrender_symbol, false, true, false);
+	m_timetree->set_parent(this);
+	m_timetree->set_drawcolor(false);
+	m_timetree->set_borderrt(xui_rect2d<s32>(4, 0, 32, 0));
+	m_timetree->xm_nonfocus		 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreenonfocus);
+	m_timetree->xm_mouseclick	 += new xui_method_member<xui_method_mouse,		    xui_timeview>(this, &xui_timeview::on_timetreemouseclick);
+	m_timetree->xm_setclientsz	 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreesetclientsz);
+	m_timetree->xm_invalid		 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_timetreeinvalid);
+	m_timetree->xm_updateself	 += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timetreeupdateself);
+	m_timetree->xm_treedragover	 += new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
+	m_timetree->xm_treedragdrop	 += new xui_method_member<xui_method_treedragdrop,	xui_timeview>(this, &xui_timeview::on_timetreeoverdrop);
 
 	m_tldelete = new xui_button(xui_vector<s32>(16));
-	xui_method_ptrcall(m_tldelete,	xm_buttonclick	) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_tldeleteclick);
-	xui_method_ptrcall(m_tldelete,	xm_renderself	) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_tldeleterenderself);
-	xui_method_ptrcall(m_tldelete,	set_parent		)(this);
-	xui_method_ptrcall(m_tldelete,	set_backcolor	)(xui_colour::white);
-	xui_method_ptrcall(m_tldelete,	set_movecolor	)(xui_button::default_downcolor);
-	xui_method_ptrcall(m_tldelete,	ini_component	)(true, false);
+	m_tldelete->xm_buttonclick	 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_tldeleteclick);
+	m_tldelete->xm_renderself	 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_tldeleterenderself);
+	m_tldelete->set_parent(this);
+	m_tldelete->set_backcolor(xui_colour::k_white);
+	m_tldelete->set_movecolor(xui_button::k_default_downcolor);
+	m_tldelete->ini_component(true, false);
 
 	m_sizectrl = new xui_control(xui_vector<s32>(6));
-	xui_method_ptrcall(m_sizectrl,	ini_component	)(0, 0, DOCKSTYLE_U);
-	xui_method_ptrcall(m_sizectrl,	set_parent		)(this);
-	xui_method_ptrcall(m_sizectrl,	set_cursor		)(CURSOR_WE);
-	xui_method_ptrcall(m_sizectrl,	xm_mousemove	) += new xui_method_member<xui_method_mouse,		xui_timeview>(this, &xui_timeview::on_sizectrlmousemove);
-	xui_method_ptrcall(m_sizectrl,	xm_renderself	) += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_sizectrlrenderself);
+	m_sizectrl->ini_component(0, 0, k_dockstyle_u);
+	m_sizectrl->set_parent(this);
+	m_sizectrl->set_cursor(k_cursor_we);
+	m_sizectrl->xm_mousemove	 += new xui_method_member<xui_method_mouse,		    xui_timeview>(this, &xui_timeview::on_sizectrlmousemove);
+	m_sizectrl->xm_renderself	 += new xui_method_member<xui_method_args,			xui_timeview>(this, &xui_timeview::on_sizectrlrenderself);
 	m_widgetvec.push_back(m_sizectrl);
 
 	m_timerect = new xui_timerect(this);
 	m_timehead = new xui_timehead(this);
-	xui_method_ptrcall(m_timerect,	xm_updateself	) += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timerectdraghorz);
-	xui_method_ptrcall(m_timehead,	xm_updateself	) += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
-	xui_method_ptrcall(m_timehead,	xm_updateself	) += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
-	xui_method_ptrcall(m_timehead,	xm_mouserise	) += new xui_method_member<xui_method_mouse,		xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
-	xui_method_ptrcall(m_timehead,	xm_keybddown	) += new xui_method_member<xui_method_keybd,		xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
-	xui_method_ptrcall(m_timerect,	xm_keybddown	) += new xui_method_member<xui_method_keybd,		xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
+	m_timerect->xm_updateself	 += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timerectdraghorz);
+	m_timehead->xm_updateself	 += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
+	m_timehead->xm_updateself	 += new xui_method_member<xui_method_update,		xui_timeview>(this, &xui_timeview::on_timeviewdragvert);
+	m_timehead->xm_mouserise	 += new xui_method_member<xui_method_mouse,		    xui_timeview>(this, &xui_timeview::on_timelinemouseclick);
+	m_timehead->xm_keybddown	 += new xui_method_member<xui_method_keybd,		    xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
+	m_timerect->xm_keybddown	 += new xui_method_member<xui_method_keybd,		    xui_timeview>(this, &xui_timeview::on_timelinekeybddown);
 	m_ascrollitem.push_back(m_timerect);
 	m_ascrollitem.push_back(m_timehead);
 
 	refresh();
 }
 
-/*
-//control
-*/
-xui_method_explain(xui_timeview, get_timegrad,				xui_timegrad*				)( void )
+xui_timegrad* xui_timeview::get_timegrad( void )
 {
 	return m_timegrad;
 }
-xui_method_explain(xui_timeview, get_timetool,				xui_timetool*				)( void )
+
+xui_timetool* xui_timeview::get_timetool( void )
 {
 	return m_timetool;
 }
-xui_method_explain(xui_timeview, get_timehead,				xui_timehead*				)( void )
+
+xui_timehead* xui_timeview::get_timehead( void )
 {
 	return m_timehead;
 }
-xui_method_explain(xui_timeview, get_timetree,				xui_treeview*				)( void )
+
+xui_treeview* xui_timeview::get_timetree( void )
 {
 	return m_timetree;
 }
 
-/*
-//property
-*/
-xui_method_explain(xui_timeview, add_toolitem,				void						)( xui_component* item )
+void xui_timeview::add_toolitem( xui_component* item )
 {
 	m_timetool->add_item(item);
 }
-xui_method_explain(xui_timeview, set_headtext,				void						)( const std::wstring& text )
+
+void xui_timeview::set_headtext( const std::wstring& text )
 {
 	u32 index = m_timetree->get_columninfocount()-1;
 	m_timetree->set_columntext(index, text);
 }
-xui_method_explain(xui_timeview, set_gradfont,				void						)( const xui_family& font )
+
+void xui_timeview::set_gradfont( const xui_family& font )
 {
 	m_timegrad->set_textfont(font);
 }
-xui_method_explain(xui_timeview, set_graddraw,				void						)( const xui_family_render&	draw )
+
+void xui_timeview::set_graddraw( const xui_family_render&	draw )
 {
 	m_timegrad->set_textdraw(draw);
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timeview, get_allframe,				const xui_keyframe_map&		)( void ) const
+const xui_keyframe_map& xui_timeview::get_allframe( void ) const
 {
 	return m_allframe;
 }
-xui_method_explain(xui_timeview, get_curframe,				s32							)( void ) const
+
+s32 xui_timeview::get_curframe( void ) const
 {
 	return m_curframe;
 }
-xui_method_explain(xui_timeview, set_curframe,				void						)( s32 frame )
+
+void xui_timeview::set_curframe( s32 frame )
 {
 	if (m_curframe != xui_max(frame, 0))
 	{
@@ -190,29 +183,33 @@ xui_method_explain(xui_timeview, set_curframe,				void						)( s32 frame )
 		xm_curframechange(this, args);
 	}
 }
-xui_method_explain(xui_timeview, get_keyspace,				s32							)( void) const
+
+s32 xui_timeview::get_keyspace( void) const
 {
 	return m_keyspace;
 }
-xui_method_explain(xui_timeview, get_keylarge,				s32							)( void ) const
+
+s32 xui_timeview::get_keylarge( void ) const
 {
 	return m_keylarge;
 }
-xui_method_explain(xui_timeview, get_keysmall,				s32							)( void ) const
+
+s32 xui_timeview::get_keysmall( void ) const
 {
 	return m_keysmall;
 }
-xui_method_explain(xui_timeview, set_keyspace,				void						)( s32 space )
+
+void xui_timeview::set_keyspace( s32 space )
 {
 	if (m_keyspace != xui_max(space, 1))
 	{
 		m_keyspace  = xui_max(space, 1);
 		for (s32 i = 0; i < 7; ++i)
 		{
-			if (m_keyspace >= GRAD_LAYOUT[i][0])
+			if (m_keyspace >= k_grad_layout[i][0])
 			{
-				m_keylarge  = GRAD_LAYOUT[i][1];
-				m_keysmall  = m_keylarge / GRAD_LAYOUT[i][2];
+				m_keylarge  = k_grad_layout[i][1];
+				m_keysmall  = m_keylarge / k_grad_layout[i][2];
 				break;
 			}
 		}
@@ -221,38 +218,37 @@ xui_method_explain(xui_timeview, set_keyspace,				void						)( s32 space )
 	}
 }
 
-/*
-//drag
-*/
-xui_method_explain(xui_timeview, get_droptime,				s32							)( void ) const
+s32 xui_timeview::get_droptime( void ) const
 {
 	return m_droptime;
 }
-xui_method_explain(xui_timeview, set_droptime,				void						)( s32 time )
+
+void xui_timeview::set_droptime( s32 time )
 {
 	m_droptime = time;
 }
-xui_method_explain(xui_timeview, get_dragmode,				u08							)( void ) const
+
+u08 xui_timeview::get_dragmode( void ) const
 {
 	return m_dragmode;
 }
-xui_method_explain(xui_timeview, set_dragmode,				void						)( u08 mode )
+
+void xui_timeview::set_dragmode( u08 mode )
 {
 	m_dragmode = mode;
 }
-xui_method_explain(xui_timeview, get_dragtime,				s32							)( void ) const
+
+s32 xui_timeview::get_dragtime( void ) const
 {
 	return m_dragtime;
 }
-xui_method_explain(xui_timeview, set_dragtime,				void						)( s32 time )
+
+void xui_timeview::set_dragtime( s32 time )
 {
 	m_dragtime = time;
 }
 
-/*
-//rect
-*/
-xui_method_explain(xui_timeview, was_rectmove,				bool						)( xui_component* layer, s32 frame )
+bool xui_timeview::was_rectmove( xui_component* layer, s32 frame )
 {
 	if (m_timerect->was_visible() == false)
 		return false;
@@ -279,11 +275,13 @@ xui_method_explain(xui_timeview, was_rectmove,				bool						)( xui_component* la
 				frame >= range.ax && frame <= range.bx);
 	}
 }
-xui_method_explain(xui_timeview, set_rectshow,				void						)( s32 startlayer, s32 finallayer, s32 startframe, s32 finalframe )
+
+void xui_timeview::set_rectshow( s32 startlayer, s32 finallayer, s32 startframe, s32 finalframe )
 {
 	m_timerect->set_range(startlayer, finallayer, startframe, finalframe);
 }
-xui_method_explain(xui_timeview, set_rectrise,				void						)( void )
+
+void xui_timeview::set_rectrise( void )
 {
 	bool hasframe = false;
 
@@ -334,10 +332,7 @@ xui_method_explain(xui_timeview, set_rectrise,				void						)( void )
 	}
 }
 
-/*
-//selected
-*/
-xui_method_explain(xui_timeview, get_selectedallfirst,		s32							)( void ) const
+s32 xui_timeview::get_selectedallfirst( void ) const
 {
 	for (xui_keyframe_map::const_iterator itor = m_allframe.begin(); itor != m_allframe.end(); ++itor)
 	{
@@ -347,7 +342,8 @@ xui_method_explain(xui_timeview, get_selectedallfirst,		s32							)( void ) cons
 
 	return -1;
 }
-xui_method_explain(xui_timeview, was_selectedall,			bool						)( const std::vector<xui_timeline*>& lines, s32 frame ) const
+
+bool xui_timeview::was_selectedall( const std::vector<xui_timeline*>& lines, s32 frame ) const
 {
 	for (u32 i = 0; i < lines.size(); ++i)
 	{
@@ -357,7 +353,8 @@ xui_method_explain(xui_timeview, was_selectedall,			bool						)( const std::vect
 
 	return true;
 }
-xui_method_explain(xui_timeview, has_selectedline,			bool						)( const std::vector<xui_timeline*>& lines, s32 frame ) const
+
+bool xui_timeview::has_selectedline( const std::vector<xui_timeline*>& lines, s32 frame ) const
 {
 	for (u32 i = 0; i < lines.size(); ++i)
 	{
@@ -367,7 +364,8 @@ xui_method_explain(xui_timeview, has_selectedline,			bool						)( const std::vec
 
 	return false;
 }
-xui_method_explain(xui_timeview, set_selectedline,			void						)( const std::vector<xui_timeline*>& lines, s32 start, s32 final, bool selected )
+
+void xui_timeview::set_selectedline( const std::vector<xui_timeline*>& lines, s32 start, s32 final, bool selected )
 {
 	for (u32 i = 0; i < lines.size(); ++i)
 	{
@@ -379,12 +377,14 @@ xui_method_explain(xui_timeview, set_selectedline,			void						)( const std::vec
 	xui_method_args args;
 	xm_selectedchange(this, args);
 }
-xui_method_explain(xui_timeview, set_selectedline,			void						)( xui_timeline* line, s32 start, s32 final, bool selected )
+
+void xui_timeview::set_selectedline( xui_timeline* line, s32 start, s32 final, bool selected )
 {
 	std::vector<xui_timeline*> lines; lines.push_back(line);
 	set_selectedline(lines, start, final, selected);
 }
-xui_method_explain(xui_timeview, set_selectedline,			void						)( s32 start, s32 final, bool selected )
+
+void xui_timeview::set_selectedline( s32 start, s32 final, bool selected )
 {
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 	for (u32 i = 0; i < nodes.size(); ++i)
@@ -397,7 +397,8 @@ xui_method_explain(xui_timeview, set_selectedline,			void						)( s32 start, s32
 	xui_method_args args;
 	xm_selectedchange(this, args);
 }
-xui_method_explain(xui_timeview, non_selectedline,			void						)( bool fireMethod )
+
+void xui_timeview::non_selectedline( bool fireMethod )
 {
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode();
 	for (u32 i = 0; i < nodes.size(); ++i)
@@ -412,7 +413,8 @@ xui_method_explain(xui_timeview, non_selectedline,			void						)( bool fireMetho
 		xm_selectedchange(this, args);
 	}
 }
-xui_method_explain(xui_timeview, get_selectedline,			std::vector<xui_timeline*>	)( void )
+
+std::vector<xui_timeline*> xui_timeview::get_selectedline( void )
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode();
@@ -426,10 +428,7 @@ xui_method_explain(xui_timeview, get_selectedline,			std::vector<xui_timeline*>	
 	return lines;
 }
 
-/*
-//line
-*/
-xui_method_explain(xui_timeview, get_timelinetotal,			std::vector<xui_timeline*>	)( bool total )
+std::vector<xui_timeline*> xui_timeview::get_timelinetotal( bool total )
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(total);
@@ -440,11 +439,13 @@ xui_method_explain(xui_timeview, get_timelinetotal,			std::vector<xui_timeline*>
 
 	return lines;
 }
-xui_method_explain(xui_timeview, get_timelinecount,			u32							)( void ) const
+
+u32 xui_timeview::get_timelinecount( void ) const
 {
 	return m_timetree->get_upmostnodecount();
 }
-xui_method_explain(xui_timeview, get_timelinearray,			std::vector<xui_timeline*>	)( void ) const
+
+std::vector<xui_timeline*> xui_timeview::get_timelinearray( void ) const
 {
 	std::vector<xui_timeline*> lines;
 	std::vector<xui_treenode*> nodes = m_timetree->get_upmostnodearray();
@@ -455,34 +456,40 @@ xui_method_explain(xui_timeview, get_timelinearray,			std::vector<xui_timeline*>
 
 	return lines;
 }
-xui_method_explain(xui_timeview, get_timelineindex,			u32							)( xui_timeline* line )
+
+u32 xui_timeview::get_timelineindex( xui_timeline* line )
 {
 	xui_timedata* data = line->get_linkdata();
 	return m_timetree->get_upmostnodeindex(data->get_node());
 }
-xui_method_explain(xui_timeview, set_timelineindex,			void						)( xui_timeline* line, u32 index )
+
+void xui_timeview::set_timelineindex( xui_timeline* line, u32 index )
 {
 	xui_timedata* data = line->get_linkdata();
 	m_timetree->set_upmostnodeindex(data->get_node(), index);
 	refresh();
 }
-xui_method_explain(xui_timeview, get_timeline,				xui_timeline*				)( u32 index )
+
+xui_timeline* xui_timeview::get_timeline( u32 index )
 {
 	xui_treenode* node = m_timetree->get_upmostnode(index);
 	return (xui_timeline*)node->get_data();
 }
-xui_method_explain(xui_timeview, add_timeline,				xui_timeline*				)( u32 index, xui_timedata* data )
+
+xui_timeline* xui_timeview::add_timeline( u32 index, xui_timedata* data )
 {
 	xui_treenode* node = m_timetree->add_upmostnode(index, data);
 	return create_line(node, data);
 }
-xui_method_explain(xui_timeview, del_timeline,				void						)( xui_timeline* line )
+
+void xui_timeview::del_timeline( xui_timeline* line )
 {
 	xui_treenode* node = line->get_linkdata()->get_node();
 	m_timetree->del_upmostnode(node);
 	delete_line(line);
 }
-xui_method_explain(xui_timeview, del_timelineall,			void						)( void )
+
+void xui_timeview::del_timelineall( void )
 {
 	m_timetree->del_upmostnodeall();
 	for (u32 i = 0; i < m_ascrollitem.size(); ++i)
@@ -501,7 +508,8 @@ xui_method_explain(xui_timeview, del_timelineall,			void						)( void )
 
 	invalid();
 }
-xui_method_explain(xui_timeview, set_timelinevisible,		void								)( xui_timeline* line )
+
+void xui_timeview::set_timelinevisible( xui_timeline* line )
 {
 	xui_timedata* data = line->get_linkdata();
 	xui_treenode* node = data->get_node();
@@ -533,10 +541,7 @@ xui_method_explain(xui_timeview, set_timelinevisible,		void								)( xui_timeli
 	}
 }
 
-/*
-//rectangle
-*/
-xui_method_explain(xui_timeview, get_renderrtins,			xui_rect2d<s32>				)( void ) const
+xui_rect2d<s32> xui_timeview::get_renderrtins( void ) const
 {
 	xui_rect2d<s32> rt = xui_container::get_renderrtins();
 	rt.ax += m_timetree->get_renderw();
@@ -544,10 +549,7 @@ xui_method_explain(xui_timeview, get_renderrtins,			xui_rect2d<s32>				)( void )
 	return rt;
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_vector<s32>& pt )
+xui_component* xui_timeview::choose_else( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_control::choose_else(pt);
 	if (component == NULL)
@@ -582,7 +584,8 @@ xui_method_explain(xui_timeview, choose_else,				xui_component*				)( const xui_
 
 	return component;
 }
-xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
+
+void xui_timeview::update_else( f32 delta )
 {
 	xui_control::update_else(delta);
 
@@ -603,21 +606,22 @@ xui_method_explain(xui_timeview, update_else,				void						)( f32 delta )
 			timeline->update(delta);
 	}
 }
-xui_method_explain(xui_timeview, render_else,				void						)( void )
+
+void xui_timeview::render_else( void )
 {
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_rect2d<s32> cliprect = xui_canvas::get_ins()->get_cliprect();
 
 	xui_rect2d<s32> temprect = xui_container::get_renderrtins() + get_screenpt();
 	temprect.ay += m_timegrad->get_renderh();
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprect));
+	xui_canvas::get_ins()->set_cliprect(cliprect.get_inter(temprect));
 	if (m_timetree->was_visible())
 		m_timetree->render();
 	if (m_tldelete->was_visible())
 		m_tldelete->render();
-	xui_convas::get_ins()->set_cliprect(cliprect);
+	xui_canvas::get_ins()->set_cliprect(cliprect);
 
 	xui_rect2d<s32> currrect = cliprect.get_inter(get_renderrtins()+get_screenpt());
-	xui_convas::get_ins()->set_cliprect(currrect);
+	xui_canvas::get_ins()->set_cliprect(currrect);
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
 	for (u32 i = 0; i < nodes.size(); ++i)
 	{
@@ -629,15 +633,12 @@ xui_method_explain(xui_timeview, render_else,				void						)( void )
 		m_timehead->render();
 	if (m_timerect->was_visible())
 		m_timerect->render();
-	xui_convas::get_ins()->set_cliprect(cliprect);
+	xui_canvas::get_ins()->set_cliprect(cliprect);
 
 	xui_control::render_else();
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& args )
+void xui_timeview::on_invalid( xui_method_args& args )
 {
 	m_allframe.clear();
 	std::vector<xui_treenode*> nodes = m_timetree->get_entirenode(false);
@@ -668,7 +669,8 @@ xui_method_explain(xui_timeview, on_invalid,				void						)( xui_method_args& ar
 		update_scroll();
 	}
 }
-xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& args )
+
+void xui_timeview::on_perform( xui_method_args& args )
 {
 	xui_control::on_perform(args);
 
@@ -743,13 +745,15 @@ xui_method_explain(xui_timeview, on_perform,				void						)( xui_method_args& ar
 	pt.x += m_fpstring->get_renderw();
 	m_fpnumber->on_perform_pt(pt);
 }
-xui_method_explain(xui_timeview, on_vertvalue,				void						)( xui_method_args& args )
+
+void xui_timeview::on_vertvalue( xui_method_args& args )
 {
 	xui_container::on_vertvalue(args);
 	m_timetree->set_scrolly(m_vscroll->get_value());
 	m_tldelete->set_scrolly(m_vscroll->get_value());
 }
-xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args& args )
+
+void xui_timeview::on_renderself( xui_method_args& args )
 {
 	xui_container::on_renderself(args);
 
@@ -762,7 +766,7 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 
 	xui_rect2d<s32> temprt = xui_container::get_renderrtins() + get_screenpt();
 	temprt.ay += m_timegrad->get_renderh();
-	xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
+	xui_rect2d<s32> cliprect = xui_canvas::get_ins()->get_cliprect();
 
 	std::vector<xui_treenode*> nodevec = m_timetree->get_entirenode(false);
 	u32 selectedindex = -1;
@@ -775,20 +779,20 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 		}
 	}
 
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(temprt));
+	xui_canvas::get_ins()->set_cliprect(cliprect.get_inter(temprt));
 	s32 line_start = (m_vscroll == NULL) ? 0 : m_vscroll->get_value()/m_timetree->get_lineheight();
 	s32 line_final = line_start + get_renderrtins().get_h() / m_timetree->get_lineheight() + 1;
 	for (s32 i = line_start; i <= line_final; ++i)
 	{
 		xui_colour  finalcolor;
 		if (i == 0) finalcolor = xui_colour(1.0f, 100.0f/255.0f);
-		else        finalcolor = (i == selectedindex+1) ? xui_treeview::nodeselect_color : xui_colour(1.0f,  80.0f/255.0f);
+		else        finalcolor = (i == selectedindex+1) ? xui_treeview::k_nodeselect_color : xui_colour(1.0f,  80.0f/255.0f);
 
 		rt.set_pt(xui_vector<s32>(pt.x, pt.y+i*m_timetree->get_lineheight()+1));
-		xui_convas::get_ins()->fill_rectangle(rt, color*finalcolor);
+		xui_canvas::get_ins()->fill_rectangle(rt, color*finalcolor);
 	}
 
-	xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
+	xui_canvas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtins()+get_screenpt()));
 	pt = m_timegrad->get_screenpt() + xui_vector<s32>(m_timegrad->get_borderrt().ax, m_timegrad->get_renderh());
 	s32 value = (m_hscroll == NULL) ? 0 : m_hscroll->get_value();
 	s32 grad_start = value / m_keyspace;
@@ -803,7 +807,7 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 				? color * xui_colour(1.0f, 0.0f, 1.0f, 1.0f)
 				: color * m_backcolor;
 
-			xui_convas::get_ins()->draw_line(p1, p2, finalcolor);
+			xui_canvas::get_ins()->draw_line(p1, p2, finalcolor);
 		}
 	}
 
@@ -813,16 +817,13 @@ xui_method_explain(xui_timeview, on_renderself,				void						)( xui_method_args&
 		s32 grad = (*itor).first;
 		xui_vector<s32> p1 = pt + xui_vector<s32>(grad*m_keyspace-value, 0);
 		xui_vector<s32> p2 = p1 + xui_vector<s32>(0, get_renderrtins().get_h());
-		xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
+		xui_canvas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 1.0f, 0.0f, 0.0f));
 	}
 
-	xui_convas::get_ins()->set_cliprect(cliprect);
+	xui_canvas::get_ins()->set_cliprect(cliprect);
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timeview, create_line,				xui_timeline*				)( xui_treenode* node, xui_timedata* data )
+xui_timeline* xui_timeview::create_line( xui_treenode* node, xui_timedata* data )
 {
 	xui_timeline* line = new xui_timeline(data, this);
 	line->xm_updateself	+= new xui_method_member<xui_method_update, xui_timeview>(this, &xui_timeview::on_timeviewdraghorz);
@@ -841,7 +842,8 @@ xui_method_explain(xui_timeview, create_line,				xui_timeline*				)( xui_treenod
 
 	return line;
 }
-xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line )
+
+void xui_timeview::delete_line( xui_timeline* line )
 {
 	std::vector<xui_control*>::iterator itor = std::find(
 		m_ascrollitem.begin(),
@@ -858,12 +860,9 @@ xui_method_explain(xui_timeview, delete_line,				void						)( xui_timeline* line
 	invalid();
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_timeview, on_timelinekeybddown,		void						)( xui_component* sender, xui_method_keybd&			args )
+void xui_timeview::on_timelinekeybddown( xui_component* sender, xui_method_keybd& args )
 {
-	if (args.kcode == KEY_DELETE)
+	if (args.kcode == k_key_delete)
 	{
 		xui_method_args   del_args ;
 		xm_delframe(this, del_args);
@@ -878,33 +877,37 @@ xui_method_explain(xui_timeview, on_timelinekeybddown,		void						)( xui_compone
 		invalid();
 	}
 }
-xui_method_explain(xui_timeview, on_timelinemouseclick,		void						)( xui_component* sender, xui_method_mouse&			args )
+
+void xui_timeview::on_timelinemouseclick( xui_component* sender, xui_method_mouse& args )
 {
 	xm_linemouseclick(this, args);
 }
-xui_method_explain(xui_timeview, on_timetreenonfocus,		void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_timetreenonfocus( xui_component* sender, xui_method_args&	args )
 {
 	xui_component* focusctrl = (xui_component*)args.wparam;
 	if (focusctrl == NULL || focusctrl->was_ancestor(m_timetree) == false)
 		m_tldelete->set_visible(false);
 }
-xui_method_explain(xui_timeview, on_timetreemouseclick,		void						)( xui_component* sender, xui_method_mouse&			args )
+
+void xui_timeview::on_timetreemouseclick( xui_component* sender, xui_method_mouse&			args )
 {
 	std::vector<xui_treenode*> vec = m_timetree->get_selectednode();
 	if (vec.size())
 	{
 		xui_treenode* selectednode = vec.front();
 		xui_rect2d<s32> rt = selectednode->get_renderrtabs() + m_tldelete->get_scrollpt() - get_screenpt();
-		xui_method_ptrcall(m_tldelete, on_perform_x	)(rt.bx  + 4);
-		xui_method_ptrcall(m_tldelete, on_perform_y	)(rt.ay  + m_timetree->get_lineheight()/2 - m_tldelete->get_renderh()/2);
-		xui_method_ptrcall(m_tldelete, set_visible	)(true);
+		m_tldelete->on_perform_x(rt.bx  + 4);
+		m_tldelete->on_perform_y(rt.ay  + m_timetree->get_lineheight()/2 - m_tldelete->get_renderh()/2);
+		m_tldelete->set_visible(true);
 	}
 	else
 	{
-		xui_method_ptrcall(m_tldelete, set_visible	)(false);
+		m_tldelete->set_visible(false);
 	}
 }
-xui_method_explain(xui_timeview, on_timetreesetclientsz,	void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_timetreesetclientsz( xui_component* sender, xui_method_args& args )
 {
 	xui_vector<s32> sz = m_timetree->get_clientsz();
 	xui_rect2d<s32> rt = m_timetree->get_borderrt();
@@ -912,7 +915,8 @@ xui_method_explain(xui_timeview, on_timetreesetclientsz,	void						)( xui_compon
 	sz.h += (rt.ay+rt.by+m_timetree->get_lineheight());
 	m_timetree->set_rendersz(sz);
 }
-xui_method_explain(xui_timeview, on_timetreeupdateself,		void						)( xui_component* sender, xui_method_update&		args )
+
+void xui_timeview::on_timetreeupdateself( xui_component* sender, xui_method_update&	args )
 {
 	if (m_timetree->has_catch())
 	{
@@ -934,17 +938,19 @@ xui_method_explain(xui_timeview, on_timetreeupdateself,		void						)( xui_compon
 			m_vscroll->set_value(m_vscroll->get_value()+scroll_value);
 
 			xui_method_mouse args;
-			args.mouse = MB_L;
+			args.mouse = k_mb_left;
 			args.point = pt;
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timetreeoverdrop,		void						)( xui_component* sender, xui_method_treedragdrop&	args )
+
+void xui_timeview::on_timetreeoverdrop( xui_component* sender, xui_method_treedragdrop&	args )
 {
 	m_tldelete->set_visible(false);
 }
-xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_timetreeinvalid( xui_component* sender, xui_method_args& args )
 {
 	s32 width = 0;
 	for (u32 i = 0; i < m_timetree->get_columninfocount(); ++i)
@@ -964,7 +970,8 @@ xui_method_explain(xui_timeview, on_timetreeinvalid,		void						)( xui_component
 		m_timetree->perform();
 	}
 }
-xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_component* sender, xui_method_update&		args )
+
+void xui_timeview::on_timeviewdraghorz( xui_component* sender, xui_method_update& args )
 {
 	if (sender->has_catch())
 	{
@@ -985,13 +992,14 @@ xui_method_explain(xui_timeview, on_timeviewdraghorz,		void						)( xui_componen
 			m_hscroll->set_value(m_hscroll->get_value()+scroll_value);
 
 			xui_method_mouse args;
-			args.mouse = MB_L;
+			args.mouse = k_mb_left;
 			args.point = pt;
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_component* sender, xui_method_update&		args )
+
+void xui_timeview::on_timeviewdragvert( xui_component* sender, xui_method_update& args )
 {
 	if (sender->has_catch())
 	{
@@ -1012,13 +1020,14 @@ xui_method_explain(xui_timeview, on_timeviewdragvert,		void						)( xui_componen
 			m_vscroll->set_value(m_vscroll->get_value()+scroll_value);
 
 			xui_method_mouse args;
-			args.mouse = MB_L;
+			args.mouse = k_mb_left;
 			args.point = pt;
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_component* sender, xui_method_update&		args )
+
+void xui_timeview::on_timerectdraghorz( xui_component* sender, xui_method_update& args )
 {
 	if (sender->has_catch())
 	{
@@ -1039,22 +1048,25 @@ xui_method_explain(xui_timeview, on_timerectdraghorz,		void						)( xui_componen
 			m_hscroll->set_value(m_hscroll->get_value()+scroll_value);
 
 			xui_method_mouse args;
-			args.mouse = MB_L;
+			args.mouse = k_mb_left;
 			args.point = pt;
 			xui_desktop::get_ins()->os_mousemove(args);
 		}
 	}
 }
-xui_method_explain(xui_timeview, on_kssliderscroll,			void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_kssliderscroll( xui_component* sender, xui_method_args& args )
 {
 	set_keyspace(m_ksslider->get_value());
 }
-xui_method_explain(xui_timeview, on_fpnumberrenderself,		void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_fpnumberrenderself( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt = m_fpnumber->get_renderrtabs();
-	xui_convas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by-2), xui_vector<s32>(rt.bx, rt.by-2), xui_colour::white);
+	xui_canvas::get_ins()->draw_line(xui_vector<s32>(rt.ax, rt.by-2), xui_vector<s32>(rt.bx, rt.by-2), xui_colour::k_white);
 }
-xui_method_explain(xui_timeview, on_fpnumbermousemove,		void						)( xui_component* sender, xui_method_mouse&			args )
+
+void xui_timeview::on_fpnumbermousemove( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_fpnumber->has_catch())
 	{
@@ -1074,23 +1086,26 @@ xui_method_explain(xui_timeview, on_fpnumbermousemove,		void						)( xui_compone
 		timer->set_interval(1.0f/(f32)frame);
 	}
 }
-xui_method_explain(xui_timeview, on_tldeleterenderself,		void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_tldeleterenderself( xui_component* sender, xui_method_args& args )
 {
 	xui_rect2d<s32> rt		= sender->get_renderrtabs();
 	xui_colour		color   = sender->get_rendercolor() * sender->get_vertexcolor();
 	xui_vector<s32> center	= xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
-	xui_convas::get_ins()->fill_circle(center, 8, xui_colour::gray, 0, 360);
-	xui_convas::get_ins()->fill_rectangle(xui_rect2d<s32>(
+	xui_canvas::get_ins()->fill_circle(center, 8, xui_colour::k_gray, 0, 360);
+	xui_canvas::get_ins()->fill_rectangle(xui_rect2d<s32>(
 		center.x-4,
 		center.y-1,
 		center.x+4,
 		center.y+1), color);
 }
-xui_method_explain(xui_timeview, on_tldeleteclick,			void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_tldeleteclick( xui_component* sender, xui_method_args& args )
 {
 	xm_dellayer(this, args);
 }
-xui_method_explain(xui_timeview, on_sizectrlmousemove,		void						)( xui_component* sender, xui_method_mouse&			args )
+
+void xui_timeview::on_sizectrlmousemove( xui_component* sender, xui_method_mouse& args )
 {
 	if (m_sizectrl->has_catch())
 	{
@@ -1113,13 +1128,14 @@ xui_method_explain(xui_timeview, on_sizectrlmousemove,		void						)( xui_compone
 		m_timetree->set_renderw(width);
 	}
 }
-xui_method_explain(xui_timeview, on_sizectrlrenderself,		void						)( xui_component* sender, xui_method_args&			args )
+
+void xui_timeview::on_sizectrlrenderself( xui_component* sender, xui_method_args& args )
 {
-	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_control::default_sidecolor;
+	xui_colour	    color  = sender->was_hover() ? xui_colour(1.0f,  42.0f/255.0f, 135.0f/255.0f, 190.0f/255.0f) : xui_control::k_default_sidecolor;
 	xui_rect2d<s32> rt     = sender->get_renderrtabs();
 	xui_vector<s32> p1(rt.ax, rt.ay+3);
 	xui_vector<s32> p2(rt.ax, rt.by-2);
-	xui_convas::get_ins()->draw_line(p1,						p2,							color);
-	xui_convas::get_ins()->draw_line(p1+xui_vector<s32>(2,0),	p2+xui_vector<s32>(2,0),	color);
-	xui_convas::get_ins()->draw_line(p1+xui_vector<s32>(4,0),	p2+xui_vector<s32>(4,0),	color);
+	xui_canvas::get_ins()->draw_line(p1,						p2,							color);
+	xui_canvas::get_ins()->draw_line(p1+xui_vector<s32>(2,0),	p2+xui_vector<s32>(2,0),	color);
+	xui_canvas::get_ins()->draw_line(p1+xui_vector<s32>(4,0),	p2+xui_vector<s32>(4,0),	color);
 }

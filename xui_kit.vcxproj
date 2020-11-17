@@ -14,12 +14,13 @@
     <ProjectGuid>{E5ECC7C0-780E-481E-9AD2-96694045FF51}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>xui_kit</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -55,7 +56,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FT2_BUILD_LIBRARY;_GLFW_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>libzip/inc/;libpng/inc/;libogl/inc/;libftf/inc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -97,15 +98,21 @@
     <ClInclude Include="libftf\inc\freetype\config\ftoption.h" />
     <ClInclude Include="libftf\inc\freetype\config\ftstdlib.h" />
     <ClInclude Include="libftf\inc\ft2build.h" />
-    <ClInclude Include="libogl\inc\GLee.h" />
+    <ClInclude Include="libogl\inc\glew.h" />
+    <ClInclude Include="libogl\inc\glxew.h" />
+    <ClInclude Include="libogl\inc\wglew.h" />
     <ClInclude Include="xui_dialog.h" />
     <ClInclude Include="xui_dockpage.h" />
     <ClInclude Include="xui_dockview.h" />
     <ClInclude Include="xui_droplist.h" />
+    <ClInclude Include="xui_event.h" />
     <ClInclude Include="xui_family_create.h" />
     <ClInclude Include="xui_family_render.h" />
+    <ClInclude Include="xui_global_event.h" />
     <ClInclude Include="xui_menu.h" />
     <ClInclude Include="xui_menuitem.h" />
+    <ClInclude Include="xui_native_device.h" />
+    <ClInclude Include="xui_native_window.h" />
     <ClInclude Include="xui_numbbox.h" />
     <ClInclude Include="xui_propctrl_object.h" />
     <ClInclude Include="xui_propctrl_simple.h" />
@@ -140,6 +147,7 @@
     <ClInclude Include="xui_render_window.h" />
     <ClInclude Include="xui_global.h" />
     <ClInclude Include="xui_syswnd.h" />
+    <ClInclude Include="xui_syswnd_event.h" />
     <ClInclude Include="xui_timehead.h" />
     <ClInclude Include="xui_timeline.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -190,7 +198,7 @@
     <ClInclude Include="xui_button.h" />
     <ClInclude Include="xui_colour.h" />
     <ClInclude Include="xui_control.h" />
-    <ClInclude Include="xui_convas.h" />
+    <ClInclude Include="xui_canvas.h" />
     <ClInclude Include="xui_desktop.h" />
     <ClInclude Include="xui_drawer.h" />
     <ClInclude Include="xui_family.h" />
@@ -270,7 +278,21 @@
     <ClCompile Include="libftf\src\type1\type1.c" />
     <ClCompile Include="libftf\src\type42\type42.c" />
     <ClCompile Include="libftf\src\winfonts\winfnt.c" />
-    <ClCompile Include="libogl\src\GLee.c" />
+    <ClCompile Include="libogl\src\context.c" />
+    <ClCompile Include="libogl\src\egl_context.c" />
+    <ClCompile Include="libogl\src\init.c" />
+    <ClCompile Include="libogl\src\input.c" />
+    <ClCompile Include="libogl\src\monitor.c" />
+    <ClCompile Include="libogl\src\osmesa_context.c" />
+    <ClCompile Include="libogl\src\vulkan.c" />
+    <ClCompile Include="libogl\src\wgl_context.c" />
+    <ClCompile Include="libogl\src\win32_init.c" />
+    <ClCompile Include="libogl\src\win32_joystick.c" />
+    <ClCompile Include="libogl\src\win32_monitor.c" />
+    <ClCompile Include="libogl\src\win32_thread.c" />
+    <ClCompile Include="libogl\src\win32_time.c" />
+    <ClCompile Include="libogl\src\win32_window.c" />
+    <ClCompile Include="libogl\src\window.c" />
     <ClCompile Include="libpng\src\png.c" />
     <ClCompile Include="libpng\src\pngerror.c" />
     <ClCompile Include="libpng\src\pnggccrd.c" />
@@ -305,12 +327,18 @@
     <ClCompile Include="xui_dockpage.cpp" />
     <ClCompile Include="xui_dockview.cpp" />
     <ClCompile Include="xui_droplist.cpp" />
+    <ClCompile Include="xui_event.cpp" />
     <ClCompile Include="xui_family.cpp" />
     <ClCompile Include="xui_family_create.cpp" />
     <ClCompile Include="xui_family_render.cpp" />
+    <ClCompile Include="xui_global_event.cpp" />
     <ClCompile Include="xui_kindctrl.cpp" />
     <ClCompile Include="xui_menu.cpp" />
     <ClCompile Include="xui_menuitem.cpp" />
+    <ClCompile Include="xui_native_device.cpp" />
+    <ClCompile Include="xui_native_device_win32.cpp" />
+    <ClCompile Include="xui_native_window.cpp" />
+    <ClCompile Include="xui_native_window_win32.cpp" />
     <ClCompile Include="xui_numbbox.cpp" />
     <ClCompile Include="xui_propctrl_object.cpp" />
     <ClCompile Include="xui_propctrl_simple.cpp" />
@@ -344,6 +372,7 @@
     <ClCompile Include="xui_render_window.cpp" />
     <ClCompile Include="xui_global.cpp" />
     <ClCompile Include="xui_syswnd.cpp" />
+    <ClCompile Include="xui_syswnd_event.cpp" />
     <ClCompile Include="xui_timehead.cpp" />
     <ClCompile Include="xui_timeline.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -371,7 +400,7 @@
     <ClCompile Include="xui_caretdrawer.cpp" />
     <ClCompile Include="xui_container.cpp" />
     <ClCompile Include="xui_control.cpp" />
-    <ClCompile Include="xui_convas.cpp" />
+    <ClCompile Include="xui_canvas.cpp" />
     <ClCompile Include="xui_desktop.cpp" />
     <ClCompile Include="xui_drawer.cpp" />
     <ClCompile Include="xui_dropbox.cpp" />

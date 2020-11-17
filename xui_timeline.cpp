@@ -1,17 +1,14 @@
 #include "xui_desktop.h"
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_timedata.h"
 #include "xui_treenode.h"
 #include "xui_timeview.h"
 #include "xui_timehead.h"
 #include "xui_timeline.h"
 
-xui_implement_rtti(xui_timeline, xui_control);
+xui_implement_rtti(xui_timeline, xui_control)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timeline)( xui_timedata* linkdata, xui_timeview* timeview )
+xui_timeline::xui_timeline( xui_timedata* linkdata, xui_timeview* timeview )
 : xui_control(xui_vector<s32>(0))
 {
 	m_parent	= timeview;
@@ -22,14 +19,12 @@ xui_create_explain(xui_timeline)( xui_timedata* linkdata, xui_timeview* timeview
 	m_linkdata->set_line(this);
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timeline, get_linkdata,			xui_timedata*				)( void )
+xui_timedata* xui_timeline::get_linkdata( void )
 {
 	return m_linkdata;
 }
-xui_method_explain(xui_timeline, use_linkdata,			void						)( s32 delta_time )
+
+void xui_timeline::use_linkdata( s32 delta_time )
 {
 	m_linkdata->cal_keyframe();
 	for (s32 i = m_selframe.size()-1; i >= 0; --i)
@@ -40,10 +35,7 @@ xui_method_explain(xui_timeline, use_linkdata,			void						)( s32 delta_time )
 	}
 }
 
-/*
-//selected frame
-*/
-xui_method_explain(xui_timeline, was_selafter,			bool						)( s32 frame ) const
+bool xui_timeline::was_selafter( s32 frame ) const
 {
 	for (u32 i = 0; i < m_selframe.size(); ++i)
 	{
@@ -53,23 +45,28 @@ xui_method_explain(xui_timeline, was_selafter,			bool						)( s32 frame ) const
 
 	return false;
 }
-xui_method_explain(xui_timeline, has_selframe,			bool						)( s32 frame ) const
+
+bool xui_timeline::has_selframe( s32 frame ) const
 {
 	return std::find(m_selframe.begin(), m_selframe.end(), frame) != m_selframe.end();
 }
-xui_method_explain(xui_timeline, has_selframe,			bool						)( void ) const
+
+bool xui_timeline::has_selframe( void ) const
 {
 	return m_selframe.size() > 0;
 }
-xui_method_explain(xui_timeline, get_selframe,			const std::vector<s32>&		)( void ) const
+
+const std::vector<s32>& xui_timeline::get_selframe( void ) const
 {
 	return m_selframe;
 }
-xui_method_explain(xui_timeline, set_selframe,			void						)( const std::vector<s32>& selframe )
+
+void xui_timeline::set_selframe( const std::vector<s32>& selframe )
 {
 	m_selframe = selframe;
 }
-xui_method_explain(xui_timeline, add_selframe,			bool						)( s32 start, s32 final )
+
+bool xui_timeline::add_selframe( s32 start, s32 final )
 {
 	bool hasframe = false;
 
@@ -86,7 +83,8 @@ xui_method_explain(xui_timeline, add_selframe,			bool						)( s32 start, s32 fin
 
 	return hasframe;
 }
-xui_method_explain(xui_timeline, del_selframe,			void						)( s32 start, s32 final )
+
+void xui_timeline::del_selframe( s32 start, s32 final )
 {
 	for (s32 i = (s32)m_selframe.size()-1; i >= 0; --i)
 	{
@@ -95,14 +93,12 @@ xui_method_explain(xui_timeline, del_selframe,			void						)( s32 start, s32 fin
 	}
 }
 
-/*
-//timeline
-*/
-xui_method_explain(xui_timeline, get_rootline,			xui_timeline*				)( void )
+xui_timeline* xui_timeline::get_rootline( void )
 {
 	return (xui_timeline*)m_linkdata->get_node()->get_rootnode()->get_data();
 }
-xui_method_explain(xui_timeline, get_timelinetotal,		void						)( std::vector<xui_timeline*>& lines, bool total )
+
+void xui_timeline::get_timelinetotal( std::vector<xui_timeline*>& lines, bool total )
 {
 	std::vector<xui_treenode*> nodes;
 	m_linkdata->get_node()->get_leafnodetotal(nodes, total);
@@ -111,11 +107,13 @@ xui_method_explain(xui_timeline, get_timelinetotal,		void						)( std::vector<xu
 		lines.push_back((xui_timeline*)nodes[i]->get_data());
 	}
 }
-xui_method_explain(xui_timeline, get_timelinecount,		u32							)( void ) const
+
+u32 xui_timeline::get_timelinecount( void ) const
 {
 	return m_linkdata->get_node()->get_leafnodecount();
 }
-xui_method_explain(xui_timeline, get_timelinearray,		std::vector<xui_timeline*>	)( void ) const
+
+std::vector<xui_timeline*> xui_timeline::get_timelinearray( void ) const
 {
 	std::vector<xui_timeline*> lines;
 	for (u32 i = 0; i < m_linkdata->get_node()->get_leafnodecount(); ++i)
@@ -125,11 +123,13 @@ xui_method_explain(xui_timeline, get_timelinearray,		std::vector<xui_timeline*>	
 
 	return lines;
 }
-xui_method_explain(xui_timeline, get_timeline,			xui_timeline*				)( u32 index )
+
+xui_timeline* xui_timeline::get_timeline( u32 index )
 {
 	return (xui_timeline*)m_linkdata->get_node()->get_leafnode(index)->get_data();
 }
-xui_method_explain(xui_timeline, add_timeline,			xui_timeline*				)( u32 index, xui_timedata* data )
+
+xui_timeline* xui_timeline::add_timeline( u32 index, xui_timedata* data )
 {
 	xui_timeview* view = xui_dynamic_cast(xui_timeview, m_parent);
 	xui_treenode* node = m_linkdata->get_node()->add_leafnode(index, data);
@@ -137,7 +137,8 @@ xui_method_explain(xui_timeline, add_timeline,			xui_timeline*				)( u32 index, 
 
 	return line;
 }
-xui_method_explain(xui_timeline, del_timeline,			void						)( xui_timeline* line )
+
+void xui_timeline::del_timeline( xui_timeline* line )
 {
 	xui_timeview* view = xui_dynamic_cast(xui_timeview, m_parent);
 	xui_treenode* node = line->get_linkdata()->get_node();
@@ -145,13 +146,10 @@ xui_method_explain(xui_timeline, del_timeline,			void						)( xui_timeline* line
 	view->delete_line(line);
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_timeline, on_mousedown,			void						)( xui_method_mouse& args )
+void xui_timeline::on_mousedown( xui_method_mouse& args )
 {
 	xui_control::on_mousedown(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 		xui_treeview* timetree = timeview->get_timetree();
@@ -164,7 +162,7 @@ xui_method_explain(xui_timeline, on_mousedown,			void						)( xui_method_mouse& 
 		s32 inner = xui_abs(m_downrela.x - frame*timeview->get_keyspace());
 		if (m_linkdata->has_keyframe(frame) && inner < 5)
 		{
-			timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
+			timeview->set_dragmode(args.shift ? k_timedrag_select_and_after : k_timedrag_select);
 			timeview->set_dragtime(frame);
 
 			std::vector<s32>::iterator itor = std::find(
@@ -198,7 +196,8 @@ xui_method_explain(xui_timeline, on_mousedown,			void						)( xui_method_mouse& 
 		}
 	}
 }
-xui_method_explain(xui_timeline, on_mousemove,			void						)( xui_method_mouse& args )
+
+void xui_timeline::on_mousemove( xui_method_mouse& args )
 {
 	xui_control::on_mousemove(args);
 	if (has_catch())
@@ -233,10 +232,11 @@ xui_method_explain(xui_timeline, on_mousemove,			void						)( xui_method_mouse& 
 		}
 	}
 }
-xui_method_explain(xui_timeline, on_mouserise,			void						)( xui_method_mouse& args )
+
+void xui_timeline::on_mouserise( xui_method_mouse& args )
 {
 	xui_control::on_mouserise(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 
@@ -264,15 +264,16 @@ xui_method_explain(xui_timeline, on_mouserise,			void						)( xui_method_mouse& 
 			}
 		}
 
-		timeview->set_dragmode(TIMEDRAG_NONE);
+		timeview->set_dragmode(k_timedrag_none);
 		timeview->set_dragtime(-1);
 		timeview->set_droptime(-1);
 	}
 }
-xui_method_explain(xui_timeline, on_mousedoubleclick,	void						)( xui_method_mouse& args )
+
+void xui_timeline::on_mousedoubleclick( xui_method_mouse& args )
 {
 	xui_control::on_mousedoubleclick(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_vector<s32> pt = args.point - get_screenpt();
 		s32 downframe = hit_frame(pt.x - m_border.ax);
@@ -298,7 +299,8 @@ xui_method_explain(xui_timeline, on_mousedoubleclick,	void						)( xui_method_mo
 		}
 	}
 }
-xui_method_explain(xui_timeline, on_renderself,			void						)( xui_method_args&  args )
+
+void xui_timeline::on_renderself( xui_method_args& args )
 {
 	xui_control::on_renderself(args);
 
@@ -331,13 +333,8 @@ xui_method_explain(xui_timeline, on_renderself,			void						)( xui_method_args& 
 			{
 				data.keyframe += delta_time;
 			}
-			//else
-			//if (timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER && allfirst != -1 && data.keyframe > allfirst)
-			//{
-			//	data.keyframe += delta_time;
-			//}
 			else
-			if (timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER /*&& allfirst == -1*/ && was_selafter(data.keyframe))
+			if (timeview->get_dragmode() == k_timedrag_select_and_after && was_selafter(data.keyframe))
 			{
 				data.keyframe += delta_time;
 			}
@@ -371,7 +368,7 @@ xui_method_explain(xui_timeline, on_renderself,			void						)( xui_method_args& 
 		xui_rect2d<s32> temp = rt;
 		temp.oft_x(timeview->get_keyspace()*frame - 2);
 		temp.set_w(4);
-		xui_convas::get_ins()->fill_rectangle(temp, color*m_linkdata->get_keycolor());
+		xui_canvas::get_ins()->fill_rectangle(temp, color*m_linkdata->get_keycolor());
 
 		xui_colour sidecolor(1.0f, 0.0f, 0.0f, 0.0f);
 		if (drawdata[i].selected)
@@ -383,12 +380,12 @@ xui_method_explain(xui_timeline, on_renderself,			void						)( xui_method_args& 
 		{
 			sidecolor = xui_colour(1.0f, 0.0f, 1.0f, 1.0f);
 		}
-		xui_convas::get_ins()->draw_rectangle(temp, color*sidecolor);
+		xui_canvas::get_ins()->draw_rectangle(temp, color*sidecolor);
 	}
 
 	for (u32 i = 0; i < drawdata.size()-1; ++i)
 	{
-		if (drawdata[i].keystyle == KS_STATIC)
+		if (drawdata[i].keystyle == k_ks_static)
 			continue;
 
 		s32 currframe = drawdata[i  ].keyframe;
@@ -402,28 +399,25 @@ xui_method_explain(xui_timeline, on_renderself,			void						)( xui_method_args& 
 
 		xui_vector<s32> p1 = rt.get_pt() + xui_vector<s32>(timeview->get_keyspace()*currframe+3, rt.get_h()/2);
 		xui_vector<s32> p2 = rt.get_pt() + xui_vector<s32>(timeview->get_keyspace()*nextframe-3, rt.get_h()/2);
-		if (drawdata[i].keystyle == KS_BEZIER && p2.x-p1.x > 16)
+		if (drawdata[i].keystyle == k_ks_bezier && p2.x-p1.x > 16)
 		{
 			xui_rect2d<s32> temp(0, 0, 12, 12);
 			temp.set_pt(p1);
-			xui_convas::get_ins()->draw_arc(temp, linecolor, -180, 90, 1);
+			xui_canvas::get_ins()->draw_arc(temp, linecolor, -180, 90, 1);
 			p1.x += 6;
 			p2.x -= 6;
-			xui_convas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
+			xui_canvas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
 			temp.set_pt(xui_vector<s32>(p2.x-6, p2.y-12));
-			xui_convas::get_ins()->draw_arc(temp, linecolor,    0, 90, 1);
+			xui_canvas::get_ins()->draw_arc(temp, linecolor,    0, 90, 1);
 		}
 		else
 		{
-			xui_convas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
+			xui_canvas::get_ins()->draw_line(p1, p2+xui_vector<s32>(1,0), linecolor);
 		}
 	}
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timeline, hit_frame,				s32							)( s32 x )
+s32 xui_timeline::hit_frame( s32 x )
 {
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	s32 space = timeview->get_keyspace();

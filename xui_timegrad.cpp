@@ -1,15 +1,12 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_desktop.h"
 #include "xui_scroll.h"
 #include "xui_timeview.h"
 #include "xui_timegrad.h"
 
-xui_implement_rtti(xui_timegrad, xui_drawer);
+xui_implement_rtti(xui_timegrad, xui_drawer)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timegrad)( xui_timeview* timeview )
+xui_timegrad::xui_timegrad( xui_timeview* timeview )
 : xui_drawer(xui_vector<s32>(0, 40))
 {
 	m_parent	= timeview;
@@ -17,13 +14,10 @@ xui_create_explain(xui_timegrad)( xui_timeview* timeview )
 	m_textfont	= xui_family(12);
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_timegrad, on_mousedown,	void)( xui_method_mouse& args )
+void xui_timegrad::on_mousedown( xui_method_mouse& args )
 {
 	xui_drawer::on_mousedown(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 		s32 value = timeview->get_hscroll() ? timeview->get_hscroll()->get_value() : 0;
@@ -34,7 +28,8 @@ xui_method_explain(xui_timegrad, on_mousedown,	void)( xui_method_mouse& args )
 		set_curframe(pt.x);
 	}
 }
-xui_method_explain(xui_timegrad, on_mousemove,	void)( xui_method_mouse& args )
+
+void xui_timegrad::on_mousemove( xui_method_mouse& args )
 {
 	xui_drawer::on_mousemove(args);
 	if (has_catch())
@@ -48,7 +43,8 @@ xui_method_explain(xui_timegrad, on_mousemove,	void)( xui_method_mouse& args )
 		set_curframe(pt.x);
 	}
 }
-xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
+
+void xui_timegrad::on_renderself( xui_method_args& args )
 {
 	xui_drawer::on_renderself(args);
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
@@ -78,12 +74,12 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 			rt.bx = m_border.ax + i*keyspace+50 - value;
 			rt.ay =  2;
 			rt.by = 24;
-			rt    = xui_convas::get_ins()->calc_draw(text.str(), m_textfont, rt, TEXTALIGN_CT, true);
+			rt    = xui_canvas::get_ins()->calc_draw(text.str(), m_textfont, rt, k_textalign_ct, true);
 
 			if (i != timeview->get_curframe())
 			{
-				xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
-				xui_convas::get_ins()->draw_text(text.str(), m_textfont, rt.get_pt()+pt, m_textdraw);
+				xui_canvas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
+				xui_canvas::get_ins()->draw_text(text.str(), m_textfont, rt.get_pt()+pt, m_textdraw);
 			}
 			else
 			{
@@ -91,9 +87,9 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 				poly[0] = xui_vector<s32>(p1.x,   p1.y  );
 				poly[1] = xui_vector<s32>(p1.x-6, p1.y-6);
 				poly[2] = xui_vector<s32>(p1.x+6, p1.y-6);
-				xui_convas::get_ins()->draw_line(p1,  p2, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
-				xui_convas::get_ins()->draw_text(text.str(), m_textfont, rt.get_pt()+pt, m_textdraw);
-				xui_convas::get_ins()->draw_path(poly, 3, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
+				xui_canvas::get_ins()->draw_line(p1,  p2, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
+				xui_canvas::get_ins()->draw_text(text.str(), m_textfont, rt.get_pt()+pt, m_textdraw);
+				xui_canvas::get_ins()->draw_path(poly, 3, color*xui_colour(1.0f, 0.0f, 1.0f, 1.0f));
 			}
 		}
 		else
@@ -101,15 +97,12 @@ xui_method_explain(xui_timegrad, on_renderself, void)( xui_method_args&  args )
 		{
 			p1 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, 32);
 			p2 = pt + xui_vector<s32>(m_border.ax + i*keyspace - value, get_renderh());
-			xui_convas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
+			xui_canvas::get_ins()->draw_line(p1, p2, color*xui_colour(1.0f, 0.5f, 0.5f, 0.5f));
 		}
 	}
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timegrad, set_curframe,	void)( s32 x )
+void xui_timegrad::set_curframe( s32 x )
 {
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	s32 space = timeview->get_keyspace();

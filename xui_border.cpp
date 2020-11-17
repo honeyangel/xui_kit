@@ -1,14 +1,11 @@
 #include "xui_control.h"
 #include "xui_desktop.h"
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_border.h"
 
-xui_implement_rtti(xui_border, xui_component);
+xui_implement_rtti(xui_border, xui_component)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_border)( const xui_vector<s32>& size, u08 resize )
+xui_border::xui_border( const xui_vector<s32>& size, u08 resize )
 : xui_component(size)
 {
 	m_resize	= resize;
@@ -18,49 +15,44 @@ xui_create_explain(xui_border)( const xui_vector<s32>& size, u08 resize )
 	//dock
 	switch(m_resize)
 	{
-	case RESIZEFLAG_L: m_dockstyle = DOCKSTYLE_L; break;
-	case RESIZEFLAG_T: m_dockstyle = DOCKSTYLE_T; break;
-	case RESIZEFLAG_R: m_dockstyle = DOCKSTYLE_R; break;
-	case RESIZEFLAG_B: m_dockstyle = DOCKSTYLE_B; break;
+	case k_resizeflag_l: m_dockstyle = k_dockstyle_l; break;
+	case k_resizeflag_t: m_dockstyle = k_dockstyle_t; break;
+	case k_resizeflag_r: m_dockstyle = k_dockstyle_r; break;
+	case k_resizeflag_b: m_dockstyle = k_dockstyle_b; break;
 	}
 
 	//cursor
 	switch (m_resize)
 	{
-	case RESIZEFLAG_L:
-	case RESIZEFLAG_R:
-		m_cursor = CURSOR_WE;
+	case k_resizeflag_l:
+	case k_resizeflag_r:
+		m_cursor = k_cursor_we;
 		break;
-	case RESIZEFLAG_T:
-	case RESIZEFLAG_B:
-		m_cursor = CURSOR_NS;
+	case k_resizeflag_t:
+	case k_resizeflag_b:
+		m_cursor = k_cursor_ns;
 		break;
 	}
 }
 
-/*
-//flag
-*/
-xui_method_explain(xui_border, get_resize,		u08	)( void ) const
+u08 xui_border::get_resize( void ) const
 {
 	return m_resize;
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_border, on_mousedown,	void)( xui_method_mouse& args )
+void xui_border::on_mousedown( xui_method_mouse& args )
 {
 	xui_component::on_mousedown(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		m_downpt = args.point;
 	}
 }
-xui_method_explain(xui_border, on_mouserise,	void)( xui_method_mouse& args )
+
+void xui_border::on_mouserise( xui_method_mouse& args )
 {
 	xui_component::on_mouserise(args);
-	if (args.mouse == MB_L && m_parent)
+	if (args.mouse == k_mb_left && m_parent)
 	{
 		xui_vector<s32> pt = m_parent->get_renderpt();
 		xui_vector<s32> sz = m_parent->get_rendersz();
@@ -69,23 +61,24 @@ xui_method_explain(xui_border, on_mouserise,	void)( xui_method_mouse& args )
 
 		switch (m_resize)
 		{
-		case RESIZEFLAG_L: deltasz.w = m_downpt.x - args.point.x; break;
-		case RESIZEFLAG_T: deltasz.h = m_downpt.y - args.point.y; break;
-		case RESIZEFLAG_R: deltasz.w = args.point.x - m_downpt.x; break;
-		case RESIZEFLAG_B: deltasz.h = args.point.y - m_downpt.y; break;
+		case k_resizeflag_l: deltasz.w = m_downpt.x - args.point.x; break;
+		case k_resizeflag_t: deltasz.h = m_downpt.y - args.point.y; break;
+		case k_resizeflag_r: deltasz.w = args.point.x - m_downpt.x; break;
+		case k_resizeflag_b: deltasz.h = args.point.y - m_downpt.y; break;
 		}
 
 		switch (m_resize)
 		{
-		case RESIZEFLAG_L: deltapt.x = args.point.x - m_downpt.x; break;
-		case RESIZEFLAG_T: deltapt.y = args.point.y - m_downpt.y; break;
+		case k_resizeflag_l: deltapt.x = args.point.x - m_downpt.x; break;
+		case k_resizeflag_t: deltapt.y = args.point.y - m_downpt.y; break;
 		}
 
 		m_parent->set_renderpt(pt+deltapt);
 		m_parent->set_rendersz(sz+deltasz);
 	}
 }
-xui_method_explain(xui_border, on_topdraw,		void)( xui_method_args&  args )
+
+void xui_border::on_topdraw( xui_method_args& args )
 {
 	xui_component::on_topdraw(args);
 	if (m_parent)
@@ -94,16 +87,16 @@ xui_method_explain(xui_border, on_topdraw,		void)( xui_method_args&  args )
 		xui_rect2d<s32> rt = get_renderrtabs();
 		switch (m_resize)
 		{
-		case RESIZEFLAG_L:
-		case RESIZEFLAG_R:
+		case k_resizeflag_l:
+		case k_resizeflag_r:
 			rt.oft_x(pt.x - m_downpt.x);
 			break;
-		case RESIZEFLAG_T:
-		case RESIZEFLAG_B:
+		case k_resizeflag_t:
+		case k_resizeflag_b:
 			rt.oft_y(pt.y - m_downpt.y);
 			break;
 		}
 
-		xui_convas::get_ins()->fill_rectangle(rt, m_backcolor);
+		xui_canvas::get_ins()->fill_rectangle(rt, m_backcolor);
 	}
 }

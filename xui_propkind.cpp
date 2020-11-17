@@ -1,10 +1,7 @@
 #include "xui_global.h"
 #include "xui_propkind.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow, bool tail, bool plusshow, const xui_family& textfont, const xui_family_render& textdraw )
+xui_propkind::xui_propkind( xui_proproot* root, const std::wstring& name, const std::string& type, xui_kind_newctrl func, xui_bitmap* icon, bool flag, bool headshow, bool tail, bool plusshow, const xui_family& textfont, const xui_family_render& textdraw )
 {
 	m_root		= root;
 	m_func		= func;
@@ -22,79 +19,88 @@ xui_create_explain(xui_propkind)( xui_proproot* root, const std::wstring& name, 
 	m_textdraw	= textdraw;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propkind)( void )
+xui_propkind::~xui_propkind( void )
 {
 	for (u32 i = 0; i < m_propdata.size(); ++i)
 		delete m_propdata[i];
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_propkind, get_root,		xui_proproot*			)( void ) const
+xui_proproot* xui_propkind::get_root( void ) const
 {
 	return m_root;
 }
-xui_method_explain(xui_propkind, get_type,		const std::string&		)( void ) const
+
+const std::string& xui_propkind::get_type( void ) const
 {
 	return m_type;
 }
-xui_method_explain(xui_propkind, get_name,		const std::wstring&		)( void ) const
+
+const std::wstring& xui_propkind::get_name( void ) const
 {
 	return m_name;
 }
-xui_method_explain(xui_propkind, set_name,		void					)( const std::wstring& name )
+
+void xui_propkind::set_name( const std::wstring& name )
 {
 	m_name = name;
 }
-xui_method_explain(xui_propkind, get_func,		xui_kind_newctrl		)( void ) const
+
+xui_kind_newctrl xui_propkind::get_func( void ) const
 {
 	return m_func;
 }
-xui_method_explain(xui_propkind, get_icon,		xui_bitmap*				)( void ) const
+
+xui_bitmap* xui_propkind::get_icon( void ) const
 {
 	return m_icon;
 }
-xui_method_explain(xui_propkind, set_icon,		void					)( xui_bitmap* icon )
+
+void xui_propkind::set_icon( xui_bitmap* icon )
 {
 	m_icon = icon;
 }
-xui_method_explain(xui_propkind, get_flag,		bool					)( void ) const
+
+bool xui_propkind::get_flag( void ) const
 {
 	return m_flag;
 }
-xui_method_explain(xui_propkind, set_flag,		void					)( bool flag )
+
+void xui_propkind::set_flag( bool flag )
 {
 	m_flag = flag;
 }
-xui_method_explain(xui_propkind, was_tail,		bool					)( void ) const
+
+bool xui_propkind::was_tail( void ) const
 {
 	return m_tail;
 }
-xui_method_explain(xui_propkind, was_headshow,	bool					)( void ) const
+
+bool xui_propkind::was_headshow( void ) const
 {
 	return m_headshow;
 }
-xui_method_explain(xui_propkind, was_plusshow,	bool					)( void ) const
+
+bool xui_propkind::was_plusshow( void ) const
 {
 	return m_plusshow;
 }
-xui_method_explain(xui_propkind, get_textfont,	const xui_family&		)( void ) const
+
+const xui_family& xui_propkind::get_textfont( void ) const
 {
 	return m_textfont;
 }
-xui_method_explain(xui_propkind, get_textdraw,	const xui_family_render&)( void ) const
+
+const xui_family_render& xui_propkind::get_textdraw( void ) const
 {
 	return m_textdraw;
 }
-xui_method_explain(xui_propkind, get_propdata,	const xui_propdata_vec&	)( void ) const
+
+const xui_propdata_vec& xui_propkind::get_propdata( void ) const
 {
 	return m_propdata;
 }
-xui_method_explain(xui_propkind, get_propdata,	xui_propdata*			)( const std::wstring& name )
+
+xui_propdata* xui_propkind::get_propdata( const std::wstring& name )
 {
 	for (u32 i = 0; i < m_propdata.size(); ++i)
 	{
@@ -104,11 +110,13 @@ xui_method_explain(xui_propkind, get_propdata,	xui_propdata*			)( const std::wst
 
 	return NULL;
 }
-xui_method_explain(xui_propkind, add_propdata,	void					)( xui_propdata* propdata )
+
+void xui_propkind::add_propdata( xui_propdata* propdata )
 {
 	m_propdata.push_back(propdata);
 }
-xui_method_explain(xui_propkind, get_proppath,	std::wstring			)( xui_propdata* propdata )
+
+std::wstring xui_propkind::get_proppath( xui_propdata* propdata )
 {
 	for (u32 i = 0; i < m_propdata.size(); ++i)
 	{
@@ -122,33 +130,39 @@ xui_method_explain(xui_propkind, get_proppath,	std::wstring			)( xui_propdata* p
 	return L"";
 }
 
-xui_method_explain(xui_propkind, get_ctrl,		xui_kindctrl*			)( void ) const
+xui_kindctrl* xui_propkind::get_ctrl( void ) const
 {
 	return m_ctrl;
 }
-xui_method_explain(xui_propkind, set_ctrl,		void					)( xui_kindctrl* ctrl )
+
+void xui_propkind::set_ctrl( xui_kindctrl* ctrl )
 {
 	m_ctrl = ctrl;
 }
-xui_method_explain(xui_propkind, non_ctrl,		void					)( void )
+
+void xui_propkind::non_ctrl( void )
 {
 	m_ctrl = NULL;
 	for (u32 i = 0; i < m_propdata.size(); ++i)
 		m_propdata[i]->non_ctrl();
 }
-xui_method_explain(xui_propkind, can_show,		bool					)( void ) const
+
+bool xui_propkind::can_show( void ) const
 {
 	return m_show;
 }
-xui_method_explain(xui_propkind, set_show,		void					)( bool flag )
+
+void xui_propkind::set_show( bool flag )
 {
 	m_show = flag;
 }
-xui_method_explain(xui_propkind, can_edit,		bool					)( void ) const
+
+bool xui_propkind::can_edit( void ) const
 {
 	return m_edit;
 }
-xui_method_explain(xui_propkind, set_edit,		void					)( bool flag )
+
+void xui_propkind::set_edit( bool flag )
 {
 	m_edit = flag;
 }

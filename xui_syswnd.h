@@ -7,26 +7,13 @@
 class xui_syswnd
 {
 public:
-	/*
-	//constructor
-	*/
-	xui_syswnd( HWND hwnd, xui_window* popupctrl );
-
-	/*
-	//destructor
-	*/
+	xui_syswnd(xui_native_window* hwnd, xui_window* popupctrl );
 	virtual ~xui_syswnd( void );
 
-	/*
-	//method
-	*/
 	xui_window*			get_popupctrl	( void );
 	xui_render_window*	get_renderwnd	( void );
 
 protected:
-	/*
-	//member
-	*/
 	xui_render_window*	m_renderwnd;
 	xui_window*			m_popupctrl;
 };

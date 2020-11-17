@@ -1,16 +1,13 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_desktop.h"
 #include "xui_timeview.h"
 #include "xui_timeline.h"
 #include "xui_timedata.h"
 #include "xui_timehead.h"
 
-xui_implement_rtti(xui_timehead, xui_control);
+xui_implement_rtti(xui_timehead, xui_control)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timehead)( xui_timeview* timeview )
+xui_timehead::xui_timehead( xui_timeview* timeview )
 : xui_control(xui_vector<s32>(0))
 {
 	m_parent	= timeview;
@@ -19,13 +16,10 @@ xui_create_explain(xui_timehead)( xui_timeview* timeview )
 	m_currrela  = xui_vector<s32>(0);
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
+void xui_timehead::on_mousedown( xui_method_mouse& args )
 {
 	xui_control::on_mousedown(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 
@@ -38,7 +32,7 @@ xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 		if (allframe.find(frame) != allframe.end() && inner < 5)
 		{
 			timeview->set_dragtime(frame);
-			timeview->set_dragmode(args.shift ? TIMEDRAG_SELECT_AND_AFTER : TIMEDRAG_SELECT);
+			timeview->set_dragmode(args.shift ? k_timedrag_select_and_after : k_timedrag_select);
 
 			xui_keyframe_map::iterator itor = allframe.find(frame);
 			if (timeview->was_selectedall((*itor).second, (*itor).first) == false)
@@ -61,7 +55,8 @@ xui_method_explain(xui_timehead, on_mousedown,		void	)( xui_method_mouse& args )
 		}
 	}
 }
-xui_method_explain(xui_timehead, on_mousemove,		void	)( xui_method_mouse& args )
+
+void xui_timehead::on_mousemove( xui_method_mouse& args )
 {
 	xui_control::on_mousemove(args);
 	if (has_catch())
@@ -93,10 +88,11 @@ xui_method_explain(xui_timehead, on_mousemove,		void	)( xui_method_mouse& args )
 		}
 	}
 }
-xui_method_explain(xui_timehead, on_mouserise,		void	)( xui_method_mouse& args )
+
+void xui_timehead::on_mouserise( xui_method_mouse& args )
 {
 	xui_control::on_mouserise(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 
@@ -126,12 +122,13 @@ xui_method_explain(xui_timehead, on_mouserise,		void	)( xui_method_mouse& args )
 			}
 		}
 
-		timeview->set_dragmode(TIMEDRAG_NONE);
+		timeview->set_dragmode(k_timedrag_none);
 		timeview->set_dragtime(-1);
 		timeview->set_droptime(-1);
 	}
 }
-xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args )
+
+void xui_timehead::on_renderself( xui_method_args& args )
 {
 	xui_control::on_renderself(args);
 
@@ -186,11 +183,6 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 			{
 				data.keyframe += delta_time;
 			}
-			//else
-			//if (timeview->get_dragmode() == TIMEDRAG_SELECT_AND_AFTER && allfirst != -1 && data.keyframe > allfirst)
-			//{
-			//	data.keyframe += delta_time;
-			//}
 			else
 			{
 				if (timeview->has_selectedline((*itor).second, (*itor).first))
@@ -233,7 +225,7 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 		xui_rect2d<s32> temp = rt;
 		temp.oft_x(timeview->get_keyspace()*frame - 2);
 		temp.set_w(4);
-		xui_convas::get_ins()->fill_rectangle(temp, color*drawdata[i].keycolor);
+		xui_canvas::get_ins()->fill_rectangle(temp, color*drawdata[i].keycolor);
 
 		xui_colour sidecolor(1.0f, 0.0f, 0.0f, 0.0f);
 		if (drawdata[i].selected)
@@ -245,14 +237,11 @@ xui_method_explain(xui_timehead, on_renderself,		void	)( xui_method_args&  args 
 		{
 			sidecolor = xui_colour(1.0f, 0.0f, 1.0f, 1.0f);
 		}
-		xui_convas::get_ins()->draw_rectangle(temp, color*sidecolor);
+		xui_canvas::get_ins()->draw_rectangle(temp, color*sidecolor);
 	}
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timehead, hit_frame,			s32		)( s32 x )
+s32 xui_timehead::hit_frame( s32 x )
 {
 	xui_timeview* timeview = xui_dynamic_cast(xui_timeview, m_parent);
 	s32 space = timeview->get_keyspace();

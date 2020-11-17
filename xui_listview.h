@@ -10,27 +10,14 @@ class xui_listview : public xui_container
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
-	static const xui_colour		default_movecolor;
-	static const xui_colour		default_tickcolor;
+    xui_listview( const xui_vector<s32>& size, bool drawtick );
+
+	static const xui_colour		k_default_movecolor;
+	static const xui_colour		k_default_tickcolor;
 	static xui_listview*		create					( const xui_vector<s32>& size, bool drawtick );
 
-	/*
-	//constructor
-	*/
-	xui_listview( const xui_vector<s32>& size, bool drawtick );
-
-	/*
-	//multi select
-	*/
 	bool						was_allowmulti			( void ) const;
 	void						set_allowmulti			( bool flag );
-
-	/*
-	//method
-	*/
 	const xui_vector<s32>&		get_iconsize			( void ) const;
 	void						set_iconsize			( const xui_vector<s32>& iconsize );
 	const xui_family&			get_textfont			( void ) const;
@@ -53,19 +40,11 @@ public:
 	void						set_textoffset			( const xui_vector<s32>& textoffset );
 	s32							get_lineheight			( void ) const;
 	void						set_lineheight			( s32 height );
-
-	/*
-	//selected
-	*/
 	void						set_selecteditem		( xui_listitem* item, bool selected );
 	void						set_selecteditem		( u32 start, u32 final );
-	void						non_selecteditem		( bool fireMethod = true );
+	void						non_selecteditem		( bool firemethod = true );
 	std::vector<xui_listitem*>	get_selecteditem		( void );
 	std::vector<u32>			get_selecteditemindex	( void );
-
-	/*
-	//item
-	*/
 	u32							get_itemcount			( void ) const;
 	u32							get_itemindex			( xui_listitem* item );
 	xui_listitem*				get_item				( u32 index );
@@ -76,21 +55,12 @@ public:
 	void						del_itemall				( void );
 	void						set_itemvisible			( xui_listitem* item );
 
-	/*
-	//method
-	*/
 	xui_method<xui_method_args>	xm_selectedchange;
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void				on_invalid				( xui_method_args& args );
 	virtual void				on_perform				( xui_method_args& args );
 
-	/*
-	//member
-	*/
 	bool						m_drawtick;
 	xui_vector<s32>				m_iconsize;
 	xui_family					m_textfont;

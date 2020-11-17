@@ -5,12 +5,12 @@
 
 enum
 {
-	AREALIMIT_N = 0,
-	AREALIMIT_L = 0x00000001,
-	AREALIMIT_R = 0x00000002,
-	AREALIMIT_T = 0x00000004,
-	AREALIMIT_B = 0x00000008,
-	AREALIMIT_A = 0xFFFFFFFF,
+	k_arealimit_n = 0,
+	k_arealimit_l = 0x00000001,
+	k_arealimit_r = 0x00000002,
+	k_arealimit_t = 0x00000004,
+	k_arealimit_b = 0x00000008,
+	k_arealimit_a = 0xFFFFFFFF,
 };
 
 class xui_dockpage : public xui_control
@@ -18,19 +18,10 @@ class xui_dockpage : public xui_control
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
 	static xui_dockpage*	create				( xui_bitmap* icon, const std::wstring& text, s32 size, u32 dockarea, s32 minlimit, u08 initdock );
 
-	/*
-	//constructor
-	*/
 	xui_dockpage( const xui_vector<s32>& size, u32 dockarea, s32 minlimit, u08 initdock );
 
-	/*
-	//method
-	*/
 	bool					was_autofree		( void ) const;
 	void					set_autofree		( bool flag );
 	const xui_rect2d<s32>&	get_inborder		( void ) const;
@@ -45,42 +36,22 @@ public:
 	void					add_pagectrl		( xui_component* ctrl );
 	void					del_pagectrl		( xui_component* ctrl );
 
-	/*
-	//override
-	*/
 	virtual xui_rect2d<s32>	get_renderrtins		( void ) const;
-
-	/*
-	//virtual
-	*/
 	virtual xui_component*	choose				( const xui_vector<s32>& pt );
 	virtual xui_component*	choose_else			( const xui_vector<s32>& pt );
 	virtual void			update_else			( f32 delta );
 	virtual void			render_else			( void );
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void			on_perform			( xui_method_args& args );
 	virtual void			on_renderback		( xui_method_args& args );
 
-	/*
-	//event
-	*/
 	void					on_namectrlmousedown( xui_component* sender, xui_method_mouse& args );
 	void					on_namectrlmouserise( xui_component* sender, xui_method_mouse& args );
 	void					on_namectrltopdraw	( xui_component* sender, xui_method_args&  args );
-
-	/*
-	//method
-	*/
 	xui_dockview*			get_dockview		( xui_component* comp );
 	u08						cal_dockinfo		( xui_dockview* dockview, const xui_vector<s32>& pt );
 
-	/*
-	//member
-	*/
 	xui_drawer*				m_namectrl;
 	u08						m_initdock;
 	u32						m_dockarea;

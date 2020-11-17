@@ -8,12 +8,12 @@ class xui_bitmap_format
 public:
 	enum
 	{
-		UNKNOWN,
-		PAL8,
-		PALA8,
-		R8G8B8,
-		R8G8B8A8,
-		A8,
+		k_unknown,
+		k_pal8,
+		k_pala8,
+		k_r8g8b8,
+		k_r8g8b8a8,
+		k_a8,
 	};
 
 	static u08 get_stride( u08 format );

@@ -5,9 +5,9 @@
 
 enum KeyStyle
 {
-	KS_STATIC,
-	KS_LINEAR,
-	KS_BEZIER,
+	k_ks_static,
+	k_ks_linear,
+	k_ks_bezier,
 };
 
 typedef std::map<s32, u08> xui_keystyle_map;
@@ -17,26 +17,13 @@ class xui_timedata : public xui_treedata
 	friend class xui_timeline;
 
 public:
-	/*
-	//constructor
-	*/
 	xui_timedata( void );
 	xui_timedata( const std::wstring& text, xui_bitmap* icon );
 	xui_timedata( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe );
-
-	/*
-	//destructor
-	*/
 	virtual ~xui_timedata( void ){};
 
-	/*
-	//method
-	*/
 	xui_timeline*				get_line			( void );
 
-	/*
-	//interface
-	*/
 	virtual xui_colour			get_keycolor		( void ) const;
 	virtual void				cal_keyframe		( void );
 
@@ -48,14 +35,8 @@ public:
 	u08							get_keystyle		( u32 index ) const;
 
 protected:
-	/*
-	//method
-	*/
 	void						set_line			( xui_timeline* line );
 
-	/*
-	//member
-	*/
 	xui_timeline*				m_line;
 	xui_keystyle_map			m_keyframe;
 };

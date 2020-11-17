@@ -1,18 +1,15 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_desktop.h"
 #include "xui_window.h"
 #include "xui_component.h"
 
-xui_implement_root(xui_component);
+xui_implement_root(xui_component)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_component)( const xui_vector<s32>& size )
+xui_component::xui_component( const xui_vector<s32>& size )
 {
 	m_data		= NULL;
 	m_init		= false;
-	m_cursor	= CURSOR_DEFAULT;
+	m_cursor	= k_cursor_default;
 	m_parent	= NULL;
 	m_render	= xui_rect2d<s32>(xui_vector<s32>(0), size);
 	m_enable	= true;
@@ -23,95 +20,85 @@ xui_create_explain(xui_component)( const xui_vector<s32>& size )
 	m_alignvert = 0;
 	m_dockstyle = 0;
 	m_backalpha = 1.0f;
-	m_backcolor = xui_colour::transparent;
-	m_maskcolor	= xui_colour::white;
+	m_backcolor = xui_colour::k_zero;
+	m_maskcolor	= xui_colour::k_white;
 	m_clicktime = -1.0f;
 	m_clickdown = xui_vector<s32>(0);
 	m_popaction = NULL;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_component)( void )
+xui_component::~xui_component( void )
 {
 	delete m_popaction;
 }
 
-/*
-//ini
-*/
-xui_method_explain(xui_component, ini_component,		void					)( bool enable, bool visible )
+void xui_component::ini_component( bool enable, bool visible )
 {
 	m_enable	= enable;
 	m_visible	= visible;
 }
-xui_method_explain(xui_component, ini_component,		void					)( u08 alignhorz, u08 alignvert, u08 dockstyle )
+
+void xui_component::ini_component( u08 alignhorz, u08 alignvert, u08 dockstyle )
 {
 	m_alignhorz = alignhorz;
 	m_alignvert = alignvert;
 	m_dockstyle = dockstyle;
 }
 
-/*
-//name
-*/
-xui_method_explain(xui_component, get_name,				const std::string&		)( void ) const
+const std::string& xui_component::get_name( void ) const
 {
 	return m_name;
 }
-xui_method_explain(xui_component, set_name,				void					)( const std::string& name )
+
+void xui_component::set_name( const std::string& name )
 {
 	m_name = name;
 }
 
-/*
-//data
-*/
-xui_method_explain(xui_component, get_data,				void*					)( void )
+void* xui_component::get_data( void )
 {
 	return m_data;
 }
-xui_method_explain(xui_component, set_data,				void					)( void* data )
+
+void xui_component::set_data( void* data )
 {
 	m_data = data;
 }
 
-/*
-//cursor
-*/
-xui_method_explain(xui_component, get_cursor,			u32						)( void ) const
+u32 xui_component::get_cursor( void ) const
 {
 	return m_cursor;
 }
-xui_method_explain(xui_component, set_cursor,			void					)( u32 cursor )
+
+void xui_component::set_cursor( u32 cursor )
 {
 	m_cursor = cursor;
 }
 
-/*
-//parent
-*/
-xui_method_explain(xui_component, get_parent,			xui_component*			)( void )
+xui_component* xui_component::get_parent( void )
 {
 	return m_parent;
 }
-xui_method_explain(xui_component, set_parent,			void					)( xui_component* component )
+
+void xui_component::set_parent( xui_component* component )
 {
 	m_parent = component;
 }
-xui_method_explain(xui_component, was_parent,			bool					)( xui_component* component ) const
+
+bool xui_component::was_parent( xui_component* component ) const
 {
 	return (m_parent && m_parent == component);
 }
-xui_method_explain(xui_component, was_ancestor,			bool					)( xui_component* component ) const
+
+bool xui_component::was_ancestor( xui_component* component ) const
 {
 	if (m_parent == NULL)
 		return false;
 
 	return (m_parent == component) || m_parent->was_ancestor(component);
 }
-xui_method_explain(xui_component, get_ancestor,			xui_component*			)( const xui_rtti* rtti )
+
+xui_component* xui_component::get_ancestor( const xui_rtti* rtti )
 {
 	xui_component* parent = m_parent;
 	while (parent)
@@ -125,10 +112,7 @@ xui_method_explain(xui_component, get_ancestor,			xui_component*			)( const xui_
 	return NULL;
 }
 
-/*
-//window
-*/
-xui_method_explain(xui_component, get_window,			xui_window*				)( void )
+xui_window* xui_component::get_window( void )
 {
 	xui_component* parent = this;
 	while (parent)
@@ -143,14 +127,12 @@ xui_method_explain(xui_component, get_window,			xui_window*				)( void )
 	return NULL;
 }
 
-/*
-//enable
-*/
-xui_method_explain(xui_component, was_enable,			bool					)( void ) const
+bool xui_component::was_enable( void ) const
 {
 	return m_enable;
 }
-xui_method_explain(xui_component, set_enable,			void					)( bool flag )
+
+void xui_component::set_enable( bool flag )
 {
 	if (m_enable != flag)
 	{
@@ -162,14 +144,12 @@ xui_method_explain(xui_component, set_enable,			void					)( bool flag )
 	}
 }
 
-/*
-//visible
-*/
-xui_method_explain(xui_component, was_visible,			bool					)( void ) const
+bool xui_component::was_visible( void ) const
 {
 	return m_visible;
 }
-xui_method_explain(xui_component, set_visible,			void					)( bool flag )
+
+void xui_component::set_visible( bool flag )
 {
 	if (m_visible != flag)
 	{
@@ -185,66 +165,67 @@ xui_method_explain(xui_component, set_visible,			void					)( bool flag )
 	}
 }
 
-/*
-//focus
-*/
-xui_method_explain(xui_component, has_focus,			bool					)( void ) const
+bool xui_component::has_focus( void ) const
 {
 	return xui_desktop::get_ins()->get_focusctrl() == this;
 }
-xui_method_explain(xui_component, req_focus,			void					)( void )
+
+void xui_component::req_focus( void )
 {
-	xui_desktop::get_ins()->post_message(xui_message(this, XM_GETFOCUS, 0, 0));
+	xui_desktop::get_ins()->post_message(xui_message(this, k_xm_getfocus, 0, 0));
 }
-xui_method_explain(xui_component, has_catch,			bool					)( void ) const
+
+bool xui_component::has_catch( void ) const
 {
 	return xui_desktop::get_ins()->get_catchctrl() == this;
 }
-xui_method_explain(xui_component, req_catch,			void					)( void )
+
+void xui_component::req_catch( void )
 {
-	xui_desktop::get_ins()->post_message(xui_message(this, XM_GETCATCH, 0, 0));
+	xui_desktop::get_ins()->post_message(xui_message(this, k_xm_getcatch, 0, 0));
 }
-xui_method_explain(xui_component, was_hover,			bool					)( void ) const
+
+bool xui_component::was_hover( void ) const
 {
 	return xui_desktop::get_ins()->get_hoverctrl() == this;
 }
 
-/*
-//background
-*/
-xui_method_explain(xui_component, get_backalpha,		f32						)( void ) const
+f32 xui_component::get_backalpha( void ) const
 {
 	return m_backalpha;
 }
-xui_method_explain(xui_component, set_backalpha,		void					)( f32 alpha )
+
+void xui_component::set_backalpha( f32 alpha )
 {
 	m_backalpha = alpha;
 }
-xui_method_explain(xui_component, get_backcolor,		const xui_colour&		)( void ) const
+
+const xui_colour& xui_component::get_backcolor( void ) const
 {
 	return m_backcolor;
 }
-xui_method_explain(xui_component, set_backcolor,		void					)( const xui_colour& color )
+
+void xui_component::set_backcolor( const xui_colour& color )
 {
 	m_backcolor = color;
 }
-xui_method_explain(xui_component, get_maskcolor,		const xui_colour&		)( void ) const
+
+const xui_colour& xui_component::get_maskcolor( void ) const
 {
 	return m_maskcolor;
 }
-xui_method_explain(xui_component, set_maskcolor,		void					)( const xui_colour& color )
+
+void xui_component::set_maskcolor( const xui_colour& color )
 {
 	m_maskcolor = color;
 }
 
-/*
-//layout
-*/
-xui_method_explain(xui_component, get_alignhorz,		u08						)( void ) const
+u08 xui_component::get_alignhorz( void ) const
 {
 	return m_alignhorz;
 }
-xui_method_explain(xui_component, set_alignhorz,		void					)( u08 alignhorz )
+
+void xui_component::set_alignhorz( u08 alignhorz )
 {
 	if (m_alignhorz != alignhorz)
 	{
@@ -254,11 +235,13 @@ xui_method_explain(xui_component, set_alignhorz,		void					)( u08 alignhorz )
 			m_parent->perform();
 	}
 }
-xui_method_explain(xui_component, get_alignvert,		u08						)( void ) const
+
+u08 xui_component::get_alignvert( void ) const
 {
 	return m_alignvert;
 }
-xui_method_explain(xui_component, set_alignvert,		void					)( u08 alignvert )
+
+void xui_component::set_alignvert( u08 alignvert )
 {
 	if (m_alignvert != alignvert)
 	{
@@ -268,11 +251,13 @@ xui_method_explain(xui_component, set_alignvert,		void					)( u08 alignvert )
 			m_parent->perform();
 	}
 }
-xui_method_explain(xui_component, get_dockstyle,		u08						)( void ) const
+
+u08 xui_component::get_dockstyle( void ) const
 {
 	return m_dockstyle;
 }
-xui_method_explain(xui_component, set_dockstyle,		void					)( u08 dockstyle )
+
+void xui_component::set_dockstyle( u08 dockstyle )
 {
 	if (m_dockstyle != dockstyle)
 	{
@@ -283,30 +268,32 @@ xui_method_explain(xui_component, set_dockstyle,		void					)( u08 dockstyle )
 	}
 }
 
-/*
-//location
-*/
-xui_method_explain(xui_component, get_renderx,			s32						)( void ) const
+s32 xui_component::get_renderx( void ) const
 {
 	return m_render.ax;
 }
-xui_method_explain(xui_component, get_rendery,			s32						)( void ) const
+
+s32 xui_component::get_rendery( void ) const
 {
 	return m_render.ay;
 }
-xui_method_explain(xui_component, get_renderpt,			xui_vector<s32>			)( void ) const
+
+xui_vector<s32> xui_component::get_renderpt( void ) const
 {
 	return m_render.get_pt();
 }
-xui_method_explain(xui_component, set_renderx,			void					)( s32 x )
+
+void xui_component::set_renderx( s32 x )
 {
 	set_renderpt(xui_vector<s32>(x, m_render.ay));
 }
-xui_method_explain(xui_component, set_rendery,			void					)( s32 y )
+
+void xui_component::set_rendery( s32 y )
 {
 	set_renderpt(xui_vector<s32>(m_render.ax, y));
 }
-xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s32>& pt )
+
+void xui_component::set_renderpt( const xui_vector<s32>& pt )
 {
 	if (m_render.was_pt(pt) == false)
 	{
@@ -320,27 +307,33 @@ xui_method_explain(xui_component, set_renderpt,			void					)( const xui_vector<s
 			m_parent->invalid();
 	}
 }
-xui_method_explain(xui_component, get_renderw,			s32						)( void ) const
+
+s32 xui_component::get_renderw( void ) const
 {
 	return m_render.get_sz().w;
 }
-xui_method_explain(xui_component, get_renderh,			s32						)( void ) const
+
+s32 xui_component::get_renderh( void ) const
 {
 	return m_render.get_sz().h;
 }
-xui_method_explain(xui_component, get_rendersz,			xui_vector<s32>			)( void ) const
+
+xui_vector<s32> xui_component::get_rendersz( void ) const
 {
 	return m_render.get_sz();
 }
-xui_method_explain(xui_component, set_renderw,			void					)( s32 w )
+
+void xui_component::set_renderw( s32 w )
 {
 	set_rendersz(xui_vector<s32>(w, m_render.get_sz().h));
 }
-xui_method_explain(xui_component, set_renderh,			void					)( s32 h )
+
+void xui_component::set_renderh( s32 h )
 {
 	set_rendersz(xui_vector<s32>(m_render.get_sz().w, h));
 }
-xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s32>& sz )
+
+void xui_component::set_rendersz( const xui_vector<s32>& sz )
 {
 	if (m_render.was_sz(sz) == false)
 	{
@@ -354,11 +347,13 @@ xui_method_explain(xui_component, set_rendersz,			void					)( const xui_vector<s
 			m_parent->invalid();
 	}
 }
-xui_method_explain(xui_component, get_renderpt,			xui_vector<s32>			)( const xui_vector<s32>& pt ) const
+
+xui_vector<s32> xui_component::get_renderpt( const xui_vector<s32>& pt ) const
 {
 	return pt - get_screenpt();
 }
-xui_method_explain(xui_component, get_screenpt,			xui_vector<s32>			)( void ) const
+
+xui_vector<s32> xui_component::get_screenpt( void ) const
 {
 	xui_vector<s32> pt = m_render.get_pt();
 	return (m_parent == NULL) 
@@ -366,10 +361,7 @@ xui_method_explain(xui_component, get_screenpt,			xui_vector<s32>			)( void ) co
 		: pt + m_parent->get_screenpt();
 }
 
-/*
-//color
-*/
-xui_method_explain(xui_component, get_vertexcolor,		xui_colour				)( void ) const
+xui_colour xui_component::get_vertexcolor( void ) const
 {
 	xui_colour color(
 		m_backalpha,
@@ -381,31 +373,26 @@ xui_method_explain(xui_component, get_vertexcolor,		xui_colour				)( void ) cons
 		? color
 		: color * m_parent->get_vertexcolor();
 }
-xui_method_explain(xui_component, get_rendercolor,		xui_colour				)( void ) const
+
+xui_colour xui_component::get_rendercolor( void ) const
 {
 	return m_backcolor;
 }
 
-/*
-//rectangle
-*/
-xui_method_explain(xui_component, get_renderrt,			xui_rect2d<s32>			)( void ) const
+xui_rect2d<s32> xui_component::get_renderrt( void ) const
 {
 	return xui_rect2d<s32>(xui_vector<s32>(0, 0), get_rendersz());
 }
-xui_method_explain(xui_component, get_renderrtabs,		xui_rect2d<s32>			)( void ) const
+
+xui_rect2d<s32> xui_component::get_renderrtabs( void ) const
 {
 	return get_renderrt() + get_screenpt();
 }
 
-/*
-//hit
-*/
-xui_method_explain(xui_component, choose,				xui_component*			)( const xui_vector<s32>& pt )
+xui_component* xui_component::choose( const xui_vector<s32>& pt )
 {
 	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
-		//判定区域
 		if (m_enable && m_visible)
 		{
 			if (m_render.was_inside(pt))
@@ -416,14 +403,12 @@ xui_method_explain(xui_component, choose,				xui_component*			)( const xui_vecto
 	return NULL;
 }
 
-/*
-//perform
-*/
-xui_method_explain(xui_component, invalid,				void					)( void )
+void xui_component::invalid( void )
 {
 	m_invalid = true;
 }
-xui_method_explain(xui_component, refresh,				void					)( void )
+
+void xui_component::refresh( void )
 {
 	m_invalid = false;
 
@@ -431,17 +416,15 @@ xui_method_explain(xui_component, refresh,				void					)( void )
 	on_invalid(      args); 
 	xm_invalid(this, args);
 }
-xui_method_explain(xui_component, perform,				void					)( void )
+
+void xui_component::perform( void )
 {
 	xui_method_args  args;
 	on_perform(      args);
 	xm_perform(this, args);
 }
 
-/*
-//update&render
-*/
-xui_method_explain(xui_component, update,				void					)( f32 delta )
+void xui_component::update( f32 delta )
 {
 	if (m_invalid)
 	{
@@ -474,36 +457,37 @@ xui_method_explain(xui_component, update,				void					)( f32 delta )
 	on_updateself(      args);
 	xm_updateself(this, args);
 }
-xui_method_explain(xui_component, render,				void					)( void )
+
+void xui_component::render( void )
 {
 	if (m_popaction == NULL || m_popaction->was_play() == false)
 	{
 		xui_method_args     args; 
 		on_renderback(      args);
-		xui_rect2d<s32> cliprect = xui_convas::get_ins()->get_cliprect();
-		xui_convas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
+		xui_rect2d<s32> cliprect = xui_canvas::get_ins()->get_cliprect();
+		xui_canvas::get_ins()->set_cliprect(cliprect.get_inter(get_renderrtabs()));
 		on_renderself(      args);
 		xm_renderself(this, args);
-		xui_convas::get_ins()->set_cliprect(cliprect);
+		xui_canvas::get_ins()->set_cliprect(cliprect);
 	}
 }
 
-/*
-//perform set render method
-*/
-xui_method_explain(xui_component, on_perform_x,			void					)( s32 x )
+void xui_component::on_perform_x( s32 x )
 {
 	on_perform_pt(x, m_render.ay);
 }
-xui_method_explain(xui_component, on_perform_y,			void					)( s32 y )
+
+void xui_component::on_perform_y( s32 y )
 {
 	on_perform_pt(m_render.ax, y);
 }
-xui_method_explain(xui_component, on_perform_pt,		void					)( s32 x, s32 y )
+
+void xui_component::on_perform_pt( s32 x, s32 y )
 {
 	on_perform_pt(xui_vector<s32>(x, y));
 }
-xui_method_explain(xui_component, on_perform_pt,		void					)( const xui_vector<s32>& pt )
+
+void xui_component::on_perform_pt( const xui_vector<s32>& pt )
 {
 	if (m_render.get_pt() != pt)
 	{
@@ -514,19 +498,23 @@ xui_method_explain(xui_component, on_perform_pt,		void					)( const xui_vector<s
 		xm_setrenderpt(this, args);
 	}
 }
-xui_method_explain(xui_component, on_perform_w,			void					)( s32 w )
+
+void xui_component::on_perform_w( s32 w )
 {
 	on_perform_sz(w, m_render.get_h());
 }
-xui_method_explain(xui_component, on_perform_h,			void					)( s32 h )
+
+void xui_component::on_perform_h( s32 h )
 {
 	on_perform_sz(m_render.get_w(), h);
 }
-xui_method_explain(xui_component, on_perform_sz,		void					)( s32 w, s32 h )
+
+void xui_component::on_perform_sz( s32 w, s32 h )
 {
 	on_perform_sz(xui_vector<s32>(w, h));
 }
-xui_method_explain(xui_component, on_perform_sz,		void					)( const xui_vector<s32>& sz )
+
+void xui_component::on_perform_sz( const xui_vector<s32>& sz )
 {
 	if (m_render.get_sz() != sz)
 	{
@@ -538,18 +526,15 @@ xui_method_explain(xui_component, on_perform_sz,		void					)( const xui_vector<s
 	}
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_component, on_setrenderpt,		void					)( xui_method_args&			args )
-{
+void xui_component::on_setrenderpt( xui_method_args& args )
+{}
 
-}
-xui_method_explain(xui_component, on_setrendersz,		void					)( xui_method_args&			args )
+void xui_component::on_setrendersz( xui_method_args& args )
 {
 	refresh();
 }
-xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			args )
+
+void xui_component::on_getfocus( xui_method_args& args )
 {
 	xui_component* root  = m_parent;
 	xui_component* other = (xui_component*)args.wparam;
@@ -570,7 +555,8 @@ xui_method_explain(xui_component, on_getfocus,			void					)( xui_method_args&			
 		}
 	}
 }
-xui_method_explain(xui_component, on_nonfocus,			void					)( xui_method_args&			args )
+
+void xui_component::on_nonfocus( xui_method_args& args )
 {
 	xui_component* root  = m_parent;
 	xui_component* other = (xui_component*)args.wparam;
@@ -591,58 +577,54 @@ xui_method_explain(xui_component, on_nonfocus,			void					)( xui_method_args&			
 		}
 	}
 }
-xui_method_explain(xui_component, on_getcatch,			void					)( xui_method_args&			args )
-{
 
-}
-xui_method_explain(xui_component, on_noncatch,			void					)( xui_method_args&			args )
-{
+void xui_component::on_getcatch( xui_method_args& args )
+{}
 
-}
-xui_method_explain(xui_component, on_load,				void					)( xui_method_args&			args )
-{
+void xui_component::on_noncatch( xui_method_args& args )
+{}
 
-}
-xui_method_explain(xui_component, on_free,				void					)( xui_method_args&			args )
+void xui_component::on_load( xui_method_args& args )
+{}
+
+void xui_component::on_free( xui_method_args& args )
 {
 	m_maskcolor = xui_colour(1.0f, 1.0f, 1.0f, 1.0f);
 }
-xui_method_explain(xui_component, on_lock,				void					)( xui_method_args&			args )
+
+void xui_component::on_lock( xui_method_args& args )
 {
 	m_maskcolor = xui_colour(1.0f, 0.5f, 0.5f, 0.5f);
 }
-xui_method_explain(xui_component, on_show,				void					)( xui_method_args&			args )
+
+void xui_component::on_show( xui_method_args& args )
 {
 	if (m_popaction)
 	{
-		xui_method_ptrcall(m_popaction, reset	)();
-		xui_method_ptrcall(m_popaction, set_play)(true);
-		xui_method_ptrcall(m_popaction, update	)(0.0f);
+		m_popaction->reset();
+		m_popaction->set_play(true);
+		m_popaction->update(0.0f);
 	}
 }
-xui_method_explain(xui_component, on_hide,				void					)( xui_method_args&			args )
-{
 
-}
-xui_method_explain(xui_component, on_keybddown,			void					)( xui_method_keybd&		args )
-{
+void xui_component::on_hide( xui_method_args& args )
+{}
 
-}
-xui_method_explain(xui_component, on_keybdrise,			void					)( xui_method_keybd&		args )
-{
+void xui_component::on_keybddown( xui_method_keybd&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_keybdchar,			void					)( xui_method_keybd&		args )
-{
+void xui_component::on_keybdrise( xui_method_keybd&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedown,			void					)( xui_method_mouse&		args )
-{
+void xui_component::on_keybdchar( xui_method_keybd&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&		args )
+void xui_component::on_mousedown( xui_method_mouse& args )
+{}
+
+void xui_component::on_mouserise( xui_method_mouse&		args )
 {
-	if (args.mouse == MB_L && has_catch() && was_hover())
+	if (args.mouse == k_mb_left && has_catch() && was_hover())
 	{
 		on_mouseclick(      args);
 		xm_mouseclick(this, args);
@@ -665,79 +647,61 @@ xui_method_explain(xui_component, on_mouserise,			void					)( xui_method_mouse&	
 		}
 	}
 }
-xui_method_explain(xui_component, on_mousemove,			void					)( xui_method_mouse&		args )
-{
 
-}
-xui_method_explain(xui_component, on_mouseenter,		void					)( xui_method_mouse&		args )
-{
+void xui_component::on_mousemove( xui_method_mouse&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_mouseleave,		void					)( xui_method_mouse&		args )
-{
+void xui_component::on_mouseenter( xui_method_mouse& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mouseclick,		void					)( xui_method_mouse&		args )
-{
+void xui_component::on_mouseleave( xui_method_mouse& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousewheel,		void					)( xui_method_mouse&		args )
-{
+void xui_component::on_mouseclick( xui_method_mouse& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedoubleclick,	void					)( xui_method_mouse&		args )
-{
+void xui_component::on_mousewheel( xui_method_mouse& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedragitem,		void					)( xui_method_dragdrop&		args )
-{
+void xui_component::on_mousedoubleclick( xui_method_mouse& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedragover,		void					)( xui_method_dragdrop&		args )
-{
+void xui_component::on_mousedragitem( xui_method_dragdrop& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedragenter,	void					)( xui_method_dragdrop&		args )
-{
+void xui_component::on_mousedragover( xui_method_dragdrop& args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedragleave,	void					)( xui_method_dragdrop&		args )
-{
+void xui_component::on_mousedragenter( xui_method_dragdrop&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_mousedragdrop,		void					)( xui_method_dragdrop&		args )
-{
+void xui_component::on_mousedragleave( xui_method_dragdrop& args )
+{}
 
-}
-xui_method_explain(xui_component, on_renderback,		void					)( xui_method_args&			args )
-{
+void xui_component::on_mousedragdrop( xui_method_dragdrop& args )
+{}
 
-}
-xui_method_explain(xui_component, on_renderself,		void					)( xui_method_args&			args )
-{
+void xui_component::on_renderback( xui_method_args& args )
+{}
 
-}
-xui_method_explain(xui_component, on_updateself,		void					)( xui_method_update&		args )
-{
+void xui_component::on_renderself( xui_method_args&	args )
+{}
 
-}
-xui_method_explain(xui_component, on_topdraw,			void					)( xui_method_args&			args )
-{
+void xui_component::on_updateself( xui_method_update& args )
+{}
 
-}
-xui_method_explain(xui_component, on_invalid,			void					)( xui_method_args&			args )
+void xui_component::on_topdraw( xui_method_args& args )
+{}
+
+void xui_component::on_invalid( xui_method_args& args )
 {
 	perform();
 }
-xui_method_explain(xui_component, on_perform,			void					)( xui_method_args&			args )
-{
 
-}
+void xui_component::on_perform( xui_method_args& args )
+{}
 
-/*
-//perform implement
-*/
-xui_method_explain(xui_component, perform_alignhorz,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+void xui_component::perform_alignhorz( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
@@ -745,18 +709,18 @@ xui_method_explain(xui_component, perform_alignhorz,	void					)( const xui_rect2
 		if (comp->get_alignhorz() == 0)
 			continue;
 
-		//计算横坐标
 		s32 x = rect.ax;
 		switch (comp->get_alignhorz())
 		{
-		case ALIGNHORZ_R:	x = rect.ax + (rect.get_w() - comp->get_renderw());			break;
-		case ALIGNHORZ_C:	x = rect.ax + (rect.get_w() - comp->get_renderw()) / 2;		break;
+		case k_alignhorz_r:	x = rect.ax + (rect.get_w() - comp->get_renderw());			break;
+		case k_alignhorz_c:	x = rect.ax + (rect.get_w() - comp->get_renderw()) / 2;		break;
 		}
 
 		comp->on_perform_x(x);
 	}
 }
-xui_method_explain(xui_component, perform_alignvert,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+
+void xui_component::perform_alignvert( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
@@ -764,56 +728,56 @@ xui_method_explain(xui_component, perform_alignvert,	void					)( const xui_rect2
 		if (comp->get_alignvert() == 0)
 			continue;
 
-		//计算纵坐标
 		s32 y = rect.ay;
 		switch (comp->get_alignvert())
 		{
-		case ALIGNVERT_B:	y = rect.ay + (rect.get_h() - comp->get_renderh());			break;
-		case ALIGNVERT_C:	y = rect.ay + (rect.get_h() - comp->get_renderh()) / 2;		break;
+		case k_alignvert_b:	y = rect.ay + (rect.get_h() - comp->get_renderh());			break;
+		case k_alignvert_c:	y = rect.ay + (rect.get_h() - comp->get_renderh()) / 2;		break;
 		}
 
 		comp->on_perform_y(y);
 	}
 }
-xui_method_explain(xui_component, perform_dockstyle,	void					)( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
+
+void xui_component::perform_dockstyle( const xui_rect2d<s32>& rect, const std::vector<xui_component*>& vec )
 {
 	xui_rect2d<s32> rest = rect;
 	for (u32 i = 0; i < vec.size(); ++i)
 	{
 		xui_component* comp = vec[i];
 		if (comp->was_visible()   == false ||
-			comp->get_dockstyle() == DOCKSTYLE_N)
+			comp->get_dockstyle() == k_dockstyle_n)
 			continue;
 
 		xui_vector<s32> pt = comp->get_renderpt();
 		xui_vector<s32> sz = comp->get_rendersz();
 		switch (comp->get_dockstyle())
 		{
-		case DOCKSTYLE_L:
+		case k_dockstyle_l:
 			pt.x	= rest.ax;
 			pt.y	= rest.ay;
 			sz.h	= rest.get_h();
 			rest.ax = rest.ax + comp->get_renderw();
 			break;
-		case DOCKSTYLE_T:
+		case k_dockstyle_t:
 			pt.x	= rest.ax;
 			pt.y	= rest.ay;
 			sz.w	= rest.get_w();
 			rest.ay = rest.ay + comp->get_renderh();
 			break;
-		case DOCKSTYLE_R:
+		case k_dockstyle_r:
 			pt.x	= rest.bx - comp->get_renderw();
 			pt.y	= rest.ay;
 			sz.h	= rest.get_h();
 			rest.bx = pt.x;
 			break;
-		case DOCKSTYLE_B:
+		case k_dockstyle_b:
 			pt.x	= rest.ax;
 			pt.y	= rest.by - comp->get_renderh();
 			sz.w	= rest.get_w();
 			rest.by = pt.y;
 			break;
-		case DOCKSTYLE_F:
+		case k_dockstyle_f:
 			pt.x	= rest.ax;
 			pt.y	= rest.ay;
 			sz.w	= rest.get_w();
@@ -824,7 +788,7 @@ xui_method_explain(xui_component, perform_dockstyle,	void					)( const xui_rect2
 		comp->on_perform_pt(pt);
 		comp->on_perform_sz(sz);
 
-		if (comp->get_dockstyle() == DOCKSTYLE_F)
+		if (comp->get_dockstyle() == k_dockstyle_f)
 			break;
 	}
 }

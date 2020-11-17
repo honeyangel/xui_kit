@@ -10,24 +10,20 @@
 //////////////////////////////////////////////////////////////////////////
 //propctrl
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl, xui_control);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl)( void )
-: xui_control(xui_vector<s32>(0, xui_propview::default_lineheight))
+xui_implement_rtti(xui_propctrl, xui_control)
+
+xui_propctrl::xui_propctrl( void )
+: xui_control(xui_vector<s32>(0, xui_propview::k_default_lineheight))
 {
 	m_propdata	= NULL;
 }
 
-/*
-//propdata
-*/
-xui_method_explain(xui_propctrl,		get_propdata,		const xui_propdata_vec&	)( void ) const
+const xui_propdata_vec& xui_propctrl::get_propdata( void ) const
 {
 	return m_propdatavec;
 }
-xui_method_explain(xui_propctrl,		has_propdata,		bool					)( xui_propdata* propdata ) const
+
+bool xui_propctrl::has_propdata( xui_propdata* propdata ) const
 {
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
@@ -37,7 +33,8 @@ xui_method_explain(xui_propctrl,		has_propdata,		bool					)( xui_propdata* propd
 
 	return false;
 }
-xui_method_explain(xui_propctrl,		set_propdata,		void					)( xui_propdata* propdata )
+
+void xui_propctrl::set_propdata( xui_propdata* propdata )
 {
 	m_propdata    = propdata;
 	m_propdatavec.clear();
@@ -45,42 +42,49 @@ xui_method_explain(xui_propctrl,		set_propdata,		void					)( xui_propdata* propd
 
 	on_linkpropdata();
 }
-xui_method_explain(xui_propctrl,		set_propdata,		void					)( const xui_propdata_vec& propdata )
+
+void xui_propctrl::set_propdata( const xui_propdata_vec& propdata )
 {
 	m_propdata    = propdata.front();
 	m_propdatavec = propdata;
 
 	on_linkpropdata();
 }
-xui_method_explain(xui_propctrl,		del_propdata,		void					)( void )
+
+void xui_propctrl::del_propdata( void )
 {
 	m_propdata	  = NULL;
 	m_propdatavec.clear();
 }
-xui_method_explain(xui_propctrl,		get_ctrlelse,		xui_component*			)( void )
+
+xui_component* xui_propctrl::get_ctrlelse( void )
 {
 	return m_widgetvec.back();
 }
-xui_method_explain(xui_propctrl,		add_ctrlelse,		void					)( xui_component* component )
+
+void xui_propctrl::add_ctrlelse( xui_component* component )
 {
 	component->set_parent(this);
 	m_widgetvec.push_back(component);
 }
-xui_method_explain(xui_propctrl,		get_propview,		xui_propview*			)( void )
+
+xui_propview* xui_propctrl::get_propview( void )
 {
 	if (m_propdata)
 		return m_propdata->get_kind()->get_root()->get_ctrl();
 
 	return NULL;
 }
-xui_method_explain(xui_propctrl,		get_kindctrl,		xui_kindctrl*			)( void )
+
+xui_kindctrl* xui_propctrl::get_kindctrl( void )
 {
 	if (m_propdata)
 		return m_propdata->get_kind()->get_ctrl();
 
 	return NULL;
 }
-xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
+
+s32 xui_propctrl::get_indent( void )
 {
 	s32 depth = 1;
 	xui_kindctrl* kind = get_kindctrl();
@@ -91,14 +95,16 @@ xui_method_explain(xui_propctrl,		get_indent,			s32						)( void )
 		root = root->get_parent();
 	}
 
-	return depth * xui_propview::default_nodeindent;
+	return depth * xui_propview::k_default_nodeindent;
 }
-xui_method_explain(xui_propctrl,		on_lock,			void					)( xui_method_args&   args )
+
+void xui_propctrl::on_lock( xui_method_args& args )
 {
 	xui_control::on_lock(args);
 	m_maskcolor = xui_colour(1.0f, 0.7f);
 }
-xui_method_explain(xui_propctrl,		on_updateself,		void					)( xui_method_update& args )
+
+void xui_propctrl::on_updateself( xui_method_update& args )
 {
 	xui_control::on_updateself(args);
 
@@ -108,7 +114,8 @@ xui_method_explain(xui_propctrl,		on_updateself,		void					)( xui_method_update&
 		on_linkpropdata(true);
 	}
 }
-xui_method_explain(xui_propctrl,		on_readyundo,		void					)( void )
+
+void xui_propctrl::on_readyundo( void )
 {
 	for (u32 i = 0; i < m_propdatavec.size(); ++i)
 	{
@@ -120,26 +127,18 @@ xui_method_explain(xui_propctrl,		on_readyundo,		void					)( void )
 //////////////////////////////////////////////////////////////////////////
 //propctrl_base
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_base, xui_propctrl);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_base)( void )
+xui_implement_rtti(xui_propctrl_base, xui_propctrl)
+
+xui_propctrl_base::xui_propctrl_base( void )
 : xui_propctrl()
 {}
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propctrl_base)( void )
+xui_propctrl_base::~xui_propctrl_base( void )
 {
 	delete m_propedit;
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_base,	on_linkpropdata,	void					)( bool selfupdate )
+void xui_propctrl_base::on_linkpropdata( bool selfupdate )
 {
 	if (selfupdate == false)
 	{
@@ -148,7 +147,8 @@ xui_method_explain(xui_propctrl_base,	on_linkpropdata,	void					)( bool selfupda
 		namectrl->set_text(m_propdata->get_name());
 	}
 }
-xui_method_explain(xui_propctrl_base,	on_perform,			void					)( xui_method_args& args )
+
+void xui_propctrl_base::on_perform( xui_method_args& args )
 {
 	xui_propctrl::on_perform(args);
 	xui_drawer* namectrl = m_propedit->get_namectrl();
@@ -208,11 +208,9 @@ void	class_name::on_editvalue( xui_propedit* sender )						\
 //////////////////////////////////////////////////////////////////////////
 //propctrl_bool
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_bool, xui_propctrl_base);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_bool)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_bool, xui_propctrl_base)
+
+xui_propctrl_bool::xui_propctrl_bool( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_bool* databool = dynamic_cast<xui_propdata_bool*>(propdata);
@@ -222,10 +220,7 @@ xui_create_explain(xui_propctrl_bool)( xui_propdata* propdata )
 xui_propctrl_implement_link(xui_propctrl_bool, xui_propedit_bool, xui_propdata_bool, bool)
 xui_propctrl_implement_edit(xui_propctrl_bool, xui_propedit_bool, xui_propdata_bool, bool)
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_bool,	on_perform,			void					)( xui_method_args& args )
+void xui_propctrl_bool::on_perform( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 	xui_control* boolctrl = m_propedit->get_editctrl();
@@ -240,11 +235,9 @@ xui_method_explain(xui_propctrl_bool,	on_perform,			void					)( xui_method_args&
 //////////////////////////////////////////////////////////////////////////
 //propctrl_enum
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_enum, xui_propctrl_base);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_enum)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_enum, xui_propctrl_base)
+
+xui_propctrl_enum::xui_propctrl_enum( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_enum* dataenum = dynamic_cast<xui_propdata_enum*>(propdata);
@@ -254,10 +247,7 @@ xui_create_explain(xui_propctrl_enum)( xui_propdata* propdata )
 xui_propctrl_implement_link(xui_propctrl_enum, xui_propedit_enum, xui_propdata_enum, u32)
 xui_propctrl_implement_edit(xui_propctrl_enum, xui_propedit_enum, xui_propdata_enum, u32)
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_enum,	on_perform,			void					)( xui_method_args& args )
+void xui_propctrl_enum::on_perform( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 	xui_control* enumctrl = m_propedit->get_editctrl();
@@ -273,24 +263,19 @@ xui_method_explain(xui_propctrl_enum,	on_perform,			void					)( xui_method_args&
 //////////////////////////////////////////////////////////////////////////
 //propctrl_number
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_number, xui_propctrl_base);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_number)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_number, xui_propctrl_base)
+
+xui_propctrl_number::xui_propctrl_number( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_number* datanumber = dynamic_cast<xui_propdata_number*>(propdata);
-	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval(), datanumber->get_numbtype() != NT_FLOAT);
+	xui_propedit_number* editnumber = new xui_propedit_number(this, datanumber->get_numbtype(), datanumber->get_interval(), datanumber->get_numbtype() != k_nt_float);
 	xui_propctrl_implement_attach(editnumber)
 }
 xui_propctrl_implement_link(xui_propctrl_number, xui_propedit_number, xui_propdata_number, f64)
 xui_propctrl_implement_edit(xui_propctrl_number, xui_propedit_number, xui_propdata_number, f64)
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_number, on_perform,			void					)( xui_method_args& args )
+void xui_propctrl_number::on_perform( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 	xui_control* textctrl = m_propedit->get_editctrl();
@@ -306,11 +291,9 @@ xui_method_explain(xui_propctrl_number, on_perform,			void					)( xui_method_arg
 //////////////////////////////////////////////////////////////////////////
 //propctrl_string
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_string, xui_propctrl_base);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_string)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_string, xui_propctrl_base)
+
+xui_propctrl_string::xui_propctrl_string( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_string* datastring = dynamic_cast<xui_propdata_string*>(propdata);
@@ -320,10 +303,7 @@ xui_create_explain(xui_propctrl_string)( xui_propdata* propdata )
 xui_propctrl_implement_link(xui_propctrl_string, xui_propedit_string, xui_propdata_string, std::wstring)
 xui_propctrl_implement_edit(xui_propctrl_string, xui_propedit_string, xui_propdata_string, std::wstring)
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_args& args )
+void xui_propctrl_string::on_perform( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 	xui_control* textctrl = m_propedit->get_editctrl();
@@ -339,11 +319,9 @@ xui_method_explain(xui_propctrl_string, on_perform,			void					)( xui_method_arg
 //////////////////////////////////////////////////////////////////////////
 //propctrl_colour
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_colour, xui_propctrl_base);
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_colour)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_colour, xui_propctrl_base)
+
+xui_propctrl_colour::xui_propctrl_colour( xui_propdata* propdata )
 : xui_propctrl_base()
 {
 	xui_propdata_colour* datacolour = dynamic_cast<xui_propdata_colour*>(propdata);
@@ -357,10 +335,7 @@ xui_create_explain(xui_propctrl_colour)( xui_propdata* propdata )
 xui_propctrl_implement_link(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
 xui_propctrl_implement_edit(xui_propctrl_colour, xui_propedit_colour, xui_propdata_colour, xui_colour)
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_colour, on_perform,			void					)( xui_method_args& args )
+void xui_propctrl_colour::on_perform( xui_method_args& args )
 {
 	xui_propctrl_base::on_perform(args);
 

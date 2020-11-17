@@ -2,10 +2,7 @@
 #include "xui_timermgr.h"
 #include "xui_timer.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timer)( xui_component* owner, f32 interval, void* data )
+xui_timer::xui_timer( xui_component* owner, f32 interval, void* data )
 {
 	m_owner		= owner;
 	m_enable	= true;
@@ -14,14 +11,12 @@ xui_create_explain(xui_timer)( xui_component* owner, f32 interval, void* data )
 	m_time		= 0.0f;
 }
 
-/*
-//property
-*/
-xui_method_explain(xui_timer, was_enable,	bool	)( void ) const
+bool xui_timer::was_enable( void ) const
 {
 	return m_enable;
 }
-xui_method_explain(xui_timer, set_enable,	void	)( bool flag )
+
+void xui_timer::set_enable( bool flag )
 {
 	if (m_enable != flag)
 	{
@@ -29,27 +24,28 @@ xui_method_explain(xui_timer, set_enable,	void	)( bool flag )
 		reset();
 	}
 }
-xui_method_explain(xui_timer, get_interval,	f32		)( void ) const
+
+f32 xui_timer::get_interval( void ) const
 {
 	return m_interval;
 }
-xui_method_explain(xui_timer, set_interval,	void	)( f32 interval )
+
+void xui_timer::set_interval( f32 interval )
 {
 	m_interval = interval;
 }
-xui_method_explain(xui_timer, get_data,		void*	)( void ) const
+
+void* xui_timer::get_data( void ) const
 {
 	return m_data;
 }
-xui_method_explain(xui_timer, set_data,		void	)( void* data )
+
+void xui_timer::set_data( void* data )
 {
 	m_data = data;
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timer, update,		void	)( f32 delta )
+void xui_timer::update( f32 delta )
 {
 	if (m_enable)
 	{
@@ -63,7 +59,8 @@ xui_method_explain(xui_timer, update,		void	)( f32 delta )
 		}
 	}
 }
-xui_method_explain(xui_timer, reset,		void	)( void )
+
+void xui_timer::reset( void )
 {
 	m_time = 0.0f;
 }

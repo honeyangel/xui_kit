@@ -8,22 +8,13 @@ class xui_timegrad : public xui_drawer
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_timegrad( xui_timeview* timeview );
 
 protected:
-	/*
-	//override
-	*/
 	virtual void on_mousedown	( xui_method_mouse& args );
 	virtual void on_mousemove	( xui_method_mouse& args );
 	virtual void on_renderself	( xui_method_args&  args );
 
-	/*
-	//method
-	*/
 	void		set_curframe	( s32 x );
 };
 

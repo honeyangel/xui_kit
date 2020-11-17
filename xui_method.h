@@ -8,24 +8,15 @@ template<typename T>
 class xui_method
 {
 public:
-	/*
-	//constructor
-	*/
 	xui_method( void )
 	{}
 
-	/*
-	//destructor
-	*/
     virtual ~xui_method( void )
 	{
 		for (u32 i = 0; i < m_slot_vec.size(); ++i)
 			delete m_slot_vec[i];
 	}
 
-	/*
-	//operator
-	*/
 	void operator += ( xui_method_slot<T>* slot )
 	{
 		m_slot_vec.push_back(slot);
@@ -37,29 +28,17 @@ public:
 			(*m_slot_vec[i])(sender, args);
 	}
 
-	/*
-	//method
-	*/
 	u32	 count() const
 	{
 		return m_slot_vec.size();
 	}
 
 protected:
-	/*
-	//typedef
-	*/
 	typedef std::vector< xui_method_slot<T>* >
 		xui_slot_vec;
 
-	/*
-	//member
-	*/
 	xui_slot_vec	m_slot_vec;
 
-	/*
-	//hidden
-	*/
 	xui_method<T>& operator = ( const xui_method<T>& other ){}
 };
 

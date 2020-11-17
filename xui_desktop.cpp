@@ -1,19 +1,15 @@
 #include "xui_global.h"
 #include "xui_syswnd.h"
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_window.h"
 #include "xui_dialog.h"
 #include "xui_desktop.h"
 
-xui_implement_rtti(xui_desktop, xui_panel);
-xui_implement_instance_member(xui_desktop);
-xui_implement_instance_method(xui_desktop);
+xui_implement_rtti(xui_desktop, xui_panel)
+xui_implement_instance_member(xui_desktop)
+xui_implement_instance_method(xui_desktop)
 
-
-/*
-//constructor
-*/
-xui_create_explain(xui_desktop)( void )
+xui_desktop::xui_desktop( void )
 : xui_panel(xui_vector<s32>(800, 600))
 {
 	m_catchctrl = NULL;
@@ -26,22 +22,17 @@ xui_create_explain(xui_desktop)( void )
 	m_mousecurr = xui_vector<s32>(0, 0);
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_desktop)( void )
+xui_desktop::~xui_desktop( void )
 {
 	proc_recycle();
 }
 
-/*
-//ctrl
-*/
-xui_method_explain(xui_desktop, get_catchctrl,	xui_component*			)( void )
+xui_component* xui_desktop::get_catchctrl( void )
 {
 	return m_catchctrl;
 }
-xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* component )
+
+void xui_desktop::set_catchctrl( xui_component* component )
 {
 	if (m_catchctrl != component)
 	{
@@ -69,11 +60,13 @@ xui_method_explain(xui_desktop, set_catchctrl,	void					)( xui_component* compon
 			set_focusctrl(m_catchctrl);
 	}
 }
-xui_method_explain(xui_desktop, get_focusctrl,	xui_component*			)( void )
+
+xui_component* xui_desktop::get_focusctrl( void )
 {
 	return m_focusctrl;
 }
-xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* component )
+
+void xui_desktop::set_focusctrl( xui_component* component )
 {
 	if (m_focusctrl != component)
 	{
@@ -101,11 +94,13 @@ xui_method_explain(xui_desktop, set_focusctrl,	void					)( xui_component* compon
 		}
 	}
 }
-xui_method_explain(xui_desktop, get_hoverctrl,	xui_component*			)( void )
+
+xui_component* xui_desktop::get_hoverctrl( void )
 {
 	return m_hoverctrl;
 }
-xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* component )
+
+void xui_desktop::set_hoverctrl( xui_component* component )
 {
 	if (m_hoverctrl != component)
 	{
@@ -153,7 +148,8 @@ xui_method_explain(xui_desktop, set_hoverctrl,	void					)( xui_component* compon
 		}
 	}
 }
-xui_method_explain(xui_desktop, get_floatctrl,	xui_component*			)( void )
+
+xui_component* xui_desktop::get_floatctrl( void )
 {
 	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
@@ -166,7 +162,8 @@ xui_method_explain(xui_desktop, get_floatctrl,	xui_component*			)( void )
 
 	return NULL;
 }
-xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_window* owner, xui_component* component )
+
+void xui_desktop::set_floatctrl( xui_window* owner, xui_component* component )
 {
 	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
@@ -175,55 +172,43 @@ xui_method_explain(xui_desktop, set_floatctrl,	void					)( xui_window* owner, xu
 	}
 }
 
-/*
-//mouse
-*/
-xui_method_explain(xui_desktop, get_mousedown,	const xui_vector<s32>&	)( void ) const
+const xui_vector<s32>& xui_desktop::get_mousedown( void ) const
 {
 	return m_mousedown;
 }
-xui_method_explain(xui_desktop, get_mouselast,	const xui_vector<s32>&	)( void ) const
+
+const xui_vector<s32>& xui_desktop::get_mouselast( void ) const
 {
 	return m_mouselast;
 }
-xui_method_explain(xui_desktop, get_mousecurr,	const xui_vector<s32>&	)( void ) const
+
+const xui_vector<s32>& xui_desktop::get_mousecurr( void ) const
 {
 	return m_mousecurr;
 }
-xui_method_explain(xui_desktop, get_mousemove,	xui_vector<s32>			)( void ) const
+
+xui_vector<s32> xui_desktop::get_mousemove( void ) const
 {
 	return m_mousecurr-m_mouselast;
 }
-xui_method_explain(xui_desktop, set_mouselast,	void					)( const xui_vector<s32>& pt )
+
+void xui_desktop::set_mouselast( const xui_vector<s32>& pt )
 {
 	m_mouselast = pt;
 }
-xui_method_explain(xui_desktop, set_mousecurr,	void					)( const xui_vector<s32>& pt )
+
+void xui_desktop::set_mousecurr( const xui_vector<s32>& pt )
 {
 	m_mousecurr = pt;
 }
 
-/*
-//input
-*/
-//xui_method_explain(xui_desktop, get_pastetext, const std::wstring&		)( void ) const
-//{
-//	return m_pastetext;
-//}
-//xui_method_explain(xui_desktop, set_pastetext, void						)( const std::wstring& text )
-//{
-//	m_pastetext = text;
-//}
-
-/*
-//modal
-*/
-xui_method_explain(xui_desktop, add_modalwnd,	void					)( xui_window* window )
+void xui_desktop::add_modalwnd( xui_window* window )
 {
 	xui_global::mod_syswnd(window->get_owner());
 	m_modalpool.push_back (window);
 }
-xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
+
+void xui_desktop::del_modalwnd( xui_window* window )
 {
 	xui_global::res_syswnd();
 	for (u32 i = 0; i < m_modalpool.size(); ++i)
@@ -242,10 +227,7 @@ xui_method_explain(xui_desktop, del_modalwnd,	void					)( xui_window* window )
 	xui_global::mod_syswnd(top->get_owner());
 }
 
-/*
-//message
-*/
-xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* component )
+void xui_desktop::move_recycle( xui_component* component )
 {
 	if (m_catchctrl)
 	{
@@ -270,50 +252,44 @@ xui_method_explain(xui_desktop, move_recycle,	void					)( xui_component* compone
 			window->set_float(NULL);
 	}
 
-	for (u32 i = 0; i < m_recyclebin.size(); ++i)
-	{
-		if (component == m_recyclebin[i])
-			return;
-	}
-
-	m_recyclebin.push_back(component);
+    m_recyclebin.insert(component);
 }
-xui_method_explain(xui_desktop, send_message,	void					)( const xui_message& message )
+
+void xui_desktop::send_message( const xui_message& message )
 {
 	switch(message.msgidx)
 	{
-	case XM_GETCATCH:
+	case k_xm_getcatch:
 		{
 			set_catchctrl(message.sender);
 		}
 		break;
-	case XM_GETFOCUS:
+	case k_xm_getfocus:
 		{
 			set_focusctrl(message.sender);
 		}
 		break;
-	case XM_DEAD:
+	case k_xm_dead:
 		{
 
 		}
 		break;
 	}
 }
-xui_method_explain(xui_desktop, post_message,	void					)( const xui_message& message )
+
+void xui_desktop::post_message( const xui_message& message )
 {
 	m_messagevec.push_back(message);
 }
-xui_method_explain(xui_desktop, show_message,	xui_dialog*				)( const std::wstring& text, s32 num_button )
+
+xui_dialog* xui_desktop::show_message( const std::wstring& text, s32 num_button )
 {
-	xui_dialog* dialog = new xui_dialog(text, num_button);
-	add_child(dialog);
-	return dialog;
+    xui_dialog* dialog = new xui_dialog(text, num_button);
+    add_child(dialog);
+    return dialog;
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_desktop, choose_else,	xui_component*			)( const xui_vector<s32>& pt )
+xui_component* xui_desktop::choose_else( const xui_vector<s32>& pt )
 {
 	xui_component* component = xui_container::choose_else(pt);
 	if (component == NULL)
@@ -336,16 +312,18 @@ xui_method_explain(xui_desktop, choose_else,	xui_component*			)( const xui_vecto
 
 	return component;
 }
-xui_method_explain(xui_desktop, update,			void					)( f32 delta )
+
+void xui_desktop::update( f32 delta )
 {
 	xui_panel::update(delta);
 	proc_message();
 	proc_recycle();
 	proc_settext();
 }
-xui_method_explain(xui_desktop, render,			void					)( void )
+
+void xui_desktop::render( void )
 {
-	xui_convas::get_ins()->set_cliprect(m_render);
+	xui_canvas::get_ins()->set_cliprect(m_render);
 	for (u32 i = 0; i < m_childctrl.size(); ++i)
 	{
 		xui_window* window = xui_dynamic_cast(xui_window, m_childctrl[i]);
@@ -355,13 +333,10 @@ xui_method_explain(xui_desktop, render,			void					)( void )
 		if (m_childctrl[i]->was_visible())
 			m_childctrl[i]->render();
 	}
-	xui_convas::get_ins()->set_cliprect(m_render);
+	xui_canvas::get_ins()->set_cliprect(m_render);
 }
 
-/*
-//os
-*/
-xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& args )
+void xui_desktop::os_mousewheel( xui_method_mouse& args )
 {
 	if (m_hoverctrl)
 	{
@@ -378,17 +353,18 @@ xui_method_explain(xui_desktop, os_mousewheel,	void					)( xui_method_mouse& arg
 		}
 	}
 }
-xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args )
+
+void xui_desktop::os_mousedown( xui_method_mouse& args )
 {
 	xui_component* component = NULL;
 
-	xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
+	xui_syswnd* syswnd = xui_global::get_syswnd((xui_native_window*)args.wparam);
 	if (syswnd)
 		component = syswnd->get_popupctrl()->choose(args.point);
 	else
 		component = choose(args.point);
 
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		set_catchctrl(component);
 		m_mousedown = args.point;
@@ -402,13 +378,14 @@ xui_method_explain(xui_desktop, os_mousedown,	void					)( xui_method_mouse& args
 		component->xm_mousedown(component, args);
 	}
 
-	xui_global::set_cursor(m_catchctrl == NULL ? CURSOR_DEFAULT : m_catchctrl->get_cursor());
+	xui_global::set_cursor(m_catchctrl == NULL ? k_cursor_default : m_catchctrl->get_cursor());
 }
-xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args )
+
+void xui_desktop::os_mouserise( xui_method_mouse& args )
 {
 	xui_component* component = NULL;
 
-	if (args.mouse == MB_L && m_catchctrl)
+	if (args.mouse == k_mb_left && m_catchctrl)
 	{
 		if (m_catchctrl != m_hoverctrl && m_hoverctrl && m_allowdrag && m_catchdata)
 		{
@@ -429,7 +406,7 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 	}
 	else
 	{
-		xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
+		xui_syswnd* syswnd = xui_global::get_syswnd((xui_native_window*)args.wparam);
 		if (syswnd)
 			component = syswnd->get_popupctrl()->choose(args.point);
 		else
@@ -442,22 +419,23 @@ xui_method_explain(xui_desktop, os_mouserise,	void					)( xui_method_mouse& args
 		component->xm_mouserise(component, args);
 	}
 
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		set_catchctrl(NULL);
 		m_allowdrag = false;
 		m_catchdata = NULL;
 	}
 
-	xui_global::set_cursor(m_hoverctrl == NULL ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
+	xui_global::set_cursor(m_hoverctrl == NULL ? k_cursor_default : m_hoverctrl->get_cursor());
 }
-xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args )
+
+void xui_desktop::os_mousemove( xui_method_mouse& args )
 {
 	m_mouselast = m_mousecurr;
 	m_mousecurr = args.point;
 
 	xui_component* component = NULL;
-	xui_syswnd* syswnd = xui_global::get_syswnd(args.wparam);
+	xui_syswnd* syswnd = xui_global::get_syswnd((xui_native_window*)args.wparam);
 	if (syswnd)
 		component = syswnd->get_popupctrl()->choose(args.point);
 	if (component == NULL && m_catchctrl && m_modalpool.empty())
@@ -524,7 +502,7 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 
 	if (m_catchctrl && m_catchdata)
 	{
-		xui_global::set_cursor((m_catchctrl == m_hoverctrl || m_allowdrag) ? CURSOR_DRAG : CURSOR_FORBID);
+		xui_global::set_cursor((m_catchctrl == m_hoverctrl || m_allowdrag) ? k_cursor_drag : k_cursor_forbid);
 	}
 	else
 	if (m_catchctrl)
@@ -533,10 +511,11 @@ xui_method_explain(xui_desktop, os_mousemove,	void					)( xui_method_mouse& args
 	}
 	else
 	{
-		xui_global::set_cursor((m_hoverctrl == NULL) ? CURSOR_DEFAULT : m_hoverctrl->get_cursor());
+		xui_global::set_cursor((m_hoverctrl == NULL) ? k_cursor_default : m_hoverctrl->get_cursor());
 	}
 }
-xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args )
+
+void xui_desktop::os_keybddown( xui_method_keybd& args )
 {
 	if (m_focusctrl)
 	{
@@ -553,7 +532,8 @@ xui_method_explain(xui_desktop, os_keybddown,	void					)( xui_method_keybd& args
 		}
 	}
 }
-xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args )
+
+void xui_desktop::os_keybdrise( xui_method_keybd& args )
 {
 	if (m_focusctrl)
 	{
@@ -570,15 +550,13 @@ xui_method_explain(xui_desktop, os_keybdrise,	void					)( xui_method_keybd& args
 		}
 	}
 }
-xui_method_explain(xui_desktop, os_keybdchar,	void					)( u16 c )
+
+void xui_desktop::os_keybdchar( u16 c )
 {
 	m_inputtext.append(1, c);
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
+void xui_desktop::on_addchild( xui_method_args& args )
 {
 	xui_panel::on_addchild(args);
 
@@ -596,7 +574,8 @@ xui_method_explain(xui_desktop, on_addchild,	void					)( xui_method_args& args )
 		}
 	}
 }
-xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
+
+void xui_desktop::on_delchild( xui_method_args& args )
 {
 	xui_panel::on_delchild(args);
 
@@ -610,7 +589,8 @@ xui_method_explain(xui_desktop, on_delchild,	void					)( xui_method_args& args )
 		}
 	}
 }
-xui_method_explain(xui_desktop, on_invalid,		void					)( xui_method_args& args )
+
+void xui_desktop::on_invalid( xui_method_args& args )
 {
 	xui_vector<s32> sz(0);
 	xui_rect2d<s32> rt = get_renderrtins();
@@ -627,24 +607,24 @@ xui_method_explain(xui_desktop, on_invalid,		void					)( xui_method_args& args )
 	}
 }
 
-/*
-//proc
-*/
-xui_method_explain(xui_desktop, proc_message,	void					)( void )
+void xui_desktop::proc_message( void )
 {
 	for (u32 i = 0; i < m_messagevec.size(); ++i)
 		send_message(m_messagevec[i]);
 
 	m_messagevec.clear();
 }
-xui_method_explain(xui_desktop, proc_recycle,	void					)( void )
-{
-	for (u32 i = 0; i < m_recyclebin.size(); ++i)
-		delete m_recyclebin[i];
 
-	m_recyclebin.clear();
+void xui_desktop::proc_recycle( void )
+{
+    for (std::set<xui_component*>::iterator itor = m_recyclebin.begin(); itor != m_recyclebin.end(); ++itor)
+    {
+        delete (*itor);
+    }
+    m_recyclebin.clear();
 }
-xui_method_explain(xui_desktop, proc_settext,	void					)( void )
+
+void xui_desktop::proc_settext( void )
 {
 	if (m_focusctrl)
 	{

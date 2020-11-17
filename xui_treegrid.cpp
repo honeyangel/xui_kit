@@ -2,23 +2,17 @@
 #include "xui_treeview.h"
 #include "xui_treegrid.h"
 
-xui_implement_rtti(xui_treegrid, xui_control);
+xui_implement_rtti(xui_treegrid, xui_control)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_treegrid)( u32 index, xui_treeview* treeview )
+xui_treegrid::xui_treegrid( u32 index, xui_treeview* treeview )
 : xui_control(xui_vector<s32>(0))
 {
 	m_index	 = index;
-	m_cursor = CURSOR_WE;
+	m_cursor = k_cursor_we;
 	m_parent = treeview;
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_treegrid, on_mousemove,	void)( xui_method_mouse& args )
+void xui_treegrid::on_mousemove( xui_method_mouse& args )
 {
 	xui_component::on_mousemove(args);
 	if (has_catch())

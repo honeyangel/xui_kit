@@ -6,27 +6,15 @@
 class xui_propedit_colour : public xui_propedit_base
 {
 public:
-	/*
-	//constructor
-	*/
 	xui_propedit_colour( xui_propctrl* propctrl );
 
-	/*
-	//method
-	*/
 	xui_drawer*					get_pickctrl			( void ) const;
 	const xui_colour&			get_value				( void ) const;
 	void						set_value				( const xui_colour& value );
 
-	/*
-	//override
-	*/
 	virtual void				reset					( void );
 
 protected:
-	/*
-	//event
-	*/
 	void						on_editctrlrenderself	( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlnonfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlgetfocus		( xui_component* sender, xui_method_args&  args );
@@ -34,9 +22,6 @@ protected:
 	void						on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
 	void						on_pickctrlkeybddown	( xui_component* sender, xui_method_keybd& args );
 
-	/*
-	//member
-	*/
 	xui_drawer*					m_pickctrl;
 };
 
@@ -47,33 +32,18 @@ class xui_colour_pickwnd : public xui_window
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
 	static xui_colour_pickwnd*	get_ptr					( void );
 
-	/*
-	//constructor
-	*/
 	xui_colour_pickwnd( void );
 
-	/*
-	//method
-	*/
 	const xui_colour&			get_value				( void ) const;
 	void						set_value				( const xui_colour& value );
 	xui_propctrl*				get_propctrl			( void );
 	void						set_propctrl			( xui_propctrl* propctrl );
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void				on_invalid				( xui_method_args& args );
 
-	/*
-	//event
-	*/
 	void						on_windownonfocus		( xui_component* sender, xui_method_args&  args );
 	void						on_plusctrlexpand		( xui_component* sender, xui_method_args&  args );
 	void						on_pickctrlclick		( xui_component* sender, xui_method_mouse& args );
@@ -91,15 +61,9 @@ protected:
 	void						on_comprolldowndrag		( xui_component* sender, xui_method_mouse& args );
 	void						on_compedittextchanged	( xui_component* sender, xui_method_args&  args );
 
-	/*
-	//method
-	*/
 	void						set_colordata			( void );
 	void						set_colortext			( void );
 
-	/*
-	//member
-	*/
 	xui_propctrl*				m_propctrl;
 	xui_panel*					m_mainpane;
 	xui_drawer*					m_pickctrl;

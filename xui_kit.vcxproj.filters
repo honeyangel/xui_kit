@@ -126,9 +126,6 @@
     <ClInclude Include="xui_bitmap_buffer.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="xui_convas.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="xui_family.h">
       <Filter>Render</Filter>
     </ClInclude>
@@ -417,14 +414,35 @@
     <ClInclude Include="xui_droplist.h">
       <Filter>LibGUI\listview</Filter>
     </ClInclude>
-    <ClInclude Include="libogl\inc\GLee.h">
+    <ClInclude Include="xui_event.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_native_device.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_native_window.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_syswnd_event.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="libogl\inc\glew.h">
       <Filter>LibOGL</Filter>
+    </ClInclude>
+    <ClInclude Include="libogl\inc\glxew.h">
+      <Filter>LibOGL</Filter>
+    </ClInclude>
+    <ClInclude Include="libogl\inc\wglew.h">
+      <Filter>LibOGL</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_canvas.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="xui_global_event.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="xui_convas.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="xui_bitmap_format.cpp">
       <Filter>Render</Filter>
     </ClCompile>
@@ -854,8 +872,74 @@
     <ClCompile Include="xui_droplist.cpp">
       <Filter>LibGUI\listview</Filter>
     </ClCompile>
-    <ClCompile Include="libogl\src\GLee.c">
+    <ClCompile Include="xui_event.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_native_device.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_native_device_win32.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_native_window.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_native_window_win32.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_syswnd_event.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\context.c">
       <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\egl_context.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\init.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\input.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\monitor.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\osmesa_context.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\vulkan.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\wgl_context.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_init.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_joystick.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_monitor.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_thread.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_time.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\win32_window.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="libogl\src\window.c">
+      <Filter>LibOGL</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_canvas.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="xui_global_event.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

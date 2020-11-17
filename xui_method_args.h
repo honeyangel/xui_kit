@@ -7,16 +7,10 @@
 class xui_method_args
 {
 public:
-	/*
-	//member
-	*/
 	bool	handle;
 	void*	wparam;
 	void*	lparam;
 
-	/*
-	//constructor
-	*/
 	xui_method_args( void )
 	{
 		handle = false;
@@ -30,17 +24,15 @@ class xui_method_##name : public xui_method_args
 
 enum
 {
-	MB_L,
-	MB_M,
-	MB_R,
+    k_mb_none,
+	k_mb_left,
+	k_mb_middle,
+	k_mb_right,
 };
 
 xui_declare_args(mouse)
 {
 public:
-	/*
-	//member
-	*/
 	u08				mouse;
 	xui_vector<s32>	point;
 	s32				wheel;
@@ -49,9 +41,6 @@ public:
 	bool			ctrl;
 	bool			shift;
 
-	/*
-	//constructor
-	*/
 	xui_method_mouse( void )
 	{
 		mouse = 0;
@@ -65,71 +54,69 @@ public:
 
 enum
 {
-	KEY_NONE,
-	KEY_A,
-	KEY_B,
-	KEY_C,
-	KEY_D,
-	KEY_E,
-	KEY_F,
-	KEY_G,
-	KEY_H,
-	KEY_I,
-	KEY_J,
-	KEY_K,
-	KEY_L,
-	KEY_M,
-	KEY_N,
-	KEY_O,
-	KEY_P,
-	KEY_Q,
-	KEY_R,
-	KEY_S,
-	KEY_T,
-	KEY_U,
-	KEY_V,
-	KEY_W,
-	KEY_X,
-	KEY_Y,
-	KEY_Z,
-	KEY_1,
-	KEY_2,
-	KEY_3,
-	KEY_4,
-	KEY_5,
-	KEY_6,
-	KEY_7,
-	KEY_8,
-	KEY_9,
-	KEY_ESC,
-	KEY_ENTER,
-	KEY_BACK,
-	KEY_TAB,
-	KEY_HOME,
-	KEY_END,
-	KEY_DELETE,
-	KEY_SHIFT,
-	KEY_LARROW,
-	KEY_RARROW,
-	KEY_UARROW,
-	KEY_DARROW,
-	KEY_F1,
-	KEY_F2,
-	KEY_F3,
-	KEY_F4,
-	KEY_F5,
-	KEY_F6,
-	KEY_F7,
-	KEY_F8,
-	KEY_F9,
+	k_key_none,
+	k_key_a,
+	k_key_b,
+	k_key_c,
+	k_key_d,
+	k_key_e,
+	k_key_f,
+	k_key_g,
+	k_key_h,
+	k_key_i,
+	k_key_j,
+	k_key_k,
+	k_key_l,
+	k_key_m,
+	k_key_n,
+	k_key_o,
+	k_key_p,
+	k_key_q,
+	k_key_r,
+	k_key_s,
+	k_key_t,
+	k_key_u,
+	k_key_v,
+	k_key_w,
+	k_key_x,
+	k_key_y,
+	k_key_z,
+	k_key_1,
+	k_key_2,
+	k_key_3,
+	k_key_4,
+	k_key_5,
+	k_key_6,
+	k_key_7,
+	k_key_8,
+	k_key_9,
+    k_key_0,
+	k_key_esc,
+	k_key_enter,
+	k_key_back,
+	k_key_tab,
+	k_key_home,
+	k_key_end,
+	k_key_delete,
+	k_key_shift,
+	k_key_larrow,
+	k_key_rarrow,
+	k_key_uarrow,
+	k_key_darrow,
+	k_key_f1,
+	k_key_f2,
+	k_key_f3,
+	k_key_f4,
+	k_key_f5,
+	k_key_f6,
+	k_key_f7,
+	k_key_f8,
+	k_key_f9,
 };
 
 xui_declare_args(keybd)
 {
 public:
-	/*
-	//member
-	*/
 	u08				kcode;
 	u16				wchar;
 
@@ -137,9 +124,6 @@ public:
 	bool			ctrl;
 	bool			shift;
 
-	/*
-	//constructor
-	*/
 	xui_method_keybd( void )
 	{
 		kcode = 0;
@@ -154,17 +138,11 @@ public:
 xui_declare_args(dragdrop)
 {
 public:
-	/*
-	//member
-	*/
 	xui_component*	drag;
 	void*			data;
 	std::string		type;
 	u08				allow;
 
-	/*
-	//constructor
-	*/
 	xui_method_dragdrop( void )
 	{
 		drag  = NULL;
@@ -176,14 +154,8 @@ public:
 xui_declare_args(update)
 {
 public:
-	/*
-	//member
-	*/
 	f32				delta;
 
-	/*
-	//constructor
-	*/
 	xui_method_update( void )
 	{
 		delta = 0.0f;
@@ -193,69 +165,12 @@ public:
 xui_declare_args(propdata)
 {
 public:
-	/*
-	//member
-	*/
 	xui_propdata*	propdata;
 
-	/*
-	//constructor
-	*/
 	xui_method_propdata( void )
 	{
 		propdata = NULL;
 	}
 };
-
-//xui_declare_args(action)
-//{
-//public:
-//	/*
-//	//member
-//	*/
-//	u32				event;
-//
-//	/*
-//	//constructor
-//	*/
-//	xui_method_action( void )
-//	{
-//		event = 0;
-//	}
-//};
-
-//xui_declare_args(update)
-//{
-//public:
-//	/*
-//	//member
-//	*/
-//	f32				delta;
-//
-//	/*
-//	//constructor
-//	*/
-//	xui_method_update( f32 other_delta )
-//	{
-//		delta = other_delta;
-//	}
-//};
-//
-//xui_declare_args(render)
-//{
-//public:
-//	/*
-//	//member
-//	*/
-//	xui_convas*		paint;
-//
-//	/*
-//	//constructor
-//	*/
-//	xui_method_render( xui_convas* other_paint )
-//	{
-//		paint = other_paint;
-//	}
-//};
 
 #endif//__xui_method_args_h__

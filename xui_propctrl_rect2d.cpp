@@ -1,35 +1,30 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_button.h"
 #include "xui_numbbox.h"
 #include "xui_kindctrl.h"
 #include "xui_propview.h"
 #include "xui_propctrl_rect2d.h"
 
-xui_implement_rtti(xui_propctrl_rect2d, xui_propctrl);
-/*
-//create
-*/
-xui_method_explain(xui_propctrl_rect2d, create, xui_propctrl*)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_rect2d, xui_propctrl)
+
+xui_propctrl* xui_propctrl_rect2d::create( xui_propdata* propdata )
 {
 	return new xui_propctrl_rect2d(propdata);
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
+xui_propctrl_rect2d::xui_propctrl_rect2d( xui_propdata* propdata )
 : xui_propctrl()
 {
-	m_render   = xui_rect2d<s32>(0, 0, 200, xui_propview::default_lineheight*2);
+	m_render   = xui_rect2d<s32>(0, 0, 200, xui_propview::k_default_lineheight*2);
 
 	xui_propdata_rect2d* datarect2d = dynamic_cast<xui_propdata_rect2d*>(propdata);
-	m_subxedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
-	m_subyedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
-	m_subwedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
-	m_subhedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != NT_FLOAT);
+	m_subxedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != k_nt_float);
+	m_subyedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != k_nt_float);
+	m_subwedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != k_nt_float);
+	m_subhedit = new xui_propedit_number(this, datarect2d->get_numbtype(), datarect2d->get_interval(), datarect2d->get_numbtype() != k_nt_float);
 	m_namectrl = new xui_drawer(xui_vector<s32>(100, 20));
-	xui_method_ptrcall(m_namectrl,	set_parent		)(this);
-	xui_method_ptrcall(m_namectrl,	set_textalign	)(TEXTALIGN_LC);
+	m_namectrl->set_parent(this);
+	m_namectrl->set_textalign(k_textalign_lc);
 	m_widgetvec.push_back(m_namectrl);
 
 	xui_drawer*  subxname = m_subxedit->get_namectrl();
@@ -40,18 +35,18 @@ xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 	xui_control* subwedit = m_subwedit->get_editctrl();
 	xui_drawer*	 subhname = m_subhedit->get_namectrl();
 	xui_control* subhedit = m_subhedit->get_editctrl();
-	xui_method_ptrcall(subxname,	set_text		)(L"X");
-	xui_method_ptrcall(subyname,	set_text		)(L"Y");
-	xui_method_ptrcall(subwname,	set_text		)(L"W");
-	xui_method_ptrcall(subhname,	set_text		)(L"H");
-	xui_method_ptrcall(subxname,	set_parent		)(this);
-	xui_method_ptrcall(subyname,	set_parent		)(this);
-	xui_method_ptrcall(subxedit,	set_parent		)(this);
-	xui_method_ptrcall(subyedit,	set_parent		)(this);
-	xui_method_ptrcall(subwname,	set_parent		)(this);
-	xui_method_ptrcall(subwedit,	set_parent		)(this);
-	xui_method_ptrcall(subhname,	set_parent		)(this);
-	xui_method_ptrcall(subhedit,	set_parent		)(this);
+	subxname->set_text(L"X");
+	subyname->set_text(L"Y");
+	subwname->set_text(L"W");
+	subhname->set_text(L"H");
+	subxname->set_parent(this);
+	subyname->set_parent(this);
+	subxedit->set_parent(this);
+	subyedit->set_parent(this);
+	subwname->set_parent(this);
+	subwedit->set_parent(this);
+	subhname->set_parent(this);
+	subhedit->set_parent(this);
 	m_widgetvec.push_back(subxname);
 	m_widgetvec.push_back(subyname);
 	m_widgetvec.push_back(subxedit);
@@ -62,10 +57,7 @@ xui_create_explain(xui_propctrl_rect2d)( xui_propdata* propdata )
 	m_widgetvec.push_back(subhedit);
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propctrl_rect2d)( void )
+xui_propctrl_rect2d::~xui_propctrl_rect2d( void )
 {
 	delete m_subxedit;
 	delete m_subyedit;
@@ -73,10 +65,7 @@ xui_delete_explain(xui_propctrl_rect2d)( void )
 	delete m_subhedit;
 }
 
-/*
-//propdata
-*/
-xui_method_explain(xui_propctrl_rect2d, on_linkpropdata,	void)( bool selfupdate )
+void xui_propctrl_rect2d::on_linkpropdata( bool selfupdate )
 {
 	if (selfupdate == false)
 	{
@@ -108,7 +97,8 @@ xui_method_explain(xui_propctrl_rect2d, on_linkpropdata,	void)( bool selfupdate 
 		m_subhedit->set_value(value.get_sz().h);
 	}
 }
-xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* sender )
+
+void xui_propctrl_rect2d::on_editvalue( xui_propedit* sender )
 {
 	if (sender == m_subxedit)
 	{
@@ -167,10 +157,7 @@ xui_method_explain(xui_propctrl_rect2d, on_editvalue,		void)( xui_propedit* send
 	}
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& args )
+void xui_propctrl_rect2d::on_perform( xui_method_args& args )
 {
 	xui_propctrl::on_perform(args);
 	xui_rect2d<s32> rt = get_renderrt();
@@ -185,8 +172,8 @@ xui_method_explain(xui_propctrl_rect2d, on_perform,			void)( xui_method_args& ar
 	xui_drawer*	 subhname = m_subhedit->get_namectrl();
 	xui_control* subhedit = m_subhedit->get_editctrl();
 
-	s32 xwnamewidth = 16;//xui_max(subxname->get_renderw(), subwname->get_renderw());
-	s32 yhnamewidth = 16;//xui_max(subyname->get_renderw(), subhname->get_renderw());
+	s32 xwnamewidth = 16;
+	s32 yhnamewidth = 16;
 	s32 xyeditwidth = (rt.get_w() - rt.get_w()/2 - 12 - xwnamewidth - yhnamewidth) / 2;
 	//subxname
 	pt.x = rt.get_w()/2;

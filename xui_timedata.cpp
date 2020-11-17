@@ -1,51 +1,46 @@
 #include "xui_timedata.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_timedata)( void )
+xui_timedata::xui_timedata( void )
 : xui_treedata()
 , m_line(NULL)
 {}
-xui_create_explain(xui_timedata)( const std::wstring& text, xui_bitmap* icon )
+
+xui_timedata::xui_timedata( const std::wstring& text, xui_bitmap* icon )
 : xui_treedata(text, icon)
 , m_line(NULL)
 {}
-xui_create_explain(xui_timedata)( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe )
+
+xui_timedata::xui_timedata( const std::wstring& text, xui_bitmap* icon, const std::map<s32, u08>& keyframe )
 : xui_treedata(text, icon)
 , m_line(NULL)
 {
 	m_keyframe = keyframe;
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timedata, get_line,			xui_timeline*		)( void )
+xui_timeline* xui_timedata::get_line( void )
 {
 	return m_line;
 }
 
-/*
-//interface
-*/
-xui_method_explain(xui_timedata, get_keycolor,		xui_colour			)( void ) const
+xui_colour xui_timedata::get_keycolor( void ) const
 {
 	return xui_colour(1.0f, 0.0f, 1.0f, 0.0f);
 }
-xui_method_explain(xui_timedata, cal_keyframe,		void				)( void )
-{
 
-}
-xui_method_explain(xui_timedata, get_keyframecount,	u32					)( void ) const
+void xui_timedata::cal_keyframe( void )
+{}
+
+u32 xui_timedata::get_keyframecount( void ) const
 {
 	return m_keyframe.size();
 }
-xui_method_explain(xui_timedata, get_allstyle,		xui_keystyle_map	)( void ) const
+
+xui_keystyle_map xui_timedata::get_allstyle( void ) const
 {
 	return m_keyframe;
 }
-xui_method_explain(xui_timedata, get_allframe,		std::vector<s32>	)( void ) const
+
+std::vector<s32> xui_timedata::get_allframe( void ) const
 {
 	std::vector<s32> keyframe;
 	for (std::map<s32, u08>::const_iterator itor = m_keyframe.begin(); itor != m_keyframe.end(); ++itor)
@@ -55,27 +50,27 @@ xui_method_explain(xui_timedata, get_allframe,		std::vector<s32>	)( void ) const
 
 	return keyframe;
 }
-xui_method_explain(xui_timedata, has_keyframe,		bool				)( s32 frame ) const
+
+bool xui_timedata::has_keyframe( s32 frame ) const
 {
 	return m_keyframe.find(frame) != m_keyframe.end();
 }
-xui_method_explain(xui_timedata, get_keyframe,		s32					)( u32 index ) const
+
+s32 xui_timedata::get_keyframe( u32 index ) const
 {
 	std::map<s32, u08>::const_iterator itor = m_keyframe.begin();
 	std::advance(itor, index);
 	return (*itor).first;
 }
-xui_method_explain(xui_timedata, get_keystyle,		u08					)( u32 index ) const
+
+u08 xui_timedata::get_keystyle( u32 index ) const
 {
 	std::map<s32, u08>::const_iterator itor = m_keyframe.begin();
 	std::advance(itor, index);
 	return (*itor).second;
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_timedata, set_line,			void				)( xui_timeline* line )
+void xui_timedata::set_line( xui_timeline* line )
 {
 	m_line = line;
 }

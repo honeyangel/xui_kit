@@ -2,57 +2,45 @@
 #include "xui_family_bitmap.h"
 #include "xui_family_member.h"
 #include "xui_family_create.h"
-#include "xui_convas.h"
+#include "xui_native_device.h"
+#include "xui_canvas.h"
 
-xui_implement_instance_member(xui_convas);
-xui_implement_instance_method(xui_convas);
+xui_implement_instance_member(xui_canvas)
+xui_implement_instance_method(xui_canvas)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_convas)( void )
+xui_canvas::xui_canvas( void )
 {
 	m_viewport		= xui_rect2d<s32>(0);
 	m_cliprect		= xui_rect2d<s32>(0);
 	m_familycreate	= new xui_family_create;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_convas)( void )
+xui_canvas::~xui_canvas( void )
 {
 	delete m_familycreate;
 	for (u32 i = 0; i < m_familybitmapvec.size(); ++i)
 		delete m_familybitmapvec[i];
 }
 
-/*
-//begin
-//clear
-*/
-xui_method_explain(xui_convas, begin,				void					)( void )
+void xui_canvas::begin( void )
 {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_POLYGON_SMOOTH);
 	glEnable (GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
-xui_method_explain(xui_convas, clear,				void					)( const xui_colour& color )
+
+void xui_canvas::clear( const xui_colour& color )
 {
 	set_cliprect(m_viewport);
 	glClearColor(color.r, color.g, color.b, color.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
-xui_method_explain(xui_convas, present,				void					)( void )
-{
 
-}
+void xui_canvas::present( void )
+{}
 
-/*
-//transform
-*/
-xui_method_explain(xui_convas, set_transform,		void					)( f32 angle, const xui_vector<f32>& scale, const xui_vector<f32>& translate )
+void xui_canvas::set_transform( f32 angle, const xui_vector<f32>& scale, const xui_vector<f32>& translate )
 {
 	glMatrixMode(GL_MODELVIEW);
 
@@ -72,7 +60,8 @@ xui_method_explain(xui_convas, set_transform,		void					)( f32 angle, const xui_
 	m[15] =  1.0f;
 	glLoadMatrixf(m);
 }
-xui_method_explain(xui_convas, non_transform,		void					)( void )
+
+void xui_canvas::non_transform( void )
 {
 	glMatrixMode(GL_MODELVIEW);
 	f32 m[16];
@@ -84,17 +73,15 @@ xui_method_explain(xui_convas, non_transform,		void					)( void )
 	glLoadMatrixf(m);
 }
 
-/*
-//cliprect
-//viewport
-*/
-xui_method_explain(xui_convas, get_cliprect,		const xui_rect2d<s32>&	)( void ) const
+const xui_rect2d<s32>& xui_canvas::get_cliprect( void ) const
 {
 	return m_cliprect;
 }
 
-xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&	rt )
+void xui_canvas::set_cliprect( const xui_rect2d<s32>&	rt )
 {
+    xui_vector<f32> scale = xui_native_device::get_window_scale();
+
 	if (m_cliprect != rt)
 	{
 		m_cliprect  = rt;
@@ -103,10 +90,10 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 		{
 			glEnable (GL_SCISSOR_TEST);
 			glScissor(
-				m_cliprect.ax, 
-				m_viewport.get_h()-m_cliprect.by, 
-				m_cliprect.get_w(), 
-				m_cliprect.get_h());
+				(s32)(m_cliprect.ax * scale.x), 
+				(s32)(m_viewport.get_h() * scale.y - m_cliprect.by * scale.y),
+				(s32)(m_cliprect.get_w() * scale.x),
+				(s32)(m_cliprect.get_h() * scale.y));
 		}
 		else
 		{
@@ -115,11 +102,12 @@ xui_method_explain(xui_convas, set_cliprect,		void					)( const xui_rect2d<s32>&
 	}
 }
 
-xui_method_explain(xui_convas, get_viewport,		const xui_rect2d<s32>&	)( void ) const
+const xui_rect2d<s32>& xui_canvas::get_viewport( void ) const
 {
 	return m_viewport;
 }
-xui_method_explain(xui_convas, set_viewport,		void					)( const xui_rect2d<s32>&	rt )
+
+void xui_canvas::set_viewport( const xui_rect2d<s32>& rt )
 {
 	if (m_viewport != rt)
 	{
@@ -140,20 +128,19 @@ xui_method_explain(xui_convas, set_viewport,		void					)( const xui_rect2d<s32>&
 		m[15] =  1.0f;
 		glLoadMatrixf(m);
 
+        xui_vector<f32> scale = xui_native_device::get_window_scale();
 		glViewport(
-			m_viewport.ax,
-			m_viewport.ay,
-			m_viewport.get_w(),
-			m_viewport.get_h());
+			(s32)(m_viewport.ax * scale.x),
+			(s32)(m_viewport.ay * scale.y),
+			(s32)(m_viewport.get_w() * scale.x),
+			(s32)(m_viewport.get_h() * scale.y));
 	}
 }
 
-/*
-//image
-*/
-xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
-																			   const xui_vector<s32>&	pt,
-																			   const xui_colour&		color )
+void xui_canvas::draw_image( 
+    xui_bitmap*				image,
+	const xui_vector<s32>&	pt,
+	const xui_colour&		color )
 {
 	draw_image(
 		image,
@@ -161,9 +148,10 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 		color);
 }
 
-xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
-																			   const xui_rect2d<s32>&	dst,
-																			   const xui_colour&		color )
+void xui_canvas::draw_image( 
+    xui_bitmap*				image,
+	const xui_rect2d<s32>&	dst,
+	const xui_colour&		color )
 {
 	draw_image(
 		image,
@@ -172,10 +160,11 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 		color);
 }
 
-xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
-																			   const xui_rect2d<s32>&	src,
-																			   const xui_rect2d<s32>&	dst,
-																			   const xui_colour&		color )
+void xui_canvas::draw_image( 
+    xui_bitmap*				image,
+	const xui_rect2d<s32>&	src,
+	const xui_rect2d<s32>&	dst,
+	const xui_colour&		color )
 {
 	if (color.a == 0.0f)
 		return;
@@ -204,12 +193,10 @@ xui_method_explain(xui_convas, draw_image,			void					)( xui_bitmap*				image,
 	image->non_bind();
 }
 
-/*
-//text
-*/
-xui_method_explain(xui_convas, trim_text,			std::wstring			)( const std::wstring&		text, 
-																			   const xui_family&		textfont, 
-																			   s32 maxwidth )
+std::wstring xui_canvas::trim_text( 
+    const std::wstring&		text, 
+	const xui_family&		textfont, 
+	s32                     maxwidth )
 {
 	s32 w = calc_size(text, textfont, maxwidth, true).w;
 	if (w > maxwidth)
@@ -226,10 +213,12 @@ xui_method_explain(xui_convas, trim_text,			std::wstring			)( const std::wstring
 		return text;
 	}
 }
-xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																		       s32						maxwidth,
-																			   bool						singleline )
+
+xui_vector<s32> xui_canvas::calc_size( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	s32						maxwidth,
+	bool					singleline )
 {
 	s32 height = m_familycreate->get_height(textfont);
 
@@ -306,11 +295,12 @@ xui_method_explain(xui_convas, calc_size,			xui_vector<s32>			)( const std::wstr
 	return size;
 }
 
-xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   const xui_rect2d<s32>&	calcrect,
-																			   u08						textalign,
-																			   bool						singleline )
+xui_rect2d<s32> xui_canvas::calc_draw( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	const xui_rect2d<s32>&	calcrect,
+	u08						textalign,
+	bool					singleline )
 {
 	xui_rect2d<s32> drawrect = calcrect;
 	xui_vector<s32> size     = calc_size(text, textfont, calcrect.get_w(), singleline);
@@ -319,14 +309,14 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 	//水平方向对齐
 	switch (textalign)
 	{
-	case TEXTALIGN_CT:	//CT
-	case TEXTALIGN_CC:	//CC
-	case TEXTALIGN_CB:	//CB
+	case k_textalign_ct:	//CT
+	case k_textalign_cc:	//CC
+	case k_textalign_cb:	//CB
 		drawrect.oft_x((calcrect.get_sz().w - size.w) / 2);
 		break;
-	case TEXTALIGN_RT:	//RT
-	case TEXTALIGN_RC:	//RC
-	case TEXTALIGN_RB:	//RB
+	case k_textalign_rt:	//RT
+	case k_textalign_rc:	//RC
+	case k_textalign_rb:	//RB
 		drawrect.oft_x((calcrect.get_sz().w - size.w));
 		break;
 	}
@@ -334,14 +324,14 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 	//竖直方向对齐
 	switch (textalign)
 	{
-	case TEXTALIGN_LC:	//LC
-	case TEXTALIGN_CC:	//CC
-	case TEXTALIGN_RC:	//RC
+	case k_textalign_lc:	//LC
+	case k_textalign_cc:	//CC
+	case k_textalign_rc:	//RC
 		drawrect.oft_y((calcrect.get_sz().h - size.h) / 2);
 		break;
-	case TEXTALIGN_LB:	//LB
-	case TEXTALIGN_CB:	//CB
-	case TEXTALIGN_RB:	//RB
+	case k_textalign_lb:	//LB
+	case k_textalign_cb:	//CB
+	case k_textalign_rb:	//RB
 		drawrect.oft_y((calcrect.get_sz().h - size.h));
 		break;
 	}
@@ -349,10 +339,11 @@ xui_method_explain(xui_convas, calc_draw,			xui_rect2d<s32>			)( const std::wstr
 	return drawrect;
 }
 
-xui_method_explain(xui_convas, calc_text,			std::wstring			)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   s32						maxwidth,
-																			   bool						singleline )
+std::wstring xui_canvas::calc_text( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	s32						maxwidth,
+	bool					singleline )
 {
 	//绘制多行
 	std::wstring temp;
@@ -389,9 +380,10 @@ xui_method_explain(xui_convas, calc_text,			std::wstring			)( const std::wstring
 	return temp;
 }
 
-xui_method_explain(xui_convas, calc_char,			u32						)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   s32						position )
+u32 xui_canvas::calc_char( 
+    const std::wstring&		text,
+    const xui_family&		textfont,
+    s32						position )
 {
 	if (position < 0)	
 		return 0;
@@ -415,11 +407,12 @@ xui_method_explain(xui_convas, calc_char,			u32						)( const std::wstring&		tex
 	return index;
 }
 
-xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   s32						maxwidth,
-																			   bool						singleline,
-																			   std::wstring&			word )
+u32 xui_canvas::calc_word( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	s32						maxwidth,
+	bool					singleline,
+	std::wstring&			word )
 {
 	word.clear();
 
@@ -467,11 +460,12 @@ xui_method_explain(xui_convas, calc_word,			u32						)( const std::wstring&		tex
 	return curwidth;
 }
 
-xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   const xui_rect2d<s32>&	drawrect,
-																			   const xui_family_render&	textdraw, 
-																			   bool						singleline )
+void xui_canvas::draw_text( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	const xui_rect2d<s32>&	drawrect,
+	const xui_family_render&textdraw, 
+	bool					singleline )
 {
 	s32 height = m_familycreate->get_height(textfont);
 
@@ -528,10 +522,11 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 		draw_text(buffer, textfont, pt, textdraw);
 }
 
-xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		text,
-																			   const xui_family&		textfont,
-																			   const xui_vector<s32>&	screenpt,
-																			   const xui_family_render&	textdraw )
+void xui_canvas::draw_text( 
+    const std::wstring&		text,
+	const xui_family&		textfont,
+	const xui_vector<s32>&	screenpt,
+	const xui_family_render&textdraw )
 {
 	s32 ascender = m_familycreate->get_ascender(textfont);
 
@@ -544,44 +539,46 @@ xui_method_explain(xui_convas, draw_text,			void					)( const std::wstring&		tex
 		if (text[i] < 0x20)
 			continue;
 
-		xui_family_member* member = get_family_member(textfont, text[i]);
-		s32 x =  member->bearing.x;
-		s32 y = -member->bearing.y + ascender;
+		xui_family_member* calc_member = get_family_member(textfont, text[i]);
+        xui_vector<f32> scale = xui_native_device::get_window_scale();
+        xui_family drawfont = textfont;
+        drawfont.size = (s32)(drawfont.size * scale.y);
+        xui_family_member* draw_member = get_family_member(drawfont, text[i]);
+		s32 x =  calc_member->bearing.x;
+		s32 y = -calc_member->bearing.y + ascender;
 
 		if (textfont.bold)
 		{
-			dst.set_sz(member->stroke.get_sz());
-			draw_image(member->bitmap, member->stroke, dst+xui_vector<s32>(x, y), textdraw.strokecolor);
-			dst.set_sz(member->normal.get_sz());
-			draw_image(member->bitmap, member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
+			dst.set_sz(calc_member->stroke.get_sz());
+			draw_image(draw_member->bitmap, draw_member->stroke, dst+xui_vector<s32>(x, y), textdraw.strokecolor);
+			dst.set_sz(calc_member->normal.get_sz());
+			draw_image(draw_member->bitmap, draw_member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}
 		else
 		{
-			if (textdraw.renderstyle == TEXTDRAW_SHADOW)
+			if (textdraw.renderstyle == k_textdraw_shadow)
 			{
 				xui_vector<s32> offset;
 				offset = xui_vector<s32>(x+1, y  );
-				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+				draw_image(draw_member->bitmap, draw_member->normal, dst+offset, textdraw.shadowcolor);
 				offset = xui_vector<s32>(x,   y+1);
-				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+				draw_image(draw_member->bitmap, draw_member->normal, dst+offset, textdraw.shadowcolor);
 				offset = xui_vector<s32>(x+1, y+1);
-				draw_image(member->bitmap, member->normal, dst+offset, textdraw.shadowcolor);
+				draw_image(draw_member->bitmap, draw_member->normal, dst+offset, textdraw.shadowcolor);
 			}
 
-			dst.set_sz(member->normal.get_sz());
-			draw_image(member->bitmap, member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
+			dst.set_sz(calc_member->normal.get_sz());
+			draw_image(draw_member->bitmap, draw_member->normal, dst+xui_vector<s32>(x, y), textdraw.normalcolor);
 		}
 
-		dst.oft_x(member->advance+textfont.horz);
+        dst.oft_x(calc_member->advance+textfont.horz);
 	}
 }
 
-/*
-//line
-*/
-xui_method_explain(xui_convas, draw_line,			void					)( const xui_vector<s32>&	p1, 
-																			   const xui_vector<s32>&	p2,
-																			   const xui_colour&		color )
+void xui_canvas::draw_line( 
+    const xui_vector<s32>&	p1, 
+    const xui_vector<s32>&	p2,
+    const xui_colour&		color )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -598,12 +595,10 @@ xui_method_explain(xui_convas, draw_line,			void					)( const xui_vector<s32>&	p
 	glEnd();
 }
 
-/*
-//path
-*/
-xui_method_explain(xui_convas, draw_path,			void					)( xui_vector<s32>*			pt,
-																			   u32						count,
-																			   const xui_colour&		color )
+void xui_canvas::draw_path( 
+    xui_vector<s32>*		pt,
+	u32						count,
+	const xui_colour&		color )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -620,9 +615,10 @@ xui_method_explain(xui_convas, draw_path,			void					)( xui_vector<s32>*			pt,
 	glEnd();
 }
 
-xui_method_explain(xui_convas, fill_poly,			void					)( xui_vector<s32>*			pt,
-																			   u32						count,
-																			   const xui_colour&		color )
+void xui_canvas::fill_poly( 
+    xui_vector<s32>*		pt,
+	u32						count,
+	const xui_colour&		color )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -639,33 +635,31 @@ xui_method_explain(xui_convas, fill_poly,			void					)( xui_vector<s32>*			pt,
 	glEnd();
 }
 
-/*
-//triangle
-*/
-xui_method_explain(xui_convas, draw_triangle,		void					)( const xui_vector<s32>&	center, 
-																			   s32						half, 
-																			   u08						direction,
-																			   const xui_colour&		color )
+void xui_canvas::draw_triangle( 
+    const xui_vector<s32>&	center, 
+	s32						half, 
+	u08						direction,
+	const xui_colour&		color )
 {
 	xui_vector<s32> pt[3];
 	switch (direction)
 	{
-	case TRIANGLE_UP:
+	case k_triangle_up:
 		pt[0] = xui_vector<s32>(center.x-half*2,   center.y+half-1);
 		pt[1] = xui_vector<s32>(center.x+half*2-1, center.y+half-1);
 		pt[2] = xui_vector<s32>(center.x,          center.y-half);
 		break;
-	case TRIANGLE_DOWN:
+	case k_triangle_down:
 		pt[0] = xui_vector<s32>(center.x-half*2,   center.y-half);
 		pt[1] = xui_vector<s32>(center.x+half*2-1, center.y-half);
 		pt[2] = xui_vector<s32>(center.x,          center.y+half-1);
 		break;
-	case TRIANGLE_LEFT:
+	case k_triangle_left:
 		pt[0] = xui_vector<s32>(center.x+half-1,   center.y-half*2);
 		pt[1] = xui_vector<s32>(center.x+half-1,   center.y+half*2-1);
 		pt[2] = xui_vector<s32>(center.x-half,     center.y);
 		break;
-	case TRIANGLE_RIGHT:
+	case k_triangle_right:
 		pt[0] = xui_vector<s32>(center.x-half,     center.y-half*2);
 		pt[1] = xui_vector<s32>(center.x-half,     center.y+half*2-1);
 		pt[2] = xui_vector<s32>(center.x+half-1,   center.y);
@@ -674,30 +668,32 @@ xui_method_explain(xui_convas, draw_triangle,		void					)( const xui_vector<s32>
 
 	draw_path(pt, 3, color);
 }
-xui_method_explain(xui_convas, fill_triangle,		void					)( const xui_vector<s32>&	center, 
-																			   s32						half, 
-																			   u08						direction,
-																			   const xui_colour&		color )
+
+void xui_canvas::fill_triangle( 
+    const xui_vector<s32>&	center, 
+	s32						half, 
+	u08						direction,
+	const xui_colour&		color )
 {
 	xui_vector<s32> pt[3];
 	switch (direction)
 	{
-	case TRIANGLE_UP:
+	case k_triangle_up:
 		pt[0] = xui_vector<s32>(center.x-half*2, center.y+half);
 		pt[1] = xui_vector<s32>(center.x+half*2, center.y+half);
 		pt[2] = xui_vector<s32>(center.x,        center.y-half);
 		break;
-	case TRIANGLE_DOWN:
+	case k_triangle_down:
 		pt[0] = xui_vector<s32>(center.x-half*2, center.y-half);
 		pt[1] = xui_vector<s32>(center.x+half*2, center.y-half);
 		pt[2] = xui_vector<s32>(center.x,        center.y+half);
 		break;
-	case TRIANGLE_LEFT:
+	case k_triangle_left:
 		pt[0] = xui_vector<s32>(center.x+half,   center.y-half*2);
 		pt[1] = xui_vector<s32>(center.x+half,   center.y+half*2);
 		pt[2] = xui_vector<s32>(center.x-half,   center.y);
 		break;
-	case TRIANGLE_RIGHT:
+	case k_triangle_right:
 		pt[0] = xui_vector<s32>(center.x-half,   center.y-half*2);
 		pt[1] = xui_vector<s32>(center.x-half,   center.y+half*2);
 		pt[2] = xui_vector<s32>(center.x+half,   center.y);
@@ -707,12 +703,10 @@ xui_method_explain(xui_convas, fill_triangle,		void					)( const xui_vector<s32>
 	fill_poly(pt, 3, color);
 }
 
-/*
-//rectangle
-*/
-xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   s32						thick )
+void xui_canvas::draw_rectangle( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	s32						thick )
 {
 	draw_line(xui_vector<s32>(rt.ax, rt.ay), xui_vector<s32>(rt.bx, rt.ay),	color);
 	draw_line(xui_vector<s32>(rt.bx, rt.ay), xui_vector<s32>(rt.bx, rt.by),	color);
@@ -732,9 +726,10 @@ xui_method_explain(xui_convas, draw_rectangle,		void					)( const xui_rect2d<s32
 	}
 }
 
-xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   bool						smooth )
+void xui_canvas::fill_rectangle( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	bool					smooth )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -755,8 +750,9 @@ xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32
 	glEnd();
 }
 
-xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32>&	rt, 
-																			   xui_colour*				colors )
+void xui_canvas::fill_rectangle( 
+    const xui_rect2d<s32>&	rt, 
+	xui_colour*				colors )
 {
 	if (m_cliprect.was_valid() == false)
 		return;
@@ -781,12 +777,10 @@ xui_method_explain(xui_convas, fill_rectangle,		void					)( const xui_rect2d<s32
 	glEnd();
 }
 
-/*
-//round
-*/
-xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   s32						corner )
+void xui_canvas::draw_round( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	s32						corner )
 {
 	draw_round(
 		rt, 
@@ -794,10 +788,11 @@ xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	
 		xui_rect2d<s32>(corner));
 }
 
-xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   const xui_rect2d<s32>&   corner,
-																			   s32						thick )
+void xui_canvas::draw_round( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	const xui_rect2d<s32>&  corner,
+	s32						thick )
 {
 	//左上/右上/右下/左下
 	s32 corner0 = corner.value[0];
@@ -848,9 +843,10 @@ xui_method_explain(xui_convas, draw_round,			void					)( const xui_rect2d<s32>&	
 	}
 }
 
-xui_method_explain(xui_convas, fill_round,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   s32						corner )
+void xui_canvas::fill_round( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	s32						corner )
 {
 	fill_round(
 		rt,
@@ -858,9 +854,10 @@ xui_method_explain(xui_convas, fill_round,			void					)( const xui_rect2d<s32>&	
 		xui_rect2d<s32>(corner));
 }
 
-xui_method_explain(xui_convas, fill_round,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   const xui_rect2d<s32>&   corner )
+void xui_canvas::fill_round( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	const xui_rect2d<s32>&  corner )
 {
 	//左上/右上/右下/左下
 	s32 corner0 = corner.value[0];
@@ -929,14 +926,12 @@ xui_method_explain(xui_convas, fill_round,			void					)( const xui_rect2d<s32>&	
 		color);
 }
 
-/*
-//circle
-*/
-xui_method_explain(xui_convas, draw_circle,			void					)( const xui_vector<s32>&	center,
-																			   s32						radius,
-																			   const xui_colour&		color,
-																			   s32						start,
-																			   s32						sweep )
+void xui_canvas::draw_circle( 
+    const xui_vector<s32>&	center,
+	s32						radius,
+	const xui_colour&		color,
+	s32						start,
+	s32						sweep )
 {
 	xui_rect2d<s32> rt;
 	rt.ax = center.x - radius;
@@ -946,11 +941,12 @@ xui_method_explain(xui_convas, draw_circle,			void					)( const xui_vector<s32>&
 	draw_arc(rt, color, start, sweep, 1, true);
 }
 
-xui_method_explain(xui_convas, fill_circle,			void					)( const xui_vector<s32>&	center, 
-																			   s32						radius,
-																			   const xui_colour&		color, 
-																			   s32						start, 
-																			   s32						sweep )
+void xui_canvas::fill_circle( 
+    const xui_vector<s32>&	center, 
+	s32						radius,
+	const xui_colour&		color, 
+	s32						start, 
+	s32						sweep )
 {
 	xui_rect2d<s32> rt;
 	rt.ax = center.x - radius;
@@ -960,15 +956,13 @@ xui_method_explain(xui_convas, fill_circle,			void					)( const xui_vector<s32>&
 	fill_arc(rt, color, start, sweep, 1);
 }
 
-/*
-//arc
-*/
-xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   s32						start,
-																			   s32						sweep,
-																			   s32						precision,
-																			   bool						smooth )
+void xui_canvas::draw_arc( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	s32						start,
+	s32						sweep,
+	s32						precision,
+bool						smooth )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -1002,11 +996,12 @@ xui_method_explain(xui_convas, draw_arc,			void					)( const xui_rect2d<s32>&	rt
 	glEnd();
 }
 
-xui_method_explain(xui_convas, fill_arc,			void					)( const xui_rect2d<s32>&	rt,
-																			   const xui_colour&		color,
-																			   s32						start,
-																			   s32						sweep,
-																			   s32						precision )
+void xui_canvas::fill_arc( 
+    const xui_rect2d<s32>&	rt,
+	const xui_colour&		color,
+	s32						start,
+	s32						sweep,
+	s32						precision )
 {
 	if (color.a == 0.0f || m_cliprect.was_valid() == false)
 		return;
@@ -1041,9 +1036,10 @@ xui_method_explain(xui_convas, fill_arc,			void					)( const xui_rect2d<s32>&	rt
 	glEnd();
 }
 
-xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	center, 
-																			   s32						half, 
-																			   const xui_colour&		color )
+void xui_canvas::draw_tick( 
+    const xui_vector<s32>&	center, 
+	s32						half, 
+	const xui_colour&		color )
 {
 	xui_vector<s32> p1;
 	xui_vector<s32> p2;
@@ -1079,11 +1075,12 @@ xui_method_explain(xui_convas, draw_tick,			void					)( const xui_vector<s32>&	c
 	glEnd();
 }
 
-xui_method_explain(xui_convas, get_family_create,	xui_family_create*		)( void )
+xui_family_create* xui_canvas::get_family_create( void )
 {
 	return m_familycreate;
 }
-xui_method_explain(xui_convas, get_family_member,	xui_family_member*		)( const xui_family&		family, u16 wc )
+
+xui_family_member* xui_canvas::get_family_member( const xui_family& family, u16 wc )
 {
 	xui_family_member* member = NULL;
 	for (u32 i = 0; i < m_familybitmapvec.size(); ++i)

@@ -1,5 +1,5 @@
 #include "xui_global.h"
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_button.h"
 #include "xui_desktop.h"
 #include "xui_propview.h"
@@ -8,19 +8,14 @@
 //////////////////////////////////////////////////////////////////////////
 //propctrl_object
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_propctrl_object, xui_propctrl);
-/*
-//create
-*/
-xui_method_explain(xui_propctrl_object, create,					xui_propctrl*	)( xui_propdata* propdata )
+xui_implement_rtti(xui_propctrl_object, xui_propctrl)
+
+xui_propctrl* xui_propctrl_object::create( xui_propdata* propdata )
 {
 	return new xui_propctrl_object(propdata);
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
+xui_propctrl_object::xui_propctrl_object( xui_propdata* propdata )
 : xui_propctrl()
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(propdata);
@@ -37,9 +32,9 @@ xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
 	textctrl->xm_mousedragleave		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragleave);
 	textctrl->xm_mousedragover		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragover);
 	textctrl->xm_mousedragdrop		+= new xui_method_member<xui_method_dragdrop, xui_propctrl_object>(this, &xui_propctrl_object::on_textctrldragdrop);
-	xui_method_ptrcall(namectrl, set_parent)(this);
-	xui_method_ptrcall(textctrl, set_parent)(this);
-	xui_method_ptrcall(pickctrl, set_parent)(this);
+	namectrl->set_parent(this);
+	textctrl->set_parent(this);
+	pickctrl->set_parent(this);
 	m_widgetvec.push_back(namectrl);
 	m_widgetvec.push_back(textctrl);
 	m_widgetvec.push_back(pickctrl);
@@ -47,18 +42,12 @@ xui_create_explain(xui_propctrl_object)( xui_propdata* propdata )
 	m_propedit = editobject;
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_propctrl_object)( void )
+xui_propctrl_object::~xui_propctrl_object( void )
 {
 	delete m_propedit;
 }
 
-/*
-//propdata
-*/
-xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( bool selfupdate )
+void xui_propctrl_object::on_linkpropdata( bool selfupdate )
 {
 	if (selfupdate == false)
 	{
@@ -104,23 +93,21 @@ xui_method_explain(xui_propctrl_object, on_linkpropdata,		void			)( bool selfupd
 		textctrl->set_text(L"Multi-Value");
 	}
 }
-xui_method_explain(xui_propctrl_object, on_editvalue,			void			)( xui_propedit* sender )
+
+void xui_propctrl_object::on_editvalue( xui_propedit* sender )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	xui_prop_newpick pickfunc = dataobject->get_pickfunc();
 	if (pickfunc)
 	{
 		xui_object_pickwnd* wnd = pickfunc();
-		xui_method_ptrcall(wnd, set_propctrl)(this);
-		xui_method_ptrcall(wnd, set_visible	)(true);
-		xui_method_ptrcall(wnd, set_value	)(dataobject->get_value());
+		wnd->set_propctrl(this);
+		wnd->set_visible(true);
+		wnd->set_value(dataobject->get_value());
 	}
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args& args )
+void xui_propctrl_object::on_perform( xui_method_args& args )
 {
 	xui_propctrl::on_perform(args);
 
@@ -132,11 +119,11 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 	xui_vector<s32> pt;
 	//pickctrl
 	pt.x = rt.bx - pickctrl->get_renderw();
-	pt.y = xui_propview::default_lineheight/2 - pickctrl->get_renderh()/2;
+	pt.y = xui_propview::k_default_lineheight/2 - pickctrl->get_renderh()/2;
 	pickctrl->on_perform_pt(pt);
 	//textctrl
 	pt.x = rt.get_w()/2;
-	pt.y = xui_propview::default_lineheight/2 - textctrl->get_renderh()/2;
+	pt.y = xui_propview::k_default_lineheight/2 - textctrl->get_renderh()/2;
 	textctrl->on_perform_pt(pt);
 	textctrl->on_perform_w (rt.get_w() - pt.x - pickctrl->get_renderw());
 	//namectrl
@@ -145,12 +132,9 @@ xui_method_explain(xui_propctrl_object, on_perform,				void			)( xui_method_args
 	namectrl->set_textoffset(xui_vector<s32>(indent, 0));
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_propctrl_object, on_textctrlkeybddown,	void			)( xui_component* sender, xui_method_keybd&   args )
+void xui_propctrl_object::on_textctrlkeybddown( xui_component* sender, xui_method_keybd& args )
 {
-	if (args.kcode == KEY_DELETE)
+	if (args.kcode == k_key_delete)
 	{
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
@@ -162,7 +146,8 @@ xui_method_explain(xui_propctrl_object, on_textctrlkeybddown,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldoubleclick,	void			)( xui_component* sender, xui_method_mouse&	  args )
+
+void xui_propctrl_object::on_textctrldoubleclick( xui_component* sender, xui_method_mouse& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	void* value = dataobject->get_value();
@@ -184,7 +169,8 @@ xui_method_explain(xui_propctrl_object, on_textctrldoubleclick,	void			)( xui_co
 		dataobject->xm_doubleclick(sender, other_args);
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_component* sender, xui_method_dragdrop& args )
+
+void xui_propctrl_object::on_textctrldragenter( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->has_droptype(args.type))
@@ -202,13 +188,14 @@ xui_method_explain(xui_propctrl_object, on_textctrldragenter,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_component* sender, xui_method_dragdrop& args )
+
+void xui_propctrl_object::on_textctrldragleave( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->has_droptype(args.type))
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
-		textctrl->set_backcolor(xui_colour::darkgray);
+		textctrl->set_backcolor(xui_colour::k_darkgray);
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
 			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
@@ -218,7 +205,8 @@ xui_method_explain(xui_propctrl_object, on_textctrldragleave,	void			)( xui_comp
 		on_linkpropdata();
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_component* sender, xui_method_dragdrop& args )
+
+void xui_propctrl_object::on_textctrldragover( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->has_droptype(args.type))
@@ -226,13 +214,14 @@ xui_method_explain(xui_propctrl_object, on_textctrldragover,	void			)( xui_compo
 		args.allow = true;
 	}
 }
-xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_component* sender, xui_method_dragdrop& args )
+
+void xui_propctrl_object::on_textctrldragdrop( xui_component* sender, xui_method_dragdrop& args )
 {
 	xui_propdata_object* dataobject = dynamic_cast<xui_propdata_object*>(m_propdata);
 	if (dataobject->has_droptype(args.type))
 	{
 		xui_control* textctrl = m_propedit->get_editctrl();
-		textctrl->set_backcolor(xui_colour::darkgray);
+		textctrl->set_backcolor(xui_colour::k_darkgray);
 		for (u32 i = 0; i < m_propdatavec.size(); ++i)
 		{
 			xui_propdata_object* data = dynamic_cast<xui_propdata_object*>(m_propdatavec[i]);
@@ -244,27 +233,24 @@ xui_method_explain(xui_propctrl_object, on_textctrldragdrop,	void			)( xui_compo
 //////////////////////////////////////////////////////////////////////////
 //pickwnd
 //////////////////////////////////////////////////////////////////////////
-xui_implement_rtti(xui_object_pickwnd, xui_window);
-/*
-//constructor
-*/
-xui_create_explain(xui_object_pickwnd)( void )
+xui_implement_rtti(xui_object_pickwnd, xui_window)
+
+xui_object_pickwnd::xui_object_pickwnd( void )
 : xui_window(xui_vector<s32>(320, 240), true)
 , m_propctrl(NULL)
 {}
 
-/*
-//method
-*/
-xui_method_explain(xui_object_pickwnd,	get_propctrl,	xui_propctrl*	)( void )
+xui_propctrl* xui_object_pickwnd::get_propctrl( void )
 {
 	return m_propctrl;
 }
-xui_method_explain(xui_object_pickwnd,	set_propctrl,	void			)( xui_propctrl* propctrl )
+
+void xui_object_pickwnd::set_propctrl( xui_propctrl* propctrl )
 {
 	m_propctrl = propctrl;
 }
-xui_method_explain(xui_object_pickwnd,	on_accept,		void			)( xui_component* sender, xui_method_args& args )
+
+void xui_object_pickwnd::on_accept( xui_component* sender, xui_method_args& args )
 {
 	void* value = get_value();
 	xui_propdata_vec vec = m_propctrl->get_propdata();
@@ -278,7 +264,8 @@ xui_method_explain(xui_object_pickwnd,	on_accept,		void			)( xui_component* send
 	m_propctrl->on_linkpropdata();
 	set_visible(false);
 }
-xui_method_explain(xui_object_pickwnd,	on_cancel,		void			)( xui_component* sender, xui_method_args& args )
+
+void xui_object_pickwnd::on_cancel( xui_component* sender, xui_method_args& args )
 {
 	set_visible(false);
 }

@@ -1,48 +1,40 @@
 #include "xui_desktop.h"
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_gridbox.h"
 
-xui_implement_rtti(xui_gridbox, xui_control);
+xui_implement_rtti(xui_gridbox, xui_control)
 
-/*
-//static
-*/
-xui_method_explain(xui_gridbox, create, xui_gridbox*)( u32 row, u32 col, s32 titlewidth )
+xui_gridbox* xui_gridbox::create( u32 row, u32 col, s32 titlewidth )
 {
 	xui_gridbox* gridbox = new xui_gridbox(row, col);
-	xui_method_ptrcall(gridbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
-	xui_method_ptrcall(gridbox, set_drawcolor	)(true);
-	xui_method_ptrcall(gridbox, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(gridbox, set_corner		)(3);
-	xui_method_ptrcall(gridbox, set_colpixel	)(0, titlewidth);
+	gridbox->set_backcolor(xui_colour(1.0f, 0.20f));
+	gridbox->set_drawcolor(true);
+	gridbox->set_sidestyle(k_sidestyle_s);
+	gridbox->set_corner(3);
+	gridbox->set_colpixel(0, titlewidth);
 
 	return gridbox;
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_gridbox)( u32 row, u32 col )
+xui_gridbox::xui_gridbox( u32 row, u32 col )
 : xui_control(xui_vector<s32>(0))
 {
 	m_rowcount = row;
 	m_colcount = col;
-	for (u32 i = 0; i < MAX_ROW; ++i)
+	for (u32 i = 0; i < k_max_row; ++i)
 		m_rowpixel[i] = 24;
-	for (u32 i = 0; i < MAX_COL; ++i)
+	for (u32 i = 0; i < k_max_col; ++i)
 		m_colpixel[i] = 24;
 
 	memset(m_ptrarray,  0, sizeof(m_ptrarray));
 }
 
-/*
-//count
-*/
-xui_method_explain(xui_gridbox, get_rowcount,	u32				)( void ) const
+u32 xui_gridbox::get_rowcount( void ) const
 {
 	return m_rowcount;
 }
-xui_method_explain(xui_gridbox, set_rowcount,	void			)( u32 count )
+
+void xui_gridbox::set_rowcount( u32 count )
 {
 	if (m_rowcount != count)
 	{
@@ -50,11 +42,13 @@ xui_method_explain(xui_gridbox, set_rowcount,	void			)( u32 count )
 		invalid();
 	}
 }
-xui_method_explain(xui_gridbox, get_colcount,	u32				)( void ) const
+
+u32 xui_gridbox::get_colcount( void ) const
 {
 	return m_colcount;
 }
-xui_method_explain(xui_gridbox, set_colcount,	void			)( u32 count )
+
+void xui_gridbox::set_colcount( u32 count )
 {
 	if (m_colcount != count)
 	{
@@ -63,14 +57,12 @@ xui_method_explain(xui_gridbox, set_colcount,	void			)( u32 count )
 	}
 }
 
-/*
-//pixel
-*/
-xui_method_explain(xui_gridbox, get_rowpixel,	s32				)( u32 row ) const
+s32 xui_gridbox::get_rowpixel( u32 row ) const
 {
 	return m_rowpixel[row];
 }
-xui_method_explain(xui_gridbox, set_rowpixel,	void			)( u32 row, s32 pixel )
+
+void xui_gridbox::set_rowpixel( u32 row, s32 pixel )
 {
 	if (m_rowpixel[row] != pixel)
 	{
@@ -78,11 +70,13 @@ xui_method_explain(xui_gridbox, set_rowpixel,	void			)( u32 row, s32 pixel )
 		invalid();
 	}
 }
-xui_method_explain(xui_gridbox, get_colpixel,	s32				)( u32 col ) const
+
+s32 xui_gridbox::get_colpixel( u32 col ) const
 {
 	return m_colpixel[col];
 }
-xui_method_explain(xui_gridbox, set_colpixel,	void			)( u32 col, s32 pixel )
+
+void xui_gridbox::set_colpixel( u32 col, s32 pixel )
 {
 	if (m_colpixel[col] != pixel)
 	{
@@ -91,10 +85,7 @@ xui_method_explain(xui_gridbox, set_colpixel,	void			)( u32 col, s32 pixel )
 	}
 }
 
-/*
-//grid ctrl
-*/
-xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_control* ctrl )
+void xui_gridbox::set_gridctrl( u32 row, u32 col, xui_control* ctrl )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -111,13 +102,14 @@ xui_method_explain(xui_gridbox, set_gridctrl,	void			)( u32 row, u32 col, xui_co
 	m_ptrarray[row][col] = ctrl;
 	if (ctrl)
 	{
-		xui_method_ptrcall(ctrl, set_parent		)(this);
-		xui_method_ptrcall(ctrl, set_sidestyle	)(SIDESTYLE_N);
+		ctrl->set_parent(this);
+		ctrl->set_sidestyle(k_sidestyle_n);
 		m_widgetvec.push_back(ctrl);
 		perform();
 	}
 }
-xui_method_explain(xui_gridbox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* component ) const
+
+xui_rect2d<s32> xui_gridbox::get_cornerrt( xui_component* component ) const
 {
 	xui_rect2d<s32> corner(0);
 	for (u32 row = 0; row < m_rowcount; ++row)
@@ -155,10 +147,7 @@ xui_method_explain(xui_gridbox, get_cornerrt,	xui_rect2d<s32>	)( xui_component* 
 	return corner;
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_gridbox, render_else,	void			)( void )
+void xui_gridbox::render_else( void )
 {
 	xui_control::render_else();
 
@@ -181,25 +170,20 @@ xui_method_explain(xui_gridbox, render_else,	void			)( void )
 				s32 h = m_rowpixel[i];
 				p1 += xui_vector<s32>(0, h);
 				p2 += xui_vector<s32>(0, h);
-				xui_convas::get_ins()->draw_line(p1, p2, side_color);
+				xui_canvas::get_ins()->draw_line(p1, p2, side_color);
 			}
 		}
 	}
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_gridbox, on_invalid,		void			)( xui_method_args& args )
+void xui_gridbox::on_invalid( xui_method_args& args )
 {
-	//计算大小
 	xui_vector<s32> sz(0);
 	for (u32 col = 0; col < m_colcount; ++col)
 		sz.w += m_colpixel[col];
 	for (u32 row = 0; row < m_rowcount; ++row)
 		sz.h += m_rowpixel[row];
 
-	//布局
 	if (get_rendersz() != sz)
 	{
 		set_rendersz(sz);
@@ -209,7 +193,8 @@ xui_method_explain(xui_gridbox, on_invalid,		void			)( xui_method_args& args )
 		perform();
 	}
 }
-xui_method_explain(xui_gridbox, on_perform,		void			)( xui_method_args& args )
+
+void xui_gridbox::on_perform( xui_method_args& args )
 {
 	xui_vector<s32> pt(0);
 	xui_vector<s32> sz(0);

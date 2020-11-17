@@ -1,11 +1,8 @@
 #include "xui_droplist.h"
 
-xui_implement_rtti(xui_droplist, xui_listview);
+xui_implement_rtti(xui_droplist, xui_listview)
 
-/*
-//constructor
-*/
-xui_create_explain(xui_droplist)( const xui_vector<s32>& size, bool drawtick )
+xui_droplist::xui_droplist( const xui_vector<s32>& size, bool drawtick )
 : xui_listview(size, drawtick)
 {
 	xui_action_ctrl_impl<f32>* action = new xui_action_ctrl_impl<f32>(this);
@@ -18,10 +15,7 @@ xui_create_explain(xui_droplist)( const xui_vector<s32>& size, bool drawtick )
 	m_popaction	= action;
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_droplist, on_popactiontick, void)( xui_component* sender, xui_method_args& args )
+void xui_droplist::on_popactiontick( xui_component* sender, xui_method_args& args )
 {
 	xui_action_ctrl_impl<f32>* action = (xui_action_ctrl_impl<f32>*)m_popaction;
 	m_backscale = xui_vector<f32>(1.0f, action->sample());

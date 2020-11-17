@@ -1,4 +1,4 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_desktop.h"
 #include "xui_window.h"
 #include "xui_toggle.h"
@@ -8,53 +8,48 @@
 #include "xui_itemtag.h"
 #include "xui_dropbox.h"
 
-xui_implement_rtti(xui_dropbox, xui_textbox);
+xui_implement_rtti(xui_dropbox, xui_textbox)
 
-/*
-//static
-*/
-xui_method_explain(xui_dropbox, create,					xui_dropbox*	)( s32 width )
+xui_dropbox* xui_dropbox::create( s32 width )
 {
 	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(width, 24));
-	xui_method_ptrcall(dropbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
-	xui_method_ptrcall(dropbox, set_drawcolor	)(true);
-	xui_method_ptrcall(dropbox, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(dropbox, set_corner		)(3);
-	xui_method_ptrcall(dropbox, set_borderrt	)(xui_rect2d<s32>(4, 4, 0, 4));
-	xui_method_ptrcall(dropbox, set_readonly	)(true);
+	dropbox->set_backcolor(xui_colour(1.0f, 0.20f));
+	dropbox->set_drawcolor(true);
+	dropbox->set_sidestyle(k_sidestyle_s);
+	dropbox->set_corner(3);
+	dropbox->set_borderrt(xui_rect2d<s32>(4, 4, 0, 4));
+	dropbox->set_readonly(true);
 
 	return dropbox;
 }
-xui_method_explain(xui_dropbox, create,					xui_dropbox*	)( s32 width, xui_bitmap* icon )
+
+xui_dropbox* xui_dropbox::create( s32 width, xui_bitmap* icon )
 {
 	xui_dropbox* dropbox = new xui_dropbox(xui_vector<s32>(width, 24), true);
-	xui_method_ptrcall(dropbox, set_backcolor	)(xui_colour(1.0f, 0.20f));
-	xui_method_ptrcall(dropbox, set_drawcolor	)(true);
-	xui_method_ptrcall(dropbox, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(dropbox, set_corner		)(3);
-	xui_method_ptrcall(dropbox, set_borderrt	)(xui_rect2d<s32>(4, 4, 0, 4));
-	xui_method_ptrcall(dropbox, set_icon		)(icon);
-	xui_method_ptrcall(dropbox, set_textoffset	)(xui_vector<s32>(4, 0));
+	dropbox->set_backcolor(xui_colour(1.0f, 0.20f));
+	dropbox->set_drawcolor(true);
+	dropbox->set_sidestyle(k_sidestyle_s);
+	dropbox->set_corner(3);
+	dropbox->set_borderrt(xui_rect2d<s32>(4, 4, 0, 4));
+	dropbox->set_icon(icon);
+	dropbox->set_textoffset(xui_vector<s32>(4, 0));
 
 	return dropbox;
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
+xui_dropbox::xui_dropbox( const xui_vector<s32>& size, bool itemicon )
 : xui_textbox(size)
 {
 	m_maxdrop	= 8;
 	m_selitem   = NULL;
-	m_droptog   = new xui_toggle	(xui_vector<s32>(24), TOGGLE_BUTTON);
+	m_droptog   = new xui_toggle	(xui_vector<s32>(24), k_toggle_button);
 	m_droptog->xm_mousedown		 += new xui_method_member<xui_method_mouse, xui_dropbox>(this, &xui_dropbox::on_droptogmousedown);
 	m_droptog->xm_renderself	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droptogrenderself);
 	m_droptog->xm_nonfocus		 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_dropallnonfocus);
-	xui_method_ptrcall(m_droptog, set_parent	)(this);
-	xui_method_ptrcall(m_droptog, set_backcolor )(xui_colour::white);
-	xui_method_ptrcall(m_droptog, set_movecolor )(xui_button::default_downcolor);
-	xui_method_ptrcall(m_droptog, ini_component	)(0, 0, DOCKSTYLE_R);
+	m_droptog->set_parent(this);
+	m_droptog->set_backcolor(xui_colour::k_white);
+	m_droptog->set_movecolor(xui_button::k_default_downcolor);
+	m_droptog->ini_component(0, 0, k_dockstyle_r);
 	m_widgetvec.push_back(m_droptog);
 
 	m_droplst   = new xui_droplist	(xui_vector<s32>(0), true);
@@ -64,28 +59,22 @@ xui_create_explain(xui_dropbox)( const xui_vector<s32>& size, bool itemicon )
 	m_droplst->xm_keybddown		 += new xui_method_member<xui_method_keybd, xui_dropbox>(this, &xui_dropbox::on_dropallkeybddown);
 	m_droplst->xm_setclientsz	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstsetclientsz);
 	m_droplst->xm_setrendersz	 += new xui_method_member<xui_method_args,  xui_dropbox>(this, &xui_dropbox::on_droplstsetrendersz);
-	xui_method_ptrcall(m_droplst, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(m_droplst, set_borderrt	)(xui_rect2d<s32>(4));
-	xui_method_ptrcall(m_droplst, set_corner	)(3);
-	xui_method_ptrcall(m_droplst, set_iconsize	)(itemicon ? xui_vector<s32>(16) : xui_vector<s32>(0));
+	m_droplst->set_sidestyle(k_sidestyle_s);
+	m_droplst->set_borderrt(xui_rect2d<s32>(4));
+	m_droplst->set_corner(3);
+	m_droplst->set_iconsize(itemicon ? xui_vector<s32>(16) : xui_vector<s32>(0));
 
 	refresh();
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_dropbox)( void )
+xui_dropbox::~xui_dropbox( void )
 {
 	xui_desktop::get_ins()->move_recycle(m_droplst);
 	for (u32 i = 0; i < m_itemvec.size(); ++i)
 		delete m_itemvec[i];
 }
 
-/*
-//init
-*/
-xui_method_explain(xui_dropbox, ini_dropbox,			void			)( u32 selectedindex )
+void xui_dropbox::ini_dropbox( u32 selectedindex )
 {
 	if (selectedindex == -1 || selectedindex >= m_itemvec.size())
 	{
@@ -101,38 +90,37 @@ xui_method_explain(xui_dropbox, ini_dropbox,			void			)( u32 selectedindex )
 	set_caretindex(0);
 }
 
-/*
-//prop
-*/
-xui_method_explain(xui_dropbox, get_maxdrop,			u32				)( void ) const
+u32 xui_dropbox::get_maxdrop( void ) const
 {
 	return m_maxdrop;
 }
-xui_method_explain(xui_dropbox, set_maxdrop,			void			)( u32 count )
+
+void xui_dropbox::set_maxdrop( u32 count )
 {
 	m_maxdrop = count;
 }
 
-/*
-//item
-*/
-xui_method_explain(xui_dropbox, get_itemcount,			u32				)( void ) const
+u32 xui_dropbox::get_itemcount( void ) const
 {
 	return m_itemvec.size();
 }
-xui_method_explain(xui_dropbox, get_item,				xui_itemtag*	)( u32 index )
+
+xui_itemtag* xui_dropbox::get_item( u32 index )
 {
 	return m_itemvec[index];
 }
-xui_method_explain(xui_dropbox, add_item,				void			)( const std::wstring& text )
+
+void xui_dropbox::add_item( const std::wstring& text )
 {
 	add_item(new xui_itemtag(text));
 }
-xui_method_explain(xui_dropbox, add_item,				void			)( xui_itemtag* item )
+
+void xui_dropbox::add_item( xui_itemtag* item )
 {
 	m_itemvec.push_back(item);
 }
-xui_method_explain(xui_dropbox, del_item,				void			)( xui_itemtag* item )
+
+void xui_dropbox::del_item( xui_itemtag* item )
 {
 	std::vector<xui_itemtag*>::iterator itor = std::find(
 		m_itemvec.begin(),
@@ -150,18 +138,16 @@ xui_method_explain(xui_dropbox, del_item,				void			)( xui_itemtag* item )
 		}
 	}
 }
-xui_method_explain(xui_dropbox, del_itemall,			void			)( void )
+
+void xui_dropbox::del_itemall( void )
 {
 	m_itemvec.clear();
-
+	m_droplst->del_itemall();
 	non_selecteditem();
 	set_droplisthide();
 }
 
-/*
-//selected
-*/
-xui_method_explain(xui_dropbox, get_selectedindex,		u32				)( void )
+u32 xui_dropbox::get_selectedindex( void )
 {
 	for (u32 i = 0; i < m_itemvec.size(); ++i)
 	{
@@ -171,11 +157,13 @@ xui_method_explain(xui_dropbox, get_selectedindex,		u32				)( void )
 
 	return -1;
 }
-xui_method_explain(xui_dropbox, get_selecteditem,		xui_itemtag*	)( void )
+
+xui_itemtag* xui_dropbox::get_selecteditem( void )
 {
 	return m_selitem;
 }
-xui_method_explain(xui_dropbox, set_selecteditem,		void			)( xui_itemtag* item )
+
+void xui_dropbox::set_selecteditem( xui_itemtag* item )
 {
 	if (m_selitem != item && item)
 	{
@@ -187,7 +175,8 @@ xui_method_explain(xui_dropbox, set_selecteditem,		void			)( xui_itemtag* item )
 		xm_selection(this, args);
 	}
 }
-xui_method_explain(xui_dropbox, non_selecteditem,		void			)( void )
+
+void xui_dropbox::non_selecteditem( void )
 {
 	if (m_selitem)
 	{
@@ -200,28 +189,17 @@ xui_method_explain(xui_dropbox, non_selecteditem,		void			)( void )
 	}
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_dropbox, get_renderrtins,		xui_rect2d<s32>	)( void ) const
+xui_rect2d<s32> xui_dropbox::get_renderrtins( void ) const
 {
 	xui_rect2d<s32> rt = xui_textbox::get_renderrtins();
 	rt.bx -= m_droptog->get_renderw();
 	return rt;
 }
-//xui_method_explain(xui_dropbox, update,					void			)( f32 delta )
-//{
-//	xui_textbox::update(delta);
-//	m_droplst->update(delta);
-//}
 
-/*
-//callback
-*/
-xui_method_explain(xui_dropbox, on_keybddown,			void			)( xui_method_keybd& args )
+void xui_dropbox::on_keybddown( xui_method_keybd& args )
 {
 	xui_textbox::on_keybddown(args);
-	if (args.kcode == KEY_ENTER)
+	if (args.kcode == k_key_enter)
 	{
 		if (m_readonly == false)
 		{
@@ -238,7 +216,7 @@ xui_method_explain(xui_dropbox, on_keybddown,			void			)( xui_method_keybd& args
 		set_droplisthide();
 	}
 
-	if (args.kcode == KEY_DARROW)
+	if (args.kcode == k_key_darrow)
 	{
 		std::wstring text = m_readonly ? L"" : m_text;
 		set_droplistshow(text);
@@ -251,10 +229,11 @@ xui_method_explain(xui_dropbox, on_keybddown,			void			)( xui_method_keybd& args
 		}
 	}
 }
-xui_method_explain(xui_dropbox, on_mousedown,			void			)( xui_method_mouse& args )
+
+void xui_dropbox::on_mousedown( xui_method_mouse& args )
 {
 	xui_textbox::on_mousedown(args);
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		if (m_readonly)
 		{
@@ -269,7 +248,8 @@ xui_method_explain(xui_dropbox, on_mousedown,			void			)( xui_method_mouse& args
 		}
 	}
 }
-xui_method_explain(xui_dropbox, on_nonfocus,			void			)( xui_method_args&  args )
+
+void xui_dropbox::on_nonfocus( xui_method_args&  args )
 {
 	xui_textbox::on_nonfocus(args);
 	xui_component* focusctrl = (xui_component*)args.wparam;
@@ -278,7 +258,8 @@ xui_method_explain(xui_dropbox, on_nonfocus,			void			)( xui_method_args&  args 
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_getfocus,			void			)( xui_method_args&  args )
+
+void xui_dropbox::on_getfocus( xui_method_args&  args )
 {
 	xui_textbox::on_getfocus(args);
 	if (m_readonly == false)
@@ -286,7 +267,8 @@ xui_method_explain(xui_dropbox, on_getfocus,			void			)( xui_method_args&  args 
 		set_droplistshow(m_text);
 	}
 }
-xui_method_explain(xui_dropbox, on_textchanged,			void			)( xui_method_args&  args )
+
+void xui_dropbox::on_textchanged( xui_method_args&  args )
 {
 	xui_textbox::on_textchanged(args);
 	if (m_readonly == false)
@@ -294,17 +276,15 @@ xui_method_explain(xui_dropbox, on_textchanged,			void			)( xui_method_args&  ar
 		set_droplistshow(m_text);
 	}
 }
-xui_method_explain(xui_dropbox, on_perform,				void			)( xui_method_args&	 args )
+
+void xui_dropbox::on_perform( xui_method_args&	 args )
 {
 	perform_dockstyle(get_renderrt(), m_widgetvec);
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
+void xui_dropbox::on_droptogmousedown( xui_component* sender, xui_method_mouse& args )
 {
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		if (m_droptog->was_push())
 		{
@@ -316,14 +296,16 @@ xui_method_explain(xui_dropbox, on_droptogmousedown,	void			)( xui_component* se
 		}
 	}
 }
-xui_method_explain(xui_dropbox, on_droptogrenderself,	void			)( xui_component* sender, xui_method_args&  args )
+
+void xui_dropbox::on_droptogrenderself( xui_component* sender, xui_method_args&  args )
 {
 	xui_rect2d<s32> rt		= m_droptog->get_renderrtabs();
 	xui_colour		color   = m_droptog->get_rendercolor() * get_vertexcolor();
 	xui_vector<s32> center	= xui_vector<s32>(rt.ax+rt.get_w()/2, rt.ay+rt.get_h()/2);
-	xui_convas::get_ins()->fill_triangle(center, 3, TRIANGLE_DOWN,  color);
+	xui_canvas::get_ins()->fill_triangle(center, 3, k_triangle_down,  color);
 }
-xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_component* sender, xui_method_args&  args )
+
+void xui_dropbox::on_droplstselection( xui_component* sender, xui_method_args&  args )
 {
 	std::vector<xui_listitem*> items = m_droplst->get_selecteditem();
 	if (items.size() > 0)
@@ -331,7 +313,8 @@ xui_method_explain(xui_dropbox, on_droplstselection,	void			)( xui_component* se
 		set_selecteditem((xui_itemtag*)items[0]->get_data());
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallnonfocus,		void			)( xui_component* sender, xui_method_args&  args )
+
+void xui_dropbox::on_dropallnonfocus( xui_component* sender, xui_method_args&  args )
 {
 	xui_component* focusctrl = (xui_component*)args.wparam;
 	if (focusctrl == NULL || (focusctrl->was_ancestor(this) == false && focusctrl->was_ancestor(m_droplst) == false))
@@ -339,28 +322,31 @@ xui_method_explain(xui_dropbox, on_dropallnonfocus,		void			)( xui_component* se
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallkeybddown,	void			)( xui_component* sender, xui_method_keybd& args )
+
+void xui_dropbox::on_dropallkeybddown( xui_component* sender, xui_method_keybd& args )
 {
-	if (args.kcode == KEY_ENTER)
+	if (args.kcode == k_key_enter)
 	{
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_dropallmousedown,	void			)( xui_component* sender, xui_method_mouse& args )
+
+void xui_dropbox::on_dropallmousedown( xui_component* sender, xui_method_mouse& args )
 {
-	if (args.mouse == MB_L)
+	if (args.mouse == k_mb_left)
 	{
 		set_droplisthide();
 	}
 }
-xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_component* sender, xui_method_args&  args )
+
+void xui_dropbox::on_droplstsetclientsz( xui_component* sender, xui_method_args&  args )
 {
 	xui_vector<s32> sz = m_droplst->get_clientsz();
 	xui_rect2d<s32> rt = m_droplst->get_borderrt();
 	sz.w += rt.ax;
 	sz.w += rt.bx;
 	if (m_maxdrop < m_droplst->get_itemcount())
-		sz.w += xui_scroll::default_size;
+		sz.w += xui_scroll::k_default_size;
 
 	sz.w  = xui_max(sz.w, get_renderw());
 	sz.h  = xui_min(m_maxdrop, m_droplst->get_itemcount()) * m_droplst->get_lineheight();
@@ -369,7 +355,8 @@ xui_method_explain(xui_dropbox, on_droplstsetclientsz,	void			)( xui_component* 
 
 	m_droplst->set_rendersz(sz);
 }
-xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* sender, xui_method_args&  args )
+
+void xui_dropbox::on_droplstsetrendersz( xui_component* sender, xui_method_args&  args )
 {
 	xui_window* window = get_window();
 
@@ -388,10 +375,7 @@ xui_method_explain(xui_dropbox, on_droplstsetrendersz,	void			)( xui_component* 
 	m_droplst->set_renderpt(pt+get_screenpt());
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring& text )
+void xui_dropbox::set_droplistshow( const std::wstring& text )
 {
 	std::vector<xui_itemtag*> showvec;
 	for (u32 i = 0; i < m_itemvec.size(); ++i)
@@ -438,7 +422,8 @@ xui_method_explain(xui_dropbox, set_droplistshow,		void			)( const std::wstring&
 		xui_desktop::get_ins()->set_floatctrl(window, m_droplst);
 	}
 }
-xui_method_explain(xui_dropbox, set_droplisthide,		void			)( void )
+
+void xui_dropbox::set_droplisthide( void )
 {
 	m_droptog->set_push(false);
 	xui_desktop::get_ins()->set_floatctrl(NULL, NULL);

@@ -1,3 +1,3 @@
 #include "xui_family.h"
 
-const xui_family xui_family::default;
+const xui_family xui_family::k_default;

@@ -2,35 +2,27 @@
 #include "xui_separate.h"
 #include "xui_toolbar.h"
 
-xui_implement_rtti(xui_toolbar, xui_control);
+xui_implement_rtti(xui_toolbar, xui_control)
 
-/*
-//static
-*/
-xui_method_explain(xui_toolbar, create,		xui_toolbar*)( void )
+xui_toolbar* xui_toolbar::create( void )
 {
 	xui_toolbar* toolbar = new xui_toolbar(xui_vector<s32>(0, 24));
 	return toolbar;
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_toolbar)( const xui_vector<s32>& size )
+xui_toolbar::xui_toolbar( const xui_vector<s32>& size )
 : xui_control(size)
 {
-	m_flow = FLOWSTYLE_H;
+	m_flow = k_flowstyle_h;
 	m_grap = 2;
 }
 
-/*
-//property
-*/
-xui_method_explain(xui_toolbar, get_flow,		u08			)( void ) const
+u08 xui_toolbar::get_flow( void ) const
 {
 	return m_flow;
 }
-xui_method_explain(xui_toolbar, set_flow,		void		)( u08 flow )
+
+void xui_toolbar::set_flow( u08 flow )
 {
 	if (m_flow != flow)
 	{
@@ -38,11 +30,13 @@ xui_method_explain(xui_toolbar, set_flow,		void		)( u08 flow )
 		invalid();
 	}
 }
-xui_method_explain(xui_toolbar, get_grap,		s32			)( void ) const
+
+s32 xui_toolbar::get_grap( void ) const
 {
 	return m_grap;
 }
-xui_method_explain(xui_toolbar, set_grap,		void		)( s32 grap )
+
+void xui_toolbar::set_grap( s32 grap )
 {
 	if (m_grap != grap)
 	{
@@ -51,14 +45,12 @@ xui_method_explain(xui_toolbar, set_grap,		void		)( s32 grap )
 	}
 }
 
-/*
-//item
-*/
-xui_method_explain(xui_toolbar, add_separate,	void		)( void )
+void xui_toolbar::add_separate( void )
 {
 	add_item(new xui_separate(xui_vector<s32>(8), m_flow));
 }
-xui_method_explain(xui_toolbar, add_item,		void		)( xui_component* component )
+
+void xui_toolbar::add_item( xui_component* component )
 {
 	if (component->get_parent())
 		return;
@@ -67,7 +59,8 @@ xui_method_explain(xui_toolbar, add_item,		void		)( xui_component* component )
 	m_widgetvec.push_back(component);
 	invalid();
 }
-xui_method_explain(xui_toolbar, del_item,		void		)( xui_component* component )
+
+void xui_toolbar::del_item( xui_component* component )
 {
 	std::vector<xui_component*>::iterator itor = std::find(
 		m_widgetvec.begin(),
@@ -83,14 +76,11 @@ xui_method_explain(xui_toolbar, del_item,		void		)( xui_component* component )
 	invalid();
 }
 
-/*
-//callback
-*/
-xui_method_explain(xui_toolbar, on_invalid,		void		)( xui_method_args& args )
+void xui_toolbar::on_invalid( xui_method_args& args )
 {
 	if (m_widgetvec.size() > 0)
 	{
-		xui_vector<s32> sz = (m_flow == FLOWSTYLE_H)
+		xui_vector<s32> sz = (m_flow == k_flowstyle_h)
 			? xui_vector<s32>(m_border.ax+m_border.bx, get_renderh())
 			: xui_vector<s32>(get_renderw(), m_border.ay+m_border.by);
 
@@ -98,16 +88,15 @@ xui_method_explain(xui_toolbar, on_invalid,		void		)( xui_method_args& args )
 		{
 			switch (m_flow)
 			{
-			case FLOWSTYLE_H:
+			case k_flowstyle_h:
 				sz.w += m_widgetvec[i]->get_renderw()+m_grap;
 				break;
-			case FLOWSTYLE_V:
+			case k_flowstyle_v:
 				sz.h += m_widgetvec[i]->get_renderh()+m_grap;
 				break;
 			}
 		}
 
-		//²¼¾Ö
 		if (get_rendersz() != sz)
 		{
 			set_rendersz(sz);
@@ -118,7 +107,8 @@ xui_method_explain(xui_toolbar, on_invalid,		void		)( xui_method_args& args )
 		}
 	}
 }
-xui_method_explain(xui_toolbar, on_perform,		void		)( xui_method_args& args )
+
+void xui_toolbar::on_perform( xui_method_args& args )
 {
 	xui_vector<s32> pt(m_border.ax, m_border.ay);
 	xui_rect2d<s32> rt = get_renderrtins();
@@ -129,11 +119,11 @@ xui_method_explain(xui_toolbar, on_perform,		void		)( xui_method_args& args )
 
 		switch (m_flow)
 		{
-		case FLOWSTYLE_H:
+		case k_flowstyle_h:
 			comp->on_perform_h(rt.get_h());
 			pt.x += comp->get_renderw()+m_grap;
 			break;
-		case FLOWSTYLE_V:
+		case k_flowstyle_v:
 			comp->on_perform_w(rt.get_w());
 			pt.y += comp->get_renderh()+m_grap;
 			break;

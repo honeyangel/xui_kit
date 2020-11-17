@@ -2,17 +2,11 @@
 #include "xui_propview.h"
 #include "xui_proproot.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_proproot)( void )
+xui_proproot::xui_proproot( void )
 : m_ctrl(NULL)
 {}
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_proproot)( void )
+xui_proproot::~xui_proproot( void )
 {
 	if (m_ctrl)
 		m_ctrl->del_proproot(this);
@@ -21,14 +15,12 @@ xui_delete_explain(xui_proproot)( void )
 		delete m_propkind[i];
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_proproot, get_propkind,	const xui_propkind_vec&	)( void ) const
+const xui_propkind_vec& xui_proproot::get_propkind( void ) const
 {
 	return m_propkind;
 }
-xui_method_explain(xui_proproot, get_propkind,	xui_propkind*			)( const std::string& type )
+
+xui_propkind* xui_proproot::get_propkind( const std::string& type )
 {
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
@@ -38,7 +30,8 @@ xui_method_explain(xui_proproot, get_propkind,	xui_propkind*			)( const std::str
 
 	return NULL;
 }
-xui_method_explain(xui_proproot, has_propkind,	bool					)( xui_propkind* propkind ) const
+
+bool xui_proproot::has_propkind( xui_propkind* propkind ) const
 {
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
@@ -49,7 +42,8 @@ xui_method_explain(xui_proproot, has_propkind,	bool					)( xui_propkind* propkin
 
 	return false;
 }
-xui_method_explain(xui_proproot, add_propkind,	void					)( xui_propkind* propkind )
+
+void xui_proproot::add_propkind( xui_propkind* propkind )
 {
 	if (propkind->was_tail())
 	{
@@ -67,7 +61,8 @@ xui_method_explain(xui_proproot, add_propkind,	void					)( xui_propkind* propkin
 		m_propkind.insert(itor, propkind);
 	}
 }
-xui_method_explain(xui_proproot, del_propkind,	void					)( xui_propkind* propkind )
+
+void xui_proproot::del_propkind( xui_propkind* propkind )
 {
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 	{
@@ -79,7 +74,8 @@ xui_method_explain(xui_proproot, del_propkind,	void					)( xui_propkind* propkin
 		}
 	}
 }
-xui_method_explain(xui_proproot, get_propdata,	xui_propdata*			)( const std::wstring& path )
+
+xui_propdata* xui_proproot::get_propdata( const std::wstring& path )
 {
 	std::vector<std::wstring> vec = xui_global::get_split(path, L'/');
 	if (vec.size() >= 2)
@@ -105,25 +101,25 @@ xui_method_explain(xui_proproot, get_propdata,	xui_propdata*			)( const std::wst
 
 	return NULL;
 }
-xui_method_explain(xui_proproot, non_ctrl,		void					)( void )
+
+void xui_proproot::non_ctrl( void )
 {
 	m_ctrl = NULL;
 	for (u32 i = 0; i < m_propkind.size(); ++i)
 		m_propkind[i]->non_ctrl();
 }
-xui_method_explain(xui_proproot, get_ctrl,		xui_propview*			)( void )
+
+xui_propview* xui_proproot::get_ctrl( void )
 {
 	return m_ctrl;
 }
-xui_method_explain(xui_proproot, set_ctrl,		void					)( xui_propview* propview )
+
+void xui_proproot::set_ctrl( xui_propview* propview )
 {
 	m_ctrl = propview;
 }
 
-/*
-//virtual
-*/
-xui_method_explain(xui_proproot, on_detach,		void					)( xui_proproot* proproot )
+void xui_proproot::on_detach( xui_proproot* proproot )
 {
 	xui_proproot_vec vec;
 	if (proproot)    
@@ -133,11 +129,9 @@ xui_method_explain(xui_proproot, on_detach,		void					)( xui_proproot* proproot 
 
 	on_detach(vec);
 }
-xui_method_explain(xui_proproot, on_detach,		void					)( const xui_proproot_vec& proproot )
-{
 
-}
-xui_method_explain(xui_proproot, on_attach,		void					)( void )
-{
+void xui_proproot::on_detach( const xui_proproot_vec& proproot )
+{}
 
-}
+void xui_proproot::on_attach( void )
+{}

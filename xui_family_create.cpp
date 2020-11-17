@@ -5,16 +5,16 @@
 #include "xui_global.h"
 #include "xui_family_create.h"
 
-/*
-//static method
-*/
-xui_method_explain(xui_family_create, raster,				void						)( int y, int count, const FT_Span* spans, void* user )
+void xui_family_create::raster( s32 y, s32 count, const FT_Span* spans, void* user )
 {
 	spanvec* vec = (spanvec*)user;
-	for (int i = 0; i < count; ++i) 
-		vec->push_back(span(spans[i].x, y, spans[i].len, spans[i].coverage));
+	for (s32 i = 0; i < count; ++i) 
+    {
+        vec->push_back(span(spans[i].x, y, spans[i].len, spans[i].coverage));
+    }
 }
-xui_method_explain(xui_family_create, render_spans,			void						)( FT_Library& library, FT_Outline* outline, spanvec* vec )
+
+void xui_family_create::render_spans( FT_Library& library, FT_Outline* outline, spanvec* vec )
 {
 	FT_Raster_Params params;
 	memset(&params, 0, sizeof(FT_Raster_Params));
@@ -25,81 +25,77 @@ xui_method_explain(xui_family_create, render_spans,			void						)( FT_Library& l
 	FT_Outline_Render(library, outline, &params);
 }
 
-/*
-//constructor
-*/
-xui_create_explain(xui_family_create)( void )
+xui_family_create::xui_family_create( void )
 {
-	FT_Init_FreeType(&m_FTLibrary);
+	FT_Init_FreeType(&m_library);
 }
 
-/*
-//destructor
-*/
-xui_delete_explain(xui_family_create)( void )
+xui_family_create::~xui_family_create( void )
 {
-	for (FT_InfoMap::iterator itor = m_FTInfoMap.begin(); itor != m_FTInfoMap.end(); ++itor)
-	{
-		delete [] ((*itor).second->buffer_normal);
-		delete [] ((*itor).second->buffer_stroke);
-		delete    ((*itor).second);
-	}
-	for (FT_FaceMap::iterator itor = m_FTFaceMap.begin(); itor != m_FTFaceMap.end(); ++itor)
-		FT_Done_Face((*itor).second);
-
-	m_FTInfoMap.clear();
-	m_FTFaceMap.clear();
-	FT_Done_FreeType(m_FTLibrary);
+    release();
+	FT_Done_FreeType(m_library);
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_family_create, get_height,			s32							)( const xui_family& family )
+void xui_family_create::release( void )
+{
+    for (infomap::iterator itor = m_infomap.begin(); itor != m_infomap.end(); ++itor)
+    {
+        delete [] ((*itor).second->buffer_normal);
+        delete [] ((*itor).second->buffer_stroke);
+        delete    ((*itor).second);
+    }
+    for (facemap::iterator itor = m_facemap.begin(); itor != m_facemap.end(); ++itor)
+    {
+        FT_Done_Face((*itor).second);
+    }
+
+    m_infomap.clear();
+    m_facemap.clear();
+}
+
+s32 xui_family_create::get_height( const xui_family& family )
 {
 	add_font(family);
-	FT_Info* info = m_FTInfoMap[family.to_key()];
-	return   info->height;
-}
-xui_method_explain(xui_family_create, get_ascender,			s32							)( const xui_family& family )
-{
-	add_font(family);
-	FT_Info* info = m_FTInfoMap[family.to_key()];
-	return   info->ascender;
+	ft_info* info = m_infomap[family.to_key()];
+	return info->height;
 }
 
-/*
-//override
-*/
-xui_method_explain(xui_family_create, add_font,				void						)( const xui_family& family )
+s32 xui_family_create::get_ascender( const xui_family& family )
 {
-	FT_Info* info = NULL;
+	add_font(family);
+	ft_info* info = m_infomap[family.to_key()];
+	return info->ascender;
+}
+
+void xui_family_create::add_font( const xui_family& family )
+{
+	ft_info* info = NULL;
 	FT_Face  face = NULL;
 
-	FT_InfoMap::iterator infoItor = m_FTInfoMap.find(family.to_key());
-	FT_FaceMap::iterator faceItor = m_FTFaceMap.find(family.face);
+    infomap::iterator info_itor = m_infomap.find(family.to_key());
+    facemap::iterator face_itor = m_facemap.find(family.face);
 
 	// info
-	if (infoItor == m_FTInfoMap.end())
+	if (info_itor == m_infomap.end())
 	{
-		info = new FT_Info;
+		info = new ft_info;
 		info->buffer_normal = new u08[256*256];
 		info->buffer_stroke = new u08[256*256];
-		m_FTInfoMap[family.to_key()] = info;
+		m_infomap[family.to_key()] = info;
 	}
 	else
 	{
-		info = (*infoItor).second;
+		info = (*info_itor).second;
 	}
 
-	if (faceItor == m_FTFaceMap.end())
+	if (face_itor == m_facemap.end())
 	{
-		FT_New_Face(m_FTLibrary, xui_global::get_fontfile(family.face).c_str(), 0, &face);
-		m_FTFaceMap[family.face] = face;
+		FT_New_Face(m_library, xui_global::get_fontfile(family.face).c_str(), 0, &face);
+		m_facemap[family.face] = face;
 	}
 	else
 	{
-		face = (*faceItor).second;
+		face = (*face_itor).second;
 	}
 
 	// face
@@ -116,17 +112,19 @@ xui_method_explain(xui_family_create, add_font,				void						)( const xui_family
 		info->ascender	= ((face->size->metrics.ascender)						>> 6);
 	}
 }
-xui_method_explain(xui_family_create, get_info,				xui_family_create::FT_Info*	)( const xui_family& family, u16 wc )
+
+xui_family_create::ft_info* xui_family_create::get_info( const xui_family& family, u16 wc )
 {
 	if (family.bold)	return create_char_stroke(family, wc);
 	else				return create_char_normal(family, wc);
 }
-xui_method_explain(xui_family_create, create_char_normal,	xui_family_create::FT_Info*	)( const xui_family& family, u16 wc )
+
+xui_family_create::ft_info* xui_family_create::create_char_normal( const xui_family& family, u16 wc )
 {
 	add_font(family);
 
-	FT_Info* info = m_FTInfoMap[family.to_key()];
-	FT_Face  face = m_FTFaceMap[family.face];
+	ft_info* info = m_infomap[family.to_key()];
+	FT_Face  face = m_facemap[family.face];
 
 	FT_UInt charIndex = FT_Get_Char_Index(face, wc);
 	FT_Load_Char(face, wc, FT_LOAD_RENDER);
@@ -168,12 +166,13 @@ xui_method_explain(xui_family_create, create_char_normal,	xui_family_create::FT_
 
 	return info;
 }
-xui_method_explain(xui_family_create, create_char_stroke,	xui_family_create::FT_Info*	)( const xui_family& family, u16 wc )
+
+xui_family_create::ft_info* xui_family_create::create_char_stroke( const xui_family& family, u16 wc )
 {
 	add_font(family);
 
-	FT_Info* info = m_FTInfoMap[family.to_key()];
-	FT_Face  face = m_FTFaceMap[family.face];
+	ft_info* info = m_infomap[family.to_key()];
+	FT_Face  face = m_facemap[family.face];
 
 	// Load the glyph we are looking for.
 	FT_UInt gindex = FT_Get_Char_Index(face, wc);
@@ -182,14 +181,14 @@ xui_method_explain(xui_family_create, create_char_stroke,	xui_family_create::FT_
 		if (face->glyph->format == FT_GLYPH_FORMAT_OUTLINE)
 		{
 			spanvec spanvec_normal;
-			render_spans(m_FTLibrary, &face->glyph->outline, &spanvec_normal);
+			render_spans(m_library, &face->glyph->outline, &spanvec_normal);
 
 			// next we need the spans for the outline.
 			spanvec spanvec_stroke;
 
 			// Set up a stroker.
 			FT_Stroker stroker;
-			FT_Stroker_New(m_FTLibrary, &stroker);
+			FT_Stroker_New(m_library, &stroker);
 			FT_Stroker_Set(stroker, family.bold * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 
 			FT_Glyph glyph;
@@ -199,7 +198,7 @@ xui_method_explain(xui_family_create, create_char_stroke,	xui_family_create::FT_
 				if (glyph->format == FT_GLYPH_FORMAT_OUTLINE)
 				{
 					FT_Outline* o = &reinterpret_cast<FT_OutlineGlyph>(glyph)->outline;
-					render_spans(m_FTLibrary, o, &spanvec_stroke);
+					render_spans(m_library, o, &spanvec_stroke);
 				}
 
 				FT_Stroker_Done(stroker);

@@ -1,6 +1,18 @@
 #ifndef __xui_header_h__
 #define __xui_header_h__
 
+#define xui_platform_unknown    0
+#define xui_platform_win32		1
+#define xui_platform_macos		2
+
+#if defined(__APPLE__)
+#define xui_target_platform     xui_platform_macos
+#endif
+
+#if (defined(_WIN32) || defined(__WIN32__) || defined(WIN32))
+#define xui_target_platform     xui_platform_win32
+#endif
+
 #ifndef SIMPLE_TYPE_U08
 #define SIMPLE_TYPE_U08
 typedef unsigned char   u08;
@@ -41,6 +53,7 @@ typedef          float  f32;
 typedef          double f64;
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,9 +64,20 @@ typedef          double f64;
 #include <map>
 #include <sstream>
 #include <algorithm>
+#include <functional>
 
+#if   xui_target_platform == xui_platform_win32
+#include <tchar.h>
+#include <WinSock2.h>
 #include <Windows.h>
-#include "GLee.h"
+#include <Shlobj.h>
+#include <shellapi.h>
+#include <timeapi.h>
+#include <glew.h>
+#elif xui_target_platform == xui_platform_macos
+#define GL_SILENCE_DEPRECATION
+#import <OpenGL/gl.h>
+#endif
 
 #define xui_pi				3.1415926535897932f
 #define xui_pixel_align(x)	( (f32)(s32)(( x ) + (( x ) > 0.0f ? 0.5f : -0.5f)) )
@@ -61,19 +85,14 @@ typedef          double f64;
 #define xui_max(a, b)		((a) > (b) ? (a) : (b))
 #define xui_abs(a)			((a) >  0  ? (a) :-(a))
 
-#define xui_create_explain(class_name)					 class_name::class_name
-#define xui_delete_explain(class_name)					 class_name::~class_name
-#define xui_method_explain(class_name, name, type)	type class_name::name
+//#define xui_create_explain(class_name)					 class_name::class_name
+//#define xui_delete_explain(class_name)					 class_name::~class_name
+//#define xui_method_explain(class_name, name, type)	type class_name::name
 
 #define xui_method_ptrcall(ptr,  method)				 ptr->method
 #define xui_method_refcall(ref,  method)				 ref.method
 #define xui_method_inscall(type, method)				 type::get_ins()->method
 #define xui_static_inscall(type, method)				 type::method
-
-//#define xui_lstptr_addloop(type, name)	for(std::list<type*>::iterator itor = name.begin(); itor != name.end(); ++itor)
-//#define xui_lstptr_delloop(type, name)	for(std::list<type*>::reverse_iterator itor = name.rbegin(); itor != name.rend(); ++itor)
-//#define xui_vecptr_addloop(name)		for(u32 i = 0; i < name.size(); ++i)
-//#define xui_vecptr_delloop(name)		for(s32 i = (s32)name.size()-1; i >= 0; --i)
 
 class   xui_colour;
 class   xui_bitmap;
@@ -135,45 +154,31 @@ class   xui_menu;
 class   xui_menuitem;
 class   xui_dockpage;
 class   xui_dockview;
+class   xui_native_window;
 
-/*
-//rtti
-*/
 class xui_rtti
 {
 public:
-	/* 
-	//constructor 
-	*/
 	xui_rtti( const char* name, const xui_rtti* base )
 	{
 		m_name = name;
 		m_base = base;
 	}
 	
-	/*
-	//method
-	*/
 	const char*				get_name( void ) const	{ return m_name; }
 	const xui_rtti*			get_base( void ) const	{ return m_base; }
 
 protected:
-	/*
-	//member
-	*/
 	const char*				m_name;
 	const xui_rtti*			m_base;
 };
 
-/* 
-//root class macro declare
-*/
 #define xui_declare_root(class_name)													\
 	public:																				\
 																						\
-	static	const xui_rtti	RTTI;														\
-    static  const xui_rtti* RTTIPTR	( void )       { return &RTTI; }					\
-	virtual const xui_rtti* get_rtti( void ) const { return &RTTI; }					\
+	static	const xui_rtti	k_rtti;														\
+    static  const xui_rtti* ptr_rtti( void )       { return &k_rtti; }					\
+	virtual const xui_rtti* get_rtti( void ) const { return &k_rtti; }					\
 																						\
 	static	bool			equal	( const xui_rtti* rtti, const class_name* object )	\
 	{																					\
@@ -209,59 +214,44 @@ protected:
 	}																																				
 
 
-/* 
-//RTTI class macro declare 
-*/
 #define xui_declare_rtti																\
 	public:																				\
-	static	const xui_rtti	RTTI;														\
-    static  const xui_rtti* RTTIPTR	( void )											\
-	{																					\
-		return &RTTI;																	\
-	}																					\
+	static	const xui_rtti	k_rtti;														\
 																						\
 	virtual const xui_rtti*	get_rtti( void ) const										\
 	{																					\
-		return &RTTI;																	\
+		return &k_rtti;																	\
 	}
 
-/*
-//RTTI class macro implement
-*/
-#define xui_implement_root(class_name)				const xui_rtti class_name::RTTI(#class_name, NULL)
-#define xui_implement_rtti(class_name, base_name)	const xui_rtti class_name::RTTI(#class_name, &base_name::RTTI)
+#define xui_implement_root(class_name)				const xui_rtti class_name::k_rtti(#class_name, NULL);
+#define xui_implement_rtti(class_name, base_name)	const xui_rtti class_name::k_rtti(#class_name, &base_name::k_rtti);
 
-/*
-//RTTI macro
-*/
-#define xui_equal_kindof(class_name, object)               class_name::equal(&class_name::RTTI, object)
-#define xui_issub_kindof(class_name, object)               class_name::issub(&class_name::RTTI, object)
-#define xui_dynamic_cast(class_name, object) ((class_name*)class_name::getas(&class_name::RTTI, object))
 
-/* 
-//Instance 
-*/
+#define xui_equal_kindof(class_name, object)               class_name::equal(&class_name::k_rtti, object)
+#define xui_issub_kindof(class_name, object)               class_name::issub(&class_name::k_rtti, object)
+#define xui_dynamic_cast(class_name, object) ((class_name*)class_name::getas(&class_name::k_rtti, object))
+
 #define xui_declare_instance(class_name)												\
 	public:																				\
 	static	void			init	( void );											\
 	static	void			done	( void );											\
 	static	class_name*		get_ins	( void )											\
 	{																					\
-		return INSTANCE;																\
+		return s_instance;																\
 	}																					\
 																						\
 	protected:																			\
-	static	class_name*		INSTANCE;
+	static	class_name*		s_instance;
 
-#define xui_implement_instance_member(class_name)	class_name* class_name::INSTANCE = NULL
+#define xui_implement_instance_member(class_name)	class_name* class_name::s_instance = NULL;
 #define xui_implement_instance_method(class_name)										\
 	void	class_name::init		( void )											\
 	{																					\
-		INSTANCE = new class_name;														\
+		s_instance = new class_name;												    \
 	}																					\
 	void	class_name::done		( void )											\
 	{																					\
-		delete INSTANCE;																\
+		delete s_instance;																\
 	}
 
 #endif//__xui_header_h__

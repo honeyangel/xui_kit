@@ -8,33 +8,17 @@ class xui_numbbox : public xui_textbox
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_numbbox( const xui_vector<s32>& size, u08 numbtype, f64 interval, bool showarrow );
 
-	/*
-	//override
-	*/
 	virtual xui_rect2d<s32>	get_renderrtins		( void ) const;
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void			on_perform			( xui_method_args&  args );
 	virtual void			on_mousewheel		( xui_method_mouse& args );
-
-	/*
-	//event
-	*/
 	void					on_arrowupdateself	( xui_component* sender, xui_method_update& args );
 	void					on_arrowrenderself	( xui_component* sender, xui_method_args&	args );
 	void					on_arrowclick		( xui_component* sender, xui_method_args&	args );
 
-	/*
-	//member
-	*/
 	f64						m_interval;
 	xui_button*				m_incarrow;
 	xui_button*				m_decarrow;

@@ -5,52 +5,52 @@
 
 enum
 {
-	XM_NONE				= -1,
-	XM_BORN				=  0,
-	XM_DEAD				=  1,
+	k_xm_none				= -1,
+	k_xm_born				=  0,
+	k_xm_dead				=  1,
 
-	XM_ADDNODE			=  2,
-	XM_DELNODE			=  3,
-	XM_SETRENDERPT		=  4,
-	XM_SETRENDERSZ		=  5,
-	XM_SETCLIENTSZ		=  6,
-	XM_SETEXTERNPD		=  7,
+	k_xm_addnode			=  2,
+	k_xm_delnode			=  3,
+	k_xm_setrenderpt		=  4,
+	k_xm_setrendersz		=  5,
+	k_xm_setclientsz		=  6,
+	k_xm_setexternpd		=  7,
 
-	XM_GETFOCUS			=  8,
-	XM_NONFOCUS			=  9,
-	XM_GETCATCH			= 10,
-	XM_NONCATCH			= 11,
+	k_xm_getfocus			=  8,
+	k_xm_nonfocus			=  9,
+	k_xm_getcatch			= 10,
+	k_xm_noncatch			= 11,
 
-	XM_FREE				= 12,
-	XM_GRAY				= 13,
-	XM_SHOW				= 14,
-	XM_HIDE				= 15,
+	k_xm_free				= 12,
+	k_xm_gray				= 13,
+	k_xm_show				= 14,
+	k_xm_hide				= 15,
 
-	XM_KEYBDDOWN		= 16,
-	XM_KEYBDRISE		= 17,
-	XM_KEYBDCHAR		= 18,
-	XM_MOUSEDOWN		= 19,
-	XM_MOUSERISE		= 20,
-	XM_MOUSEENTER		= 21,
-	XM_MOUSELEAVE		= 22,
-	XM_MOUSECLICK		= 23,
-	XM_MOUSEWHEEL		= 24,
+	k_xm_keybddown		    = 16,
+	k_xm_keybdrise		    = 17,
+	k_xm_keybdchar		    = 18,
+	k_xm_mousedown		    = 19,
+	k_xm_mouserise		    = 20,
+	k_xm_mouseenter		    = 21,
+	k_xm_mouseleave		    = 22,
+	k_xm_mouseclick		    = 23,
+	k_xm_mousewheel		    = 24,
 
-	XM_MOUSEDRAGITEM	= 25,
-	XM_MOUSEDRAGOVER	= 26,
-	XM_MOUSEDRAGDROP	= 27,
-	XM_MOUSEDOUBLECLICK	= 28,
+	k_xm_mousedragitem	    = 25,
+	k_xm_mousedragover	    = 26,
+	k_xm_mousedragdrop	    = 27,
+	k_xm_mousedoubleclick	= 28,
 
-	XM_ACTIONPLAY		= 29,
-	XM_ACTIONSTOP		= 30,
-	XM_ACTIONLOOP		= 31,
+	k_xm_actionplay		    = 29,
+	k_xm_actionstop		    = 30,
+	k_xm_actionloop		    = 31,
 
-	XM_UPDATE			= 32,
-	XM_RENDER			= 33,
-	XM_INVALID			= 34,
-	XM_PERFORM			= 35,
+	k_xm_update			    = 32,
+	k_xm_render			    = 33,
+	k_xm_invalid			= 34,
+	k_xm_perform			= 35,
 
-	XM_USER				= 36,
+	k_xm_user				= 36,
 };
 
 class xui_message
@@ -61,16 +61,10 @@ public:
 	u32				wparam;
 	u32				lparam;
 
-	/*
-	//constructor
-	*/
 	xui_message( void );
 	xui_message( xui_component* other_sender, u32 other_msgidx, u32 other_wparam, u32 other_lparam );
 	xui_message( const xui_message& other );
 
-	/*
-	//operator
-	*/
 	xui_message&	operator = ( const xui_message& other );
 	bool			operator ==( const xui_message& other ) const;
 	bool			operator !=( const xui_message& other ) const;

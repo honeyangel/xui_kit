@@ -5,8 +5,8 @@
 
 enum
 {
-	PLUSRENDER_NORMAL,
-	PLUSRENDER_SYMBOL,
+	k_plusrender_normal,
+	k_plusrender_symbol,
 };
 
 class xui_plusctrl : public xui_button
@@ -14,38 +14,19 @@ class xui_plusctrl : public xui_button
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_plusctrl( u08 drawmode, bool expanded );
 
-	/*
-	//method
-	*/
 	bool						was_expanded	( void ) const;
 	void						set_expanded	( bool flag );
 	void						set_onlyside	( bool flag );
-
-	/*
-	//virtual
-	*/
 	virtual xui_colour			get_rendercolor	( void ) const;
 
-	/*
-	//method
-	*/
 	xui_method<xui_method_args>	xm_expand;
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void				on_mousedown	( xui_method_mouse& args );
 	virtual void				on_renderself	( xui_method_args&  args );
 
-	/*
-	//member
-	*/
 	bool						m_onlyside;
 	u08							m_drawmode;
 	bool						m_expanded;

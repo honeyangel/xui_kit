@@ -1,68 +1,59 @@
 #ifndef __xui_treeview_h__
 #define __xui_treeview_h__
 
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_toggle.h"
 #include "xui_plusctrl.h"
 #include "xui_container.h"
 
 enum
 {
-	TREECOLUMN_MAIN,
-	TREECOLUMN_TEXT,
-	TREECOLUMN_ICON,
-	TREECOLUMN_BOOL,
+	k_treecolumn_main,
+	k_treecolumn_text,
+	k_treecolumn_icon,
+	k_treecolumn_bool,
 };
 
 enum
 {
-	TREEDROP_NOTALLOW,
-	TREEDROP_FRONT,
-	TREEDROP_INNER,
-	TREEDROP_AFTER,
+	k_treedrop_notallow,
+	k_treedrop_front,
+	k_treedrop_inner,
+	k_treedrop_after,
 };
 
 enum
 {
-	TREESORT_NONE,
-	TREESORT_INCREMENT,
-	TREESORT_DECREMENT,
+	k_treesort_none,
+	k_treesort_increment,
+	k_treesort_decrement,
 };
 
 enum
 {
-	SORTTYPE_NONE,
-	SORTTYPE_STRING,
-	SORTTYPE_NUMBER,
+	k_sorttype_none,
+	k_sorttype_string,
+	k_sorttype_number,
 };
 
 xui_declare_args(treedragdrop)
 {
 public:
-	/*
-	//member
-	*/
 	xui_treenode*		dragnode;
 	xui_treenode*		dropnode;
 	u08					allowplace;
 
-	/*
-	//constructor
-	*/
 	xui_method_treedragdrop( void )
 	{
 		dragnode	= NULL;
 		dropnode	= NULL;
-		allowplace	= TREEDROP_INNER;
+		allowplace	= k_treedrop_inner;
 	}
 };
 
 class xui_treecolumn
 {
 public:
-	/*
-	//member
-	*/
 	u08							type;
 	s32							size;
 	std::wstring				name;
@@ -78,9 +69,6 @@ public:
 	u08							textalign;
 	u08							iconalign;
 
-	/*
-	//constructor
-	*/
 	xui_treecolumn( 
 		u08						 _type, 
 		s32						 _size, 
@@ -88,10 +76,10 @@ public:
 		xui_bitmap*				 _icon		= NULL, 
 		u08						 _sort		= 1,
 		bool					 _editable	= false,
-		u08						 _boolmode  = TOGGLE_CIRCLE,
+		u08						 _boolmode  = k_toggle_circle,
 		const xui_rect2d<s32>&	 _borderrt  = xui_rect2d<s32>(2),
-		u08                      _iconalign = IMAGE_C,
-		u08                      _textalign = TEXTALIGN_LC )
+		u08                      _iconalign = k_image_c,
+		u08                      _textalign = k_textalign_lc )
 	{
 		type		= _type;
 		size		= _size;
@@ -114,35 +102,17 @@ class xui_treeview : public xui_container
 	xui_declare_rtti
 
 public:
-	/*
-	//static
-	*/
-	static const xui_colour				lighttrace_color;
-	static const xui_colour				nodeselect_color;
+	static const xui_colour				k_lighttrace_color;
+	static const xui_colour				k_nodeselect_color;
 	static xui_treeview*				create				( const std::vector<xui_treecolumn>& columninfo );
 
-	/*
-	//constructor
-	*/
-	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = PLUSRENDER_NORMAL, bool rendergrid = true, bool renderhead = true, bool lighttrace = true );
-
-	/*
-	//destructor
-	*/
+	xui_treeview( const xui_vector<s32>& size, const std::vector<xui_treecolumn>& columninfo, s32 lineheight = 20, u08 plusrender = k_plusrender_normal, bool rendergrid = true, bool renderhead = true, bool lighttrace = true );
 	virtual ~xui_treeview( void );
 
-	/*
-	//line height
-	//node indent
-	*/
 	s32									get_lineheight		( void ) const;
 	void								set_lineheight		( s32 height );
 	s32									get_nodeindent		( void ) const;
 	void								set_nodeindent		( s32 indent );
-
-	/*
-	//property
-	*/
 	bool								was_lighttrace		( void ) const;
 	u08									get_plusrender		( void ) const;
 	bool								was_allowmulti		( void ) const;
@@ -151,10 +121,6 @@ public:
 	void								set_acceptdrag		( bool flag );
 	u08									get_allowplace		( void ) const;
 	void								set_allowplace		( u08 place );
-
-	/*
-	//column
-	*/
 	u32									get_columninfocount	( void ) const;
 	const std::vector<xui_treecolumn>&	get_columninfoarray	( void ) const;
 	const xui_treecolumn&				get_columninfo		( u32 index ) const;
@@ -164,25 +130,13 @@ public:
 	u32									get_sortcolumn		( void ) const;
 	void								set_columnsort		( u32 index, u08 sort );
 	void								non_columnsort		( void );
-
-	/*
-	//search
-	*/
 	const std::wstring&					get_searchtext		( void ) const;
 	void								set_searchtext		( const std::wstring& text );
-
-	/*
-	//selected node
-	*/
 	void								ini_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( xui_treenode* node, bool selected );
 	void								set_selectednode	( const std::vector<xui_treenode*>& nodes );
 	void								non_selectednode	( bool firemethod = true );
 	const std::vector<xui_treenode*>&	get_selectednode	( void ) const;
-
-	/*
-	//node
-	*/
 	std::vector<xui_treenode*>			get_entirenode		( bool total = true );
 	u32									get_upmostnodecount	( void ) const;
 	const std::vector<xui_treenode*>&	get_upmostnodearray	( void ) const;
@@ -190,29 +144,16 @@ public:
 	void								set_upmostnodeindex	( xui_treenode* node, u32 index );
 	xui_treenode*						get_upmostnode		( u32 index );
 	xui_treenode*						add_upmostnode		( u32 index, xui_treedata* data );
-	//void								add_upmostnode		( u32 index, xui_treenode* node );
 	void								del_upmostnode		( xui_treenode* node );
 	void								del_upmostnodeall	( void );
 	void								set_nodevisible		( xui_treenode* node );
 
-	/*
-	//override
-	*/
 	virtual xui_rect2d<s32>				get_renderrtins		( void ) const;
-
-	/*
-	//choose
-	//update
-	//render
-	*/
 	virtual xui_treenode*				choose_node			( const xui_vector<s32>& pt );
 	virtual xui_component*				choose_else			( const xui_vector<s32>& pt );
 	virtual void						update_else			( f32 delta );
 	virtual void						render_else			( void );
 
-	/*
-	//method
-	*/
 	xui_method<xui_method_args>			xm_selectedchange;
 	xui_method<xui_method_args>			xm_treenodeenter;
 	xui_method<xui_method_args>			xm_treenodeleave;
@@ -220,9 +161,6 @@ public:
 	xui_method<xui_method_treedragdrop> xm_treedragdrop;
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void						on_mousedoubleclick	( xui_method_mouse&		args );
 	virtual void						on_mousedown		( xui_method_mouse&		args );
 	virtual void						on_mousemove		( xui_method_mouse&		args );
@@ -233,22 +171,12 @@ protected:
 	virtual void						on_updateself		( xui_method_update&	args );
 	virtual void						on_renderself		( xui_method_args&		args );
 
-	/*
-	//method
-	*/
-	//void								insert_node			( xui_treenode* node );
 	xui_treenode*						create_node			( xui_treedata* data );
 	void								delete_node			( xui_treenode* node );
 
-	/*
-	//event
-	*/
 	void								on_headclick		( xui_component* sender, xui_method_mouse& args );
 	void								on_headrenderself	( xui_component* sender, xui_method_args&  args );
 
-	/*
-	//member
-	*/
 	s32									m_lineheight;
 	s32									m_nodeindent;
 	u08									m_plusrender;

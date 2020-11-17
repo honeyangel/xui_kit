@@ -4,14 +4,14 @@ u08	xui_bitmap_format::get_stride( u08 format )
 {
 	switch (format)
 	{
-	case A8:
-	case PAL8:
+	case k_a8:
+	case k_pal8:
 		return 1;
-	case PALA8:
+	case k_pala8:
 		return 2;
-	case R8G8B8:
+	case k_r8g8b8:
 		return 3;
-	case R8G8B8A8:
+	case k_r8g8b8a8:
 		return 4;
 	}
 

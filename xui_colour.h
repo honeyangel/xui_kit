@@ -1,4 +1,4 @@
-#ifndef __xui_colour_h__
+﻿#ifndef __xui_colour_h__
 #define __xui_colour_h__
 
 #include "xui_header.h"
@@ -6,23 +6,17 @@
 class xui_colour
 {
 public:
-	/*
-	//static
-	*/
-	static const xui_colour transparent;
-	static const xui_colour white;
-	static const xui_colour black;
-	static const xui_colour red;
-	static const xui_colour green;
-	static const xui_colour blue;
-	static const xui_colour lightgray;
-	static const xui_colour darkgray;
-	static const xui_colour gray;
-	static const xui_colour lighttrace;
+    static const xui_colour k_zero;
+	static const xui_colour k_white;
+	static const xui_colour k_black;
+	static const xui_colour k_red;
+	static const xui_colour k_green;
+	static const xui_colour k_blue;
+	static const xui_colour k_lightgray;
+	static const xui_colour k_darkgray;
+	static const xui_colour k_gray;
+	static const xui_colour k_lighttrace;
 
-	/*
-	// member
-	*/
 	union
 	{
 		f32 value[4];
@@ -36,9 +30,6 @@ public:
 		};
 	};
 
-	/*
-	// constructor
-	*/
 	xui_colour( void )
 	{
 		memset(value, 0, sizeof(f32) * 4);
@@ -71,9 +62,6 @@ public:
 		memcpy(value, other.value, sizeof(f32) * 4);
 	}
 
-	/*
-	// operator
-	*/
 	xui_colour  operator + ( const xui_colour& other ) const
 	{
 		return xui_colour(a+other.a, r+other.r, g+other.g, b+other.b);
@@ -141,9 +129,6 @@ public:
 		return (*this);
 	}
 
-	/*
-	// operator
-	*/
 	bool operator ==( const xui_colour& other ) const
 	{
 		return (a == other.a && r == other.r && g == other.g && b == other.b);
@@ -153,9 +138,6 @@ public:
 		return (a != other.a || r != other.r || g != other.g || b != other.b);
 	}
 
-	/*
-	// method
-	*/
 	u32  get_abgr( void ) const
 	{
 		return (((u32)(a * 255.0f)) << 24) |

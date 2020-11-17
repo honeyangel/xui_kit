@@ -1,21 +1,18 @@
-#include "xui_convas.h"
+#include "xui_canvas.h"
 #include "xui_textbox.h"
 #include "xui_propctrl.h"
 #include "xui_propedit_stdvec.h"
 
-/*
-//constructor
-*/
-xui_create_explain(xui_propedit_stdvec)( xui_propctrl* propctrl )
+xui_propedit_stdvec::xui_propedit_stdvec( xui_propctrl* propctrl )
 : xui_propedit_base(propctrl)
 {
 	xui_textbox* textctrl = new xui_textbox(xui_vector<s32>(48, 18));
-	xui_method_ptrcall(textctrl, set_backcolor	)(xui_colour::darkgray);
-	xui_method_ptrcall(textctrl, set_drawcolor	)(true);
-	xui_method_ptrcall(textctrl, set_borderrt	)(xui_rect2d<s32>(4, 2, 2, 2));
-	xui_method_ptrcall(textctrl, set_sidestyle	)(SIDESTYLE_S);
-	xui_method_ptrcall(textctrl, set_textalign	)(TEXTALIGN_LC);
-	xui_method_ptrcall(textctrl, set_numbtype	)(NT_UNSIGNEDINT);
+	textctrl->set_backcolor(xui_colour::k_darkgray);
+	textctrl->set_drawcolor(true);
+	textctrl->set_borderrt(xui_rect2d<s32>(4, 2, 2, 2));
+	textctrl->set_sidestyle(k_sidestyle_s);
+	textctrl->set_textalign(k_textalign_lc);
+	textctrl->set_numbtype(k_nt_unsignedint);
 	textctrl->xm_nonfocus	+= new xui_method_member<xui_method_args,  xui_propedit_stdvec>(this, &xui_propedit_stdvec::on_editctrlnonfocus);
 	textctrl->xm_getfocus	+= new xui_method_member<xui_method_args,  xui_propedit_stdvec>(this, &xui_propedit_stdvec::on_editctrlgetfocus);
 	textctrl->xm_textenter	+= new xui_method_member<xui_method_args,  xui_propedit_stdvec>(this, &xui_propedit_stdvec::on_textctrltextenter);
@@ -23,10 +20,7 @@ xui_create_explain(xui_propedit_stdvec)( xui_propctrl* propctrl )
 	m_editctrl = textctrl;
 }
 
-/*
-//method
-*/
-xui_method_explain(xui_propedit_stdvec, get_value,				u32		)( void ) const
+u32 xui_propedit_stdvec::get_value( void ) const
 {
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
 	std::wstringstream tmp(textctrl->get_text());
@@ -34,24 +28,23 @@ xui_method_explain(xui_propedit_stdvec, get_value,				u32		)( void ) const
 	tmp >> value;
 	return value;
 }
-xui_method_explain(xui_propedit_stdvec, set_value,				void	)( u32 value )
+
+void xui_propedit_stdvec::set_value( u32 value )
 {
 	std::wstringstream tmp;
 	tmp << value;
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
 	textctrl->ini_textbox(tmp.str());
 }
-xui_method_explain(xui_propedit_stdvec, reset,					void	)( void )
+
+void xui_propedit_stdvec::reset( void )
 {
 	xui_propedit_base::reset();
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
 	textctrl->ini_textbox(L"");
 }
 
-/*
-//event
-*/
-xui_method_explain(xui_propedit_stdvec, on_textctrltextenter,	void	)( xui_component* sender, xui_method_args& args )
+void xui_propedit_stdvec::on_textctrltextenter( xui_component* sender, xui_method_args& args )
 {
 	xui_textbox* textctrl = xui_dynamic_cast(xui_textbox, m_editctrl);
 	std::wstringstream tmp(textctrl->get_text());

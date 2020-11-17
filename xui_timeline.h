@@ -8,20 +8,10 @@ class xui_timeline : public xui_control
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_timeline( xui_timedata* linkdata, xui_timeview* timeview );
 
-	/*
-	//method
-	*/
 	xui_timedata*				get_linkdata		( void );
 	void						use_linkdata		( s32 delta_time = 0 );
-
-	/*
-	//selected frame
-	*/
 	bool						was_selafter		( s32 frame ) const;
 	bool						has_selframe		( s32 frame ) const;
 	bool						has_selframe		( void ) const;
@@ -29,10 +19,6 @@ public:
 	void						set_selframe		( const std::vector<s32>& selframe );
 	bool						add_selframe		( s32 start, s32 final );
 	void						del_selframe		( s32 start, s32 final );
-
-	/*
-	//timeline
-	*/
 	xui_timeline*				get_rootline		( void );
 	void						get_timelinetotal	( std::vector<xui_timeline*>& lines, bool total = true );
 	u32							get_timelinecount	( void ) const;
@@ -41,25 +27,15 @@ public:
 	xui_timeline*				add_timeline		( u32 index, xui_timedata* data );
 	void						del_timeline		( xui_timeline* line );
 
-
 protected:
-	/*
-	//override
-	*/
 	virtual void				on_mousedown		( xui_method_mouse& args );
 	virtual void				on_mousemove		( xui_method_mouse& args );
 	virtual void				on_mouserise		( xui_method_mouse& args );
 	virtual void				on_mousedoubleclick	( xui_method_mouse& args );
 	virtual void				on_renderself		( xui_method_args&  args );
 
-	/*
-	//method
-	*/
 	s32							hit_frame			( s32 x );
 
-	/*
-	//member
-	*/
 	xui_vector<s32>				m_downrela;
 	xui_vector<s32>				m_currrela;
 	xui_timedata*				m_linkdata;

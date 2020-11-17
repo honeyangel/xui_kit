@@ -8,22 +8,13 @@ class xui_scrollthumb : public xui_button
 	xui_declare_rtti
 
 public:
-	/*
-	//constructor
-	*/
 	xui_scrollthumb( const xui_vector<s32>& size, u08 flowstyle );
 
 protected:
-	/*
-	//callback
-	*/
 	virtual void	on_mousedown	( xui_method_mouse& args );
 	virtual void	on_mousemove	( xui_method_mouse& args );
 	virtual void	on_mouserise	( xui_method_mouse& args );
 
-	/*
-	//member
-	*/
 	xui_vector<s32>	m_mouserela;
 	u08				m_flowstyle;
 };

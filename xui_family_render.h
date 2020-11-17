@@ -6,29 +6,20 @@
 
 enum 
 {
-	TEXTDRAW_NORMAL,
-	TEXTDRAW_SHADOW,
+	k_textdraw_normal,
+	k_textdraw_shadow,
 };
 
 class xui_family_render
 {
 public:
-	/*
-	//static
-	*/
-	static const xui_family_render default;
+	static const xui_family_render k_default;
 
-	/*
-	//member
-	*/
 	u08			renderstyle;
 	xui_colour	normalcolor;
 	xui_colour	strokecolor;
 	xui_colour	shadowcolor;
 
-	/*
-	//constructor
-	*/
 	xui_family_render( void )
 	{
 		renderstyle = 0;
@@ -38,7 +29,7 @@ public:
 	}
 	xui_family_render( const xui_colour& _normalcolor )
 	{
-		renderstyle = TEXTDRAW_NORMAL;
+		renderstyle = k_textdraw_normal;
 		normalcolor = _normalcolor;
 		strokecolor = xui_colour(1.0f, 0.0f);
 		shadowcolor = xui_colour(1.0f, 0.0f);
@@ -58,9 +49,6 @@ public:
 		shadowcolor = other.shadowcolor;
 	}
 
-	/*
-	//operator
-	*/
 	bool operator == ( const xui_family_render& other ) const
 	{
 		return (renderstyle == other.renderstyle &&
